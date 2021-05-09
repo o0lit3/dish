@@ -109,19 +109,6 @@ func (t Token) Continuator() bool {
     }
 }
 
-func (t Token) Associativity() string {
-    if t.tok == OP1 {
-        return "right-to-left"
-    }
-
-    switch t.lit {
-    case "**", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
-        return "right-to-left"
-    default:
-        return "left-to-right"
-    }
-}
-
 func (t Token) Term() bool {
     if t.BlockClose() {
         return true
@@ -176,11 +163,8 @@ func (t Token) Precedence() int {
     }
 }
 
-func (t Token) Higher(u Token) bool {
-    a := t.Precedence()
-    b := u.Precedence()
-
-    return (a > b || (a == b && t.Associativity() == "left-to-right"))
+func (a Token) Higher(b Token) bool {
+    return a.Precedence() >= b.Precedence()
 }
 
 func (t Token) BlockOpen() bool {
