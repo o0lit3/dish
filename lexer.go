@@ -2,10 +2,201 @@ package main
 
 import (
     "io"
+    "fmt"
     "bufio"
+    "strings"
     "unicode"
-    "unicode/utf8"
 )
+
+type Lexeme int
+type Dimension int
+
+const (
+    NOP Lexeme = iota
+    NUM // Numeric lexemes
+    STR // String lexemes
+    VAR // Identifier lexemes
+    OP1 // Unary operators (!, ~, +, -, ++, --)
+    OP2 // Binary operators
+    OPX // Method operators (alphanumeric)
+    OPA // Assignment operators (= += -= *= /= %= &= ^= |=)
+    BLK // Grouping lexemes {} [] ()
+    ERR // Unrecognized lexemes
+    FIN // Statement ending lexemes (newline or comma)
+    EOF // End of file
+)
+
+const (
+    BIT Dimension = iota
+    VAL // () Scalar
+    SET // [] Array
+    MAP // {} Hash
+)
+
+func (l Lexeme) String() string {
+    return [...]string{"NOP", "NUM", "STR", "VAR", "OP1", "OP2", "OPX", "OPA", "BLK", "ERR", "FIN", "EOF"}[l]
+}
+
+func (d Dimension) String() string {
+    return [...]string{"", "()", "[]", "{}"}[d]
+}
+
+type Position struct {
+    line int
+    column int
+}
+
+func (p Position) String() string {
+    return fmt.Sprintf("%d:%d", p.line, p.column)
+}
+
+func (p Position) UnexpectedToken(s string) Position {
+    panic("Unexpected token " + s + " at " + p.String())
+    return p
+}
+
+func (p Position) UnexpectedOperand(s string) Position {
+    panic("Unexpected operand for " + s + " at " + p.String())
+    return p
+}
+
+type Token struct {
+    dep int
+    dim Dimension
+    pos Position
+    tok Lexeme
+    lit string
+}
+
+func (t Token) String() string {
+    return fmt.Sprintf(strings.Repeat("\t", t.dep) + "%s %s %s %s", t.pos.String(), t.dim, t.tok, t.lit)
+}
+
+func (t Token) UnmatchedBlock() Token {
+    panic("Unmatched " + t.lit + " at " + t.pos.String())
+    return t
+}
+
+func (t Token) Continuator() bool {
+    if (t.tok == OP2 || t.tok == OPA) {
+        return true
+    }
+
+    switch t.lit {
+    case "{", "[", "(", ",":
+        return true
+    default:
+        return false
+    }
+}
+
+func (t Token) Term() bool {
+    if t.BlockClose() {
+        return true
+    }
+
+    switch t.tok {
+    case STR, NUM, VAR:
+        return true
+    default:
+        return false
+    }
+}
+
+func (t Token) Precedence() int {
+    if t.tok == OP1 {
+        return 17
+    }
+
+    switch t.lit {
+    case "**":
+        return 16
+    case "*", "/", "%":
+        return 15
+    case "+", "-":
+        return 14
+    case "<<", ">>":
+        return 13
+    case "<", "<=", ">", ">=":
+        return 12
+    case "==", "!=":
+        return 11
+    case "&":
+        return 10
+    case "^":
+        return 9
+    case "|":
+        return 8
+    case "&&":
+        return 7
+    case "||":
+        return 6
+    case "??":
+        return 5
+    case "..":
+        return 4
+    case "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
+        return 3
+    case ",":
+        return 2
+    default:
+        return 0
+    }
+}
+
+func (a Token) Higher(b Token) bool {
+    return a.Precedence() >= b.Precedence()
+}
+
+func (t Token) BlockOpen() bool {
+    switch t.lit {
+    case "{", "[", "(":
+        return true
+    default:
+        return false
+    }
+}
+
+func (t Token) BlockClose() bool {
+    switch t.lit {
+    case "}", "]", ")":
+        return true
+    default:
+        return false
+    }
+}
+
+func (t Token) BlockMatch() string {
+    switch t.lit {
+    case "{":
+        return "}"
+    case "}":
+        return "{"
+    case "[":
+        return "]"
+    case "]":
+        return "["
+    case "(":
+        return ")"
+    case ")":
+        return "("
+    default:
+    return "="
+    }
+}
+
+func (t Token) Dimension() Dimension {
+    switch t.lit {
+    case "{", "}":
+        return MAP
+    case "[", "]":
+        return SET
+    case "(", ")":
+        return VAL
+    default:
+        return BIT
+    }
+}
 
 type Lexer struct {
     pos Position
@@ -26,20 +217,6 @@ func (l *Lexer) Read() rune {
     return r
 }
 
-func (l *Lexer) Peek() rune {
-    for bytes := 4; bytes > 0; bytes-- {
-        b, err := l.rdr.Peek(bytes)
-
-        if err == nil {
-            r, _ := utf8.DecodeRune(b)
-            return r
-        }
-    }
-
-    return 0
-}
-
-
 func (l *Lexer) Backup() Position {
     last := l.pos
     err := l.rdr.UnreadRune()
@@ -59,7 +236,7 @@ func (l *Lexer) Reset() Position {
     return last
 }
 
-func (l *Lexer) Tokenize(pos Position, tok int, lit string) Token {
+func (l *Lexer) Tokenize(pos Position, tok Lexeme, lit string) Token {
     token := Token { pos: pos, tok: tok, lit: lit }
     l.toks = append(l.toks, token)
     return token
@@ -172,19 +349,7 @@ func (l *Lexer) LexNum() string {
         switch {
         case r == 0:
             return lit
-        case r == '.':
-            n := l.Peek()
-
-            switch {
-            case n == 0:
-                return lit + string(r)
-            case unicode.IsDigit(n):
-                lit = lit + string(r)
-            default:
-                l.Backup()
-                return lit
-            }
-        case unicode.IsDigit(r):
+        case (r == '.' || unicode.IsDigit(r)):
             lit = lit + string(r)
         default:
             l.Backup()

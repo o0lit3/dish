@@ -4,24 +4,6 @@ import (
     "os"
     "fmt"
     "bufio"
-    "strings"
-)
-
-const (
-    NOP = iota
-    BIT // Binary register stores (not used during lexing)
-    NUM // Numeric lexemes or register stores
-    STR // String lexemes or register stores
-    OBJ // Dynamic register stores (not used during lexing)
-    VAR // Identifier lexemes or register stores (for assigment only)
-    OP1 // Unary operators (!, ~, +, -, ++, --)
-    OP2 // Binary operators
-    OPX // Method operators (alphanumeric)
-    OPA // Assignment operators (= += -= *= /= %= &= ^= |=)
-    BLK // Grouping lexemes {} [] ()
-    ERR // Unrecognized lexemes
-    FIN // Statement ending lexemes (newline or comma)
-    EOF // End of file
 )
 
 func main() {
@@ -53,10 +35,10 @@ func main() {
     }
 
     parser := &Parser {
-        depth: 0,
+        dep: 0,
         toks: lexer.toks,
         blks: []Block{0: Block {
-            style: "()",
+            dim: VAL,
             vars: map[string]interface{}{
                 "true": true,
                 "false": false,
@@ -69,23 +51,23 @@ func main() {
     }
 
     if debug {
-        for _, term := range parser.terms {
-            fmt.Println(strings.Repeat("\t", term.depth) + term.String())
+        for _, term := range parser.tics {
+            fmt.Println(term.String())
         }
 
         return
     }
 
     interpreter := &Interpreter {
-        terms: parser.terms,
+        tics: parser.tics,
         blks: parser.blks,
     }
 
-    for len(interpreter.terms) > 0 {
+    for len(interpreter.tics) > 0 {
         interpreter.Interpret()
     }
 
-    if (len(interpreter.blks) > 0 && len(interpreter.blks[0].stack) > 0) {
-        fmt.Printf("%v\n", interpreter.blks[0].stack[len(interpreter.blks[0].stack) - 1])
+    if (len(interpreter.blks) > 0 && len(interpreter.blks[0].stck) > 0) {
+        fmt.Printf("%v\n", interpreter.blks[0].stck[len(interpreter.blks[0].stck) - 1])
     }
 }

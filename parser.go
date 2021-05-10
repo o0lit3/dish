@@ -1,17 +1,17 @@
 package main
 
 type Parser struct {
-    depth int
+    dep int
     ops []Token
-    terms []Token
+    tics []Token
     toks []Token
     blks []Block
 }
 
 func (p *Parser) Termify(t Token) {
-    t.depth = p.depth
-    t.style = p.blks[t.depth].style
-    p.terms = append(p.terms, t)
+    t.dep = p.dep
+    t.dim = p.blks[t.dep].dim
+    p.tics = append(p.tics, t)
 }
 
 func (p *Parser) Shift() {
@@ -49,8 +49,14 @@ func (p *Parser) Parse() {
 
         p.ops = append(p.ops, t)
     case t.BlockOpen():
-        p.depth = p.depth + 1
-        p.blks = append(p.blks, Block { style: t.lit + t.BlockMatch(), vars: make(map[string]interface{}) })
+        p.dep = p.dep + 1
+
+        if len(p.blks) > p.dep {
+            p.blks[p.dep].dim = t.Dimension()
+        } else {
+            p.blks = append(p.blks, Block { dim: t.Dimension(), vars: make(map[string]interface{}) })
+        }
+
         p.ops = append(p.ops, t)
     case t.BlockClose():
         for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].lit != t.BlockMatch()) {
@@ -63,15 +69,15 @@ func (p *Parser) Parse() {
             p.ops = p.ops[:len(p.ops) - 1]
         }
 
-        p.terms = append(p.terms, Token {
-            depth: p.depth,
-            style: p.blks[p.depth].style,
+        p.tics = append(p.tics, Token {
+            dep: p.dep,
+            dim: p.blks[p.dep].dim,
             pos: t.pos,
             tok: FIN,
             lit: "",
         })
 
-        p.depth = p.depth - 1
+        p.dep = p.dep - 1
 
         if (len(p.ops) > 0 && p.ops[len(p.ops) - 1].tok == OP1) {
             p.Shift()
