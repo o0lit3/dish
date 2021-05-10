@@ -262,6 +262,8 @@ func (l *Lexer) Lexify() Token {
             return l.Tokenize(l.pos, STR, l.LexStr(r))
         case ' ', '\t', '\r':
             continue
+        case '#':
+            l.LexCom()
         case '\n':
             if (len(l.toks) > 0 && !l.toks[len(l.toks) - 1].Continuator()) {
                 return l.Tokenize(l.Reset(), FIN, string(r))
@@ -336,6 +338,24 @@ func (l *Lexer) Lexify() Token {
             default:
                 return l.Tokenize(l.pos, ERR, string(r))
             }
+        }
+    }
+}
+
+func (l *Lexer) LexCom() string {
+    var lit string
+
+    for {
+        r := l.Read()
+
+        switch {
+        case r == 0:
+            return lit
+        case r != '\n':
+            lit = lit + string(r)
+        default:
+            l.Backup()
+            return lit
         }
     }
 }
