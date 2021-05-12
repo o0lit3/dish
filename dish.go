@@ -4,6 +4,7 @@ import (
     "os"
     "fmt"
     "bufio"
+    "testing"
 )
 
 func main() {
@@ -18,6 +19,36 @@ func main() {
         }
     }
 
+    parser := process(source)
+
+    if debug {
+        for _, term := range parser.tics {
+            fmt.Println(term.String())
+        }
+
+        return
+    }
+
+    interpreter := &Interpreter {
+        tics: parser.tics,
+        blks: parser.blks,
+    }
+
+    for len(interpreter.tics) > 0 {
+        interpreter.Interpret()
+    }
+
+    if (len(interpreter.blks) > 0 && len(interpreter.blks[0].stck) > 0) {
+        switch val := interpreter.blks[0].stck[len(interpreter.blks[0].stck) - 1].(type) {
+        case String:
+            fmt.Println(string(val))
+        default:
+            fmt.Printf("%v\n", val)
+        }
+    }
+}
+
+func process(source string) *Parser {
     file, err := os.Open(source)
 
     if err != nil {
@@ -50,24 +81,40 @@ func main() {
         parser.Parse()
     }
 
-    if debug {
-        for _, term := range parser.tics {
-            fmt.Println(term.String())
+    return parser
+}
+
+func test(test *testing.T, source string) {
+    p := process(source)
+    c := 0
+    f := 0
+
+    i := &Interpreter {
+        tics: p.tics,
+        blks: p.blks,
+    }
+
+    for len(i.tics) > 0 {
+        t := i.Interpret()
+
+        if t.tok == FIN && i.comm != "" {
+            if len(i.blks[t.dep].stck) == 0 {
+                test.Errorf("%s expected %s at %s; got nil", source, i.comm, t.pos)
+                f++
+            } else {
+                val := i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1]
+
+                if fmt.Sprintf("%v", val) != i.comm {
+                    test.Errorf("%s expected %s at %s; got %v", source, i.comm, t.pos, val)
+                    f++
+                } else {
+                    c++
+                }
+            }
+
+            i.comm = ""
         }
-
-        return
     }
 
-    interpreter := &Interpreter {
-        tics: parser.tics,
-        blks: parser.blks,
-    }
-
-    for len(interpreter.tics) > 0 {
-        interpreter.Interpret()
-    }
-
-    if (len(interpreter.blks) > 0 && len(interpreter.blks[0].stck) > 0) {
-        fmt.Printf("%v\n", interpreter.blks[0].stck[len(interpreter.blks[0].stck) - 1])
-    }
+    fmt.Printf("%s passed %d of %d tests\n", source, c, c + f)
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+    "fmt"
     "strconv"
     "strings"
 )
@@ -12,31 +13,91 @@ type Variable struct {
 
 type Block struct {
     dim Dimension
-    vars map[string]interface{}
-    regs []interface{}
-    stck []interface{}
+    stck Set
+    vars Map
+    hash []string
 }
+
+type Map map[string]interface{}
+
+type Set []interface{}
+
+type String string
 
 type Interpreter struct {
     tics []Token
     blks []Block
+    comm string
 }
 
-func (i *Interpreter) Stack(op Token, val interface{}) {
-    i.blks[op.dep].stck = append(i.blks[op.dep].stck, val)
+func (s String) String() string {
+    out := ""
+
+    for _, c := range s {
+        switch c {
+        case '\b':
+            out += "\\b"
+        case '\f':
+            out += "\\f"
+        case '\n':
+            out += "\\n"
+        case '\r':
+            out += "\\r"
+        case '\t':
+            out += "\\t"
+        case '"':
+            out += "\\\""
+        case '\\':
+            out += "\\\\"
+        default:
+            out += string(c)
+        }
+    }
+
+    return "\"" + out + "\""
+}
+
+func (s Set) String() string {
+    var out []string
+
+    for _, val := range s {
+        out = append(out, fmt.Sprintf("%v", val))
+    }
+
+    return fmt.Sprintf("[" + strings.Join(out, ", ") + "]")
+}
+
+func (m Map) String() string {
+    var out []string
+
+    for key, val := range m {
+        out = append(out, fmt.Sprintf("\"%s\": %v", key, val))
+    }
+
+    return fmt.Sprintf("{" + strings.Join(out, ", ") + "}")
+}
+
+func (m Map) ToSet() Set {
+    out := Set { }
+
+    for _, val := range m {
+        out = append(out, val)
+    }
+
+    return out
 }
 
 func (i *Interpreter) Register(op Token, val interface{}) {
-    i.blks[op.dep].regs = append(i.blks[op.dep].regs, val)
+    i.blks[op.dep].stck = append(i.blks[op.dep].stck, val)
 }
 
 func (i *Interpreter) Deregister(op Token) interface{} {
-    if len(i.blks[op.dep].regs) < 1 {
-        panic("Missing operand for " +  op.lit + " at " + op.pos.String())
+    if len(i.blks[op.dep].stck) < 1 {
+        panic(fmt.Sprintf("Missing operand for %s at %s", op.lit, op.pos))
     }
 
-    val := i.blks[op.dep].regs[0]
-    i.blks[op.dep].regs = i.blks[op.dep].regs[1:]
+    val := i.blks[op.dep].stck[len(i.blks[op.dep].stck) - 1]
+    i.blks[op.dep].stck = i.blks[op.dep].stck[:len(i.blks[op.dep].stck) - 1]
 
     if op.tok == OPA {
         return val
@@ -50,7 +111,7 @@ func (i *Interpreter) Deregister(op Token) interface{} {
     }
 }
 
-func (i *Interpreter) Interpret() {
+func (i *Interpreter) Interpret() Token {
     t := i.tics[0]
     i.tics = i.tics[1:]
 
@@ -60,142 +121,27 @@ func (i *Interpreter) Interpret() {
 
         switch t.lit {
         case "!":
-            switch x := a.(type) {
-            case map[string]interface{}:
-                i.Register(t, len(x) == 0)
-            case []interface{}:
-                i.Register(t, len(x) == 0)
-            case string:
-                i.Register(t, x == "" || x == "0")
-            case float64:
-                i.Register(t, x == 0)
-            case int:
-                i.Register(t, x == 0)
-            case bool:
-                i.Register(t, !x)
-            default:
-                t.pos.UnexpectedOperand(t.lit)
-            }
+            i.Register(t, Not(t, a))
         case "~":
         case "+":
         case "-":
         case "++":
         case "--":
         default:
-            t.pos.UnexpectedToken(t.lit)
+            t.UnexpectedToken()
         }
     case OP2:
-        a := i.Deregister(t)
         b := i.Deregister(t)
+        a := i.Deregister(t)
 
         switch t.lit {
         case "**":
         case "*":
-            switch x := a.(type) {
-            case []interface{}:
-                y := 0
-
-                switch b.(type) {
-                case int:
-                    y = b.(int)
-                case float64:
-                    y = int(b.(float64))
-                default:
-                    t.pos.UnexpectedOperand(t.lit)
-                }
-
-                switch y {
-                case 0:
-                    i.Register(t, nil)
-                case 1:
-                    i.Register(t, x)
-                default:
-                    for n:= 1; n < y; n++ {
-                        for _, val := range x {
-                            x = append(x, val)
-                        }
-                    }
-
-                    i.Register(t, x)
-                }
-            case string:
-                y := 0
-
-                switch b.(type) {
-                case int:
-                    y = b.(int)
-                case float64:
-                    y = int(b.(float64))
-                }
-
-                i.Register(t, strings.Repeat(x, y))
-            case float64:
-                switch y := b.(type) {
-                case int:
-                    i.Register(t, x * float64(y))
-                case float64:
-                    i.Register(t, x * y)
-                }
-            case int:
-                switch y := b.(type) {
-                case int:
-                    i.Register(t, x * y)
-                case float64:
-                    i.Register(t, float64(x) * y)
-                }
-            case bool:
-                if x {
-                    i.Register(t, b)
-                } else {
-                    i.Register(t, 0)
-                }
-            default:
-                t.pos.UnexpectedOperand(t.lit)
-            }
+            i.Register(t, Multiply(t, a, b))
         case "/":
         case "%":
         case "+":
-            a := i.Deregister(t)
-            b := i.Deregister(t)
-
-            switch x := a.(type) {
-            case map[string]interface{}:
-                switch y := b.(type) {
-                case map[string]interface{}:
-                    for key, val := range y {
-                        x[key] = val
-                    }
-
-                    i.Register(t, x)
-                case []interface{}:
-                    for idx, val := range y {
-                        x[strconv.Itoa(idx)] = val
-                    }
-
-                    i.Register(t, x)
-                default:
-                    t.pos.UnexpectedOperand(t.lit)
-                }
-            case []interface{}:
-                switch y := b.(type) {
-                case map[string]interface{}:
-                    for _, val := range y {
-                        x = append(x, val)
-                    }
-
-                    i.Register(t, x)
-                case []interface{}:
-                    for _, val := range y {
-                        x = append(x, val)
-                    }
-
-                    i.Register(t, x)
-                default:
-                    t.pos.UnexpectedOperand(t.lit)
-                }
-            default:
-                t.pos.UnexpectedOperand(t.lit)
-            }
+            i.Register(t, Add(t, a, b))
         case "-":
         case "<<":
         case ">>":
@@ -213,67 +159,112 @@ func (i *Interpreter) Interpret() {
         case "..":
         case "??":
         default:
-            t.pos.UnexpectedToken(t.lit)
+            t.UnexpectedToken()
         }
     case OPA:
+        b := i.Deregister(t)
         a := i.Deregister(t)
+
+        dep := t.dep
+        nom := ""
+        val := b
 
         switch x := a.(type) {
         case Variable:
-            switch t.lit {
-            case "=", ":":
-                b := i.Deregister(t)
-                i.blks[x.dep].vars[x.nom] = b
-                i.Register(t, b)
-            case "+=":
-            case "-=":
-            case "**=":
-            case "*=":
-            case "/=":
-            case "%=":
-            case "&=":
-            case "|=":
-            default:
-                t.pos.UnexpectedToken(t.lit)
-            }
+            nom = x.nom
         default:
-            panic("Assignment operator requires variable operand near " + t.lit + " at " + t.pos.String())
+            if t.lit == ":" {
+                nom = fmt.Sprintf("%v", x)
+            } else {
+                panic(fmt.Sprintf("Assignment operator %s requires left-hand variable operand at %s", t.lit, t.pos))
+            }
         }
+
+        switch y := b.(type) {
+        case Variable:
+            val = i.blks[y.dep].vars[y.nom]
+        }
+
+        switch t.lit {
+        case "=":
+            i.blks[dep].vars[nom] = val
+        case ":":
+            if t.dim == MAP {
+                i.blks[dep].vars[nom] = val
+
+                if len(i.blks[dep].hash) > len(i.blks[dep].stck) {
+                    i.blks[dep].hash[len(i.blks[dep].hash) - 1] = nom
+                } else {
+                    i.blks[dep].hash = append(i.blks[dep].hash, nom)
+                }
+            } else {
+                panic(fmt.Sprintf("Assigment operator %s can only be used in hashes at %s", t.lit, t.pos))
+            }
+        case "+=":
+        case "-=":
+        case "**=":
+        case "*=":
+        case "/=":
+        case "%=":
+        case "&=":
+        case "|=":
+        default:
+            t.UnexpectedToken()
+        }
+
+        i.Register(t, i.blks[dep].vars[nom])
     case FIN:
-        switch len(i.blks[t.dep].regs) {
-        case 0:
-        case 1:
-            i.Stack(t, i.blks[t.dep].regs[0])
-        default:
-            panic("Too many items in register near " + t.lit + " at " + t.pos.String())
-        }
+        if len(i.blks[t.dep].stck) > 0 {
+            val := i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1]
 
-        i.blks[t.dep].regs = nil
-
-        if (len(i.tics) > 0 && i.tics[0].dep < t.dep) {
-            switch len(i.blks[t.dep].stck) {
-            case 0:
-                switch t.dim {
-                case VAL:
-                case SET:
-                    var x []interface{}
-                    i.Register(i.tics[0], x)
-                case MAP:
-                    var x map[string]interface{}
-                    i.Register(i.tics[0], x)
-                }
-            default:
-                switch t.dim {
-                case VAL:
-                    i.Register(i.tics[0], i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1])
-                case SET:
-                    i.Register(i.tics[0], i.blks[t.dep].stck)
-                case MAP:
-                    i.Register(i.tics[0], i.blks[t.dep].vars)
-                }
+            switch x := val.(type) {
+            case Variable:
+                i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1] = i.blks[x.dep].vars[x.nom]
+            case string:
+                i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1] = String(x)
             }
 
+            if t.dim == MAP && len(i.blks[t.dep].stck) != len(i.blks[t.dep].hash) {
+                i.blks[t.dep].hash = append(i.blks[t.dep].hash, fmt.Sprintf("%v", val))
+            }
+        }
+
+        if t.lit == "" {
+            blk := Token { dep: t.dep - 1 }
+
+            switch t.dim {
+            case VAL:
+                for key, val := range i.blks[t.dep].vars {
+                    i.blks[blk.dep].vars[key] = val
+                }
+
+                if len(i.blks[t.dep].stck) > 0 {
+                    switch x := i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1].(type) {
+                    case String:
+                        i.Register(blk, String(x))
+                    default:
+                        i.Register(blk, x)
+                    }
+                }
+            case SET:
+                for key, val := range i.blks[t.dep].vars {
+                    i.blks[blk.dep].vars[key] = val
+                }
+
+                i.Register(blk, i.blks[t.dep].stck)
+            case MAP:
+                hash := Map { }
+
+                for idx, key := range i.blks[t.dep].hash {
+                    hash[key] = i.blks[t.dep].stck[idx]
+                }
+
+                i.Register(blk, hash)
+            }
+
+            i.comm = ""
             i.blks[t.dep].stck = nil
+            i.blks[t.dep].hash = nil
             i.blks[t.dep].vars = make(map[string]interface{})
         }
     case VAR:
@@ -285,7 +276,8 @@ func (i *Interpreter) Interpret() {
             _, ok = i.blks[n].vars[t.lit]
         }
 
-        if (n == 0 && !ok) {
+        if n == 0 && !ok {
+            i.blks[t.dep].vars[t.lit] = ""
             n = t.dep
         }
 
@@ -295,7 +287,7 @@ func (i *Interpreter) Interpret() {
             val, err := strconv.ParseFloat(t.lit, 64)
 
             if err != nil {
-                panic("Malformed float at " + t.pos.String())
+                panic(fmt.Sprintf("Malformed float at %s", t.pos))
             }
 
             i.Register(t, val)
@@ -303,15 +295,18 @@ func (i *Interpreter) Interpret() {
             val, err := strconv.Atoi(t.lit)
 
             if err != nil {
-                panic("Malformed int at " + t.pos.String())
+                panic(fmt.Sprintf("Malformed int at %s", t.pos))
             }
 
             i.Register(t, val)
         }
     case STR:
         i.Register(t, t.lit)
+    case COM:
+        i.comm = t.lit
     default:
-        t.pos.UnexpectedToken(t.lit)
+        t.UnexpectedToken()
     }
-}
 
+    return t
+}

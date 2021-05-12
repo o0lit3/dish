@@ -28,7 +28,7 @@ func (p *Parser) Parse() {
         for len(p.ops) > 0 {
             op := p.ops[len(p.ops) - 1]
 
-            if (op.BlockOpen() || op.BlockClose()) {
+            if op.BlockOpen() || op.BlockClose() {
                 op.UnmatchedBlock()
             }
 
@@ -42,7 +42,7 @@ func (p *Parser) Parse() {
         p.Termify(t)
     case t.tok == OP1:
         p.ops = append(p.ops, t)
-    case (t.tok == OP2 || t.tok == OPA || t.tok == OPX):
+    case t.tok == OP2 || t.tok == OPA || t.tok == OPX:
         for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen()) {
             p.Shift()
         }
@@ -54,7 +54,10 @@ func (p *Parser) Parse() {
         if len(p.blks) > p.dep {
             p.blks[p.dep].dim = t.Dimension()
         } else {
-            p.blks = append(p.blks, Block { dim: t.Dimension(), vars: make(map[string]interface{}) })
+            p.blks = append(p.blks, Block {
+                dim: t.Dimension(),
+                vars: make(map[string]interface{}),
+            })
         }
 
         p.ops = append(p.ops, t)
@@ -79,13 +82,15 @@ func (p *Parser) Parse() {
 
         p.dep = p.dep - 1
 
-        if (len(p.ops) > 0 && p.ops[len(p.ops) - 1].tok == OP1) {
+        if len(p.ops) > 0 && p.ops[len(p.ops) - 1].tok == OP1 {
             p.Shift()
         }
-    case (t.tok == STR || t.tok == NUM || t.tok == VAR):
+    case t.tok == STR || t.tok == NUM || t.tok == VAR:
+        p.Termify(t)
+    case t.tok == COM:
         p.Termify(t)
     default:
-        t.pos.UnexpectedToken(t.lit)
+        t.UnexpectedToken()
     }
 }
 
