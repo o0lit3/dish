@@ -2,8 +2,9 @@ package main
 
 import (
     "fmt"
-    "strconv"
     "strings"
+    "strconv"
+    "unicode"
 )
 
 type Variable struct {
@@ -23,6 +24,10 @@ type Map map[string]interface{}
 type Set []interface{}
 
 type String string
+
+type Number float64
+
+type Boolean bool
 
 type Interpreter struct {
     tics []Token
@@ -57,6 +62,37 @@ func (s String) String() string {
     return "\"" + out + "\""
 }
 
+func (s String) Number() Number {
+    num := ""
+    dec := false;
+
+    for _, c := range s {
+        if unicode.IsDigit(c) || (c == '.' && !dec) {
+            num += string(c)
+        } else {
+            break
+        }
+    }
+
+    if num != "" {
+        if dec {
+            val, err := strconv.ParseFloat(num, 64)
+
+            if err == nil {
+                return Number(val)
+            }
+        } else {
+            val, err := strconv.Atoi(num)
+
+            if err == nil {
+                return Number(val)
+            }
+        }
+    }
+
+    return Number(0)
+}
+
 func (s Set) String() string {
     var out []string
 
@@ -65,6 +101,16 @@ func (s Set) String() string {
     }
 
     return fmt.Sprintf("[" + strings.Join(out, ", ") + "]")
+}
+
+func (s Set) Map() Map {
+    out := Map { }
+
+    for _, val := range s {
+        out[fmt.Sprintf("%v", val)] = val
+    }
+
+    return out
 }
 
 func (m Map) String() string {
@@ -77,7 +123,7 @@ func (m Map) String() string {
     return fmt.Sprintf("{" + strings.Join(out, ", ") + "}")
 }
 
-func (m Map) ToSet() Set {
+func (m Map) Set() Set {
     out := Set { }
 
     for _, val := range m {
@@ -87,28 +133,40 @@ func (m Map) ToSet() Set {
     return out
 }
 
+func (i *Interpreter) Bind(op Token, val interface{}) interface{} {
+    switch x := val.(type) {
+    case Variable:
+        if op.tok == OPA {
+            return x
+        } else {
+            return i.Bind(op, i.blks[x.dep].vars[x.nom])
+        }
+    case string:
+        return String(x)
+    case float64:
+        return Number(x)
+    case int:
+        return Number(x)
+    case bool:
+        return Boolean(x)
+    default:
+        return val
+    }
+}
+
 func (i *Interpreter) Register(op Token, val interface{}) {
     i.blks[op.dep].stck = append(i.blks[op.dep].stck, val)
 }
 
 func (i *Interpreter) Deregister(op Token) interface{} {
     if len(i.blks[op.dep].stck) < 1 {
-        panic(fmt.Sprintf("Missing operand for %s at %s", op.lit, op.pos))
+        panic(fmt.Sprintf("Missing operand for \"%s\" at %s", op.lit, op.pos))
     }
 
     val := i.blks[op.dep].stck[len(i.blks[op.dep].stck) - 1]
     i.blks[op.dep].stck = i.blks[op.dep].stck[:len(i.blks[op.dep].stck) - 1]
 
-    if op.tok == OPA {
-        return val
-    }
-
-    switch x := val.(type) {
-    case Variable:
-        return i.blks[x.dep].vars[x.nom]
-    default:
-        return val
-    }
+    return i.Bind(op, val)
 }
 
 func (i *Interpreter) Interpret() Token {
@@ -137,11 +195,11 @@ func (i *Interpreter) Interpret() Token {
         switch t.lit {
         case "**":
         case "*":
-            i.Register(t, Multiply(t, a, b))
+            i.Register(t, Times(t, a, b))
         case "/":
         case "%":
         case "+":
-            i.Register(t, Add(t, a, b))
+            i.Register(t, Plus(t, a, b))
         case "-":
         case "<<":
         case ">>":
@@ -176,7 +234,7 @@ func (i *Interpreter) Interpret() Token {
             if t.lit == ":" {
                 nom = fmt.Sprintf("%v", x)
             } else {
-                panic(fmt.Sprintf("Assignment operator %s requires left-hand variable operand at %s", t.lit, t.pos))
+                panic(fmt.Sprintf("Assignment operator \"%s\" requires left-hand variable operand at %s", t.lit, t.pos))
             }
         }
 
@@ -198,7 +256,7 @@ func (i *Interpreter) Interpret() Token {
                     i.blks[dep].hash = append(i.blks[dep].hash, nom)
                 }
             } else {
-                panic(fmt.Sprintf("Assigment operator %s can only be used in hashes at %s", t.lit, t.pos))
+                panic(fmt.Sprintf("Assigment operator \"%s\" can only be used in hashes at %s", t.lit, t.pos))
             }
         case "+=":
         case "-=":
@@ -213,6 +271,30 @@ func (i *Interpreter) Interpret() Token {
         }
 
         i.Register(t, i.blks[dep].vars[nom])
+    case OPX:
+        var a interface{}
+        var b interface{}
+
+        switch t.lit {
+        case "not", "bnot":
+            a = i.Deregister(t)
+        default:
+            b = i.Deregister(t)
+            a = i.Deregister(t)
+        }
+
+        switch t.lit {
+        case "not":
+            i.Register(t, Not(t, a))
+        case "plus":
+            i.Register(t, Plus(t, a, b))
+        case "times":
+            i.Register(t, Times(t, a, b))
+        case "join":
+            i.Register(t, Times(t, a, b))
+        default:
+            panic(fmt.Sprintf("Unrecognized method \"%s\" at %s", t.lit, t.pos))
+        }
     case FIN:
         if len(i.blks[t.dep].stck) > 0 {
             val := i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1]
@@ -287,7 +369,7 @@ func (i *Interpreter) Interpret() Token {
             val, err := strconv.ParseFloat(t.lit, 64)
 
             if err != nil {
-                panic(fmt.Sprintf("Malformed float at %s", t.pos))
+                panic(fmt.Sprintf("Malformed number at %s", t.pos))
             }
 
             i.Register(t, val)
@@ -295,7 +377,7 @@ func (i *Interpreter) Interpret() Token {
             val, err := strconv.Atoi(t.lit)
 
             if err != nil {
-                panic(fmt.Sprintf("Malformed int at %s", t.pos))
+                panic(fmt.Sprintf("Malformed number at %s", t.pos))
             }
 
             i.Register(t, val)

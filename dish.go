@@ -4,22 +4,32 @@ import (
     "os"
     "fmt"
     "bufio"
+    "strings"
     "testing"
 )
 
 func main() {
-    debug := false
-    source := os.Args[1]
+    var reader *bufio.Reader
 
-    for _, flag := range os.Args {
+    source := os.Args[1]
+    debug := false
+
+    for i, flag := range os.Args {
         switch flag {
         case "-debug":
             debug = true
-            source = os.Args[2]
+            source = os.Args[i + 1]
+        case "-e":
+            source = ""
+            reader = bufio.NewReader(strings.NewReader(os.Args[i + 1]))
         }
     }
 
-    parser := process(source)
+    if source != "" {
+        reader = open(source)
+    }
+
+    parser := process(reader)
 
     if debug {
         for _, term := range parser.tics {
@@ -48,16 +58,20 @@ func main() {
     }
 }
 
-func process(source string) *Parser {
+func open(source string) *bufio.Reader {
     file, err := os.Open(source)
 
     if err != nil {
         panic(err)
     }
 
+    return bufio.NewReader(file)
+}
+
+func process(rdr *bufio.Reader) *Parser {
     lexer := &Lexer {
         pos: Position { line: 1, column: 0},
-        rdr: bufio.NewReader(file),
+        rdr: rdr,
         opn: true,
     }
 
@@ -85,7 +99,8 @@ func process(source string) *Parser {
 }
 
 func test(test *testing.T, source string) {
-    p := process(source)
+    r := open(source)
+    p := process(r)
     c := 0
     f := 0
 

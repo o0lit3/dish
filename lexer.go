@@ -6,6 +6,7 @@ import (
     "bufio"
     "strings"
     "unicode"
+    "unicode/utf8"
 )
 
 type Lexeme int
@@ -66,7 +67,7 @@ func (p Position) String() string {
 }
 
 func (p Position) UnexpectedToken(r rune) {
-    panic(fmt.Sprintf("Unexpected token %v at %s", r, p))
+    panic(fmt.Sprintf("Unexpected token \"%v\" at %s", r, p))
 }
 
 func (t Token) String() string {
@@ -74,15 +75,15 @@ func (t Token) String() string {
 }
 
 func (t Token) UnexpectedToken() {
-    panic(fmt.Sprintf("Unexpected token %s at %s", t.lit, t.pos))
+    panic(fmt.Sprintf("Unexpected token \"%s\" at %s", t.lit, t.pos))
 }
 
 func (t Token) UnexpectedOperand() {
-    panic(fmt.Sprintf("Unexpected operand for %s at %s", t.lit, t.pos))
+    panic(fmt.Sprintf("Unexpected operand for \"%s\" at %s", t.lit, t.pos))
 }
 
 func (t Token) UnmatchedBlock() {
-    panic(fmt.Sprintf("Unmatched %s at %s", t.lit, t.pos))
+    panic(fmt.Sprintf("Unmatched \"%s\" at %s", t.lit, t.pos))
 }
 
 func (t Token) Continuator() bool {
@@ -218,6 +219,19 @@ func (l *Lexer) Read() rune {
     return r
 }
 
+func (l *Lexer) Peek() rune {
+    for bytes := 4; bytes > 0; bytes-- {
+        b, err := l.rdr.Peek(bytes)
+
+        if err == nil {
+            r, _ := utf8.DecodeRune(b)
+            return r
+        }
+    }
+
+    return 0
+}
+
 func (l *Lexer) Backup() Position {
     last := l.pos
     err := l.rdr.UnreadRune()
@@ -278,11 +292,13 @@ func (l *Lexer) Lexify() Token {
             s := l.pos
             n := l.Read()
 
-            switch n {
-            case 0:
+            switch {
+            case n == 0:
                 s.UnexpectedToken(r)
-            case '.':
+            case n == '.':
                 return l.Tokenize(s, OP2, string(r) + string(n))
+            case unicode.IsDigit(n):
+                return l.Tokenize(l.Backup(), NUM, l.LexNum())
             default:
                 return l.Tokenize(l.Backup(), OPX, l.LexVar())
             }
@@ -376,7 +392,16 @@ func (l *Lexer) LexNum() string {
         switch {
         case r == 0:
             return lit
-        case (r == '.' || unicode.IsDigit(r)):
+        case r == '.':
+            n := l.Peek()
+
+            if unicode.IsDigit(n) {
+                lit = lit + string(r)
+            } else {
+                l.Backup()
+                return lit
+            }
+        case unicode.IsDigit(r):
             lit = lit + string(r)
         default:
             l.Backup()
