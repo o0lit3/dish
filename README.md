@@ -13,7 +13,7 @@ Dish is a dynamically-typed, keywordless programming language designed with the 
 Dish is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '["Hello World!"]'`
 
 ## Output
-By default **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an [Array](#array) or a [Hash](#hash), the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
+By default **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
 
 ## Syntax
 Dish has 3 types of syntax blocks, Value Blocks represented by `()`, Array blocks represented by `[]`, and Hash blocks represented by `{}`. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup> or by a comma (unless the newline or comma is encapsulated in a string literal).
