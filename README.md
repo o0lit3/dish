@@ -7,7 +7,7 @@ Dish is a dynamically-typed programming language designed with the following goa
 
 * Isolate behavioral functionality by treating all data types as objects (and remove control flow keywords, like `if`, `for`, and `while` in favor of object methods, which goes a step further than [ruby](https://github.com/ruby/ruby#readme))
 
-* Allow for contextual parsing of variables and statements without requiring end-of-statement identifiers (while still avoiding the "where does this block end?" criticisms of [python](https://github.com/python/cpython#readme))
+* Allow for contextual parsing of variables and statements without requiring end-of-statement identifiers (while avoiding the "where does this block end?" criticisms of [python](https://github.com/python/cpython#readme))
 
 ## Installation
 Dish is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '["Hello World!"]'`
