@@ -1,5 +1,5 @@
 # dish
-Dish is a dynamically-typed, keywordless programming language designed with the following goals:
+Dish is a dynamically-typed programming language designed with the following goals:
 
 * Allow quick and easy processing of input data (partiularly when the input is json data) with traditional programming operators (as opposed to the query-based operators of [jq](https://github.com/stedolan/jq#readme))
 
