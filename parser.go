@@ -19,6 +19,14 @@ func (p *Parser) Shift() {
     p.ops = p.ops[:len(p.ops) - 1]
 }
 
+func (p *Parser) Operator() Lexeme {
+    if len(p.toks) > 0 && p.toks[0].BlockOpen() {
+        return OP2
+    }
+
+    return OP1
+}
+
 func (p *Parser) Parse() {
     t := p.toks[0]
     p.toks = p.toks[1:]
@@ -45,6 +53,10 @@ func (p *Parser) Parse() {
     case t.tok == OP2 || t.tok == OPA || t.tok == OPX:
         for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen()) {
             p.Shift()
+        }
+
+        if t.tok == OPX {
+            t.tok = p.Operator()
         }
 
         p.ops = append(p.ops, t)

@@ -1,10 +1,10 @@
 package main
 
-func Not(t Token, a interface{}) interface{} {
+func Not(a interface{}) interface{} {
     switch x := a.(type) {
-    case Map:
+    case Hash:
         return Boolean(len(x) == 0)
-    case Set:
+    case Array:
         return Boolean(len(x) == 0)
     case String:
         return Boolean(x == "" || x == "0")
@@ -14,5 +14,5 @@ func Not(t Token, a interface{}) interface{} {
         return Boolean(!x)
     }
 
-    return String("")
+    return Boolean(true)
 }

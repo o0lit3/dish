@@ -30,7 +30,7 @@ const (
 const (
     NIL Dimension = iota
     VAL // () Scalar
-    SET // [] Array
+    LST // [] Array
     MAP // {} Hash
 )
 
@@ -84,6 +84,14 @@ func (t Token) UnexpectedOperand() {
 
 func (t Token) UnmatchedBlock() {
     panic(fmt.Sprintf("Unmatched \"%s\" at %s", t.lit, t.pos))
+}
+
+func (t Token) AssignTo (key string) string {
+    if t.lit != ":" {
+        panic(fmt.Sprintf("Assignment operator \"%s\" requires left-hand variable operand at %s", t.lit, t.pos))
+    }
+
+    return key
 }
 
 func (t Token) Continuator() bool {
@@ -199,7 +207,7 @@ func (t Token) Dimension() Dimension {
     case "{", "}":
         return MAP
     case "[", "]":
-        return SET
+        return LST
     case "(", ")":
         return VAL
     default:
@@ -298,7 +306,13 @@ func (l *Lexer) Lexify() Token {
             case n == '.':
                 return l.Tokenize(s, OP2, string(r) + string(n))
             case unicode.IsDigit(n):
-                return l.Tokenize(l.Backup(), NUM, l.LexNum())
+                if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() {
+                    return l.Tokenize(l.Backup(), NUM, l.LexNum())
+                }
+
+                return l.Tokenize(l.Backup(), OPX, l.LexNum())
+            case n == '"':
+                return l.Tokenize(l.pos, OPX, l.LexStr(n))
             default:
                 return l.Tokenize(l.Backup(), OPX, l.LexVar())
             }

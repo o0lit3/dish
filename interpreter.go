@@ -2,6 +2,7 @@ package main
 
 import (
     "fmt"
+    "math"
     "strings"
     "strconv"
     "unicode"
@@ -14,14 +15,15 @@ type Variable struct {
 
 type Block struct {
     dim Dimension
-    stck Set
-    vars Map
+    stck Array
+    vars Hash
     hash []string
+    com string
 }
 
-type Map map[string]interface{}
+type Hash map[string]interface{}
 
-type Set []interface{}
+type Array []interface{}
 
 type String string
 
@@ -29,10 +31,30 @@ type Number float64
 
 type Boolean bool
 
+type Null struct { }
+
 type Interpreter struct {
     tics []Token
     blks []Block
-    comm string
+}
+
+func (n Null) String() string {
+    return "null"
+}
+
+func (b Boolean) Number() Number {
+    if b {
+        return Number(1)
+    }
+
+    return Number(0)
+}
+
+func (n Number) String() string {
+    p := math.Pow(10, float64(12))
+    r := int(float64(n) * p + math.Copysign(0.5, float64(n) * p))
+
+    return strconv.FormatFloat(float64(r) / p, 'f', -1, 64)
 }
 
 func (s String) String() string {
@@ -69,6 +91,10 @@ func (s String) Number() Number {
     for _, c := range s {
         if unicode.IsDigit(c) || (c == '.' && !dec) {
             num += string(c)
+
+            if c == '.' {
+                dec = true
+            }
         } else {
             break
         }
@@ -93,7 +119,7 @@ func (s String) Number() Number {
     return Number(0)
 }
 
-func (s Set) String() string {
+func (s Array) String() string {
     var out []string
 
     for _, val := range s {
@@ -103,28 +129,33 @@ func (s Set) String() string {
     return fmt.Sprintf("[" + strings.Join(out, ", ") + "]")
 }
 
-func (s Set) Map() Map {
-    out := Map { }
+func (s Array) Hash() Hash {
+    out := Hash { }
 
     for _, val := range s {
-        out[fmt.Sprintf("%v", val)] = val
+        switch x := val.(type) {
+        case String:
+            out[string(x)] = x
+        default:
+            out[fmt.Sprintf("%v", x)] = x
+        }
     }
 
     return out
 }
 
-func (m Map) String() string {
+func (m Hash) String() string {
     var out []string
 
     for key, val := range m {
-        out = append(out, fmt.Sprintf("\"%s\": %v", key, val))
+        out = append(out, fmt.Sprintf("%s: %v", String(key), val))
     }
 
     return fmt.Sprintf("{" + strings.Join(out, ", ") + "}")
 }
 
-func (m Map) Set() Set {
-    out := Set { }
+func (m Hash) Array() Array {
+    out := Array { }
 
     for _, val := range m {
         out = append(out, val)
@@ -141,16 +172,8 @@ func (i *Interpreter) Bind(op Token, val interface{}) interface{} {
         } else {
             return i.Bind(op, i.blks[x.dep].vars[x.nom])
         }
-    case string:
-        return String(x)
-    case float64:
-        return Number(x)
-    case int:
-        return Number(x)
-    case bool:
-        return Boolean(x)
     default:
-        return val
+        return x
     }
 }
 
@@ -178,15 +201,16 @@ func (i *Interpreter) Interpret() Token {
         a := i.Deregister(t)
 
         switch t.lit {
-        case "!":
-            i.Register(t, Not(t, a))
-        case "~":
+        case "!", "not":
+            i.Register(t, Not(a))
+        case "~", "invert":
+            i.Register(t, Invert(a))
         case "+":
         case "-":
         case "++":
         case "--":
         default:
-            t.UnexpectedToken()
+            i.Register(t, Member(a, String(t.lit)))
         }
     case OP2:
         b := i.Deregister(t)
@@ -194,12 +218,12 @@ func (i *Interpreter) Interpret() Token {
 
         switch t.lit {
         case "**":
-        case "*":
-            i.Register(t, Times(t, a, b))
+        case "*", "multiply":
+            i.Register(t, Multiply(a, b))
         case "/":
         case "%":
-        case "+":
-            i.Register(t, Plus(t, a, b))
+        case "+", "add":
+            i.Register(t, Add(a, b))
         case "-":
         case "<<":
         case ">>":
@@ -216,6 +240,8 @@ func (i *Interpreter) Interpret() Token {
         case "||":
         case "..":
         case "??":
+        case "", "member":
+            i.Register(t, Member(a, b))
         default:
             t.UnexpectedToken()
         }
@@ -230,12 +256,10 @@ func (i *Interpreter) Interpret() Token {
         switch x := a.(type) {
         case Variable:
             nom = x.nom
+        case String:
+            nom = t.AssignTo(string(x))
         default:
-            if t.lit == ":" {
-                nom = fmt.Sprintf("%v", x)
-            } else {
-                panic(fmt.Sprintf("Assignment operator \"%s\" requires left-hand variable operand at %s", t.lit, t.pos))
-            }
+            nom = t.AssignTo(fmt.Sprintf("%v", x))
         }
 
         switch y := b.(type) {
@@ -271,30 +295,6 @@ func (i *Interpreter) Interpret() Token {
         }
 
         i.Register(t, i.blks[dep].vars[nom])
-    case OPX:
-        var a interface{}
-        var b interface{}
-
-        switch t.lit {
-        case "not", "bnot":
-            a = i.Deregister(t)
-        default:
-            b = i.Deregister(t)
-            a = i.Deregister(t)
-        }
-
-        switch t.lit {
-        case "not":
-            i.Register(t, Not(t, a))
-        case "plus":
-            i.Register(t, Plus(t, a, b))
-        case "times":
-            i.Register(t, Times(t, a, b))
-        case "join":
-            i.Register(t, Times(t, a, b))
-        default:
-            panic(fmt.Sprintf("Unrecognized method \"%s\" at %s", t.lit, t.pos))
-        }
     case FIN:
         if len(i.blks[t.dep].stck) > 0 {
             val := i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1]
@@ -302,12 +302,17 @@ func (i *Interpreter) Interpret() Token {
             switch x := val.(type) {
             case Variable:
                 i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1] = i.blks[x.dep].vars[x.nom]
-            case string:
-                i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1] = String(x)
             }
 
             if t.dim == MAP && len(i.blks[t.dep].stck) != len(i.blks[t.dep].hash) {
-                i.blks[t.dep].hash = append(i.blks[t.dep].hash, fmt.Sprintf("%v", val))
+                switch x := val.(type) {
+                case Variable:
+                    i.blks[t.dep].hash = append(i.blks[t.dep].hash, x.nom)
+                case String:
+                    i.blks[t.dep].hash = append(i.blks[t.dep].hash, string(x))
+                default:
+                    i.blks[t.dep].hash = append(i.blks[t.dep].hash, fmt.Sprintf("%v", x))
+                }
             }
         }
 
@@ -321,21 +326,16 @@ func (i *Interpreter) Interpret() Token {
                 }
 
                 if len(i.blks[t.dep].stck) > 0 {
-                    switch x := i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1].(type) {
-                    case String:
-                        i.Register(blk, String(x))
-                    default:
-                        i.Register(blk, x)
-                    }
+                    i.Register(blk, i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1])
                 }
-            case SET:
+            case LST:
                 for key, val := range i.blks[t.dep].vars {
                     i.blks[blk.dep].vars[key] = val
                 }
 
                 i.Register(blk, i.blks[t.dep].stck)
             case MAP:
-                hash := Map { }
+                hash := Hash { }
 
                 for idx, key := range i.blks[t.dep].hash {
                     hash[key] = i.blks[t.dep].stck[idx]
@@ -344,7 +344,6 @@ func (i *Interpreter) Interpret() Token {
                 i.Register(blk, hash)
             }
 
-            i.comm = ""
             i.blks[t.dep].stck = nil
             i.blks[t.dep].hash = nil
             i.blks[t.dep].vars = make(map[string]interface{})
@@ -359,7 +358,7 @@ func (i *Interpreter) Interpret() Token {
         }
 
         if n == 0 && !ok {
-            i.blks[t.dep].vars[t.lit] = ""
+            i.blks[t.dep].vars[t.lit] = Null { }
             n = t.dep
         }
 
@@ -372,7 +371,7 @@ func (i *Interpreter) Interpret() Token {
                 panic(fmt.Sprintf("Malformed number at %s", t.pos))
             }
 
-            i.Register(t, val)
+            i.Register(t, Number(val))
         } else {
             val, err := strconv.Atoi(t.lit)
 
@@ -380,12 +379,12 @@ func (i *Interpreter) Interpret() Token {
                 panic(fmt.Sprintf("Malformed number at %s", t.pos))
             }
 
-            i.Register(t, val)
+            i.Register(t, Number(val))
         }
     case STR:
-        i.Register(t, t.lit)
+        i.Register(t, String(t.lit))
     case COM:
-        i.comm = t.lit
+        i.blks[t.dep].com = t.lit
     default:
         t.UnexpectedToken()
     }

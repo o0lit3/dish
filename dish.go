@@ -33,7 +33,7 @@ func main() {
 
     if debug {
         for _, term := range parser.tics {
-            fmt.Println(term.String())
+            fmt.Printf("%v\n", term)
         }
 
         return
@@ -51,7 +51,7 @@ func main() {
     if (len(interpreter.blks) > 0 && len(interpreter.blks[0].stck) > 0) {
         switch val := interpreter.blks[0].stck[len(interpreter.blks[0].stck) - 1].(type) {
         case String:
-            fmt.Println(string(val))
+            fmt.Printf("%v\n", string(val))
         default:
             fmt.Printf("%v\n", val)
         }
@@ -85,8 +85,9 @@ func process(rdr *bufio.Reader) *Parser {
         blks: []Block{0: Block {
             dim: VAL,
             vars: map[string]interface{}{
-                "true": true,
-                "false": false,
+                "true": Boolean(true),
+                "false": Boolean(false),
+                "null": Null { },
             },
         }},
     }
@@ -112,22 +113,32 @@ func test(test *testing.T, source string) {
     for len(i.tics) > 0 {
         t := i.Interpret()
 
-        if t.tok == FIN && i.comm != "" {
-            if len(i.blks[t.dep].stck) == 0 {
-                test.Errorf("%s expected %s at %s; got nil", source, i.comm, t.pos)
+        if t.tok == FIN && i.blks[t.dep].com != "" {
+            var val interface{}
+
+            if t.lit == "" && t.dep > 0 && len(i.blks[t.dep - 1].stck) > 0 {
+                val = i.blks[t.dep - 1].stck[len(i.blks[t.dep - 1].stck) - 1]
+
+                if x, ok := val.(Array); ok && len(x) > 0 {
+                    val = x[len(x) - 1]
+                }
+            } else if len(i.blks[t.dep].stck) > 0 {
+                val = i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1]
+            }
+
+            if val == nil {
+                test.Errorf("%s expected %s at %s; got nil", source, i.blks[t.dep].com, t.pos)
                 f++
             } else {
-                val := i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1]
-
-                if fmt.Sprintf("%v", val) != i.comm {
-                    test.Errorf("%s expected %s at %s; got %v", source, i.comm, t.pos, val)
+                if fmt.Sprintf("%v", val) != i.blks[t.dep].com {
+                    test.Errorf("%s expected %s at %s; got %v", source, i.blks[t.dep].com, t.pos, val)
                     f++
                 } else {
                     c++
                 }
             }
 
-            i.comm = ""
+            i.blks[t.dep].com = ""
         }
     }
 
