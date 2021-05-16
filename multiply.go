@@ -9,7 +9,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case Array:
             return MultiplyArray(x.Array(), Number(len(y)))
         case String:
-            return Null { }
+            return MultiplyArray(x.Array(), Number(len(y)))
         case Number:
             return MultiplyArray(x.Array(), y)
         case Boolean:
@@ -22,7 +22,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case Array:
             return MultiplyArray(x, Number(len(y)))
         case String:
-            return Null { }
+            return MultiplyArray(x, Number(len(y)))
         case Number:
             return MultiplyArray(x, y)
         case Boolean:
@@ -31,9 +31,9 @@ func Multiply(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case Hash:
-            return Null { }
+            return MultiplyString(x, Number(len(y)))
         case Array:
-            return Null { }
+            return MultiplyString(x, Number(len(y)))
         case String:
             return MultiplyString(x, Number(len(y)))
         case Number:
@@ -110,7 +110,7 @@ func MultiplyString(a String, b Number) String {
 func Identity(a interface{}, b Boolean) interface{} {
     if b {
         return a
-    } else {
-       return Null { }
     }
+
+    return Boolean(false)
 }

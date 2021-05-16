@@ -115,20 +115,18 @@ func (a String) Members(b Array) Array {
     out := Array { }
 
     for _, val := range b {
-        idx := len(a)
-
         switch x := val.(type) {
         case String:
             if strings.Contains(string(a), string(x)) {
-                out = append(out, string(x))
+                out = append(out, x)
             }
         case Number:
-            if int(idx) < len(a) {
-                out = append(out, a[int(idx)])
+            if int(x) < len(a) {
+                out = append(out, String(a[int(x)]))
             }
         case Boolean:
             if int(x.Number()) < len(a) {
-                out = append(out, a[int(x.Number())])
+                out = append(out, String(a[int(x.Number())]))
             }
         }
     }
@@ -146,7 +144,7 @@ func (a String) Substring(b String) interface{} {
 
 func (a String) Member(b int) interface{} {
     if b < len(a) {
-        return a[b]
+        return String(string(string(a)[b]))
     }
 
     return Null { }

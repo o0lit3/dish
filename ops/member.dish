@@ -7,7 +7,7 @@
     [4, 5, 6].1                 # 5
     [1, 2, 3].false             # 1
     "foobar".[0, 1, 4]          # ["f", "o", "a"]
-    "foobar".[1, "foo", 2]      # ["o", "foo", o"]
+    "foobar".[1, "foo", 2]      # ["o", "foo", "o"]
     "foobar"."bar"              # "bar"
     "foobar"."baz"              # null
     "foobar".5                  # "r"

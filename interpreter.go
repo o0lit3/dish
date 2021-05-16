@@ -210,12 +210,20 @@ func (i *Interpreter) Interpret() Token {
         case "++":
         case "--":
         default:
-            i.Register(t, Member(a, String(t.lit)))
+            switch {
+            case t.lit == "true":
+                i.Register(t, Member(a, Boolean(true)))
+            case t.lit == "false":
+                i.Register(t, Member(a, Boolean(false)))
+            case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):
+                i.Register(t, Member(a, String(t.lit).Number()))
+            default:
+                i.Register(t, Member(a, String(t.lit)))
+            }
         }
     case OP2:
         b := i.Deregister(t)
         a := i.Deregister(t)
-
         switch t.lit {
         case "**":
         case "*", "multiply":
