@@ -67,7 +67,7 @@ func (p Position) String() string {
 }
 
 func (p Position) UnexpectedToken(r rune) {
-    panic(fmt.Sprintf("Unexpected token \"%v\" at %s", r, p))
+    panic(fmt.Sprintf("Unexpected token \"%v\" at %s", string(r), p))
 }
 
 func (t Token) String() string {
@@ -360,6 +360,8 @@ func (l *Lexer) Lexify() Token {
             }
 
             return l.Tokenize(l.pos, BLK, string(r))
+        case '_', '@':
+            return l.Tokenize(l.pos, VAR, string(r))
         default:
             switch {
             case unicode.IsDigit(r):

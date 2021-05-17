@@ -14,7 +14,7 @@ func Invert(a interface{}) interface{} {
         return Boolean(!x)
     }
 
-    return Null { }
+    return Number(^0)
 }
 
 func InvertHash(a Hash) Hash {

@@ -68,7 +68,7 @@ func (p *Parser) Parse() {
         } else {
             p.blks = append(p.blks, Block {
                 dim: t.Dimension(),
-                vars: make(map[string]interface{}),
+                vars: Hash { },
             })
         }
 

@@ -15,6 +15,10 @@ func TestInverse(t *testing.T) {
     test(t, "ops/invert.dish")
 }
 
+func TestIncrement(t *testing.T) {
+    test(t, "ops/increment.dish")
+}
+
 // Binary ops
 func TestTimes(t *testing.T) {
     test(t, "ops/multiply.dish")

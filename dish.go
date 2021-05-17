@@ -44,17 +44,14 @@ func main() {
         blks: parser.blks,
     }
 
-    for len(interpreter.tics) > 0 {
-        interpreter.Interpret()
-    }
+    val := interpreter.Run()
 
-    if (len(interpreter.blks) > 0 && len(interpreter.blks[0].stck) > 0) {
-        switch val := interpreter.blks[0].stck[len(interpreter.blks[0].stck) - 1].(type) {
-        case String:
-            fmt.Printf("%v\n", string(val))
-        default:
-            fmt.Printf("%v\n", val)
-        }
+    switch x := val.(type) {
+    case Null:
+    case String:
+        fmt.Printf("%v\n", string(x))
+    default:
+        fmt.Printf("%v\n", x)
     }
 }
 

@@ -119,6 +119,16 @@ func (s String) Number() Number {
     return Number(0)
 }
 
+func (s String) Array() Array {
+    out := Array { }
+
+    for _, c := range s {
+        out = append(out, string(c))
+    }
+
+    return out
+}
+
 func (s Array) String() string {
     var out []string
 
@@ -127,6 +137,17 @@ func (s Array) String() string {
     }
 
     return fmt.Sprintf("[" + strings.Join(out, ", ") + "]")
+}
+
+func NewArray(n int) Array {
+    out := Array { }
+
+    for n > 0 {
+        out = append(out, Boolean(true))
+        n = n - 1
+    }
+
+    return out
 }
 
 func (s Array) Hash() Hash {
@@ -167,7 +188,7 @@ func (m Hash) Array() Array {
 func (i *Interpreter) Bind(op Token, val interface{}) interface{} {
     switch x := val.(type) {
     case Variable:
-        if op.tok == OPA {
+        if op.tok == OPA || op.lit == "++" || op.lit == "--" {
             return x
         } else {
             return i.Bind(op, i.blks[x.dep].vars[x.nom])
@@ -192,9 +213,90 @@ func (i *Interpreter) Deregister(op Token) interface{} {
     return i.Bind(op, val)
 }
 
+func (i *Interpreter) Scope(depth int) Hash {
+    vars := Hash { }
+    n := 0
+
+    for n < depth {
+        for key, val := range i.blks[n].vars {
+            vars[key] = val
+        }
+
+        n = n + 1
+    }
+
+    return vars
+}
+
+func (i *Interpreter) LogicBlock(depth int) ([]Token, []Block, int) {
+    out := []Token{ }
+    blks := []Block {0: Block { dim: VAL, vars: i.Scope(depth) }}
+    n := 0
+
+    for i.tics[n].dep != depth - 1 {
+        dim := i.tics[n].dim
+
+        if i.tics[n].dep - depth == 0 {
+            dim = VAL
+        }
+
+        if i.tics[n].dep - depth > len(blks) {
+            blks = append(blks, Block { dim: dim, vars: Hash { }})
+        }
+
+        out = append(out, Token {
+            dep: i.tics[n].dep - depth,
+            dim: dim,
+            pos: i.tics[n].pos,
+            tok: i.tics[n].tok,
+            lit: i.tics[n].lit,
+        })
+
+        if i.tics[n].tok == FIN && i.tics[n].lit == "" && i.tics[n].dep == i.tics[n + 1].dep {
+            break
+        }
+
+        if i.tics[n + 1].tok == COM {
+            n = n + 2
+        } else {
+            n = n + 1
+        }
+    }
+
+    return out, blks, n
+}
+
+func (i *Interpreter) Run() interface{} {
+    for len(i.tics) > 0 {
+        i.Interpret()
+    }
+
+    if (len(i.blks) > 0 && len(i.blks[0].stck) > 0) {
+        return i.blks[0].stck[len(i.blks[0].stck) - 1]
+    }
+
+    return Null { }
+}
+
 func (i *Interpreter) Interpret() Token {
     t := i.tics[0]
-    i.tics = i.tics[1:]
+
+    if t.dep > 0 && t.dim == MAP {
+        tics, blks, n := i.LogicBlock(t.dep)
+        logic := Interpreter { tics: tics, blks: blks }
+
+        if i.tics[n].tok == OP2 {
+            t = i.tics[n]
+            i.Register(t, logic)
+            i.tics = i.tics[n + 1:]
+        } else {
+            logic.tics = nil
+            logic.blks = nil
+            i.tics = i.tics[1:]
+        }
+    } else {
+        i.tics = i.tics[1:]
+    }
 
     switch t.tok {
     case OP1:
@@ -208,6 +310,17 @@ func (i *Interpreter) Interpret() Token {
         case "+":
         case "-":
         case "++":
+            var val interface{}
+
+            switch x := a.(type) {
+            case Variable:
+                val = Increment(i.blks[x.dep].vars[x.nom])
+                i.blks[x.dep].vars[x.nom] = val
+            default:
+                val = Increment(a)
+            }
+
+            i.Register(t, val)
         case "--":
         default:
             switch {
@@ -224,6 +337,7 @@ func (i *Interpreter) Interpret() Token {
     case OP2:
         b := i.Deregister(t)
         a := i.Deregister(t)
+
         switch t.lit {
         case "**":
         case "*", "multiply":
@@ -263,6 +377,7 @@ func (i *Interpreter) Interpret() Token {
 
         switch x := a.(type) {
         case Variable:
+            dep = x.dep
             nom = x.nom
         case String:
             nom = t.AssignTo(string(x))
@@ -292,7 +407,6 @@ func (i *Interpreter) Interpret() Token {
             }
         case "+=":
         case "-=":
-        case "**=":
         case "*=":
         case "/=":
         case "%=":
@@ -324,7 +438,7 @@ func (i *Interpreter) Interpret() Token {
             }
         }
 
-        if t.lit == "" {
+        if t.lit == "" && t.dep > 0 {
             blk := Token { dep: t.dep - 1 }
 
             switch t.dim {
@@ -360,8 +474,8 @@ func (i *Interpreter) Interpret() Token {
         n := t.dep
         _, ok := i.blks[n].vars[t.lit]
 
-        for (n > 0 && !ok) {
-            n--
+        for n > 0 && !ok {
+            n = n - 1
             _, ok = i.blks[n].vars[t.lit]
         }
 
