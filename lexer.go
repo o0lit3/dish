@@ -17,7 +17,7 @@ const (
     NUM // Numeric lexemes
     STR // String lexemes
     VAR // Identifier lexemes
-    OP1 // Unary operators (!, ~, +, -, ++, --)
+    OP1 // Unary operators (!, ~, +, -, #, ++, --)
     OP2 // Binary operators
     OPX // Method operators (alphanumeric)
     BLK // Grouping lexemes {} [] ()
@@ -30,7 +30,7 @@ const (
     NIL Dimension = iota
     VAL // () Scalar
     LST // [] Array
-    MAP // {} Hash
+    MAP // {} Hash or Logic
 )
 
 type Position struct {
@@ -318,7 +318,14 @@ func (l *Lexer) Lexify() Token {
         case ' ', '\t', '\r':
             continue
         case '#':
-            return l.Tokenize(l.pos, COM, l.LexCom())
+            n := l.Read()
+
+            switch n {
+            case ' ':
+                return l.Tokenize(l.Backup(), COM, l.LexCom())
+            default:
+                return l.Tokenize(l.Backup(), OP1, string(r))
+            }
         case '\n':
             if len(l.toks) > 0 && !l.toks[len(l.toks) - 1].Continuator() {
                 return l.Tokenize(l.Reset(), FIN, string(r))

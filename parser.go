@@ -21,6 +21,10 @@ func (p *Parser) Shift() {
 
 func (p *Parser) Operator() Lexeme {
     if len(p.toks) > 0 && p.toks[0].BlockOpen() {
+        if len(p.toks) > 1 && p.toks[1].BlockClose() {
+            return OP1
+        }
+
         return OP2
     }
 

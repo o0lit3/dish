@@ -322,6 +322,8 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Invert(a))
         case "+":
         case "-":
+        case "#", "length":
+            i.Register(t, Length(a))
         case "++", "increment":
             var val interface{}
 

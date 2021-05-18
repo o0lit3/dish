@@ -31,6 +31,6 @@ Value blocks `()` return the last expression or statement in the block. A full *
 
 Logic blocks `{}` represent a set of statements, and can be distinguished from hash blocks in that they are always used as right-hand operands of binary operators (i.e. as method parameters) whereas Hash blocks are only ever used as object invocants. The contents of a logic block (like the contents of a full **dish** program itself) are inside an implicit value block and return the last expression or statement in the block.
 
-Comments in **dish** start with a non string-ecapsulated `#` character and end with a newline. There are no multiline comments in **dish**.
+Comments in **dish** start with a non string-ecapsulated pound symbol, followed by a space (`# `) and end with a newline. There are no multiline comments in **dish**.
 
 <sub>*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
