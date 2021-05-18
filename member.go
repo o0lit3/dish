@@ -9,8 +9,8 @@ func Member(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
         switch y := b.(type) {
-        case Hash:
-            return x.Members(y.Array())
+        case Interpreter:
+            return Member(x, y.Run())
         case Array:
             return x.Members(y)
         case String:
@@ -20,8 +20,8 @@ func Member(a interface{}, b interface{}) interface{} {
         }
     case Array:
         switch y := b.(type) {
-        case Hash:
-            return x.Members(y.Array())
+        case Interpreter:
+            return Member(x, y.Run())
         case Array:
             return x.Members(y)
         case String:
@@ -33,8 +33,8 @@ func Member(a interface{}, b interface{}) interface{} {
         }
     case String:
         switch y := b.(type) {
-        case Hash:
-            return x.Members(y.Array())
+        case Interpreter:
+            return Member(x, y.Run())
         case Array:
             return x.Members(y)
         case String:

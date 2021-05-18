@@ -5,86 +5,84 @@ func Multiply(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case Interpreter:
-            return MultiplyLogic(x.Array(), y)
+            return x.Array().Map(y)
         case Array:
-            return MultiplyArray(x.Array(), Number(len(y)))
+            return x.Array().Multiply(Number(len(y)))
         case String:
-            return MultiplyArray(x.Array(), y.Number())
+            return x.Array().Multiply(y.Number())
         case Number:
-            return MultiplyArray(x.Array(), y)
+            return x.Array().Multiply(y)
         case Boolean:
-            return Identity(x, y)
+            return x.Array().Multiply(y.Number())
         }
     case Array:
         switch y := b.(type) {
         case Interpreter:
-            return MultiplyLogic(x, y)
+            return x.Map(y)
         case Array:
-            return MultiplyArray(x, Number(len(y)))
+            return x.Multiply(Number(len(y)))
         case String:
-            return MultiplyArray(x, y.Number())
+            return x.Multiply(y.Number())
         case Number:
-            return MultiplyArray(x, y)
+            return x.Multiply(y)
         case Boolean:
-            return Identity(x, y)
+            return x.Multiply(y.Number())
         }
     case String:
         switch y := b.(type) {
         case Interpreter:
-            return MultiplyLogic(x.Array(), y)
+            return x.Array().Map(y)
         case Array:
-            return MultiplyString(x, Number(len(y)))
+            return x.Multiply(Number(len(y)))
         case String:
-            return MultiplyString(x, y.Number())
+            return x.Multiply(y.Number())
         case Number:
-            return MultiplyString(x, y)
+            return x.Multiply(y)
         case Boolean:
-            return Identity(x, y)
+            return x.Multiply(y.Number())
         }
     case Number:
         switch y := b.(type) {
         case Interpreter:
-            return MultiplyLogic(NewArray(int(x)), y)
+            return NewArray(int(x)).Map(y)
         case Array:
-            return MultiplyArray(y, x)
+            return y.Multiply(x)
         case String:
-            return MultiplyString(y, x)
+            return y.Multiply(x)
         case Number:
             return x * y
         case Boolean:
-            return Identity(x, y)
+            return x * y.Number()
         }
     case Boolean:
         switch y := b.(type) {
         case Interpreter:
-            return MultiplyLogic(NewArray(int(x.Number())), y)
-        default:
-            return Identity(y, x)
+            return NewArray(int(x.Number())).Map(y)
+        case Array:
+            return y.Multiply(x.Number())
+        case String:
+            return y.Multiply(x.Number())
+        case Number:
+            return y * x.Number()
+        case Boolean:
+            return x && y
         }
     }
 
     return Null { }
 }
 
-func MultiplyLogic(a Array, b Interpreter) Array {
+func (a Array) Map(b Interpreter) Array {
     out := Array { }
 
-    for idx, val := range a {
-        i := &Interpreter {
-            tics: b.tics,
-            blks: b.blks,
-        }
-
-        i.blks[0].vars["@"] = Number(idx)
-        i.blks[0].vars["_"] = val
-
-        out = append(out, i.Run())
+    for i, val := range a {
+        out = append(out, b.IndexRun(Number(i), val))
     }
 
     return out
 }
 
-func MultiplyArray(a Array, b Number) Array {
+func (a Array) Multiply(b Number) Array {
     out := Array { }
 
     for n := 0; n < int(b); n++ {
@@ -108,7 +106,7 @@ func MultiplyArray(a Array, b Number) Array {
     return out
 }
 
-func MultiplyString(a String, b Number) String {
+func (a String) Multiply(b Number) String {
     out := ""
 
     for n := 0; n < int(b); n++ {
@@ -128,12 +126,4 @@ func MultiplyString(a String, b Number) String {
     }
 
     return String(out)
-}
-
-func Identity(a interface{}, b Boolean) interface{} {
-    if b {
-        return a
-    }
-
-    return Boolean(false)
 }

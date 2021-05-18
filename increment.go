@@ -3,11 +3,11 @@ package main
 func Increment(a interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
-        return IncrementHash(x)
+        return x.Increment()
     case Array:
-        return IncrementArray(x)
+        return x.Increment()
     case String:
-        return IncrementString(x)
+        return x.Increment()
     case Number:
         return x + 1
     case Boolean:
@@ -17,7 +17,7 @@ func Increment(a interface{}) interface{} {
     return Number(1)
 }
 
-func IncrementHash(a Hash) Hash {
+func (a Hash) Increment() Hash {
     out := Hash { }
 
     for key, val := range a {
@@ -27,7 +27,7 @@ func IncrementHash(a Hash) Hash {
     return out
 }
 
-func IncrementArray(a Array) Array {
+func (a Array) Increment() Array {
     out := Array { }
 
     for _, val := range a {
@@ -37,7 +37,7 @@ func IncrementArray(a Array) Array {
     return out
 }
 
-func IncrementString(a String) String {
+func (a String) Increment() String {
     out := ""
 
     for _, c := range a {

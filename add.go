@@ -6,24 +6,27 @@ func Add(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case Interpreter:
+            return Add(x, y.Run())
         case Array:
-            return AddHash(x, y.Hash())
+            return x.Add(y.Hash())
         case String:
-            return AddHash(x, Hash { string(y): y })
+            return x.Add(Hash { string(y): y })
         default:
-            return AddHash(x, Hash { fmt.Sprintf("%v", y): y})
+            return x.Add(Hash { fmt.Sprintf("%v", y): y})
         }
     case Array:
         switch y := b.(type) {
         case Interpreter:
+            return Add(x, y.Run())
         case Array:
-            return AddArray(x, y)
+            return x.Add(y)
         default:
-            return AddArray(x, Array { y })
+            return x.Add(Array { y })
         }
     case String:
         switch y := b.(type) {
         case Interpreter:
+            return Add(x, y.Run())
         case Array:
             return x.Number() + Number(len(y))
         case String:
@@ -36,6 +39,7 @@ func Add(a interface{}, b interface{}) interface{} {
     case Number:
         switch y := b.(type) {
         case Interpreter:
+            return Add(x, y.Run())
         case Array:
             return x + Number(len(y))
         case String:
@@ -48,6 +52,7 @@ func Add(a interface{}, b interface{}) interface{} {
     case Boolean:
         switch y := b.(type) {
         case Interpreter:
+            return Add(x, y.Run())
         case Array:
             return x || Boolean(len(y) > 0)
         case String:
@@ -62,7 +67,7 @@ func Add(a interface{}, b interface{}) interface{} {
     return Null { }
 }
 
-func AddHash(a Hash, b Hash) Hash {
+func (a Hash) Add(b Hash) Hash {
     out := Hash { }
 
     for key, val := range a {
@@ -76,7 +81,7 @@ func AddHash(a Hash, b Hash) Hash {
     return out
 }
 
-func AddArray(a Array, b Array) Array {
+func (a Array) Add(b Array) Array {
     out := Array { }
 
     for _, val := range a {

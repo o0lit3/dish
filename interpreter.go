@@ -279,6 +279,18 @@ func (i *Interpreter) LogicBlock(depth int) ([]Token, []Block, int) {
     return out, blks, n
 }
 
+func (i *Interpreter) IndexRun(key interface {}, val interface{}) interface{} {
+    j := &Interpreter {
+        tics: i.tics,
+        blks: i.blks,
+    }
+
+    j.blks[0].vars["@"] = key
+    j.blks[0].vars["_"] = val
+
+    return j.Run()
+}
+
 func (i *Interpreter) Run() interface{} {
     for len(i.tics) > 0 {
         i.Interpret()
@@ -356,12 +368,18 @@ func (i *Interpreter) Interpret() Token {
         switch t.lit {
         case "**":
         case "*", "map", "multiply":
+            if _, ok := b.(Interpreter); t.lit == "map" && !ok {
+                panic(fmt.Sprintf("Map method must take logic block as parameter at %s", t.pos))
+            }
+
             i.Register(t, Multiply(a, b))
         case "/":
         case "%":
         case "+", "add":
             i.Register(t, Add(a, b))
         case "-":
+        case "~", "join":
+            i.Register(t, Join(a, b))
         case "<<":
         case ">>":
         case "<":
@@ -376,6 +394,7 @@ func (i *Interpreter) Interpret() Token {
         case "&&":
         case "||":
         case "..", "range":
+            i.Register(t, Range(a, b))
         case "??":
         case "=", "assign":
             val := i.Value(b)

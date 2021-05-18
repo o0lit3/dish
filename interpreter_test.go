@@ -27,3 +27,11 @@ func TestTimes(t *testing.T) {
 func TestPlus(t *testing.T) {
     test(t, "ops/add.dish")
 }
+
+func TestJoin(t *testing.T) {
+    test(t, "ops/join.dish")
+}
+
+func TestRange(t *testing.T) {
+    test(t, "ops/range.dish")
+}

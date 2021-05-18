@@ -3,11 +3,11 @@ package main
 func Invert(a interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
-        return InvertHash(x)
+        return x.Invert()
     case Array:
-        return InvertArray(x)
+        return x.Invert()
     case String:
-        return InvertString(x)
+        return x.Invert()
     case Number:
         return Number(^int(x))
     case Boolean:
@@ -17,7 +17,7 @@ func Invert(a interface{}) interface{} {
     return Number(^0)
 }
 
-func InvertHash(a Hash) Hash {
+func (a Hash) Invert() Hash {
     out := Hash { }
 
     for key, val := range a {
@@ -27,7 +27,7 @@ func InvertHash(a Hash) Hash {
     return out
 }
 
-func InvertArray(a Array) Array {
+func (a Array) Invert() Array {
     out := Array { }
 
     for _, val := range a {
@@ -37,7 +37,7 @@ func InvertArray(a Array) Array {
     return out
 }
 
-func InvertString(a String) String {
+func (a String) Invert() String {
     out := ""
 
     for _, c := range a {
