@@ -5,8 +5,7 @@ func Add(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
         switch y := b.(type) {
-        case Hash:
-            return AddHash(x, y)
+        case Interpreter:
         case Array:
             return AddHash(x, y.Hash())
         case String:
@@ -16,8 +15,7 @@ func Add(a interface{}, b interface{}) interface{} {
         }
     case Array:
         switch y := b.(type) {
-        case Hash:
-            return AddArray(x, y.Array())
+        case Interpreter:
         case Array:
             return AddArray(x, y)
         default:
@@ -25,8 +23,7 @@ func Add(a interface{}, b interface{}) interface{} {
         }
     case String:
         switch y := b.(type) {
-        case Hash:
-            return x.Number() + Number(len(y))
+        case Interpreter:
         case Array:
             return x.Number() + Number(len(y))
         case String:
@@ -38,8 +35,7 @@ func Add(a interface{}, b interface{}) interface{} {
         }
     case Number:
         switch y := b.(type) {
-        case Hash:
-            return x + Number(len(y))
+        case Interpreter:
         case Array:
             return x + Number(len(y))
         case String:
@@ -51,8 +47,7 @@ func Add(a interface{}, b interface{}) interface{} {
         }
     case Boolean:
         switch y := b.(type) {
-        case Hash:
-            return x || Boolean(len(y) > 0)
+        case Interpreter:
         case Array:
             return x || Boolean(len(y) > 0)
         case String:

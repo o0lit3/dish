@@ -123,7 +123,7 @@ func (s String) Array() Array {
     out := Array { }
 
     for _, c := range s {
-        out = append(out, string(c))
+        out = append(out, String(c))
     }
 
     return out
@@ -242,7 +242,11 @@ func (i *Interpreter) LogicBlock(depth int) ([]Token, []Block, int) {
     blks := []Block {0: Block { dim: VAL, vars: i.Scope(depth) }}
     n := 0
 
-    for i.tics[n].dep != depth - 1 {
+    for i.tics[n].dep > depth - 1 {
+        if i.tics[n].tok == FIN && i.tics[n].lit == "" && i.tics[n].dep == i.tics[n + 1].dep {
+            break
+        }
+
         dim := i.tics[n].dim
 
         if i.tics[n].dep - depth == 0 {
@@ -261,13 +265,13 @@ func (i *Interpreter) LogicBlock(depth int) ([]Token, []Block, int) {
             lit: i.tics[n].lit,
         })
 
-        if i.tics[n].tok == FIN && i.tics[n].lit == "" && i.tics[n].dep == i.tics[n + 1].dep {
-            break
-        }
-
         if i.tics[n + 1].tok == COM {
             n = n + 2
         } else {
+            for i.tics[n].tok == FIN && i.tics[n].lit == "" {
+                n = n + 1
+            }
+
             n = n + 1
         }
     }
@@ -349,7 +353,7 @@ func (i *Interpreter) Interpret() Token {
 
         switch t.lit {
         case "**":
-        case "*", "multiply":
+        case "*", "map", "multiply":
             i.Register(t, Multiply(a, b))
         case "/":
         case "%":
@@ -369,7 +373,7 @@ func (i *Interpreter) Interpret() Token {
         case "|":
         case "&&":
         case "||":
-        case "..":
+        case "..", "range":
         case "??":
         case "=", "assign":
             val := i.Value(b)
