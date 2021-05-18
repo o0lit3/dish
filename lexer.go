@@ -20,7 +20,6 @@ const (
     OP1 // Unary operators (!, ~, +, -, ++, --)
     OP2 // Binary operators
     OPX // Method operators (alphanumeric)
-    OPA // Assignment operators (= += -= *= /= %= &= ^= |=)
     BLK // Grouping lexemes {} [] ()
     COM // Comment lexemes
     FIN // Statement ending lexemes (newline or comma)
@@ -55,7 +54,7 @@ type Lexer struct {
 }
 
 func (l Lexeme) String() string {
-    return [...]string{"NOP", "NUM", "STR", "VAR", "OP1", "OP2", "OPX", "OPA", "BLK", "COM", "FIN", "EOF"}[l]
+    return [...]string{"NOP", "NUM", "STR", "VAR", "OP1", "OP2", "OPX", "BLK", "COM", "FIN", "EOF"}[l]
 }
 
 func (d Dimension) String() string {
@@ -86,24 +85,53 @@ func (t Token) UnmatchedBlock() {
     panic(fmt.Sprintf("Unmatched \"%s\" at %s", t.lit, t.pos))
 }
 
-func (t Token) AssignTo (key string) string {
-    if t.lit != ":" {
-        panic(fmt.Sprintf("Assignment operator \"%s\" requires left-hand variable operand at %s", t.lit, t.pos))
-    }
-
-    return key
-}
-
 func (t Token) Continuator() bool {
-    if t.tok == OP2 || t.tok == OPA {
+    if t.tok == OP2 {
         return true
     }
 
     switch t.lit {
     case "{", "[", "(", ",":
         return true
+    }
+
+    return false
+}
+
+func (t Token) Assignment() bool {
+    switch t.lit {
+    case "=", ":", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "++", "--":
+        return true
+    }
+
+    return false
+}
+
+func (t Token) VarDepth(a interface{}) int {
+    switch x := a.(type) {
+    case Variable:
+        return x.dep
+    }
+
+    return t.dep
+}
+
+func (t Token) VarName(a interface{}) string {
+    switch x := a.(type) {
+    case Variable:
+        return x.nom
+    case String:
+        if t.lit != ":" {
+            panic(fmt.Sprintf("Assignment operator \"%s\" requires left-hand variable operand at %s", t.lit, t.pos))
+        }
+
+        return string(x)
     default:
-        return false
+        if t.lit != ":" {
+            panic(fmt.Sprintf("Assignment operator \"%s\" requires left-hand variable operand at %s", t.lit, t.pos))
+        }
+
+        return fmt.Sprintf("%v", x)
     }
 }
 
@@ -162,7 +190,11 @@ func (t Token) Precedence() int {
 }
 
 func (a Token) Higher(b Token) bool {
-    return a.Precedence() > b.Precedence() || (a.Precedence() == b.Precedence() && b.tok != OPA && b.tok != OP1)
+    if a.Precedence() > b.Precedence() {
+        return true
+    }
+
+    return a.Precedence() == b.Precedence() && !b.Assignment() && b.tok != OP1
 }
 
 func (t Token) BlockOpen() bool {
@@ -324,15 +356,11 @@ func (l *Lexer) Lexify() Token {
             case 0:
                 s.UnexpectedToken(r)
             case '=':
-                if len(l.toks) == 0 || !l.toks[len(l.toks ) - 1].Term() {
+                if len(l.toks) == 0 || !l.toks[len(l.toks ) - 1].Term() || r == '~' || r == ':' {
                     s.UnexpectedToken(r)
                 }
 
-                if r == '<' || r == '>' {
-                    return l.Tokenize(s, OP2, string(r) + string(n))
-                }
-
-                return l.Tokenize(s, OPA, string(r) + string(n))
+                return l.Tokenize(s, OP2, string(r) + string(n))
             case r:
                 if r == '+' || r == '-' {
                     return l.Tokenize(s, OP1, string(r) + string(n))
@@ -342,11 +370,7 @@ func (l *Lexer) Lexify() Token {
             default:
                 l.Backup()
 
-                if r == '=' || r == ':' {
-                    return l.Tokenize(l.pos, OPA, string(r))
-                }
-
-                if len(l.toks) > 0 && l.toks[len(l.toks) - 1].Term() {
+                if len(l.toks) > 0 && l.toks[len(l.toks) - 1].Term() || r == '=' || r == ':' {
                     return l.Tokenize(l.pos, OP2, string(r))
                 }
 

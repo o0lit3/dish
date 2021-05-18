@@ -50,7 +50,7 @@ func (p *Parser) Parse() {
         p.Termify(t)
     case t.tok == OP1:
         p.ops = append(p.ops, t)
-    case t.tok == OP2 || t.tok == OPA || t.tok == OPX:
+    case t.tok == OP2 || t.tok == OPX:
         for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen()) {
             p.Shift()
         }

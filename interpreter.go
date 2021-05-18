@@ -188,11 +188,20 @@ func (m Hash) Array() Array {
 func (i *Interpreter) Bind(op Token, val interface{}) interface{} {
     switch x := val.(type) {
     case Variable:
-        if op.tok == OPA || op.lit == "++" || op.lit == "--" {
+        if op.Assignment() {
             return x
         } else {
-            return i.Bind(op, i.blks[x.dep].vars[x.nom])
+            return i.blks[x.dep].vars[x.nom]
         }
+    default:
+        return x
+    }
+}
+
+func (i *Interpreter) Value(a interface{}) interface{} {
+    switch x := a.(type) {
+    case Variable:
+        return i.blks[x.dep].vars[x.nom]
     default:
         return x
     }
@@ -309,7 +318,7 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Invert(a))
         case "+":
         case "-":
-        case "++":
+        case "++", "increment":
             var val interface{}
 
             switch x := a.(type) {
@@ -362,39 +371,16 @@ func (i *Interpreter) Interpret() Token {
         case "||":
         case "..":
         case "??":
-        case "", "member":
-            i.Register(t, Member(a, b))
-        default:
-            t.UnexpectedToken()
-        }
-    case OPA:
-        b := i.Deregister(t)
-        a := i.Deregister(t)
-
-        dep := t.dep
-        nom := ""
-        val := b
-
-        switch x := a.(type) {
-        case Variable:
-            dep = x.dep
-            nom = x.nom
-        case String:
-            nom = t.AssignTo(string(x))
-        default:
-            nom = t.AssignTo(fmt.Sprintf("%v", x))
-        }
-
-        switch y := b.(type) {
-        case Variable:
-            val = i.blks[y.dep].vars[y.nom]
-        }
-
-        switch t.lit {
-        case "=":
-            i.blks[dep].vars[nom] = val
-        case ":":
+        case "=", "assign":
+            val := i.Value(b)
+            i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
+            i.Register(t, val)
+        case ":", "define":
             if t.dim == MAP {
+                dep := t.VarDepth(a)
+                nom := t.VarName(a)
+                val := i.Value(b)
+
                 i.blks[dep].vars[nom] = val
 
                 if len(i.blks[dep].hash) > len(i.blks[dep].stck) {
@@ -402,6 +388,8 @@ func (i *Interpreter) Interpret() Token {
                 } else {
                     i.blks[dep].hash = append(i.blks[dep].hash, nom)
                 }
+
+                i.Register(t, val)
             } else {
                 panic(fmt.Sprintf("Assigment operator \"%s\" can only be used in hashes at %s", t.lit, t.pos))
             }
@@ -411,12 +399,13 @@ func (i *Interpreter) Interpret() Token {
         case "/=":
         case "%=":
         case "&=":
+        case "^=":
         case "|=":
+        case "", "member":
+            i.Register(t, Member(a, b))
         default:
             t.UnexpectedToken()
         }
-
-        i.Register(t, i.blks[dep].vars[nom])
     case FIN:
         if len(i.blks[t.dep].stck) > 0 {
             val := i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1]
