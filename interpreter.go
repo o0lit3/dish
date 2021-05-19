@@ -332,11 +332,11 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Not(a))
         case "^", "invert":
             i.Register(t, Invert(a))
-        case "*":
+        case "*", "product":
             i.Register(t, Product(a))
-        case "+":
+        case "+", "sum":
             i.Register(t, Sum(a))
-        case "-":
+        case "-", "negate":
             i.Register(t, Negate(a))
         case "~":
         case "#", "length":
@@ -345,7 +345,10 @@ func (i *Interpreter) Interpret() Token {
             val := Increment(i.Value(a))
             i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
             i.Register(t, val)
-        case "--":
+        case "--", "decrement":
+            val := Decrement(i.Value(a))
+            i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
+            i.Register(t, val)
         default:
             switch {
             case t.lit == "true":

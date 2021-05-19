@@ -35,6 +35,10 @@ func TestIncrement(t *testing.T) {
     test(t, "ops/increment.dish")
 }
 
+func TestDecrement(t *testing.T) {
+    test(t, "ops/decrement.dish")
+}
+
 // Binary ops
 func TestTimes(t *testing.T) {
     test(t, "ops/multiply.dish")
