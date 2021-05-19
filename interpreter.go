@@ -332,6 +332,8 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Not(a))
         case "^", "invert":
             i.Register(t, Invert(a))
+        case "*":
+            i.Register(t, Product(a))
         case "+":
             i.Register(t, Sum(a))
         case "-":
