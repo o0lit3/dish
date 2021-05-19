@@ -6,4 +6,5 @@
     "foobar" - "bar"                # 0
     true - false                    # 1
     true - true                     # 0
+    [1, 1, 2, 2, 3] - [1, 3]        # [1, 2, 2]
 ]

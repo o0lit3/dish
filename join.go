@@ -4,14 +4,7 @@ import("fmt")
 func Join(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
-        switch y := b.(type) {
-        case Interpreter:
-            return Join(x, y.Run())
-        case String:
-            return x.Array().Join(string(y))
-        default:
-            return x.Array().Join(fmt.Sprintf("%v", y))
-        }
+        return Join(x.Array(), b)
     case Array:
         switch y := b.(type) {
         case Interpreter:

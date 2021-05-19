@@ -7,7 +7,7 @@ func Sum(a interface{}) interface{} {
     case Array:
         return x.Sum()
     case String:
-        return x.Sum()
+        return x.Number()
     case Number:
         return x
     case Boolean:
@@ -29,14 +29,4 @@ func (a Array) Sum() Number {
     }
 
     return out
-}
-
-func (a String) Sum() Number {
-    out := 0
-
-    for _, c := range a {
-        out += int(c)
-    }
-
-    return Number(out)
 }

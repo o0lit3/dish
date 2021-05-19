@@ -19,6 +19,10 @@ func TestSum(t *testing.T) {
     test(t, "ops/sum.dish")
 }
 
+func TestNegate(t *testing.T) {
+    test(t, "ops/negate.dish")
+}
+
 func TestLength(t *testing.T) {
     test(t, "ops/length.dish")
 }

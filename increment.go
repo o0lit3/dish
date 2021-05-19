@@ -11,7 +11,7 @@ func Increment(a interface{}) interface{} {
     case Number:
         return x + 1
     case Boolean:
-        return Boolean(true)
+        return Increment(x.Number())
     }
 
     return Number(1)

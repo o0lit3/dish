@@ -28,22 +28,18 @@ func Subtract(a interface{}, b interface{}) interface{} {
         case Interpreter:
             return Subtract(x, y.Run())
         case Array:
-            return x.Number() - Number(len(y))
+            return Array{ x }.Subtract(y)
         case String:
             return x.Number() - y.Number()
-        case Number:
-            return x.Number() - y
-        case Boolean:
-            return x.Number() - y.Number()
-        case Null:
-            return x.Number() - Number(0)
+        default:
+            return Subtract(x.Number(), y)
         }
     case Number:
         switch y := b.(type) {
         case Interpreter:
             return Subtract(x, y.Run())
         case Array:
-            return x - Number(len(y))
+            return Array{ x }.Subtract(y)
         case String:
             return x - y.Number()
         case Number:
@@ -54,20 +50,7 @@ func Subtract(a interface{}, b interface{}) interface{} {
             return x - Number(0)
         }
     case Boolean:
-        switch y := b.(type) {
-        case Interpreter:
-            return Subtract(x, y.Run())
-        case Array:
-            return x.Number() - Number(len(y))
-        case String:
-            return x.Number() - y.Number()
-        case Number:
-            return x.Number() - y
-        case Boolean:
-            return x.Number() - y.Number()
-        case Null:
-            return x.Number() - Number(0)
-        }
+        return Subtract(x.Number(), b)
     case Null:
         return Subtract(Number(0), b)
     }

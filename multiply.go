@@ -3,20 +3,7 @@ package main
 func Multiply(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
-        switch y := b.(type) {
-        case Interpreter:
-            return x.Array().Map(y)
-        case Array:
-            return x.Array().Multiply(Number(len(y)))
-        case String:
-            return x.Array().Multiply(y.Number())
-        case Number:
-            return x.Array().Multiply(y)
-        case Boolean:
-            return x.Array().Multiply(y.Number())
-        case Null:
-            return x.Array().Multiply(Number(0))
-        }
+        return Multiply(x.Array(), b)
     case Array:
         switch y := b.(type) {
         case Interpreter:
@@ -63,20 +50,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
             return x * Number(0)
         }
     case Boolean:
-        switch y := b.(type) {
-        case Interpreter:
-            return NewArray(int(x.Number())).Map(y)
-        case Array:
-            return y.Multiply(x.Number())
-        case String:
-            return y.Multiply(x.Number())
-        case Number:
-            return y * x.Number()
-        case Boolean:
-            return y.Number() * x.Number()
-        case Null:
-            return x.Number() * Number(0)
-        }
+        return Multiply(x.Number(), b)
     }
 
     return Null { }

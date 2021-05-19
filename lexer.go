@@ -120,15 +120,13 @@ func (t Token) VarName(a interface{}) string {
     switch x := a.(type) {
     case Variable:
         return x.nom
-    case String:
-        if t.lit != ":" {
-            panic(fmt.Sprintf("Assignment operator \"%s\" requires left-hand variable operand at %s", t.lit, t.pos))
-        }
-
-        return string(x)
     default:
         if t.lit != ":" {
-            panic(fmt.Sprintf("Assignment operator \"%s\" requires left-hand variable operand at %s", t.lit, t.pos))
+            panic(fmt.Sprintf("Assignment operator \"%s\" requires variable invocant at %s", t.lit, t.pos))
+        }
+
+        if _, ok := x.(String); ok {
+            return string(x.(String))
         }
 
         return fmt.Sprintf("%v", x)

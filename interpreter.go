@@ -330,24 +330,18 @@ func (i *Interpreter) Interpret() Token {
         switch t.lit {
         case "!", "not":
             i.Register(t, Not(a))
-        case "~", "invert":
+        case "^", "invert":
             i.Register(t, Invert(a))
         case "+":
             i.Register(t, Sum(a))
         case "-":
+            i.Register(t, Negate(a))
+        case "~":
         case "#", "length":
             i.Register(t, Length(a))
         case "++", "increment":
-            var val interface{}
-
-            switch x := a.(type) {
-            case Variable:
-                val = Increment(i.blks[x.dep].vars[x.nom])
-                i.blks[x.dep].vars[x.nom] = val
-            default:
-                val = Increment(a)
-            }
-
+            val := Increment(i.Value(a))
+            i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
             i.Register(t, val)
         case "--":
         default:

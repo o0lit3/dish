@@ -49,6 +49,21 @@ func Range(a interface{}, b interface{}) interface{} {
         }
 
         return out
+    } else {
+        out := Array { }
+        n := start
+
+        for n >= end {
+            if str {
+                out = append(out, String(string(n)))
+            } else {
+                out = append(out, n)
+            }
+
+            n = n - 1
+        }
+
+        return out
     }
 
     return Array { }

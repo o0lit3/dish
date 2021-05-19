@@ -1,9 +1,5 @@
 package main
-
-import (
-    "fmt"
-    "strings"
-)
+import("fmt")
 
 func Member(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -30,6 +26,8 @@ func Member(a interface{}, b interface{}) interface{} {
             return x.Member(int(y))
         case Boolean:
             return x.Member(int(y.Number()))
+        case Null:
+            return x.Member(0)
         }
     case String:
         switch y := b.(type) {
@@ -38,11 +36,13 @@ func Member(a interface{}, b interface{}) interface{} {
         case Array:
             return x.Members(y)
         case String:
-            return x.Substring(y)
+            return x.Member(int(y.Number()))
         case Number:
             return x.Member(int(y))
         case Boolean:
             return x.Member(int(y.Number()))
+        case Null:
+            return x.Member(0)
         }
     }
 
@@ -53,17 +53,10 @@ func (a Hash) Members(b Array) Array {
     out := Array { }
 
     for _, val := range b {
-        var addend interface{}
+        x := Member(a, val)
 
-        switch key := val.(type) {
-        case String:
-            addend = a[string(key)]
-        default:
-            addend = a[fmt.Sprintf("%v", key)]
-        }
-
-        if addend != nil {
-            out = append(out, addend)
+        if _, ok := x.(Null); !ok {
+            out = append(out, x)
         }
     }
 
@@ -84,19 +77,10 @@ func (a Array) Members(b Array) Array {
     out := Array { }
 
     for _, val := range b {
-        idx := len(a)
+        x := Member(a, val)
 
-        switch x := val.(type) {
-        case String:
-            idx = int(x.Number())
-        case Number:
-            idx = int(x)
-        case Boolean:
-            idx = int(x.Number())
-        }
-
-        if idx < len(a) {
-            out = append(out, a[idx])
+        if _, ok := x.(Null); !ok {
+            out = append(out, x)
         }
     }
 
@@ -115,31 +99,14 @@ func (a String) Members(b Array) Array {
     out := Array { }
 
     for _, val := range b {
-        switch x := val.(type) {
-        case String:
-            if strings.Contains(string(a), string(x)) {
-                out = append(out, x)
-            }
-        case Number:
-            if int(x) < len(a) {
-                out = append(out, String(a[int(x)]))
-            }
-        case Boolean:
-            if int(x.Number()) < len(a) {
-                out = append(out, String(a[int(x.Number())]))
-            }
+        x := Member(a, val)
+
+        if _, ok := x.(Null); !ok {
+            out = append(out, x)
         }
     }
 
     return out
-}
-
-func (a String) Substring(b String) interface{} {
-    if strings.Contains(string(a), string(b)) {
-        return b
-    }
-
-    return Null { }
 }
 
 func (a String) Member(b int) interface{} {
