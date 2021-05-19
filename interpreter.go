@@ -267,11 +267,11 @@ func (i *Interpreter) LogicBlock(depth int) ([]Token, []Block, int) {
 
         if i.tics[n + 1].tok == COM {
             n = n + 2
-        } else {
-            for i.tics[n].tok == FIN && i.tics[n].lit == "" {
+        } else if i.tics[n].tok == FIN && i.tics[n].lit == "" {
+            for i.tics[n].tok == COM || (i.tics[n].tok == FIN && i.tics[n].lit == "") {
                 n = n + 1
             }
-
+        } else {
             n = n + 1
         }
     }
@@ -378,6 +378,7 @@ func (i *Interpreter) Interpret() Token {
         case "+", "add":
             i.Register(t, Add(a, b))
         case "-":
+            i.Register(t, Subtract(a, b))
         case "~", "join":
             i.Register(t, Join(a, b))
         case "<<":
@@ -419,6 +420,9 @@ func (i *Interpreter) Interpret() Token {
                 panic(fmt.Sprintf("Assigment operator \"%s\" can only be used in hashes at %s", t.lit, t.pos))
             }
         case "+=":
+            val := Add(i.Value(a), i.Value(b))
+            i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
+            i.Register(t, val)
         case "-=":
         case "*=":
         case "/=":

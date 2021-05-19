@@ -28,6 +28,10 @@ func TestPlus(t *testing.T) {
     test(t, "ops/add.dish")
 }
 
+func TestSubtract(t *testing.T) {
+    test(t, "ops/subtract.dish")
+}
+
 func TestJoin(t *testing.T) {
     test(t, "ops/join.dish")
 }

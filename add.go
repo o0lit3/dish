@@ -35,6 +35,8 @@ func Add(a interface{}, b interface{}) interface{} {
             return x.Number() + y
         case Boolean:
             return x.Number() + y.Number()
+        case Null:
+            return x.Number() + Number(0)
         }
     case Number:
         switch y := b.(type) {
@@ -48,20 +50,26 @@ func Add(a interface{}, b interface{}) interface{} {
             return x + y
         case Boolean:
             return x + y.Number()
+        case Null:
+            return x + Number(0)
         }
     case Boolean:
         switch y := b.(type) {
         case Interpreter:
             return Add(x, y.Run())
         case Array:
-            return x || Boolean(len(y) > 0)
+            return x.Number() + Number(len(y))
         case String:
-            return x || Boolean(y != "")
+            return x.Number() + y.Number()
         case Number:
-            return x || Boolean(y != 0)
+            return x.Number() + y
         case Boolean:
-            return x || y
+            return x.Number() + y.Number()
+        case Null:
+            return x.Number() + Number(0)
         }
+    case Null:
+        return Add(Number(0), b)
     }
 
     return Null { }
