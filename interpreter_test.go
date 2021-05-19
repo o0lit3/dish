@@ -15,6 +15,14 @@ func TestInverse(t *testing.T) {
     test(t, "ops/invert.dish")
 }
 
+func TestSum(t *testing.T) {
+    test(t, "ops/sum.dish")
+}
+
+func TestLength(t *testing.T) {
+    test(t, "ops/length.dish")
+}
+
 func TestIncrement(t *testing.T) {
     test(t, "ops/increment.dish")
 }

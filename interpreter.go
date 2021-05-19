@@ -333,6 +333,7 @@ func (i *Interpreter) Interpret() Token {
         case "~", "invert":
             i.Register(t, Invert(a))
         case "+":
+            i.Register(t, Sum(a))
         case "-":
         case "#", "length":
             i.Register(t, Length(a))
