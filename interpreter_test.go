@@ -27,6 +27,10 @@ func TestNegate(t *testing.T) {
     test(t, "ops/negate.dish")
 }
 
+func TestStringify(t *testing.T) {
+    test(t, "ops/string.dish")
+}
+
 func TestLength(t *testing.T) {
     test(t, "ops/length.dish")
 }
@@ -54,6 +58,14 @@ func TestSubtract(t *testing.T) {
 
 func TestJoin(t *testing.T) {
     test(t, "ops/join.dish")
+}
+
+func TestBelow(t *testing.T) {
+    test(t, "ops/below.dish")
+}
+
+func TestAbove(t *testing.T) {
+    test(t, "ops/above.dish")
 }
 
 func TestRange(t *testing.T) {

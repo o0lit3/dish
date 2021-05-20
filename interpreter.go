@@ -334,11 +334,34 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Invert(a))
         case "*", "product":
             i.Register(t, Product(a))
-        case "+", "sum":
+        case "+", "number", "sum":
+            if t.lit == "sum" {
+                switch a.(type) {
+                case Hash:
+                case Array:
+                default:
+                    panic(fmt.Sprintf("Sum method requires hash or array invocant at %s", t.pos))
+                }
+            }
+
+            if t.lit == "number" {
+                switch a.(type) {
+                case String:
+                case Number:
+                case Boolean:
+                case Null:
+                default:
+                    panic(fmt.Sprintf("Int method requires scalar incovant at %s", t.pos))
+                }
+            }
+
             i.Register(t, Sum(a))
         case "-", "negate":
             i.Register(t, Negate(a))
-        case "~":
+        case "~", "string":
+            i.Register(t, Stringify(a))
+        case "<", "min":
+            i.Register(t, Min(a))
         case "#", "length":
             i.Register(t, Length(a))
         case "++", "increment":
@@ -351,10 +374,6 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, val)
         default:
             switch {
-            case t.lit == "true":
-                i.Register(t, Member(a, Boolean(true)))
-            case t.lit == "false":
-                i.Register(t, Member(a, Boolean(false)))
             case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):
                 i.Register(t, Member(a, String(t.lit).Number()))
             default:
@@ -374,6 +393,7 @@ func (i *Interpreter) Interpret() Token {
 
             i.Register(t, Multiply(a, b))
         case "/":
+        case "//":
         case "%":
         case "+", "add":
             i.Register(t, Add(a, b))
@@ -383,9 +403,11 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Join(a, b))
         case "<<":
         case ">>":
-        case "<":
+        case "<", "below":
+            i.Register(t, Below(a, b))
         case "<=":
-        case ">":
+        case ">", "above":
+            i.Register(t, Above(a, b))
         case ">=":
         case "==":
         case "!=":
