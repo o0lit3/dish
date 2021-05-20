@@ -1,25 +1,25 @@
 package main
 
-func Min(a interface{}) interface{} {
+func Max(a interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
-        return x.Array().Min()
+        return x.Array().Max()
     case Array:
-        return x.Min()
+        return x.Max()
     case String:
-        return x.Min()
+        return x.Max()
     default:
         return x
     }
 }
 
-func (a Array) Min() interface{} {
+func (a Array) Max() interface{} {
     var out interface{}
 
     for _, val := range a {
         if out == nil {
             out = val
-        } else if x, ok := Below(val, out).(Boolean); Boolean(ok) && x {
+        } else if x, ok := Above(val, out).(Boolean); Boolean(ok) && x {
             out = val
         }
     }
@@ -27,13 +27,13 @@ func (a Array) Min() interface{} {
     return out
 }
 
-func (a String) Min() interface{} {
+func (a String) Max() interface{} {
     var out interface{}
 
     for _, c := range a {
         if out == nil {
             out = String(c)
-        } else if x, ok := out.(String); ok && String(c) < x {
+        } else if x, ok := out.(String); ok && String(c) > x {
             out = String(c)
         }
     }

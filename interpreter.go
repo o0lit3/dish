@@ -334,7 +334,7 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Invert(a))
         case "*", "product":
             i.Register(t, Product(a))
-        case "+", "num", "sum":
+        case "+", "number", "num", "sum":
             if t.lit == "sum" {
                 switch a.(type) {
                 case Hash:
@@ -344,7 +344,7 @@ func (i *Interpreter) Interpret() Token {
                 }
             }
 
-            if t.lit == "num" {
+            if t.lit == "number" || t.lit == "num" {
                 switch a.(type) {
                 case String:
                 case Number:
@@ -358,18 +358,21 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Sum(a))
         case "-", "negate":
             i.Register(t, Negate(a))
-        case "~", "str":
+        case "~", "string", "str":
             i.Register(t, Stringify(a))
-        case "<", "min":
+        case "<", "minimum", "min":
             i.Register(t, Min(a))
-        case ">", "max":
-        case "#", "length":
+        case ">", "maxium", "max":
+            i.Register(t, Max(a))
+        case "|", "unique", "uniq":
+            i.Register(t, Unique(a))
+        case "#", "size", "length", "len":
             i.Register(t, Length(a))
-        case "++", "increment":
+        case "++", "increment", "incr":
             val := Increment(i.Value(a))
             i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
             i.Register(t, val)
-        case "--", "decrement":
+        case "--", "decrement", "decr":
             val := Decrement(i.Value(a))
             i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
             i.Register(t, val)
@@ -386,7 +389,7 @@ func (i *Interpreter) Interpret() Token {
         a := i.Deregister(t)
 
         switch t.lit {
-        case "**":
+        case "**", "pow", "power":
         case "*", "map", "multiply":
             if _, ok := b.(Interpreter); t.lit == "map" && !ok {
                 panic(fmt.Sprintf("Map method must take logic block as parameter at %s", t.pos))
@@ -402,6 +405,7 @@ func (i *Interpreter) Interpret() Token {
             i.Register(t, Subtract(a, b))
         case "~", "join":
             i.Register(t, Join(a, b))
+        case "~~", "base":
         case "<<", "shovel":
         case ">>", "shift":
         case "<", "below":
@@ -434,12 +438,11 @@ func (i *Interpreter) Interpret() Token {
 
                 i.blks[dep].vars[nom] = val
 
-                if len(i.blks[dep].hash) > len(i.blks[dep].stck) {
-                    i.blks[dep].hash[len(i.blks[dep].hash) - 1] = nom
-                } else {
-                    i.blks[dep].hash = append(i.blks[dep].hash, nom)
+                if len(i.blks[dep].hash) != len(i.blks[dep].stck) {
+                    panic(fmt.Sprintf("Invalid number of definitions in hash at %s", t.pos))
                 }
 
+                i.blks[dep].hash = append(i.blks[dep].hash, nom)
                 i.Register(t, val)
             } else {
                 panic(fmt.Sprintf("Assigment operator \"%s\" can only be used in hashes at %s", t.lit, t.pos))
