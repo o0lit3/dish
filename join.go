@@ -9,6 +9,8 @@ func Join(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case Interpreter:
             return Join(x, y.Run())
+        case Array:
+            return String(fmt.Sprintf("%v", x)) + String(fmt.Sprintf("%v", y))
         case String:
             return x.Join(string(y))
         default:
