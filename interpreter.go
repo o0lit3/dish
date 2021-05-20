@@ -330,9 +330,9 @@ func (i *Interpreter) Interpret() Token {
         switch t.lit {
         case "!", "not":
             i.Register(t, Not(a))
-        case "^", "inv":
+        case "^", "invert":
             i.Register(t, Invert(a))
-        case "*", "prod":
+        case "*", "product":
             i.Register(t, Product(a))
         case "+", "num", "sum":
             if t.lit == "sum" {
@@ -356,19 +356,20 @@ func (i *Interpreter) Interpret() Token {
             }
 
             i.Register(t, Sum(a))
-        case "-", "neg":
+        case "-", "negate":
             i.Register(t, Negate(a))
         case "~", "str":
             i.Register(t, Stringify(a))
         case "<", "min":
             i.Register(t, Min(a))
-        case "#", "len":
+        case ">", "max":
+        case "#", "length":
             i.Register(t, Length(a))
-        case "++", "incr":
+        case "++", "increment":
             val := Increment(i.Value(a))
             i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
             i.Register(t, val)
-        case "--", "decr":
+        case "--", "decrement":
             val := Decrement(i.Value(a))
             i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
             i.Register(t, val)
@@ -386,44 +387,46 @@ func (i *Interpreter) Interpret() Token {
 
         switch t.lit {
         case "**":
-        case "*", "map", "mult":
+        case "*", "map", "multiply":
             if _, ok := b.(Interpreter); t.lit == "map" && !ok {
                 panic(fmt.Sprintf("Map method must take logic block as parameter at %s", t.pos))
             }
 
             i.Register(t, Multiply(a, b))
-        case "/":
-        case "//":
-        case "%":
+        case "/", "divide":
+        case "//", "split":
+        case "%", "mod":
         case "+", "add":
             i.Register(t, Add(a, b))
-        case "-":
+        case "-", "subtract":
             i.Register(t, Subtract(a, b))
         case "~", "join":
             i.Register(t, Join(a, b))
-        case "<<":
-        case ">>":
-        case "<", "lt":
+        case "<<", "shovel":
+        case ">>", "shift":
+        case "<", "below":
             i.Register(t, Below(a, b))
-        case "<=":
-        case ">", "gt":
+        case "<=", "under":
+            i.Register(t, Under(a, b))
+        case ">", "above":
             i.Register(t, Above(a, b))
-        case ">=":
-        case "==":
-        case "!=":
-        case "&":
-        case "^":
-        case "|":
-        case "&&":
-        case "||":
+        case ">=", "over":
+            i.Register(t, Over(a, b))
+        case "==", "is":
+        case "!=", "isnot":
+        case "&", "intersect":
+        case "^", "exclude":
+        case "|", "union":
+        case "&&", "and":
+        case "||", "or":
         case "..", "to":
-            i.Register(t, Range(a, b))
+            i.Register(t, To(a, b))
         case "??":
-        case "=", "set":
+        case "=", "assign":
             val := i.Value(b)
             i.blks[t.VarDepth(a)].vars[t.VarName(a)] = val
             i.Register(t, val)
-        case ":", "def":
+        case ":", "define":
             if t.dim == MAP {
                 dep := t.VarDepth(a)
                 nom := t.VarName(a)
@@ -452,7 +455,7 @@ func (i *Interpreter) Interpret() Token {
         case "&=":
         case "^=":
         case "|=":
-        case "", "mem":
+        case "", "member":
             i.Register(t, Member(a, b))
         default:
             t.UnexpectedToken()

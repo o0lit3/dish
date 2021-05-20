@@ -28,7 +28,7 @@ func TestNegate(t *testing.T) {
 }
 
 func TestStringify(t *testing.T) {
-    test(t, "ops/string.dish")
+    test(t, "ops/str.dish")
 }
 
 func TestLength(t *testing.T) {
@@ -64,10 +64,18 @@ func TestBelow(t *testing.T) {
     test(t, "ops/below.dish")
 }
 
+func TestUnder(t *testing.T) {
+    test(t, "ops/under.dish")
+}
+
 func TestAbove(t *testing.T) {
     test(t, "ops/above.dish")
 }
 
-func TestRange(t *testing.T) {
-    test(t, "ops/range.dish")
+func TestOver(t *testing.T) {
+    test(t, "ops/over.dish")
+}
+
+func TestTo(t *testing.T) {
+    test(t, "ops/to.dish")
 }

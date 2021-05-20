@@ -1,6 +1,6 @@
 package main
 
-func Range(a interface{}, b interface{}) interface{} {
+func To(a interface{}, b interface{}) interface{} {
     str := false
     start := 0
     end := 0
