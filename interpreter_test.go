@@ -31,6 +31,18 @@ func TestStringify(t *testing.T) {
     test(t, "ops/str.dish")
 }
 
+func TestMin(t *testing.T) {
+    test(t, "ops/min.dish")
+}
+
+func TestMax(t *testing.T) {
+    test(t, "ops/max.dish")
+}
+
+func TestUnique(t *testing.T) {
+    test(t, "ops/unique.dish")
+}
+
 func TestLength(t *testing.T) {
     test(t, "ops/length.dish")
 }
