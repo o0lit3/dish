@@ -2,6 +2,8 @@ package main
 
 func Sum(a interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Sum(x.Run())
     case Hash:
         return x.Array().Sum()
     case Array:

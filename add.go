@@ -3,10 +3,14 @@ import("fmt")
 
 func Add(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Add(x.Run(), b)
     case Hash:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Add(x, y.Run())
+        case Hash:
+            return x.Add(y)
         case Array:
             return x.Add(y.Hash())
         case String:
@@ -16,8 +20,10 @@ func Add(a interface{}, b interface{}) interface{} {
         }
     case Array:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Add(x, y.Run())
+        case Hash:
+            return x.Add(y.Array())
         case Array:
             return x.Add(y)
         default:
@@ -25,8 +31,10 @@ func Add(a interface{}, b interface{}) interface{} {
         }
     case String:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Add(x, y.Run())
+        case Hash:
+            return Hash{ string(x): x }.Add(y)
         case Array:
             return Array{ x }.Add(y)
         case String:
@@ -36,8 +44,10 @@ func Add(a interface{}, b interface{}) interface{} {
         }
     case Number:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Add(x, y.Run())
+        case Hash:
+            return Hash{ fmt.Sprintf("%v", x):x }.Add(y)
         case Array:
             return Array{ x }.Add(y)
         case String:

@@ -2,6 +2,8 @@ package main
 
 func Product(a interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Product(x.Run())
     case Hash:
         return x.Array().Product()
     case Array:

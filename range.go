@@ -1,11 +1,13 @@
 package main
 
-func To(a interface{}, b interface{}) interface{} {
+func Range(a interface{}, b interface{}) interface{} {
     str := false
     start := 0
     end := 0
 
     switch x := a.(type) {
+    case *Block:
+        return Range(x.Run(), b)
     case Hash:
         start = len(x)
     case Array:
@@ -22,6 +24,10 @@ func To(a interface{}, b interface{}) interface{} {
     }
 
     switch y := b.(type) {
+    case *Block:
+        return Range(a, y.Run())
+    case Hash:
+        end = len(y)
     case Array:
         end = len(y)
     case String:
@@ -42,7 +48,7 @@ func To(a interface{}, b interface{}) interface{} {
             if str {
                 out = append(out, String(string(n)))
             } else {
-                out = append(out, n)
+                out = append(out, Number(n))
             }
 
             n = n + 1
@@ -57,7 +63,7 @@ func To(a interface{}, b interface{}) interface{} {
             if str {
                 out = append(out, String(string(n)))
             } else {
-                out = append(out, n)
+                out = append(out, Number(n))
             }
 
             n = n - 1

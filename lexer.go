@@ -6,7 +6,6 @@ import (
     "bufio"
     "strings"
     "unicode"
-    "unicode/utf8"
 )
 
 type Lexeme int
@@ -39,18 +38,19 @@ type Position struct {
 }
 
 type Token struct {
-    dep int
-    dim Dimension
     pos Position
     tok Lexeme
     lit string
+    blk *Block
+    args []string
 }
 
 type Lexer struct {
     pos Position
     rdr *bufio.Reader
     opn bool
-    toks []Token
+    toks []*Token
+    buf rune
 }
 
 func (l Lexeme) String() string {
@@ -69,23 +69,37 @@ func (p Position) UnexpectedToken(r rune) {
     panic(fmt.Sprintf("Unexpected token \"%v\" at %s", string(r), p))
 }
 
-func (t Token) String() string {
-    return fmt.Sprintf(strings.Repeat("\t", t.dep) + "%s %s %s %s", t.pos, t.dim, t.tok, t.lit)
+func (t *Token) String() string {
+    if t.tok == BLK {
+        out := []string{ }
+
+        for _, term := range t.blk.toks {
+            if term.tok == BLK {
+                out = append(out, fmt.Sprintf("%v", term))
+            } else {
+                out = append(out, fmt.Sprintf(strings.Repeat("  ", t.blk.dep) + "%s %v", t.blk.dim, term))
+            }
+        }
+
+        return strings.Join(out, "\n")
+    }
+
+    return fmt.Sprintf("%s%v %s %s", t.pos, t.args, t.tok, t.lit)
 }
 
-func (t Token) UnexpectedToken() {
+func (t *Token) UnexpectedToken() {
     panic(fmt.Sprintf("Unexpected token \"%s\" at %s", t.lit, t.pos))
 }
 
-func (t Token) UnexpectedOperand() {
+func (t *Token) UnexpectedOperand() {
     panic(fmt.Sprintf("Unexpected operand for \"%s\" at %s", t.lit, t.pos))
 }
 
-func (t Token) UnmatchedBlock() {
+func (t *Token) UnmatchedBlock() {
     panic(fmt.Sprintf("Unmatched \"%s\" at %s", t.lit, t.pos))
 }
 
-func (t Token) Continuator() bool {
+func (t *Token) Continuator() bool {
     if t.tok == OP2 {
         return true
     }
@@ -98,7 +112,11 @@ func (t Token) Continuator() bool {
     return false
 }
 
-func (t Token) Assignment() bool {
+func (t *Token) Assignment() bool {
+    if t.tok == OP1 && (t.lit == "=" || t.lit == ":") {
+        return false
+    }
+
     switch t.lit {
     case "=", ":", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "++", "--":
         return true
@@ -107,33 +125,28 @@ func (t Token) Assignment() bool {
     return false
 }
 
-func (t Token) VarDepth(a interface{}) int {
+func (t *Token) VarName(a interface{}) string {
     switch x := a.(type) {
+    case *Block:
+        return t.VarName(x.Run())
     case Variable:
-        return x.dep
-    }
-
-    return t.dep
-}
-
-func (t Token) VarName(a interface{}) string {
-    switch x := a.(type) {
-    case Variable:
-        return x.nom
-    default:
+        return string(x)
+    case String:
         if t.lit != ":" {
             panic(fmt.Sprintf("Assignment operator \"%s\" requires variable invocant at %s", t.lit, t.pos))
         }
 
-        if _, ok := x.(String); ok {
-            return string(x.(String))
+        return string(x)
+    default:
+        if t.lit != ":" {
+            panic(fmt.Sprintf("Assignment operator \"%s\" requires variable invocant at %s", t.lit, t.pos))
         }
 
         return fmt.Sprintf("%v", x)
     }
 }
 
-func (t Token) Term() bool {
+func (t *Token) Term() bool {
     if t.BlockClose() {
         return true
     }
@@ -146,12 +159,14 @@ func (t Token) Term() bool {
     }
 }
 
-func (t Token) Precedence() int {
+func (t *Token) Precedence() int {
     if t.tok == OP1 {
-        return 17
+        return 18
     }
 
     switch t.lit {
+    case "..", ".", "@":
+        return 17
     case "**":
         return 16
     case "*", "/", "%":
@@ -176,18 +191,16 @@ func (t Token) Precedence() int {
         return 6
     case "??":
         return 5
-    case "..":
+    case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
         return 4
-    case "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
-        return 3
     case ",":
-        return 2
+        return 3
     default:
         return 0
     }
 }
 
-func (a Token) Higher(b Token) bool {
+func (a *Token) Higher(b *Token) bool {
     if a.Precedence() > b.Precedence() {
         return true
     }
@@ -195,7 +208,7 @@ func (a Token) Higher(b Token) bool {
     return a.Precedence() == b.Precedence() && !b.Assignment() && b.tok != OP1
 }
 
-func (t Token) BlockOpen() bool {
+func (t *Token) BlockOpen() bool {
     switch t.lit {
     case "{", "[", "(":
         return true
@@ -204,7 +217,7 @@ func (t Token) BlockOpen() bool {
     }
 }
 
-func (t Token) BlockClose() bool {
+func (t *Token) BlockClose() bool {
     switch t.lit {
     case "}", "]", ")":
         return true
@@ -213,7 +226,7 @@ func (t Token) BlockClose() bool {
     }
 }
 
-func (t Token) BlockMatch() string {
+func (t *Token) BlockMatch() string {
     switch t.lit {
     case "{":
         return "}"
@@ -232,7 +245,7 @@ func (t Token) BlockMatch() string {
     }
 }
 
-func (t Token) Dimension() Dimension {
+func (t *Token) Dimension() Dimension {
     switch t.lit {
     case "{", "}":
         return MAP
@@ -257,19 +270,6 @@ func (l *Lexer) Read() rune {
     return r
 }
 
-func (l *Lexer) Peek() rune {
-    for bytes := 4; bytes > 0; bytes-- {
-        b, err := l.rdr.Peek(bytes)
-
-        if err == nil {
-            r, _ := utf8.DecodeRune(b)
-            return r
-        }
-    }
-
-    return 0
-}
-
 func (l *Lexer) Backup() Position {
     last := l.pos
     err := l.rdr.UnreadRune()
@@ -289,15 +289,23 @@ func (l *Lexer) Reset() Position {
     return last
 }
 
-func (l *Lexer) Tokenize(pos Position, tok Lexeme, lit string) Token {
-    token := Token { pos: pos, tok: tok, lit: lit }
+func (l *Lexer) Tokenize(pos Position, tok Lexeme, lit string) *Token {
+    token := &Token { pos: pos, tok: tok, lit: lit }
     l.toks = append(l.toks, token)
     return token
 }
 
-func (l *Lexer) Lexify() Token {
+func (l *Lexer) Lexify() *Token {
     for {
-        r, _, err := l.rdr.ReadRune()
+        var r rune;
+        var err error;
+
+        if l.buf != 0 {
+            r = l.buf
+            l.buf = 0
+        } else {
+            r, _, err = l.rdr.ReadRune()
+        }
 
         if err != nil {
             if err == io.EOF {
@@ -315,15 +323,6 @@ func (l *Lexer) Lexify() Token {
             return l.Tokenize(l.pos, STR, l.LexStr(r))
         case ' ', '\t', '\r':
             continue
-        case '#':
-            n := l.Read()
-
-            switch n {
-            case ' ':
-                return l.Tokenize(l.Backup(), COM, l.LexCom())
-            default:
-                return l.Tokenize(l.Backup(), OP1, string(r))
-            }
         case '\n':
             if len(l.toks) > 0 && !l.toks[len(l.toks) - 1].Continuator() {
                 return l.Tokenize(l.Reset(), FIN, string(r))
@@ -351,11 +350,15 @@ func (l *Lexer) Lexify() Token {
             case n == '"':
                 return l.Tokenize(l.pos, OPX, l.LexStr(n))
             default:
-                return l.Tokenize(l.Backup(), OPX, l.LexVar())
+                return l.Tokenize(l.Backup(), OPX, l.LexVar()).LexArgs(l)
             }
-        case '+', '-', '*', '/', '%', '!', '~', '&', '|', '^', ':', '=', '<', '>':
+        case '+', '-', '*', '/', '%', '!', '~', '#', '@', '&', '|', '^', ':', '=', '<', '>':
             s := l.pos
             n := l.Read()
+
+            if r == '/' && n == '/' {
+                return l.Tokenize(l.pos, COM, l.LexCom())
+            }
 
             switch n {
             case 0:
@@ -365,18 +368,18 @@ func (l *Lexer) Lexify() Token {
                     s.UnexpectedToken(r)
                 }
 
-                return l.Tokenize(s, OP2, string(r) + string(n))
+                return l.Tokenize(l.pos, OP2, string(r) + string(n)).LexArgs(l)
             case r:
                 if r == '+' || r == '-' {
                     return l.Tokenize(s, OP1, string(r) + string(n))
                 }
 
-                return l.Tokenize(s, OP2, string(r) + string(n))
+                return l.Tokenize(s, OP2, string(r) + string(n)).LexArgs(l)
             default:
                 l.Backup()
 
-                if len(l.toks) > 0 && l.toks[len(l.toks) - 1].Term() || r == '=' || r == ':' {
-                    return l.Tokenize(l.pos, OP2, string(r))
+                if len(l.toks) > 0 && l.toks[len(l.toks) - 1].Term() {
+                    return l.Tokenize(l.pos, OP2, string(r)).LexArgs(l)
                 }
 
                 return l.Tokenize(l.pos, OP1, string(r))
@@ -389,8 +392,8 @@ func (l *Lexer) Lexify() Token {
             }
 
             return l.Tokenize(l.pos, BLK, string(r))
-        case '_', '@':
-            return l.Tokenize(l.pos, VAR, string(r))
+        case '$':
+            return l.Tokenize(l.Backup(), VAR, l.LexVar())
         default:
             switch {
             case unicode.IsDigit(r):
@@ -438,9 +441,12 @@ func (l *Lexer) LexNum() string {
         case r == 0:
             return lit
         case r == '.':
-            n := l.Peek()
+            l.buf = r
+            n := l.Read()
 
             if unicode.IsDigit(n) {
+                l.buf = 0
+                l.Backup()
                 lit = lit + string(r)
             } else {
                 l.Backup()
@@ -505,11 +511,27 @@ func (l *Lexer) LexVar() string {
         switch {
         case r == 0:
             return lit
-        case unicode.IsLetter(r), unicode.IsDigit(r):
+        case r == '$', r == '_', unicode.IsLetter(r), unicode.IsDigit(r):
             lit = lit + string(r)
         default:
             l.Backup()
             return lit
         }
     }
+}
+
+func (t *Token) LexArgs(l *Lexer) *Token {
+    r := l.Read()
+
+    switch r {
+    case ' ', '\t', '\r':
+        t = t.LexArgs(l)
+    case ':':
+        t.args = append(t.args, l.LexVar())
+        t = t.LexArgs(l)
+    default:
+        l.Backup()
+    }
+
+    return t
 }

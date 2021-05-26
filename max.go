@@ -1,16 +1,23 @@
 package main
+import("math")
 
 func Max(a interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Max(x.Run())
     case Hash:
         return x.Array().Max()
     case Array:
         return x.Max()
     case String:
         return x.Max()
-    default:
-        return x
+    case Number:
+        return Number(math.Ceil(float64(x)))
+    case Boolean:
+        return x.Number()
     }
+
+    return Number(0)
 }
 
 func (a Array) Max() interface{} {

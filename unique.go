@@ -3,6 +3,8 @@ import("fmt")
 
 func Unique(a interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Unique(x.Run())
     case Hash:
         return x.Array().Unique()
     case Array:

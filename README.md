@@ -25,11 +25,9 @@ Similarly, traditional unary operators (which must be used as prefix operators w
 <sub>*Postfix `++` and `--` are not legal in **dish**</sub>
 
 ## Syntax
-Dish has 4 types of syntax blocks, Value Blocks `()`, Array blocks `[]`, Hash blocks `{}` (used as objects), and Logic blocks `{}` (used as method parameters). Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup> or by a comma (unless the newline or comma is encapsulated in a string literal).
+Dish has 3 types of syntax blocks, Value Blocks `()`, Array blocks `[]`, and Hash blocks `{}`. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup> or by a comma (unless the newline or comma is encapsulated in a string literal).
 
 Value blocks `()` return the last expression or statement in the block. A full **dish** program is inside an implicit value block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[]` and Hash blocks `{}` return the entire array or hash.
-
-Logic blocks `{}` represent a set of statements, and can be distinguished from hash blocks in that they are always used as right-hand operands of binary operators (i.e. as method parameters) whereas Hash blocks are only ever used as object invocants. The contents of a logic block (like the contents of a full **dish** program itself) are inside an implicit value block and return the last expression or statement in the block.
 
 Comments in **dish** start with a non string-ecapsulated pound symbol, followed by a space (`# `) and end with a newline. There are no multiline comments in **dish**.
 

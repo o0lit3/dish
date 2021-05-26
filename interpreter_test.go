@@ -35,16 +35,24 @@ func TestMin(t *testing.T) {
     test(t, "ops/min.dish")
 }
 
+func TestAverage(t *testing.T) {
+    test(t, "ops/average.dish")
+}
+
 func TestMax(t *testing.T) {
     test(t, "ops/max.dish")
 }
 
 func TestUnique(t *testing.T) {
-    test(t, "ops/unique.dish")
+    test(t, "ops/uniq.dish")
 }
 
 func TestLength(t *testing.T) {
     test(t, "ops/length.dish")
+}
+
+func TestSwitch(t *testing.T) {
+    test(t, "ops/switch.dish")
 }
 
 func TestIncrement(t *testing.T) {
@@ -56,8 +64,16 @@ func TestDecrement(t *testing.T) {
 }
 
 // Binary ops
-func TestTimes(t *testing.T) {
+func TestFind(t *testing.T) {
+    test(t, "ops/find.dish")
+}
+
+func TestMultiply(t *testing.T) {
     test(t, "ops/multiply.dish")
+}
+
+func TestDivide(t *testing.T) {
+    test(t, "ops/divide.dish")
 }
 
 func TestPlus(t *testing.T) {
@@ -88,6 +104,6 @@ func TestOver(t *testing.T) {
     test(t, "ops/over.dish")
 }
 
-func TestTo(t *testing.T) {
-    test(t, "ops/to.dish")
+func TestRange(t *testing.T) {
+    test(t, "ops/range.dish")
 }

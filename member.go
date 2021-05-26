@@ -3,10 +3,14 @@ import("fmt")
 
 func Member(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Member(x.Run(), b)
     case Hash:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Member(x, y.Run())
+        case Hash:
+            return x.Members(y.Array())
         case Array:
             return x.Members(y)
         case String:
@@ -16,8 +20,10 @@ func Member(a interface{}, b interface{}) interface{} {
         }
     case Array:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Member(x, y.Run())
+        case Hash:
+            return x.Members(y.Array())
         case Array:
             return x.Members(y)
         case String:
@@ -31,8 +37,10 @@ func Member(a interface{}, b interface{}) interface{} {
         }
     case String:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Member(x, y.Run())
+        case Hash:
+            return x.Members(y.Array())
         case Array:
             return x.Members(y)
         case String:
@@ -64,10 +72,8 @@ func (a Hash) Members(b Array) Array {
 }
 
 func (a Hash) Member(b string) interface{} {
-    out := a[b]
-
-    if out != nil {
-        return out
+    if _, ok := a[b]; ok {
+        return a[b]
     }
 
     return Null { }

@@ -2,12 +2,16 @@ package main
 
 func Below(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Below(x.Run(), b)
     case Hash:
         return Below(Number(len(x)), b)
     case Array:
         return Below(Number(len(x)), b)
     case String:
         switch y := b.(type) {
+        case *Block:
+            return Below(x, y.Run())
         case String:
             return Boolean(x < y)
         case Number:
@@ -21,8 +25,10 @@ func Below(a interface{}, b interface{}) interface{} {
         }
     case Number:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Below(x, y.Run())
+        case Hash:
+            return Boolean(x < Number(len(y)))
         case Array:
             return Boolean(x < Number(len(y)))
         case String:

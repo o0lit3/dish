@@ -2,6 +2,8 @@ package main
 
 func Length(a interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Length(x.Run())
     case Hash:
         return Number(len(x))
     case Array:

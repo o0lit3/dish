@@ -3,14 +3,14 @@ import("fmt")
 
 func Join(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Join(x.Run(), b)
     case Hash:
         return Join(x.Array(), b)
     case Array:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Join(x, y.Run())
-        case Array:
-            return String(fmt.Sprintf("%v", x)) + String(fmt.Sprintf("%v", y))
         case String:
             return x.Join(string(y))
         default:
@@ -18,7 +18,7 @@ func Join(a interface{}, b interface{}) interface{} {
         }
     case String:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Join(x, y.Run())
         case String:
             return String(string(x) + string(y))
@@ -27,7 +27,7 @@ func Join(a interface{}, b interface{}) interface{} {
         }
     default:
         switch y := b.(type) {
-        case Interpreter:
+        case *Block:
             return Join(x, y.Run())
         case String:
             return String(fmt.Sprintf("%v", x) + string(y))

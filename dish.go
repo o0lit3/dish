@@ -5,7 +5,7 @@ import (
     "fmt"
     "bufio"
     "strings"
-    "testing"
+	"testing"
 )
 
 func main() {
@@ -32,21 +32,14 @@ func main() {
     parser := process(reader)
 
     if debug {
-        for _, term := range parser.tics {
+        for _, term := range parser.blk.toks {
             fmt.Printf("%v\n", term)
         }
 
         return
     }
 
-    interpreter := &Interpreter {
-        tics: parser.tics,
-        blks: parser.blks,
-    }
-
-    val := interpreter.Run()
-
-    switch x := val.(type) {
+    switch x := parser.blk.Run(Boolean(true), Boolean(false), Null { }).(type) {
     case Null:
     case String:
         fmt.Printf("%v\n", string(x))
@@ -77,19 +70,15 @@ func process(rdr *bufio.Reader) *Parser {
     }
 
     parser := &Parser {
-        dep: 0,
-        toks: lexer.toks,
-        blks: []Block{0: Block {
+        lexr: lexer,
+        blk: &Block {
+            dep: 0,
             dim: VAL,
-            vars: map[string]interface{}{
-                "true": Boolean(true),
-                "false": Boolean(false),
-                "null": Null { },
-            },
-        }},
+            args: []string{ "true", "false", "null" },
+        },
     }
 
-    for len(parser.toks) > 0 {
+    for len(parser.lexr.toks) > 0 {
         parser.Parse()
     }
 
@@ -102,42 +91,18 @@ func test(test *testing.T, source string) {
     c := 0
     f := 0
 
-    i := &Interpreter {
-        tics: p.tics,
-        blks: p.blks,
-    }
-
-    for len(i.tics) > 0 {
-        t := i.Interpret()
-
-        if t.tok == FIN && i.blks[t.dep].com != "" {
-            var val interface{}
-
-            if t.lit == "" && t.dep > 0 && len(i.blks[t.dep - 1].stck) > 0 {
-                val = i.blks[t.dep - 1].stck[len(i.blks[t.dep - 1].stck) - 1]
-
-                if x, ok := val.(Array); ok && len(x) > 0 {
-                    val = x[len(x) - 1]
-                }
-            } else if len(i.blks[t.dep].stck) > 0 {
-                val = i.blks[t.dep].stck[len(i.blks[t.dep].stck) - 1]
-            }
-
-            if val == nil {
-                test.Errorf("%s expected %s at %s; got nil", source, i.blks[t.dep].com, t.pos)
+    if val, ok := p.blk.Run(Boolean(true), Boolean(false), Null { }).(Array); ok {
+        for i, _ := range val {
+            if fmt.Sprintf("%v", val[i]) != p.blk.coms[i] {
+                test.Errorf("%s expected %s at index %d; got %v", source, p.blk.coms[i], i, val[i])
                 f++
             } else {
-                if fmt.Sprintf("%v", val) != i.blks[t.dep].com {
-                    test.Errorf("%s expected %s at %s; got %v", source, i.blks[t.dep].com, t.pos, val)
-                    f++
-                } else {
-                    c++
-                }
+                c++
             }
-
-            i.blks[t.dep].com = ""
         }
-    }
+	} else {
+		test.Errorf("%s is a malformed test file", source)
+	}
 
     fmt.Printf("%s passed %d of %d tests\n", source, c, c + f)
 }

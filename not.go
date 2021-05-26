@@ -2,6 +2,8 @@ package main
 
 func Not(a interface{}) interface{} {
     switch x := a.(type) {
+    case *Block:
+        return Not(x.Run())
     case Hash:
         return Boolean(len(x) == 0)
     case Array:
