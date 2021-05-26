@@ -29,6 +29,6 @@ Dish has 3 types of syntax blocks, Value Blocks `()`, Array blocks `[]`, and Has
 
 Value blocks `()` return the last expression or statement in the block. A full **dish** program is inside an implicit value block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[]` and Hash blocks `{}` return the entire array or hash.
 
-Comments in **dish** start with a non string-ecapsulated pound symbol, followed by a space (`# `) and end with a newline. There are no multiline comments in **dish**.
+Comments in **dish** start with a doubled slash (`//`) and end with a newline. There are no multiline comments in **dish**.
 
 <sub>*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
