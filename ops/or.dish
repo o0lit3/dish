@@ -1,0 +1,17 @@
+[
+    {} || false              // false
+    {foo: 0} || false        // true
+    [] || false              // false
+    [0, 0] || false          // true
+    "0" || false             // false
+    "foo" || false           // true
+    "" || false              // false
+    3.14 || false            // true
+    0 || false               // false
+    true || false            // true
+    [false || ++a, a]        // [true, 1]
+    [true || ++b, b]         // [true, null]
+    [true || ++c || ++c, c]  // [true, null]
+    [1 || 0 && ++d, d]       // [true, null]
+    [1 || 1 && ++e, e]       // [true, null]
+]

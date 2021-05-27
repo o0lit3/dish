@@ -1,6 +1,6 @@
 package main
 
-func Above(a interface{}, b interface{}) interface{} {
+func Above(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
         return Above(x.Run(), b)
@@ -46,5 +46,5 @@ func Above(a interface{}, b interface{}) interface{} {
         return Above(Number(0), b)
     }
 
-    return Null { }
+    return Boolean(false)
 }

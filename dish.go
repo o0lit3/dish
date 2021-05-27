@@ -60,7 +60,7 @@ func open(source string) *bufio.Reader {
 
 func process(rdr *bufio.Reader) *Parser {
     lexer := &Lexer {
-        pos: Position { line: 1, column: 0},
+        pos: Position { row: 1, col: 0},
         rdr: rdr,
         opn: true,
     }
@@ -93,8 +93,8 @@ func test(test *testing.T, source string) {
 
     if val, ok := p.blk.Run(Boolean(true), Boolean(false), Null { }).(Array); ok {
         for i, _ := range val {
-            if fmt.Sprintf("%v", val[i]) != p.blk.coms[i] {
-                test.Errorf("%s expected %s at index %d; got %v", source, p.blk.coms[i], i, val[i])
+            if fmt.Sprintf("%v", val[i]) != p.lexr.coms[i] {
+                test.Errorf("%s expected %s at index %d; got %v", source, p.lexr.coms[i], i, val[i])
                 f++
             } else {
                 c++

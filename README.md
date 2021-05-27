@@ -15,7 +15,7 @@ Dish is interpreted by [Go](https://github.com/golang/go#readme). With Go instal
 ## Output
 By default **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
 
-## Data Types and "Operators"
+## Data Types and Operators
 Dish has 5 data types (Booleans, Numbers, Strings, Arrays, and Hashes), all of which are objects with their own object methods. Traditional, symbolic operators (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods.
 
 As such, all binary operators apply the right-hand operand as a parameter to a method on the left-hand object. In the expression `5 + 2`, `2` is a parameter of the `add` method on the Number object `5`, e.g. `5.add(2)`.
@@ -29,6 +29,6 @@ Dish has 3 types of syntax blocks, Value Blocks `()`, Array blocks `[]`, and Has
 
 Value blocks `()` return the last expression or statement in the block. A full **dish** program is inside an implicit value block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[]` and Hash blocks `{}` return the entire array or hash.
 
-Comments in **dish** start with a doubled slash (`//`) and end with a newline. There are no multiline comments in **dish**.
+Comments in **dish** start with a double slash `//` and end with a newline. There are no multiline comments in **dish**.
 
 <sub>*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>

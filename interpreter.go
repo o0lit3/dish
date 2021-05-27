@@ -270,8 +270,6 @@ func (i *Interpreter) Interpret() interface{} {
             i.Register(Unique(a))
         case "#", "size", "length", "len":
             i.Register(Length(a))
-        case "@", "switch", "which":
-            i.Register(Switch(a))
         case "++", "increment", "incr":
             val := Increment(i.Value(a))
             i.parser.blk.vars[t.VarName(a)] = val
@@ -302,6 +300,8 @@ func (i *Interpreter) Interpret() interface{} {
         }
 
         switch t.lit {
+        case "?", "switch":
+            //i.Register(Switch(a, b))
         case "@", "find":
             i.Register(Find(a, b))
         case "**", "pow", "power":
@@ -316,9 +316,10 @@ func (i *Interpreter) Interpret() interface{} {
             i.Register(Subtract(a, b))
         case "~", "join":
             i.Register(Join(a, b))
-        case "~~", "base":
+        case "~~", "matches":
         case "<<", "shovel":
         case ">>", "shift":
+        case "#", "base", "convert":
         case "<", "below":
             i.Register(Below(a, b))
         case "<=", "under":
@@ -327,16 +328,18 @@ func (i *Interpreter) Interpret() interface{} {
             i.Register(Above(a, b))
         case ">=", "over":
             i.Register(Over(a, b))
-        case "==", "is":
+        case "==", "equals", "is":
+            i.Register(Equals(a, b))
         case "!=", "isnt":
         case "&", "intersect":
         case "^", "exclude":
         case "|", "union":
         case "&&", "and":
+            i.Register(And(a, b))
         case "||", "or":
+            i.Register(Or(a, b))
         case "..", "range", "to":
             i.Register(Range(a, b))
-        case "??":
         case "=", "assign":
             i.parser.blk.vars[t.VarName(a)] = b
             i.Register(b)
@@ -363,10 +366,12 @@ func (i *Interpreter) Interpret() interface{} {
     case BLK:
         i.Register(t.blk)
     case FIN:
+        if len(i.parser.blk.stck) > 0 {
+            i.parser.blk.stck[len(i.parser.blk.stck) - 1] = i.Value(i.parser.blk.stck[len(i.parser.blk.stck) - 1])
+        }
+
         if i.parser.blk.dim == MAP && len(i.parser.blk.hash) < len(i.parser.blk.stck) {
             switch x := i.parser.blk.stck[len(i.parser.blk.stck) - 1].(type) {
-            case Variable:
-                i.parser.blk.hash[string(x)] = String(x)
             case String:
                 i.parser.blk.hash[string(x)] = x
             default:
@@ -421,10 +426,6 @@ func (i *Interpreter) Interpret() interface{} {
         }
     case STR:
         i.Register(String(t.lit))
-    case COM:
-        if i.parser.blk.src != nil {
-            i.parser.blk.src.coms = append(i.parser.blk.src.coms, t.lit)
-        }
     default:
         t.UnexpectedToken()
     }

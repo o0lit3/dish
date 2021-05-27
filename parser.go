@@ -16,7 +16,6 @@ type Block struct {
     hash Hash
     vars Hash
     args []string
-    coms []string
 }
 
 func (b *Block) Reset() *Block {
@@ -58,7 +57,7 @@ func (p *Parser) Shift() {
 }
 
 func (p *Parser) Operator() Lexeme {
-    if len(p.lexr.toks) > 0 && p.lexr.toks[0].BlockOpen() {
+    if len(p.lexr.toks) > 0 && (p.lexr.toks[0].BlockOpen() || p.lexr.toks[0].tok == OP1) {
         if len(p.lexr.toks) > 1 && p.lexr.toks[1].BlockClose() {
             p.lexr.toks = p.lexr.toks[2:]
             return OP1
@@ -86,7 +85,13 @@ func (p *Parser) Parse() {
             p.Shift()
         }
     case t.tok == FIN:
-        for (len(p.ops) > 0 && !p.ops[len(p.ops) - 1].BlockOpen()) {
+        for len(p.ops) > 0 && !p.ops[len(p.ops) - 1].BlockOpen() {
+            if p.ops[len(p.ops) - 1].ShortCircuit() {
+                p.blk.toks = append(p.blk.toks, &Token { pos: t.pos, tok: FIN, lit: "" })
+                p.blk.src.toks = append(p.blk.src.toks, &Token { pos: t.pos, tok: BLK, blk: p.blk, lit: "" })
+                p.blk = p.blk.src
+            }
+
             p.Shift()
         }
 
@@ -94,8 +99,27 @@ func (p *Parser) Parse() {
     case t.tok == OP1:
         p.ops = append(p.ops, t)
     case t.tok == OP2 || t.tok == OPX:
-        for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen()) {
+        for len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen() && !p.ops[len(p.ops) - 1].ShortCircuit() {
             p.Shift()
+        }
+
+        if len(p.ops) > 0 && p.ops[len(p.ops) - 1].ShortCircuit() && p.ops[len(p.ops) - 1].Higher(t) {
+            p.blk.toks = append(p.blk.toks, &Token { pos: t.pos, tok: FIN, lit: "" })
+            p.blk.src.toks = append(p.blk.src.toks, &Token { pos: t.pos, tok: BLK, blk: p.blk, lit: "" })
+            p.blk = p.blk.src
+
+            for len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen() {
+                p.Shift()
+            }
+        }
+
+        if t.ShortCircuit() {
+            p.blk = &Block {
+                dep: p.blk.dep + 1,
+                dim: VAL,
+                src: p.blk,
+                vars: Hash { },
+            }
         }
 
         if t.tok == OPX {
@@ -114,6 +138,12 @@ func (p *Parser) Parse() {
         p.ops = append(p.ops, t)
     case t.BlockClose():
         for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].lit != t.BlockMatch()) {
+            if p.ops[len(p.ops) - 1].ShortCircuit() {
+				p.blk.toks = append(p.blk.toks, &Token { pos: t.pos, tok: FIN, lit: "" })
+				p.blk.src.toks = append(p.blk.src.toks, &Token { pos: t.pos, tok: BLK, blk: p.blk, lit: "" })
+				p.blk = p.blk.src
+            }
+
             p.Shift()
         }
 
@@ -128,9 +158,9 @@ func (p *Parser) Parse() {
         p.blk = p.blk.src
 
         if len(p.ops) > 0 && p.ops[len(p.ops) - 1].tok == OP1 {
-            p.Shift()
+			p.Shift()
         }
-    case t.tok == STR || t.tok == NUM || t.tok == VAR || t.tok == COM:
+    case t.tok == STR || t.tok == NUM || t.tok == VAR:
         p.blk.toks = append(p.blk.toks, t)
     default:
         t.UnexpectedToken()

@@ -1,0 +1,10 @@
+[
+    {foo: 1, bar: 2} == [1, 2, 3]   // false
+    [1, 2, 3] == [3, 4, 5]          // true
+    "3" == 3                        // true
+    "foo" == "foo"                  // true
+    "bar" == "baz"                  // false
+    2.5 == 2                        // false
+    1 == true                       // true
+    0 == null                       // true
+]

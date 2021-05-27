@@ -26,7 +26,7 @@ func (a Array) Max() interface{} {
     for _, val := range a {
         if out == nil {
             out = val
-        } else if x, ok := Above(val, out).(Boolean); Boolean(ok) && x {
+        } else if Above(val, out) {
             out = val
         }
     }

@@ -1,6 +1,6 @@
 package main
 
-func Not(a interface{}) interface{} {
+func Not(a interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
         return Not(x.Run())

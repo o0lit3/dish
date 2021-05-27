@@ -94,6 +94,10 @@ func (a Array) Members(b Array) Array {
 }
 
 func (a Array) Member(b int) interface{} {
+    if b < 0 && len(a) + b < len(a) {
+        return a[len(a) + b]
+    }
+
     if b < len(a) {
         return a[b]
     }

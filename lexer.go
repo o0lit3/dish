@@ -20,7 +20,6 @@ const (
     OP2 // Binary operators
     OPX // Method operators (alphanumeric)
     BLK // Grouping lexemes {} [] ()
-    COM // Comment lexemes
     FIN // Statement ending lexemes (newline or comma)
     EOF // End of file
 )
@@ -33,8 +32,8 @@ const (
 )
 
 type Position struct {
-    line int
-    column int
+    row int
+    col int
 }
 
 type Token struct {
@@ -51,10 +50,11 @@ type Lexer struct {
     opn bool
     toks []*Token
     buf rune
+    coms []string
 }
 
 func (l Lexeme) String() string {
-    return [...]string{"NOP", "NUM", "STR", "VAR", "OP1", "OP2", "OPX", "BLK", "COM", "FIN", "EOF"}[l]
+    return [...]string{"NOP", "NUM", "STR", "VAR", "OP1", "OP2", "OPX", "BLK", "FIN", "EOF"}[l]
 }
 
 func (d Dimension) String() string {
@@ -62,7 +62,7 @@ func (d Dimension) String() string {
 }
 
 func (p Position) String() string {
-    return fmt.Sprintf("%d:%d", p.line, p.column)
+    return fmt.Sprintf("%d:%d", p.row, p.col)
 }
 
 func (p Position) UnexpectedToken(r rune) {
@@ -161,40 +161,38 @@ func (t *Token) Term() bool {
 
 func (t *Token) Precedence() int {
     if t.tok == OP1 {
-        return 18
+        return 15
     }
 
     switch t.lit {
-    case "..", ".", "@":
-        return 17
-    case "**":
-        return 16
-    case "*", "/", "%":
-        return 15
-    case "+", "-":
+    case "..", ".", "?", "@":
         return 14
-    case "<<", ">>":
+    case "**":
         return 13
-    case "<", "<=", ">", ">=":
+    case "*", "/", "%":
         return 12
-    case "==", "!=":
+    case "+", "-":
         return 11
-    case "&":
+    case "<<", ">>":
         return 10
-    case "^":
+    case "#":
         return 9
-    case "|":
+    case "<", "<=", ">", ">=":
         return 8
-    case "&&":
+    case "==", "!=", "~~":
         return 7
-    case "||":
+    case "&":
         return 6
-    case "??":
+    case "^":
         return 5
-    case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
+    case "|":
         return 4
-    case ",":
+    case "&&":
         return 3
+    case "||":
+        return 2
+    case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
+        return 1
     default:
         return 0
     }
@@ -206,6 +204,15 @@ func (a *Token) Higher(b *Token) bool {
     }
 
     return a.Precedence() == b.Precedence() && !b.Assignment() && b.tok != OP1
+}
+
+func (t *Token) ShortCircuit() bool {
+    switch t.lit {
+    case "&&", "||":
+        return true
+    default:
+        return false
+    }
 }
 
 func (t *Token) BlockOpen() bool {
@@ -265,7 +272,7 @@ func (l *Lexer) Read() rune {
         return 0
     }
 
-    l.pos.column++
+    l.pos.col++
 
     return r
 }
@@ -278,14 +285,14 @@ func (l *Lexer) Backup() Position {
         panic(err)
     }
 
-    l.pos.column--
+    l.pos.col--
     return last
 }
 
 func (l *Lexer) Reset() Position {
     last := l.pos
-    l.pos.line++
-    l.pos.column = 0
+    l.pos.row++
+    l.pos.col = 0
     return last
 }
 
@@ -316,7 +323,7 @@ func (l *Lexer) Lexify() *Token {
             panic(err)
         }
 
-        l.pos.column++
+        l.pos.col++
 
         switch r {
         case '"', '\'':
@@ -352,12 +359,13 @@ func (l *Lexer) Lexify() *Token {
             default:
                 return l.Tokenize(l.Backup(), OPX, l.LexVar()).LexArgs(l)
             }
-        case '+', '-', '*', '/', '%', '!', '~', '#', '@', '&', '|', '^', ':', '=', '<', '>':
+        case '+', '-', '*', '/', '%', '!', '~', '#', '@', '?', '&', '|', '^', ':', '=', '<', '>':
             s := l.pos
             n := l.Read()
 
             if r == '/' && n == '/' {
-                return l.Tokenize(l.pos, COM, l.LexCom())
+                l.coms = append(l.coms, l.LexCom())
+                continue
             }
 
             switch n {

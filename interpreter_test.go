@@ -51,10 +51,6 @@ func TestLength(t *testing.T) {
     test(t, "ops/length.dish")
 }
 
-func TestSwitch(t *testing.T) {
-    test(t, "ops/switch.dish")
-}
-
 func TestIncrement(t *testing.T) {
     test(t, "ops/increment.dish")
 }
@@ -102,6 +98,18 @@ func TestAbove(t *testing.T) {
 
 func TestOver(t *testing.T) {
     test(t, "ops/over.dish")
+}
+
+func TestEquals(t *testing.T) {
+    test(t, "ops/equals.dish")
+}
+
+func TestAnd(t *testing.T) {
+    test(t, "ops/and.dish")
+}
+
+func TestOr(t *testing.T) {
+    test(t, "ops/or.dish")
 }
 
 func TestRange(t *testing.T) {

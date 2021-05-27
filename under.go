@@ -1,6 +1,6 @@
 package main
 
-func Under(a interface{}, b interface{}) interface{} {
+func Under(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
         return Under(x.Run(), b)
@@ -46,5 +46,5 @@ func Under(a interface{}, b interface{}) interface{} {
         return Under(Number(0), b)
     }
 
-    return Null { }
+    return Boolean(false)
 }

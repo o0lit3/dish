@@ -26,7 +26,7 @@ func (a Array) Min() interface{} {
     for _, val := range a {
         if out == nil {
             out = val
-        } else if x, ok := Below(val, out).(Boolean); Boolean(ok) && x {
+        } else if Below(val, out) {
             out = val
         }
     }
