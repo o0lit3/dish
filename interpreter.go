@@ -303,6 +303,7 @@ func (blk *Block) Interpret() interface{} {
         case "@", "find":
             blk.Register(Find(a, b))
         case "**", "pow", "power":
+            blk.Register(Power(a, b))
         case "*", "map", "multiply":
             blk.Register(Multiply(a, b))
         case "/", "divide", "split":

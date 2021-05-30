@@ -68,6 +68,10 @@ func TestFind(t *testing.T) {
     test(t, "ops/find.dish")
 }
 
+func TestPower(t *testing.T) {
+    test(t, "ops/power.dish")
+}
+
 func TestMultiply(t *testing.T) {
     test(t, "ops/multiply.dish")
 }
