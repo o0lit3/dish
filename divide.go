@@ -1,4 +1,5 @@
 package main
+import("strings")
 
 func Divide(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -9,13 +10,7 @@ func Divide(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
-            return Divide(x, y.Run())
-        case Hash:
-            return Divide(x, y.Array())
-        case Array:
-            if len(y) != 0 {
-                return x.Divide(Number(len(y)))
-            }
+            return x.Split(y)
         case String:
             if y.Number() != 0 {
                 return x.Divide(y.Number())
@@ -32,17 +27,16 @@ func Divide(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-            return Divide(x, y.Run())
-        case Hash:
-            return Divide(x, y.Array())
-        case Array:
-            if len(y) != 0 {
-                return x.Divide(Number(len(y)))
+            items := x.Array().Split(y)
+            out := Array { }
+
+            for _, item := range items {
+                out = append(out, Join(item, ""))
             }
+
+            return out
         case String:
-            if y.Number() != 0 {
-                return x.Divide(y.Number())
-            }
+            return x.Split(y)
         case Number:
             if y != 0 {
                 return x.Divide(y)
@@ -57,7 +51,9 @@ func Divide(a interface{}, b interface{}) interface{} {
         case *Block:
             return Divide(x, y.Run())
         case Hash:
-            return Divide(x, y.Array())
+            if len(y) != 0 {
+                return x / Number(len(y))
+            }
         case Array:
             if len(y) != 0 {
                 return x / Number(len(y))
@@ -82,7 +78,50 @@ func Divide(a interface{}, b interface{}) interface{} {
     return Null { }
 }
 
-func (a Array) Divide(b Number) interface{} {
+func (a Array) Split(b *Block) Array {
+    items := []Array { Array { } }
+    out := Array { }
+
+    for _, val := range a {
+        switch y := b.Run(val).(type) {
+        case Hash:
+            return a.Divide(Number(len(y)))
+        case Array:
+            return a.Divide(Number(len(y)))
+        case Boolean:
+            if y {
+                items = append(items, Array { })
+            } else {
+                items[len(items) - 1] = append(items[len(items) - 1], val)
+            }
+        default:
+            if Equals(val, y) {
+                items = append(items, Array { })
+            } else {
+                items[len(items) - 1] = append(items[len(items) - 1], val)
+            }
+        }
+    }
+
+    for _, item := range items {
+        out = append(out, Array(item))
+    }
+
+    return out
+}
+
+func (a String) Split(b String) Array {
+    items := strings.Split(string(a), string(b))
+    out := Array { }
+
+    for _, item := range items {
+        out = append(out, String(item))
+    }
+
+    return out
+}
+
+func (a Array) Divide(b Number) Array {
     out := Array { }
     x := int(len(a) / int(b))
     i := 0
@@ -112,7 +151,7 @@ func (a Array) Divide(b Number) interface{} {
     return out
 }
 
-func (a String) Divide(b Number) interface{} {
+func (a String) Divide(b Number) Array {
     out := Array { }
     x := int(len(a) / int(b))
     i := 0

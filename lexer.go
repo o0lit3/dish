@@ -161,21 +161,19 @@ func (t *Token) Term() bool {
 
 func (t *Token) Precedence() int {
     if t.tok == OP1 {
-        return 15
+        return 14
     }
 
     switch t.lit {
     case "..", ".", "?", "@":
-        return 14
-    case "**":
         return 13
-    case "*", "/", "%":
+    case "**":
         return 12
-    case "+", "-":
+    case "#", "*", "/", "%":
         return 11
-    case "<<", ">>":
+    case "+", "-":
         return 10
-    case "#":
+    case "<<", ">>":
         return 9
     case "<", "<=", ">", ">=":
         return 8

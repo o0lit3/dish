@@ -19,6 +19,10 @@ func TestProduct(t *testing.T) {
     test(t, "ops/product.dish")
 }
 
+func TestItemize(t *testing.T) {
+    test(t, "ops/itemize.dish")
+}
+
 func TestSum(t *testing.T) {
     test(t, "ops/sum.dish")
 }
@@ -28,7 +32,7 @@ func TestNegate(t *testing.T) {
 }
 
 func TestStringify(t *testing.T) {
-    test(t, "ops/str.dish")
+    test(t, "ops/stringify.dish")
 }
 
 func TestMin(t *testing.T) {

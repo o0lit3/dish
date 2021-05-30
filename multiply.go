@@ -5,15 +5,16 @@ func Multiply(a interface{}, b interface{}) interface{} {
     case *Block:
         return Multiply(x.Run(), b)
     case Hash:
-        return Multiply(x.Array(), b)
+        switch y := b.(type) {
+        case *Block:
+            return x.Map(y)
+        default:
+            return Multiply(x.Array(), y)
+        }
     case Array:
         switch y := b.(type) {
         case *Block:
             return x.Map(y)
-        case Hash:
-            return x.Multiply(Number(len(y)))
-        case Array:
-            return x.Multiply(Number(len(y)))
         case String:
             return x.Multiply(y.Number())
         case Number:
@@ -27,10 +28,6 @@ func Multiply(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return x.Array().Map(y)
-        case Hash:
-            return x.Array().Multiply(Number(len(y)))
-        case Array:
-            return x.Multiply(Number(len(y)))
         case String:
             return x.Multiply(y.Number())
         case Number:
@@ -62,6 +59,16 @@ func Multiply(a interface{}, b interface{}) interface{} {
     }
 
     return Null { }
+}
+
+func (a Hash) Map(b *Block) Hash {
+    out := Hash { }
+
+    for key, val := range a {
+        out[key] = b.Run(val, String(key))
+    }
+
+    return out
 }
 
 func (a Array) Map(b *Block) Array {

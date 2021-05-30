@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "math"
+    "sort"
     "strings"
     "strconv"
     "unicode"
@@ -140,9 +141,16 @@ func (s Array) Hash() Hash {
 
 func (m Hash) String() string {
     var out []string
+    var keys []string
 
-    for key, val := range m {
-        out = append(out, fmt.Sprintf("%s: %v", String(key), val))
+    for key := range m {
+        keys = append(keys, key)
+    }
+
+    sort.Strings(keys)
+
+    for _, key := range keys {
+        out = append(out, fmt.Sprintf("%s: %v", String(key), m[key]))
     }
 
     return fmt.Sprintf("{" + strings.Join(out, ", ") + "}")
@@ -219,6 +227,7 @@ func (b *Block) Run(args ...interface{}) interface{} {
 
     if len(args) > 0 {
         b.cur.vars["$0"] = b
+        b.cur.vars["$_"] = args[0]
 
         for i, val := range args {
             b.cur.vars["$" + strconv.Itoa(i + 1)] = val
@@ -252,11 +261,13 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Invert(a))
         case "*", "product":
             blk.Register(Product(a))
+        case "/", "itemize", "array":
+            blk.Register(Itemize(a))
         case "+", "number", "num", "sum":
             blk.Register(Sum(a))
         case "-", "negative", "negate":
             blk.Register(Negate(a))
-        case "~", "string", "str":
+        case "~", "stringify", "string", "str":
             blk.Register(Stringify(a))
         case "<", "minimum", "min", "floor":
             blk.Register(Min(a))
@@ -302,9 +313,11 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Switch(blk.Blockify(a), blk.Blockify(b)))
         case "@", "find":
             blk.Register(Find(a, b))
-        case "**", "pow", "power":
+        case "**", "power", "pow":
             blk.Register(Power(a, b))
-        case "*", "map", "multiply":
+        case "#", "filter", "grep":
+            blk.Register(Filter(a, b))
+        case "*", "multiply", "map":
             blk.Register(Multiply(a, b))
         case "/", "divide", "split":
             blk.Register(Divide(a, b))
@@ -315,10 +328,10 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Subtract(a, b))
         case "~", "join":
             blk.Register(Join(a, b))
-        case "~~", "matches":
+        case "~~", "base":
+        case "##", "convert":
         case "<<", "shovel":
         case ">>", "shift":
-        case "#", "base", "convert":
         case "<", "below":
             blk.Register(Below(a, b))
         case "<=", "under":
