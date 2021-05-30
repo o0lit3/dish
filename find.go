@@ -14,14 +14,14 @@ func Find(a interface{}, b interface{}) interface{} {
         case *Block:
             return Find(x, y.Run())
         default:
-            return x.Find(fmt.Sprintf("%v", y))
+            return x.Find(y)
         }
     case Array:
         switch y := b.(type) {
         case *Block:
             return Find(x, y.Run())
         default:
-            return x.Find(fmt.Sprintf("%v", y))
+            return x.Find(y)
         }
     case String:
         switch y := b.(type) {
@@ -37,9 +37,9 @@ func Find(a interface{}, b interface{}) interface{} {
     return Null { }
 }
 
-func (a Hash) Find(b string) String {
+func (a Hash) Find(b interface{}) String {
     for key, val := range a {
-        if fmt.Sprintf("%v", val) == b {
+        if Equals(val, b) {
             return String(key)
         }
     }
@@ -47,9 +47,9 @@ func (a Hash) Find(b string) String {
     return String("-1")
 }
 
-func (a Array) Find(b string) Number {
+func (a Array) Find(b interface{}) Number {
     for i, val := range a {
-        if fmt.Sprintf("%v", val) == b {
+        if Equals(val, b) {
             return Number(i)
         }
     }

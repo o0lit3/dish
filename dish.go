@@ -93,7 +93,7 @@ func test(test *testing.T, source string) {
 
     if val, ok := p.blk.Run(Boolean(true), Boolean(false), Null { }).(Array); ok {
         for i, _ := range val {
-            if fmt.Sprintf("%v", val[i]) != p.lexr.coms[i] {
+            if i < len(p.lexr.coms) && fmt.Sprintf("%v", val[i]) != p.lexr.coms[i] {
                 test.Errorf("%s expected %s at index %d; got %v", source, p.lexr.coms[i], i, val[i])
                 f++
             } else {

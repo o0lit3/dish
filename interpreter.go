@@ -22,10 +22,6 @@ type Boolean bool
 
 type Null struct { }
 
-type Interpreter struct {
-    parser *Parser
-}
-
 func (n Null) String() string {
     return "null"
 }
@@ -162,30 +158,30 @@ func (m Hash) Array() Array {
     return out
 }
 
-func (i *Interpreter) Bind(op *Token, val interface{}) interface{} {
+func (b *Block) Bind(op *Token, val interface{}) interface{} {
     switch x := val.(type) {
     case Variable:
         if op.Assignment() {
             return x
         } else {
-            return i.parser.blk.vars[string(x)]
+            return b.cur.vars[string(x)]
         }
     default:
         return x
     }
 }
 
-func (i *Interpreter) Value(a interface{}) interface{} {
+func (b *Block) Value(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return x.Run()
     case Variable:
-        return i.Value(i.parser.blk.vars[string(x)])
+        return b.Value(b.cur.vars[string(x)])
     case Hash:
         out := Hash { }
 
         for key, val := range x {
-            out[key] = i.Value(val)
+            out[key] = b.Value(val)
         }
 
         return out
@@ -193,7 +189,7 @@ func (i *Interpreter) Value(a interface{}) interface{} {
         out := Array { }
 
         for _, val := range x {
-            out = append(out, i.Value(val))
+            out = append(out, b.Value(val))
         }
 
         return out
@@ -202,155 +198,162 @@ func (i *Interpreter) Value(a interface{}) interface{} {
     }
 }
 
-func (i *Interpreter) Register(val interface{}) {
-    i.parser.blk.stck = append(i.parser.blk.stck, val)
+func (b *Block) Register(val interface{}) {
+    b.cur.stck = append(b.cur.stck, val)
 }
 
-func (i *Interpreter) Deregister(op *Token) interface{} {
-    if len(i.parser.blk.stck) < 1 {
+func (b *Block) Deregister(op *Token) interface{} {
+    if len(b.cur.stck) < 1 {
         panic(fmt.Sprintf("Missing operand for \"%s\" at %s", op.lit, op.pos))
     }
 
-    val := i.parser.blk.stck[len(i.parser.blk.stck) - 1]
-    i.parser.blk.stck = i.parser.blk.stck[:len(i.parser.blk.stck) - 1]
+    val := b.cur.stck[len(b.cur.stck) - 1]
+    b.cur.stck = b.cur.stck[:len(b.cur.stck) - 1]
 
-    return i.Bind(op, val)
+    return b.Bind(op, val)
 }
 
 func (b *Block) Run(args ...interface{}) interface{} {
-    b.idx = 0
-    b.stck = Array { }
-    b.vars = Hash { "$0": b }
-    b.hash = Hash { }
+    b.cur = &Run { idx: 0, stck: Array { }, hash: Hash { }, vars: Hash { } }
+    b.runs = append(b.runs, b.cur)
 
-    for i, val := range args {
-        b.vars["$" + strconv.Itoa(i + 1)] = val
+    if len(args) > 0 {
+        b.cur.vars["$0"] = b
 
-        if i < len(b.args) {
-            b.vars[b.args[i]] = val
+        for i, val := range args {
+            b.cur.vars["$" + strconv.Itoa(i + 1)] = val
+
+            if i < len(b.args) {
+                b.cur.vars[b.args[i]] = val
+            }
         }
     }
 
-    return (&Interpreter { parser: &Parser { blk: b.Reset() } }).Interpret()
+    return b.Interpret()
 }
 
-func (i *Interpreter) Interpret() interface{} {
-    t := i.parser.blk.toks[i.parser.blk.idx]
-    i.parser.blk.idx = i.parser.blk.idx + 1
+func (blk *Block) Interpret() interface{} {
+    t := blk.toks[blk.cur.idx]
+    blk.cur.idx = blk.cur.idx + 1
 
     switch t.tok {
     case OP1:
-        a := i.Deregister(t)
+        a := blk.Deregister(t)
 
-        if blk, ok := i.parser.blk.FindVar(t.lit).(*Block); ok {
-            i.Register(blk.Invoke(a))
-            return i.Interpret()
+        if f, ok := blk.FindVar(t.lit).(*Block); ok {
+            blk.Register(Member(a, f))
+            return blk.Interpret()
         }
 
         switch t.lit {
         case "!", "not":
-            i.Register(Not(a))
+            blk.Register(Not(a))
         case "^", "invert":
-            i.Register(Invert(a))
+            blk.Register(Invert(a))
         case "*", "product":
-            i.Register(Product(a))
+            blk.Register(Product(a))
         case "+", "number", "num", "sum":
-            i.Register(Sum(a))
+            blk.Register(Sum(a))
         case "-", "negative", "negate":
-            i.Register(Negate(a))
+            blk.Register(Negate(a))
         case "~", "string", "str":
-            i.Register(Stringify(a))
+            blk.Register(Stringify(a))
         case "<", "minimum", "min", "floor":
-            i.Register(Min(a))
+            blk.Register(Min(a))
         case "=", "average", "avg", "mean":
-            i.Register(Average(a))
+            blk.Register(Average(a))
         case ">", "maxium", "max", "ceiling", "ceil":
-            i.Register(Max(a))
+            blk.Register(Max(a))
         case "|", "unique", "uniq":
-            i.Register(Unique(a))
+            blk.Register(Unique(a))
         case "#", "size", "length", "len":
-            i.Register(Length(a))
+            blk.Register(Length(a))
         case "++", "increment", "incr":
-            val := Increment(i.Value(a))
-            i.parser.blk.vars[t.VarName(a)] = val
-            i.Register(val)
+            val := Increment(blk.Value(a))
+            blk.cur.vars[t.VarName(a)] = val
+            blk.Register(val)
         case "--", "decrement", "decr":
-            val := Decrement(i.Value(a))
-            i.parser.blk.vars[t.VarName(a)] = val
-            i.Register(val)
+            val := Decrement(blk.Value(a))
+            blk.cur.vars[t.VarName(a)] = val
+            blk.Register(val)
         default:
             switch {
             case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):
-                i.Register(Member(a, String(t.lit).Number()))
+                blk.Register(Member(a, String(t.lit).Number()))
             default:
-                i.Register(Member(a, String(t.lit)))
+                blk.Register(Member(a, String(t.lit)))
             }
         }
     case OP2:
-        b := i.Deregister(t)
-        a := i.Deregister(t)
+        b := blk.Deregister(t)
+        a := blk.Deregister(t)
 
         if y, ok := b.(*Block); ok && len(t.args) > 0 {
             y.args = t.args
         }
 
-        if blk, ok := i.parser.blk.FindVar(t.lit).(*Block); ok {
-            i.Register(blk.Invoke(Array{ i.Value(a), i.Value(b) }))
-            return i.Interpret()
+        if f, ok := blk.FindVar(t.lit).(*Block); ok {
+            blk.Register(Member(Array { blk.Value(a), blk.Value(b) }, f))
+            return blk.Interpret()
         }
 
         switch t.lit {
         case "?", "switch":
-            //i.Register(Switch(a, b))
+            blk.Register(Switch(blk.Blockify(a), blk.Blockify(b)))
         case "@", "find":
-            i.Register(Find(a, b))
+            blk.Register(Find(a, b))
         case "**", "pow", "power":
         case "*", "map", "multiply":
-            i.Register(Multiply(a, b))
+            blk.Register(Multiply(a, b))
         case "/", "divide", "split":
-            i.Register(Divide(a, b))
+            blk.Register(Divide(a, b))
         case "%", "mod":
         case "+", "add":
-            i.Register(Add(a, b))
+            blk.Register(Add(a, b))
         case "-", "subtract":
-            i.Register(Subtract(a, b))
+            blk.Register(Subtract(a, b))
         case "~", "join":
-            i.Register(Join(a, b))
+            blk.Register(Join(a, b))
         case "~~", "matches":
         case "<<", "shovel":
         case ">>", "shift":
         case "#", "base", "convert":
         case "<", "below":
-            i.Register(Below(a, b))
+            blk.Register(Below(a, b))
         case "<=", "under":
-            i.Register(Under(a, b))
+            blk.Register(Under(a, b))
         case ">", "above":
-            i.Register(Above(a, b))
+            blk.Register(Above(a, b))
         case ">=", "over":
-            i.Register(Over(a, b))
+            blk.Register(Over(a, b))
         case "==", "equals", "is":
-            i.Register(Equals(a, b))
+            blk.Register(Equals(a, b))
         case "!=", "isnt":
         case "&", "intersect":
         case "^", "exclude":
         case "|", "union":
         case "&&", "and":
-            i.Register(And(a, b))
+            blk.Register(And(a, b))
         case "||", "or":
-            i.Register(Or(a, b))
+            blk.Register(Or(a, b))
         case "..", "range", "to":
-            i.Register(Range(a, b))
+            blk.Register(Range(a, b))
         case "=", "assign":
-            i.parser.blk.vars[t.VarName(a)] = b
-            i.Register(b)
+            blk.cur.vars[t.VarName(a)] = b
+
+            if _, ok := b.(*Block); ok {
+                blk.Register(Null { })
+            } else {
+                blk.Register(b)
+            }
         case ":", "define":
-            i.parser.blk.vars[t.VarName(a)] = b
-            i.parser.blk.hash[t.VarName(a)] = b
-            i.Register(b)
+            blk.cur.vars[t.VarName(a)] = b
+            blk.cur.hash[t.VarName(a)] = b
+            blk.Register(b)
         case "+=":
-            val := Add(i.Value(a), i.Value(b))
-            i.parser.blk.vars[t.VarName(a)] = val
-            i.Register(val)
+            val := Add(blk.Value(a), blk.Value(b))
+            blk.cur.vars[t.VarName(a)] = val
+            blk.Register(val)
         case "-=":
         case "*=":
         case "/=":
@@ -359,53 +362,65 @@ func (i *Interpreter) Interpret() interface{} {
         case "^=":
         case "|=":
         case "", "member":
-            i.Register(Member(a, b))
+            blk.Register(Member(a, b))
         default:
             t.UnexpectedToken()
         }
     case BLK:
-        i.Register(t.blk)
+        blk.Register(t.blk)
     case FIN:
-        if len(i.parser.blk.stck) > 0 {
-            i.parser.blk.stck[len(i.parser.blk.stck) - 1] = i.Value(i.parser.blk.stck[len(i.parser.blk.stck) - 1])
+        if len(blk.cur.stck) > 0 {
+            blk.cur.stck[len(blk.cur.stck) - 1] = blk.Value(blk.cur.stck[len(blk.cur.stck) - 1])
         }
 
-        if i.parser.blk.dim == MAP && len(i.parser.blk.hash) < len(i.parser.blk.stck) {
-            switch x := i.parser.blk.stck[len(i.parser.blk.stck) - 1].(type) {
+        if blk.dim == MAP && len(blk.cur.hash) < len(blk.cur.stck) {
+            switch x := blk.cur.stck[len(blk.cur.stck) - 1].(type) {
             case String:
-                i.parser.blk.hash[string(x)] = x
+                blk.cur.hash[string(x)] = x
             default:
-                i.parser.blk.hash[fmt.Sprintf("%v", x)] = x
+                blk.cur.hash[fmt.Sprintf("%v", x)] = x
             }
         }
 
-        if i.parser.blk.idx == len(i.parser.blk.toks) {
-            if i.parser.blk.src != nil {
-                for key, val := range i.parser.blk.vars {
-                    if _, ok := i.parser.blk.hash[key]; !ok {
-                        i.parser.blk.src.vars[key] = val
+        if blk.cur.idx == len(blk.toks) {
+            if blk.src != nil && blk.src.cur != nil {
+                for key, val := range blk.cur.vars {
+                    if _, ok := blk.cur.hash[key]; !ok {
+                        blk.src.cur.vars[key] = val
                     }
                 }
             }
 
-            switch i.parser.blk.dim {
+            var out interface{}
+
+            switch blk.dim {
             case VAL:
-                if len(i.parser.blk.stck) > 0 {
-                    return i.Value(i.parser.blk.stck[len(i.parser.blk.stck) - 1])
+                if len(blk.cur.stck) > 0 {
+                    out = blk.Value(blk.cur.stck[len(blk.cur.stck) - 1])
                 } else {
-                    return Null { }
+                    out = Null { }
                 }
             case LST:
-                return i.Value(i.parser.blk.stck)
+                out = blk.Value(blk.cur.stck)
             case MAP:
-                return i.Value(i.parser.blk.hash)
+                out = blk.Value(blk.cur.hash)
             default:
-                return Null { }
+                out = Null { }
             }
+
+            blk.runs = blk.runs[:len(blk.runs) - 1]
+
+            if len(blk.runs) > 0 {
+                blk.cur = blk.runs[len(blk.runs) - 1]
+            } else {
+                blk.cur = nil
+            }
+
+            return out
         }
     case VAR:
-        i.parser.blk.vars[t.lit] = i.parser.blk.FindVar(t.lit)
-        i.Register(Variable(t.lit))
+        blk.cur.vars[t.lit] = blk.FindVar(t.lit)
+        blk.Register(Variable(t.lit))
     case NUM:
         if strings.Contains(t.lit, ".") {
             val, err := strconv.ParseFloat(t.lit, 64)
@@ -414,7 +429,7 @@ func (i *Interpreter) Interpret() interface{} {
                 panic(fmt.Sprintf("Malformed number at %s", t.pos))
             }
 
-            i.Register(Number(val))
+            blk.Register(Number(val))
         } else {
             val, err := strconv.Atoi(t.lit)
 
@@ -422,13 +437,13 @@ func (i *Interpreter) Interpret() interface{} {
                 panic(fmt.Sprintf("Malformed number at %s", t.pos))
             }
 
-            i.Register(Number(val))
+            blk.Register(Number(val))
         }
     case STR:
-        i.Register(String(t.lit))
+        blk.Register(String(t.lit))
     default:
         t.UnexpectedToken()
     }
 
-    return i.Interpret()
+    return blk.Interpret()
 }

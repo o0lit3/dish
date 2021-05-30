@@ -6,29 +6,42 @@ type Parser struct {
     blk *Block
 }
 
+type Run struct {
+    idx int
+    stck Array
+    hash Hash
+    vars Hash
+}
+
 type Block struct {
     dep int
     dim Dimension
     src *Block
-    idx int
-    toks []*Token
-    stck Array
-    hash Hash
-    vars Hash
     args []string
+    toks []*Token
+    runs []*Run
+    cur *Run
 }
 
-func (b *Block) Reset() *Block {
-    b.idx = 0
-    return b
+func (b *Block) String() string {
+    out := ""
+
+    for _, tok := range b.toks {
+        out += tok.lit
+    }
+
+    return out
 }
 
 func (b *Block) FindVar(name string) interface{} {
-    val, ok := b.vars[name]
+    val, ok := b.cur.vars[name]
 
     for !ok && b.src != nil {
         b = b.src
-        val, ok = b.vars[name]
+
+        if b.cur != nil {
+            val, ok = b.cur.vars[name]
+        }
     }
 
     if b.src == nil && !ok {
@@ -38,16 +51,47 @@ func (b *Block) FindVar(name string) interface{} {
     return val
 }
 
-func (b *Block) Invoke(a interface{}) interface{} {
+func (b *Block) Branch(d Dimension) *Block {
+    return &Block { dep: b.dep + 1, dim: d, src: b }
+}
+
+func (b *Block) Blockify(a interface{}) Array {
     switch x := a.(type) {
     case *Block:
-        return b.Invoke(x.Run())
-    case Hash:
-        return b.Run(x.Array()...)
-    case Array:
-        return b.Run(x...)
+        switch x.dim {
+        case VAL:
+            return Array { x }
+        case LST:
+            out := Array { }
+            blk := b.Branch(VAL)
+
+            for _, t := range x.toks {
+                blk.toks = append(blk.toks, t)
+
+                if t.tok == FIN {
+                    out = append(out, blk)
+                    blk = b.Branch(VAL)
+                }
+            }
+
+            return out
+        case MAP:
+            out := Array { }
+            blk := b.Branch(VAL)
+
+            for _, t := range x.toks {
+                blk.toks = append(blk.toks, t)
+
+                if t.tok == FIN {
+                    out = append(out, blk)
+                    blk = b.Branch(VAL)
+                }
+            }
+        }
+
+        return Array { }
     default:
-        return b.Run(x)
+        return Array { x }
     }
 }
 
@@ -114,12 +158,7 @@ func (p *Parser) Parse() {
         }
 
         if t.ShortCircuit() {
-            p.blk = &Block {
-                dep: p.blk.dep + 1,
-                dim: VAL,
-                src: p.blk,
-                vars: Hash { },
-            }
+            p.blk = p.blk.Branch(VAL)
         }
 
         if t.tok == OPX {
@@ -128,13 +167,7 @@ func (p *Parser) Parse() {
 
         p.ops = append(p.ops, t)
     case t.BlockOpen():
-        p.blk = &Block {
-            dep: p.blk.dep + 1,
-            dim: t.Dimension(),
-            src: p.blk,
-            vars: Hash { },
-        }
-
+        p.blk = p.blk.Branch(t.Dimension())
         p.ops = append(p.ops, t)
     case t.BlockClose():
         for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].lit != t.BlockMatch()) {

@@ -8,6 +8,10 @@ func Member(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case *Block:
+            if len(y.args) > 0 {
+                return y.Run(x.Array()...)
+            }
+
             return Member(x, y.Run())
         case Hash:
             return x.Members(y.Array())
@@ -21,7 +25,11 @@ func Member(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
-            return Member(x, y.Run())
+            if len(y.args) > 0 {
+                return y.Run(x...)
+             }
+
+             return Member(x, y.Run())
         case Hash:
             return x.Members(y.Array())
         case Array:
@@ -38,6 +46,10 @@ func Member(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
+            if len(y.args) > 0 {
+                return y.Run(x)
+            }
+
             return Member(x, y.Run())
         case Hash:
             return x.Members(y.Array())
@@ -51,6 +63,15 @@ func Member(a interface{}, b interface{}) interface{} {
             return x.Member(int(y.Number()))
         case Null:
             return x.Member(0)
+        }
+    default:
+        switch y := b.(type) {
+        case *Block:
+            if len(y.args) > 0 {
+                return y.Run(x)
+            }
+
+            return Member(x, y.Run())
         }
     }
 
@@ -94,11 +115,11 @@ func (a Array) Members(b Array) Array {
 }
 
 func (a Array) Member(b int) interface{} {
-    if b < 0 && len(a) + b < len(a) {
+    if b < 0 && len(a) > 0 && len(a) + b < len(a) {
         return a[len(a) + b]
     }
 
-    if b < len(a) {
+    if len(a) > 0 && b < len(a) {
         return a[b]
     }
 

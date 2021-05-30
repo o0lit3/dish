@@ -60,6 +60,10 @@ func TestDecrement(t *testing.T) {
 }
 
 // Binary ops
+func TestSwitch(t *testing.T) {
+    test(t, "ops/switch.dish")
+}
+
 func TestFind(t *testing.T) {
     test(t, "ops/find.dish")
 }
