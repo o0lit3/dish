@@ -311,7 +311,7 @@ func (blk *Block) Interpret() interface{} {
         switch t.lit {
         case "?", "switch":
             blk.Register(Switch(blk.Blockify(a), blk.Blockify(b)))
-        case "@", "find":
+        case "??", "find":
             blk.Register(Find(a, b))
         case "**", "power", "pow":
             blk.Register(Power(a, b))
@@ -322,14 +322,17 @@ func (blk *Block) Interpret() interface{} {
         case "/", "divide", "split":
             blk.Register(Divide(a, b))
         case "%", "mod":
+            blk.Register(Mod(a, b))
         case "+", "add":
             blk.Register(Add(a, b))
         case "-", "subtract":
             blk.Register(Subtract(a, b))
         case "~", "join":
             blk.Register(Join(a, b))
-        case "~~", "base":
-        case "##", "convert":
+        case "@", "base":
+            blk.Register(Base(a, b))
+        case "!", "convert":
+            blk.Register(Convert(a, b))
         case "<<", "shovel":
         case ">>", "shift":
         case "<", "below":
@@ -343,6 +346,7 @@ func (blk *Block) Interpret() interface{} {
         case "==", "equals", "is":
             blk.Register(Equals(a, b))
         case "!=", "isnt":
+            blk.Register(Not(Equals(a, b)))
         case "&", "intersect":
         case "^", "exclude":
         case "|", "union":
@@ -369,9 +373,21 @@ func (blk *Block) Interpret() interface{} {
             blk.cur.vars[t.VarName(a)] = val
             blk.Register(val)
         case "-=":
+            val := Subtract(blk.Value(a), blk.Value(b))
+            blk.cur.vars[t.VarName(a)] = val
+            blk.Register(val)
         case "*=":
+            val := Multiply(blk.Value(a), blk.Value(b))
+            blk.cur.vars[t.VarName(a)] = val
+            blk.Register(val)
         case "/=":
+            val := Divide(blk.Value(a), blk.Value(b))
+            blk.cur.vars[t.VarName(a)] = val
+            blk.Register(val)
         case "%=":
+            val := Mod(blk.Value(a), blk.Value(b))
+            blk.cur.vars[t.VarName(a)] = val
+            blk.Register(val)
         case "&=":
         case "^=":
         case "|=":

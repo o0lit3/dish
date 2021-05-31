@@ -84,6 +84,10 @@ func TestDivide(t *testing.T) {
     test(t, "tests/divide.dish")
 }
 
+func TestMod(t *testing.T) {
+    test(t, "tests/mod.dish")
+}
+
 func TestPlus(t *testing.T) {
     test(t, "tests/add.dish")
 }
@@ -94,6 +98,14 @@ func TestSubtract(t *testing.T) {
 
 func TestJoin(t *testing.T) {
     test(t, "tests/join.dish")
+}
+
+func TestBase(t *testing.T) {
+    test(t, "tests/base.dish")
+}
+
+func TestConvert(t *testing.T) {
+    test(t, "tests/convert.dish")
 }
 
 func TestBelow(t *testing.T) {
