@@ -19,6 +19,10 @@ func TestProduct(t *testing.T) {
     test(t, "tests/product.dish")
 }
 
+func TestKeys(t *testing.T) {
+    test(t, "tests/keys.dish")
+}
+
 func TestItemize(t *testing.T) {
     test(t, "tests/itemize.dish")
 }

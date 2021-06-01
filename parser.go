@@ -87,6 +87,8 @@ func (b *Block) Blockify(a interface{}) Array {
                     blk = b.Branch(VAL)
                 }
             }
+
+            return out
         }
 
         return Array { }
@@ -155,6 +157,18 @@ func (p *Parser) Parse() {
             for len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen() {
                 p.Shift()
             }
+        }
+
+        if t.Redo() {
+            blk := p.blk.Branch(VAL)
+
+            for len(p.blk.toks) > 0 && p.blk.toks[len(p.blk.toks) - 1].tok != FIN {
+                blk.toks = append([]*Token{ p.blk.toks[len(p.blk.toks) - 1] }, blk.toks...)
+                p.blk.toks = p.blk.toks[:len(p.blk.toks) - 1]
+            }
+
+            blk.toks = append(blk.toks, &Token { pos: t.pos, tok: FIN, lit: "" })
+            p.blk.toks = append(p.blk.toks, &Token { pos: t.pos, tok: BLK, blk: blk, lit: "" })
         }
 
         if t.ShortCircuit() {

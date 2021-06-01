@@ -118,7 +118,7 @@ func (t *Token) Assignment() bool {
     }
 
     switch t.lit {
-    case "=", ":", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "++", "--":
+    case "=", ":", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "++", "--", "<<", ">>":
         return true
     }
 
@@ -165,7 +165,7 @@ func (t *Token) Precedence() int {
     }
 
     switch t.lit {
-    case "..", ".", "?", "??", "@", "!":
+    case "..", ".", "?", "??", "++", "~~":
         return 13
     case "**":
         return 12
@@ -204,9 +204,18 @@ func (a *Token) Higher(b *Token) bool {
     return a.Precedence() == b.Precedence() && !b.Assignment() && b.tok != OP1
 }
 
+func (t *Token) Redo() bool {
+    switch t.lit {
+    case "**", "redo":
+        return true
+    default:
+        return false
+    }
+}
+
 func (t *Token) ShortCircuit() bool {
     switch t.lit {
-    case "&&", "||":
+    case "&&", "||", "and", "or":
         return true
     default:
         return false
@@ -376,8 +385,11 @@ func (l *Lexer) Lexify() *Token {
 
                 return l.Tokenize(l.pos, OP2, string(r) + string(n)).LexArgs(l)
             case r:
-                if r == '+' || r == '-' {
-                    return l.Tokenize(s, OP1, string(r) + string(n))
+                switch r {
+                case '+', '-', '>', '<':
+                    if len(l.toks) > 0 && !l.toks[len(l.toks) - 1].Term() {
+                        return l.Tokenize(s, OP1, string(r) + string(n))
+                    }
                 }
 
                 return l.Tokenize(s, OP2, string(r) + string(n)).LexArgs(l)

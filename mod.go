@@ -5,15 +5,16 @@ func Mod(a interface{}, b interface{}) interface{} {
     case *Block:
         return Mod(x.Run(), b)
     case Hash:
-        return Mod(x.Array(), b)
+        switch y := b.(type) {
+        case *Block:
+            return x.Filter(y)
+        default:
+            return Mod(x.Array(), b)
+        }
     case Array:
         switch y := b.(type) {
         case *Block:
-            return Mod(x, y.Run())
-        case Hash:
-            return x.Mod(Number(len(y)))
-        case Array:
-            return x.Mod(Number(len(y)))
+            return x.Filter(y)
         case String:
             return x.Mod(y.Number())
         case Number:
@@ -26,11 +27,7 @@ func Mod(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-            return Mod(x, y.Run())
-        case Hash:
-            return x.Mod(Number(len(y)))
-        case Array:
-            return x.Mod(Number(len(y)))
+            return x.Array().Filter(y)
         case String:
             return x.Mod(y.Number())
         case Number:
@@ -45,13 +42,21 @@ func Mod(a interface{}, b interface{}) interface{} {
         case *Block:
             return Mod(x, y.Run())
         case Hash:
-            return Number(int(x) % len(y))
+            if len(y) != 0 {
+                return Number(int(x) % len(y))
+            }
         case Array:
-            return Number(int(x) % len(y))
+            if len(y) != 0 {
+                return Number(int(x) % len(y))
+            }
         case String:
-            return Number(int(x) % len(y))
+            if len(y) != 0 {
+                return Number(int(x) % len(y))
+            }
         case Number:
-            return Number(int(x) % int(y))
+            if y != 0 {
+                return Number(int(x) % int(y))
+            }
         case Boolean:
             if y {
                 return Number(0)
@@ -62,6 +67,34 @@ func Mod(a interface{}, b interface{}) interface{} {
     }
 
     return Null { }
+}
+
+func (a Hash) Filter(b *Block) Hash {
+    out := Hash { }
+
+    for key, val := range a {
+        if Not(b.Run(val, String(key))) {
+            continue
+        }
+
+        out[key] = val
+    }
+
+    return out
+}
+
+func (a Array) Filter(b *Block) Array {
+    out := Array { }
+
+    for i, val := range a {
+        if Not(b.Run(val, Number(i))) {
+            continue
+        }
+
+        out = append(out, val)
+    }
+
+    return out
 }
 
 func (a Array) Mod(b Number) interface{} {

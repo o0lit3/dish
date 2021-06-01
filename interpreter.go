@@ -36,6 +36,14 @@ func (b Boolean) Number() Number {
 }
 
 func (n Number) String() string {
+    if n == 0 {
+        return "0"
+    }
+
+    if float64(n) == float64(int64(n)) {
+        return strconv.FormatFloat(float64(n), 'f', -1, 64)
+    }
+
     p := math.Pow(10, float64(12))
     r := int(float64(n) * p + math.Copysign(0.5, float64(n) * p))
 
@@ -166,19 +174,6 @@ func (m Hash) Array() Array {
     return out
 }
 
-func (b *Block) Bind(op *Token, val interface{}) interface{} {
-    switch x := val.(type) {
-    case Variable:
-        if op.Assignment() {
-            return x
-        } else {
-            return b.cur.vars[string(x)]
-        }
-    default:
-        return x
-    }
-}
-
 func (b *Block) Value(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
@@ -218,7 +213,16 @@ func (b *Block) Deregister(op *Token) interface{} {
     val := b.cur.stck[len(b.cur.stck) - 1]
     b.cur.stck = b.cur.stck[:len(b.cur.stck) - 1]
 
-    return b.Bind(op, val)
+    switch x := val.(type) {
+    case Variable:
+        if op.Assignment() {
+            return x
+        } else {
+            return b.cur.vars[string(x)]
+        }
+    default:
+        return x
+    }
 }
 
 func (b *Block) Run(args ...interface{}) interface{} {
@@ -261,12 +265,17 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Invert(a))
         case "*", "product":
             blk.Register(Product(a))
-        case "/", "itemize", "array":
+        case "@", "keys":
+            blk.Register(Keys(a))
+        case "/", "itemize", "array", "values":
             blk.Register(Itemize(a))
         case "+", "number", "num", "sum":
             blk.Register(Sum(a))
         case "-", "negative", "negate":
             blk.Register(Negate(a))
+        case ">>", "pop":
+            blk.Register(Pop(a))
+        case "<<", "shift":
         case "~", "stringify", "string", "str":
             blk.Register(Stringify(a))
         case "<", "minimum", "min", "floor":
@@ -311,17 +320,15 @@ func (blk *Block) Interpret() interface{} {
         switch t.lit {
         case "?", "switch":
             blk.Register(Switch(blk.Blockify(a), blk.Blockify(b)))
-        case "??", "find":
+        case "@", "find", "index":
             blk.Register(Find(a, b))
-        case "**", "power", "pow":
+        case "**", "power", "pow", "redo":
             blk.Register(Power(a, b))
-        case "#", "filter", "grep":
-            blk.Register(Filter(a, b))
-        case "*", "multiply", "map":
+        case "*", "multiply", "repeat", "map":
             blk.Register(Multiply(a, b))
         case "/", "divide", "split":
             blk.Register(Divide(a, b))
-        case "%", "mod":
+        case "%", "mod", "filter", "grep":
             blk.Register(Mod(a, b))
         case "+", "add":
             blk.Register(Add(a, b))
@@ -329,12 +336,12 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Subtract(a, b))
         case "~", "join":
             blk.Register(Join(a, b))
-        case "@", "base":
+        case "~~", "base":
             blk.Register(Base(a, b))
-        case "!", "convert":
+        case "++", "convert":
             blk.Register(Convert(a, b))
-        case "<<", "shovel":
-        case ">>", "shift":
+        case "<<", "push":
+        case ">>", "unshift":
         case "<", "below":
             blk.Register(Below(a, b))
         case "<=", "under":
@@ -391,7 +398,7 @@ func (blk *Block) Interpret() interface{} {
         case "&=":
         case "^=":
         case "|=":
-        case "", "member":
+        case "", "member", "item":
             blk.Register(Member(a, b))
         default:
             t.UnexpectedToken()
