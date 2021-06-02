@@ -2,8 +2,10 @@ package main
 
 func Decrement(a interface{}) interface{} {
     switch x := a.(type) {
-    case Block:
+    case *Block:
         return Decrement(x.Run())
+    case *Variable:
+        return Decrement(x.Value())
     case Hash:
         return x.Decrement()
     case Array:

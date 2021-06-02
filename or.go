@@ -1,17 +1,35 @@
 package main
 
-func Or(a interface{}, b interface{}) Boolean {
+func Or(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Or(x.Run(), b)
+    case *Variable:
+        return Or(x.Value(), b)
     case Hash:
-        return Or(Boolean(len(x) != 0), b)
+        if len(x) != 0 {
+            return x
+        }
+
+        return Or(Boolean(false), b)
     case Array:
-        return Or(Boolean(len(x) != 0), b)
+        if len(x) != 0 {
+            return x
+        }
+
+        return Or(Boolean(false), b)
     case String:
-        return Or(Boolean(x != "" && x != "0"), b)
+        if x != "" && x != "0" {
+            return x
+        }
+
+        return Or(Boolean(false), b)
     case Number:
-        return Or(Boolean(x != 0), b)
+        if x != 0 {
+            return x
+        }
+
+        return Or(Boolean(false), b)
     case Boolean:
         if x {
             return Boolean(true)
@@ -20,14 +38,32 @@ func Or(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return Or(Boolean(false), y.Run())
+        case *Variable:
+            return Or(Boolean(false), y.Value())
         case Hash:
-            return Boolean(len(y) != 0)
+            if len(y) != 0 {
+                return y
+            }
+
+            return Boolean(false)
         case Array:
-            return Boolean(len(y) != 0)
+            if len(y) != 0 {
+                return y
+            }
+
+            return Boolean(false)
         case String:
-            return Boolean(y != "" && y != "0")
+            if y != "" && y != "0" {
+                return y
+            }
+
+            return Boolean(false)
         case Number:
-            return Boolean(y != 0)
+            if y != 0 {
+                return y
+            }
+
+            return Boolean(false)
         case Boolean:
             return y
         case Null:

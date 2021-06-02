@@ -4,6 +4,8 @@ func Increment(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Increment(x.Run())
+    case *Variable:
+        return Increment(x.Value())
     case Hash:
         return x.Increment()
     case Array:

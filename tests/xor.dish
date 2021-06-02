@@ -1,0 +1,14 @@
+[
+    {} ^^ true          // true
+    {foo: 0} ^^ true    // false
+    [] ^^ true          // true
+    false ^^ [0, 0]     // [0, 0]
+    "0" ^^ true         // true
+    true ^^ "foo"       // false
+    "" ^^ 3.14          // 3.14
+    "foo" ^^ 0          // "foo"
+    true ^^ true        // false
+    3.14 ^^ 2           // false
+    0 ^^ 4 ^^ 5         // false
+    0 ^^ 4 ^^ 5 ^^ 3    // 3
+]

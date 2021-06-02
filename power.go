@@ -4,29 +4,52 @@ import("math")
 func Power(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
+        return Power(x.Run(), b)
+    case *Variable:
+        return Power(x.Value(), b)
+    case Hash:
         switch y := b.(type) {
         case *Block:
-            return Redo(x, y)
+            return Power(x, y.Run())
+        case *Variable:
+            return Power(x, y.Value())
         default:
-            return Power(x.Run(), y)
+            return Power(x.Array(), y)
         }
-    case Hash:
-        return Power(x.Array(), b)
     case Array:
         switch y := b.(type) {
+        case *Block:
+            return Power(x, y.Run())
+        case *Variable:
+            return Power(x, y.Value())
         case String:
-            return x.Power(y.Number())
+            return x.Rotate(y.Number())
         case Number:
-            return x.Power(y)
+            return x.Rotate(y)
         case Boolean:
-            return x.Power(y.Number())
+            return x.Rotate(y.Number())
         case Null:
-            return x.Power(Number(0))
+            return x.Rotate(Number(0))
         }
     case String:
-        return Power(x.Number(), b)
+        switch y := b.(type) {
+        case *Block:
+            return Power(x, y.Run())
+        case *Variable:
+            return Power(x, y.Value())
+        default:
+            return Power(x.Number(), y)
+        }
     case Number:
         switch y := b.(type) {
+        case *Block:
+            return Power(x, y.Run())
+        case *Variable:
+            return Power(x, y.Value)
+        case Hash:
+            return y.Array().Rotate(x)
+        case Array:
+            return y.Rotate(x)
         case String:
             return Number(math.Pow(float64(x), float64(y.Number())))
         case Number:
@@ -45,25 +68,27 @@ func Power(a interface{}, b interface{}) interface{} {
     return Number(0)
 }
 
-func Redo(a *Block, b *Block) interface{} {
-    var val interface{}
+func (a Array) Rotate(b Number) Array {
+    out := Array { }
 
-    i := 0
-    val = Null { }
+    e := int(b)
+    i := int(b)
 
-    for !Not(a.Run()) {
-        val = b.Run(a, Number(i))
+    if i < 0 {
+        e = len(a) + i
+        i = len(a) + i
+    }
+
+    for i < len(a) {
+        out = append(out, a[i])
         i = i + 1
     }
 
-    return val
-}
+    i = 0
 
-func (a Array) Power(b Number) Array {
-    out := Array { }
-
-    for _, val := range a {
-        out = append(out, Power(val, b))
+    for i < e && i < len(a) {
+        out = append(out, a[i])
+        i = i + 1
     }
 
     return out

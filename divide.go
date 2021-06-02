@@ -5,12 +5,16 @@ func Divide(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Divide(x.Run(), b)
+    case *Variable:
+        return Divide(x.Value(), b)
     case Hash:
         return Divide(x.Array(), b)
     case Array:
         switch y := b.(type) {
         case *Block:
             return x.Split(y)
+        case *Variable:
+            return Divide(x, y.Value())
         case String:
             if y.Number() != 0 {
                 return x.Divide(y.Number())
@@ -35,6 +39,8 @@ func Divide(a interface{}, b interface{}) interface{} {
             }
 
             return out
+        case *Variable:
+            return Divide(x, y.Value())
         case String:
             return x.Split(y)
         case Number:
@@ -50,6 +56,8 @@ func Divide(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Divide(x, y.Run())
+        case *Variable:
+            return Divide(x, y.Value())
         case Hash:
             if len(y) != 0 {
                 return x / Number(len(y))

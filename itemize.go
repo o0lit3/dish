@@ -4,6 +4,8 @@ func Itemize(a interface{}) Array {
     switch x := a.(type) {
     case *Block:
         return Itemize(x.Run())
+    case *Variable:
+        return Itemize(x.Value())
     case Hash:
         return x.Array()
     case Array:

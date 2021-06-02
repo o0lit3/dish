@@ -35,6 +35,14 @@ func TestNegate(t *testing.T) {
     test(t, "tests/negate.dish")
 }
 
+func TestPop(t *testing.T) {
+    test(t, "tests/pop.dish")
+}
+
+func TestShift(t *testing.T) {
+    test(t, "tests/shift.dish")
+}
+
 func TestStringify(t *testing.T) {
     test(t, "tests/stringify.dish")
 }
@@ -134,6 +142,10 @@ func TestEquals(t *testing.T) {
 
 func TestAnd(t *testing.T) {
     test(t, "tests/and.dish")
+}
+
+func TestXor(t *testing.T) {
+    test(t, "tests/xor.dish")
 }
 
 func TestOr(t *testing.T) {

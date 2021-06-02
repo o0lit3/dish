@@ -5,6 +5,8 @@ func Min(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Min(x.Run())
+    case *Variable:
+        return Min(x.Value())
     case Hash:
         return x.Array().Min()
     case Array:

@@ -4,17 +4,35 @@ func Multiply(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Multiply(x.Run(), b)
+    case *Variable:
+        return Multiply(x.Value(), b)
     case Hash:
         switch y := b.(type) {
         case *Block:
             return x.Map(y)
-        default:
-            return Multiply(x.Array(), y)
+        case *Variable:
+            return Multiply(x, y.Value())
+        case String:
+            return x.Multiply(y.Number())
+        case Number:
+            return x.Multiply(y)
+        case Boolean:
+            return x.Multiply(y.Number())
+        case Null:
+            return x.Multiply(Number(0))
         }
     case Array:
         switch y := b.(type) {
         case *Block:
+            if y.dim == LST {
+                if blk, ok := y.Run().(Array); ok {
+                    return x.DotProduct(blk)
+                }
+            }
+
             return x.Map(y)
+        case *Variable:
+            return Multiply(x, y.Value())
         case String:
             return x.Multiply(y.Number())
         case Number:
@@ -28,6 +46,8 @@ func Multiply(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return x.Array().Map(y)
+        case *Variable:
+            return Multiply(x, y.Value())
         case String:
             return x.Multiply(y.Number())
         case Number:
@@ -41,6 +61,8 @@ func Multiply(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Multiply(x, y.Run())
+        case *Variable:
+            return Multiply(x, y.Value())
         case Hash:
             return y.Array().Multiply(x)
         case Array:
@@ -81,25 +103,21 @@ func (a Array) Map(b *Block) Array {
     return out
 }
 
+func (a Hash) Multiply(b Number) Hash {
+    out := Hash { }
+
+    for key, val := range a {
+        out[key] = Multiply(val, b)
+    }
+
+    return out
+}
+
 func (a Array) Multiply(b Number) Array {
     out := Array { }
 
-    for n := 0; n < int(b); n++ {
-        for _, val := range a {
-            out = append(out, val)
-        }
-    }
-
-    if b != Number(int(b)) {
-        rem := Number(len(a)) * (b - Number(int(b)))
-
-        for _, val := range a {
-            if Number(len(out)) < Number(int(b) * len(a)) + rem {
-                out = append(out, val)
-            } else {
-                break
-            }
-        }
+    for _, val := range a {
+        out = append(out, Multiply(val, b))
     }
 
     return out
@@ -125,4 +143,38 @@ func (a String) Multiply(b Number) String {
     }
 
     return String(out)
+}
+
+func (a Array) DotProduct(b Array) Array {
+    out := Array { }
+
+    for i, arow := range a {
+        if acols, ok := arow.(Array); ok {
+            row := Array { }
+
+            for k, brow := range b {
+                if bcols, ok := brow.(Array); ok {
+                    for j, bval := range bcols {
+                        if j >= len(row) {
+                            row = append(row, Number(0))
+                        }
+
+                        if k < len(acols) {
+                            row[j] = Add(row[j], Multiply(acols[k], bval))
+                        }
+                    }
+                } else {
+                    row = append(row, Multiply(arow, brow))
+                }
+            }
+
+            out = append(out, row)
+        } else {
+            if i < len(b) {
+                out = append(out, Multiply(a[i], b[i]))
+            }
+        }
+    }
+
+    return out
 }

@@ -2,16 +2,16 @@
     {} && true              // false
     {foo: 0} && true        // true
     [] && true              // false
-    [0, 0] && true          // true
+    true && [0, 0]          // [0, 0]
     "0" && true             // false
-    "foo" && true           // true
+    true && "foo"           // "foo"
     "" && true              // false
-    3.14 && true            // true
+    true && 3.14            // 3.14
     0 && true               // false
     true && true            // true
     [false && ++a, a]       // [false, null]
-    [true && ++b, b]        // [true, 1]
-    [true && ++c && ++c, c] // [true, 2]
-    [1 && 0 || ++d, d]      // [true, 1]
-    [1 && 1 || ++e, e]      // [true, null]
+    [true && ++b, b]        // [1, 1]
+    [true && ++c && ++c, c] // [2, 2]
+    [1 && 0 || ++d, d]      // [1, 1]
+    [1 && 1 || ++e, e]      // [1, null]
 ]

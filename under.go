@@ -4,6 +4,8 @@ func Under(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
         return Under(x.Run(), b)
+    case *Variable:
+        return Under(x.Value(), b)
     case Hash:
         return Under(Number(len(x)), b)
     case Array:
@@ -12,6 +14,8 @@ func Under(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return Under(x, y.Run())
+        case *Variable:
+            return Under(x, y.Value())
         case String:
             return Boolean(x <= y)
         case Number:
@@ -27,6 +31,8 @@ func Under(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return Under(x, y.Run())
+        case *Variable:
+            return Under(x, y.Value())
         case Hash:
             return Boolean(x <= Number(len(y)))
         case Array:

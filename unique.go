@@ -5,6 +5,8 @@ func Unique(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Unique(x.Run())
+    case *Variable:
+        return Unique(x.Value())
     case Hash:
         return x.Array().Unique()
     case Array:

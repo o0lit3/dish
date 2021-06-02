@@ -8,6 +8,8 @@ func Range(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Range(x.Run(), b)
+    case *Variable:
+        return Range(x.Value(), b)
     case Hash:
         start = len(x)
     case Array:
@@ -26,6 +28,8 @@ func Range(a interface{}, b interface{}) interface{} {
     switch y := b.(type) {
     case *Block:
         return Range(a, y.Run())
+    case *Variable:
+        return Range(a, y.Value())
     case Hash:
         end = len(y)
     case Array:

@@ -5,10 +5,14 @@ func Base(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Base(x.Run(), b)
+    case *Variable:
+        return Base(x.Value(), b)
     case Hash:
         switch y := b.(type) {
         case *Block:
             return Base(x, y.Run())
+        case *Variable:
+            return Base(x, y.Value())
         case Hash:
             return x.Base(Number(len(y)))
         case Array:
@@ -22,6 +26,8 @@ func Base(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Base(x, y.Run())
+        case *Variable:
+            return Base(x, y.Value())
         case Hash:
             return x.Base(Number(len(y)))
         case Array:
@@ -37,6 +43,8 @@ func Base(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Base(x, y.Run())
+        case *Variable:
+            return Base(x, y.Value())
         case Hash:
             return x.Base(Number(len(y)))
         case Array:

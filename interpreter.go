@@ -9,7 +9,10 @@ import (
     "unicode"
 )
 
-type Variable string
+type Variable struct {
+    blk *Block
+    nom string
+}
 
 type Hash map[string]interface{}
 
@@ -174,12 +177,16 @@ func (m Hash) Array() Array {
     return out
 }
 
+func (v *Variable) Value() interface{} {
+    return v.blk.Value(v)
+}
+
 func (b *Block) Value(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return x.Run()
-    case Variable:
-        return b.Value(b.cur.vars[string(x)])
+    case *Variable:
+        return b.Value(b.cur.vars[x.nom])
     case Hash:
         out := Hash { }
 
@@ -213,16 +220,7 @@ func (b *Block) Deregister(op *Token) interface{} {
     val := b.cur.stck[len(b.cur.stck) - 1]
     b.cur.stck = b.cur.stck[:len(b.cur.stck) - 1]
 
-    switch x := val.(type) {
-    case Variable:
-        if op.Assignment() {
-            return x
-        } else {
-            return b.cur.vars[string(x)]
-        }
-    default:
-        return x
-    }
+    return val
 }
 
 func (b *Block) Run(args ...interface{}) interface{} {
@@ -253,8 +251,8 @@ func (blk *Block) Interpret() interface{} {
     case OP1:
         a := blk.Deregister(t)
 
-        if f, ok := blk.FindVar(t.lit).(*Block); ok {
-            blk.Register(Member(a, f))
+        if vblk, ok := blk.FindVar(t.lit).(*Block); ok {
+            blk.Register(Member(a, vblk))
             return blk.Interpret()
         }
 
@@ -274,8 +272,13 @@ func (blk *Block) Interpret() interface{} {
         case "-", "negative", "negate":
             blk.Register(Negate(a))
         case ">>", "pop":
-            blk.Register(Pop(a))
+            val, obj := Pop(a)
+            blk.cur.vars[t.VarName(a)] = obj
+            blk.Register(val)
         case "<<", "shift":
+            val, obj := Shift(a)
+            blk.cur.vars[t.VarName(a)] = obj
+            blk.Register(val)
         case "~", "stringify", "string", "str":
             blk.Register(Stringify(a))
         case "<", "minimum", "min", "floor":
@@ -312,23 +315,25 @@ func (blk *Block) Interpret() interface{} {
             y.args = t.args
         }
 
-        if f, ok := blk.FindVar(t.lit).(*Block); ok {
-            blk.Register(Member(Array { blk.Value(a), blk.Value(b) }, f))
+        if vblk, ok := blk.FindVar(t.lit).(*Block); ok {
+            blk.Register(Member(Array { blk.Value(a), blk.Value(b) }, vblk))
             return blk.Interpret()
         }
 
         switch t.lit {
         case "?", "switch":
             blk.Register(Switch(blk.Blockify(a), blk.Blockify(b)))
+        case "??", "redo":
+            blk.Register(Redo(Blockify(a), Blockify(b)))
         case "@", "find", "index":
             blk.Register(Find(a, b))
-        case "**", "power", "pow", "redo":
+        case "**", "power", "pow", "rotate":
             blk.Register(Power(a, b))
         case "*", "multiply", "repeat", "map":
             blk.Register(Multiply(a, b))
         case "/", "divide", "split":
             blk.Register(Divide(a, b))
-        case "%", "mod", "filter", "grep":
+        case "%", "mod", "filter", "select", "grep":
             blk.Register(Mod(a, b))
         case "+", "add":
             blk.Register(Add(a, b))
@@ -342,6 +347,9 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Convert(a, b))
         case "<<", "push":
         case ">>", "unshift":
+        case "&", "intersect":
+        case "^", "exclude":
+        case "|", "union":
         case "<", "below":
             blk.Register(Below(a, b))
         case "<=", "under":
@@ -354,11 +362,10 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Equals(a, b))
         case "!=", "isnt":
             blk.Register(Not(Equals(a, b)))
-        case "&", "intersect":
-        case "^", "exclude":
-        case "|", "union":
         case "&&", "and":
             blk.Register(And(a, b))
+        case "^^", "xor":
+            blk.Register(Xor(a, b))
         case "||", "or":
             blk.Register(Or(a, b))
         case "..", "range", "to":
@@ -457,7 +464,7 @@ func (blk *Block) Interpret() interface{} {
         }
     case VAR:
         blk.cur.vars[t.lit] = blk.FindVar(t.lit)
-        blk.Register(Variable(t.lit))
+        blk.Register(&Variable { blk: blk, nom: t.lit })
     case NUM:
         if strings.Contains(t.lit, ".") {
             val, err := strconv.ParseFloat(t.lit, 64)

@@ -5,6 +5,8 @@ func Equals(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
         return Equals(x.Run(), b)
+    case *Variable:
+        return Equals(x.Value(), b)
     case Hash:
         return Equals(String(fmt.Sprintf("%v", x)), b)
     case Array:
@@ -13,6 +15,8 @@ func Equals(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return Equals(x, y.Run())
+        case *Variable:
+            return Equals(x, y.Value())
         case Hash:
             return Equals(x, String(fmt.Sprintf("%v", y)))
         case Array:
@@ -30,6 +34,8 @@ func Equals(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return Equals(x, y.Run())
+        case *Variable:
+            return Equals(x, y.Value())
         case Hash:
             return Boolean(x == Number(len(y)))
         case Array:

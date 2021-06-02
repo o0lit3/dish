@@ -129,8 +129,8 @@ func (t *Token) VarName(a interface{}) string {
     switch x := a.(type) {
     case *Block:
         return t.VarName(x.Run())
-    case Variable:
-        return string(x)
+    case *Variable:
+        return x.nom
     case String:
         if t.lit != ":" {
             panic(fmt.Sprintf("Assignment operator \"%s\" requires variable invocant at %s", t.lit, t.pos))
@@ -165,34 +165,36 @@ func (t *Token) Precedence() int {
     }
 
     switch t.lit {
-    case "..", ".", "?", "??", "++", "~~":
-        return 13
+    case "..", ".", "@", "?", "??", "++", "~~":
+        return 14
     case "**":
         return 12
-    case "#", "*", "/", "%":
+    case "*", "/", "%":
         return 11
     case "+", "-":
         return 10
     case "<<", ">>":
         return 9
-    case "<", "<=", ">", ">=":
-        return 8
-    case "==", "!=":
-        return 7
     case "&":
-        return 6
+        return 8
     case "^":
-        return 5
+        return 7
     case "|":
+        return 6
+    case "<", "<=", ">", ">=":
+        return 5
+    case "==", "!=":
         return 4
     case "&&":
         return 3
-    case "||":
+    case "^^":
         return 2
-    case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
+    case "||":
         return 1
-    default:
+    case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
         return 0
+    default:
+        return 13
     }
 }
 
@@ -206,7 +208,7 @@ func (a *Token) Higher(b *Token) bool {
 
 func (t *Token) Redo() bool {
     switch t.lit {
-    case "**", "redo":
+    case "??", "redo":
         return true
     default:
         return false
@@ -215,7 +217,7 @@ func (t *Token) Redo() bool {
 
 func (t *Token) ShortCircuit() bool {
     switch t.lit {
-    case "&&", "||", "and", "or":
+    case "&&", "||", "??", "and", "or", "redo":
         return true
     default:
         return false

@@ -4,6 +4,8 @@ func Keys(a interface{}) Array {
     switch x := a.(type) {
     case *Block:
         return Keys(x.Run())
+    case *Variable:
+        return Keys(x.Value())
     case Hash:
         return x.Keys()
     case Array:

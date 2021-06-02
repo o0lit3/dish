@@ -55,6 +55,14 @@ func (b *Block) Branch(d Dimension) *Block {
     return &Block { dep: b.dep + 1, dim: d, src: b }
 }
 
+func Blockify(a interface{}) *Block {
+    if blk, ok := a.(*Block); ok {
+        return blk
+    }
+
+    return &Block { }
+}
+
 func (b *Block) Blockify(a interface{}) Array {
     switch x := a.(type) {
     case *Block:

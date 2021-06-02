@@ -1,17 +1,17 @@
 [
     {} || false              // false
-    {foo: 0} || false        // true
+    {foo: 0} || false        // {"foo": 0}
     [] || false              // false
-    [0, 0] || false          // true
+    [0, 0] || false          // [0, 0]
     "0" || false             // false
-    "foo" || false           // true
+    "foo" || false           // "foo"
     "" || false              // false
-    3.14 || false            // true
+    3.14 || false            // 3.14
     0 || false               // false
     true || false            // true
-    [false || ++a, a]        // [true, 1]
+    [false || ++a, a]        // [1, 1]
     [true || ++b, b]         // [true, null]
     [true || ++c || ++c, c]  // [true, null]
-    [1 || 0 && ++d, d]       // [true, null]
-    [1 || 1 && ++e, e]       // [true, null]
+    [1 || 0 && ++d, d]       // [1, null]
+    [1 || 1 && ++e, e]       // [1, null]
 ]

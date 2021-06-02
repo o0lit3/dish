@@ -4,6 +4,8 @@ func Average(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Average(x.Run())
+    case *Variable:
+        return Average(x.Value())
     case Hash:
         return x.Array().Average()
     case Array:

@@ -5,12 +5,16 @@ func Join(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Join(x.Run(), b)
+    case *Variable:
+        return Join(x.Value(), b)
     case Hash:
         return Join(x.Array(), b)
     case Array:
         switch y := b.(type) {
         case *Block:
             return Join(x, y.Run())
+        case *Variable:
+            return Join(x, y.Value())
         case String:
             return x.Join(string(y))
         default:
@@ -20,6 +24,8 @@ func Join(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Join(x, y.Run())
+        case *Variable:
+            return Join(x, y.Value())
         case String:
             return String(string(x) + string(y))
         default:
@@ -29,6 +35,8 @@ func Join(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Join(x, y.Run())
+        case *Variable:
+            return Join(x, y.Value())
         case String:
             return String(fmt.Sprintf("%v", x) + string(y))
         default:

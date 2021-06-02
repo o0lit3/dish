@@ -5,10 +5,14 @@ func Add(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Add(x.Run(), b)
+    case *Variable:
+        return Add(x.Value(), b)
     case Hash:
         switch y := b.(type) {
         case *Block:
             return Add(x, y.Run())
+        case *Variable:
+            return Add(x, y.Value())
         case Hash:
             return x.Add(y)
         case Array:
@@ -22,6 +26,8 @@ func Add(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Add(x, y.Run())
+        case *Variable:
+            return Add(x, y.Value())
         case Hash:
             return x.Add(y.Array())
         case Array:
@@ -33,6 +39,8 @@ func Add(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Add(x, y.Run())
+        case *Variable:
+            return Add(x, y.Value())
         case Hash:
             return Hash{ string(x): x }.Add(y)
         case Array:
@@ -46,6 +54,8 @@ func Add(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Add(x, y.Run())
+        case *Variable:
+            return Add(x, y.Value())
         case Hash:
             return Hash{ fmt.Sprintf("%v", x):x }.Add(y)
         case Array:

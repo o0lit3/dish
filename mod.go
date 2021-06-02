@@ -4,10 +4,14 @@ func Mod(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Mod(x.Run(), b)
+    case *Variable:
+        return Mod(x.Value(), b)
     case Hash:
         switch y := b.(type) {
         case *Block:
             return x.Filter(y)
+        case *Variable:
+            return Mod(x, y.Value())
         default:
             return Mod(x.Array(), b)
         }
@@ -15,6 +19,8 @@ func Mod(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return x.Filter(y)
+        case *Variable:
+            return Mod(x, y.Value())
         case String:
             return x.Mod(y.Number())
         case Number:
@@ -28,6 +34,8 @@ func Mod(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return x.Array().Filter(y)
+        case *Variable:
+            return Mod(x, y.Value())
         case String:
             return x.Mod(y.Number())
         case Number:
@@ -41,6 +49,8 @@ func Mod(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Mod(x, y.Run())
+        case *Variable:
+            return Mod(x, y.Value())
         case Hash:
             if len(y) != 0 {
                 return Number(int(x) % len(y))

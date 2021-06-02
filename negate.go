@@ -4,6 +4,8 @@ func Negate(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Negate(x.Run())
+    case *Variable:
+        return Negate(x.Value())
     case Hash:
         return x.Array().Negate()
     case Array:

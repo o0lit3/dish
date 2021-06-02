@@ -4,6 +4,8 @@ func Product(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Product(x.Run())
+    case *Variable:
+        return Product(x.Value())
     case Hash:
         return x.Array().Product()
     case Array:

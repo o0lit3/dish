@@ -1,17 +1,35 @@
 package main
 
-func And(a interface{}, b interface{}) Boolean {
+func And(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return And(x.Run(), b)
+    case *Variable:
+        return And(x.Value(), b)
     case Hash:
-        return And(Boolean(len(x) != 0), b)
+        if len(x) == 0 {
+            return Boolean(false)
+        }
+
+        return And(Boolean(true), b)
     case Array:
-        return And(Boolean(len(x) != 0), b)
+        if len(x) == 0 {
+            return Boolean(false)
+        }
+
+        return And(Boolean(true), b)
     case String:
-        return And(Boolean(x != "" && x != "0"), b)
+        if x == "" || x == "0" {
+            return Boolean(false)
+        }
+
+        return And(Boolean(true), b)
     case Number:
-        return And(Boolean(x != 0), b)
+        if x == 0 {
+            return Boolean(false)
+        }
+
+        return And(Boolean(true), b)
     case Boolean:
         if !x {
             return Boolean(false)
@@ -20,14 +38,32 @@ func And(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return And(Boolean(true), y.Run())
+        case *Variable:
+            return And(Boolean(true), y.Value())
         case Hash:
-            return Boolean(len(y) != 0)
+            if len(y) == 0 {
+                return Boolean(false)
+            }
+
+            return y
         case Array:
-            return Boolean(len(y) != 0)
+            if len(y) == 0 {
+                return Boolean(false)
+            }
+
+            return y
         case String:
-            return Boolean(y != "" && y != "0")
+            if y == "" || y == "0" {
+                return Boolean(false)
+            }
+
+            return y
         case Number:
-            return Boolean(y != 0)
+            if y == 0 {
+                return Boolean(false)
+            }
+
+            return y
         case Boolean:
             return y
         case Null:

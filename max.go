@@ -5,6 +5,8 @@ func Max(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Max(x.Run())
+    case *Variable:
+        return Max(x.Value())
     case Hash:
         return x.Array().Max()
     case Array:

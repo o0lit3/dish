@@ -5,6 +5,8 @@ func Member(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Member(x.Run(), b)
+    case *Variable:
+        return Member(x.Value(), b)
     case Hash:
         switch y := b.(type) {
         case *Block:
@@ -13,6 +15,8 @@ func Member(a interface{}, b interface{}) interface{} {
             }
 
             return Member(x, y.Run())
+        case *Variable:
+            return Member(x, y.Value())
         case Hash:
             return x.Members(y.Array())
         case Array:
@@ -30,6 +34,8 @@ func Member(a interface{}, b interface{}) interface{} {
              }
 
              return Member(x, y.Run())
+        case *Variable:
+            return Member(x, y.Value())
         case Hash:
             return x.Members(y.Array())
         case Array:
@@ -51,6 +57,8 @@ func Member(a interface{}, b interface{}) interface{} {
             }
 
             return Member(x, y.Run())
+        case *Variable:
+            return Member(x, y.Value())
         case Hash:
             return x.Members(y.Array())
         case Array:
@@ -72,6 +80,8 @@ func Member(a interface{}, b interface{}) interface{} {
             }
 
             return Member(x, y.Run())
+        case *Variable:
+            return Member(x, y.Value())
         }
     }
 

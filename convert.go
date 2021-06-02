@@ -5,10 +5,14 @@ func Convert(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Convert(x.Run(), b)
+    case *Variable:
+        return Convert(x.Value(), b)
     case Hash:
         switch y := b.(type) {
         case *Block:
             return Convert(x, y.Run())
+        case *Variable:
+            return Convert(x, y.Value())
         case Hash:
             return x.Convert(Number(len(y)))
         case Array:
@@ -22,6 +26,8 @@ func Convert(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Convert(x, y.Run())
+        case *Variable:
+            return Convert(x, y.Value())
         case Hash:
             return x.Convert(Number(len(y)))
         case Array:
@@ -35,6 +41,8 @@ func Convert(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
            return Convert(x, y.Run())
+        case *Variable:
+            return Convert(x, y.Value())
         case Hash:
             return x.Convert(Number(len(y)))
         case Array:

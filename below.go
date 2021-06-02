@@ -4,6 +4,8 @@ func Below(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
         return Below(x.Run(), b)
+    case *Variable:
+        return Below(x.blk.Value(x), b)
     case Hash:
         return Below(Number(len(x)), b)
     case Array:
@@ -12,6 +14,8 @@ func Below(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return Below(x, y.Run())
+        case *Variable:
+            return Below(x, y.blk.Value(y))
         case String:
             return Boolean(x < y)
         case Number:
@@ -27,6 +31,8 @@ func Below(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return Below(x, y.Run())
+        case *Variable:
+            return Below(x, y.blk.Value(y))
         case Hash:
             return Boolean(x < Number(len(y)))
         case Array:

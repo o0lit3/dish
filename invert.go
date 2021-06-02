@@ -4,6 +4,8 @@ func Invert(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Invert(x.Run())
+    case *Variable:
+        return Invert(x.Value())
     case Hash:
         return x.Invert()
     case Array:

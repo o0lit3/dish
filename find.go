@@ -9,10 +9,14 @@ func Find(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Find(x.Run(), b)
+    case *Variable:
+        return Find(x.Value(), b)
     case Hash:
         switch y := b.(type) {
         case *Block:
             return Find(x, y.Run())
+        case *Variable:
+            return Find(x, y.Value())
         default:
             return x.Find(y)
         }
@@ -20,6 +24,8 @@ func Find(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Find(x, y.Run())
+        case *Variable:
+            return Find(x, y.Value())
         default:
             return x.Find(y)
         }
@@ -27,6 +33,8 @@ func Find(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             return Find(x, y.Run())
+        case *Variable:
+            return Find(x, y.Value())
         case String:
             return Number(strings.Index(string(x), string(y)))
         default:

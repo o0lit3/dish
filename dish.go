@@ -69,6 +69,10 @@ func process(rdr *bufio.Reader) *Parser {
         lexer.Lexify()
     }
 
+    if len(lexer.toks) > 0 && lexer.toks[len(lexer.toks) - 1].tok != FIN {
+        lexer.toks = append(lexer.toks, &Token { tok: FIN, lit: "" })
+    }
+
     parser := &Parser {
         lexr: lexer,
         blk: &Block {

@@ -4,6 +4,8 @@ func Sum(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Sum(x.Run())
+    case *Variable:
+        return Sum(x.Value())
     case Hash:
         return x.Array().Sum()
     case Array:
