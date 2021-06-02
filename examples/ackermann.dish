@@ -1,13 +1,13 @@
 ack = :m:n(
-    [m == 0, n == 0].switch[
-        n + 1
-        (m - 1).ack(1)
-        (m - 1).ack(m.ack(n - 1))
-    ]
+  [m == 0, n == 0].switch[
+    n + 1
+    (m - 1).ack(1)
+    (m - 1).ack(m.ack(n - 1))
+  ]
 )
 
 (0..3).map:m(
-    (0..6).map:n(
-        m.ack(n)
-    ).join(" ")
+  (0..6).map:n(
+    m.ack(n)
+  ).join(" ")
 ).join("\n")

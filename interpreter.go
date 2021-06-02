@@ -371,11 +371,15 @@ func (blk *Block) Interpret() interface{} {
         case "..", "range", "to":
             blk.Register(Range(a, b))
         case "=", "assign":
-            blk.cur.vars[t.VarName(a)] = b
-
             if _, ok := b.(*Block); ok {
+                blk.cur.vars[t.VarName(a)] = b
                 blk.Register(Null { })
+            } else if y, ok := b.(*Variable); ok {
+                val := y.Value()
+                blk.cur.vars[t.VarName(a)] = val
+                blk.Register(val)
             } else {
+                blk.cur.vars[t.VarName(a)] = b
                 blk.Register(b)
             }
         case ":", "define":
