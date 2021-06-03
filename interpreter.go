@@ -261,10 +261,12 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Not(a))
         case "^", "invert":
             blk.Register(Invert(a))
-        case "*", "product":
-            blk.Register(Product(a))
         case "@", "keys":
             blk.Register(Keys(a))
+        case "**", "sort":
+            blk.Register(Sort(a))
+        case "*", "product":
+            blk.Register(Product(a))
         case "/", "itemize", "array", "values":
             blk.Register(Itemize(a))
         case "+", "number", "num", "sum":
@@ -292,11 +294,11 @@ func (blk *Block) Interpret() interface{} {
         case "#", "size", "length", "len":
             blk.Register(Length(a))
         case "++", "increment", "incr":
-            val := Increment(blk.Value(a))
+            val := Increment(a)
             blk.cur.vars[t.VarName(a)] = val
             blk.Register(val)
         case "--", "decrement", "decr":
-            val := Decrement(blk.Value(a))
+            val := Decrement(a)
             blk.cur.vars[t.VarName(a)] = val
             blk.Register(val)
         default:
@@ -327,7 +329,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Redo(Blockify(a), Blockify(b)))
         case "@", "find", "index":
             blk.Register(Find(a, b))
-        case "**", "power", "pow", "rotate":
+        case "**", "power", "pow", "sort":
             blk.Register(Power(a, b))
         case "*", "multiply", "repeat", "map":
             blk.Register(Multiply(a, b))
@@ -345,11 +347,16 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Base(a, b))
         case "++", "convert":
             blk.Register(Convert(a, b))
-        case "<<", "push":
-        case ">>", "unshift":
+        case "<<", "push", "append", "lshift":
+            blk.Register(Push(a, b))
+        case ">>", "unshift", "prepend", "rshift":
+            blk.Register(Unshift(a, b))
         case "&", "intersect":
+            blk.Register(Intersect(a, b))
         case "^", "exclude":
+            blk.Register(Exclude(a, b))
         case "|", "union":
+            blk.Register(Union(a, b))
         case "<", "below":
             blk.Register(Below(a, b))
         case "<=", "under":
@@ -371,39 +378,52 @@ func (blk *Block) Interpret() interface{} {
         case "..", "range", "to":
             blk.Register(Range(a, b))
         case "=", "assign":
-            if _, ok := b.(*Block); ok {
+            switch y := b.(type) {
+            case *Block:
                 blk.cur.vars[t.VarName(a)] = b
                 blk.Register(Null { })
-            } else if y, ok := b.(*Variable); ok {
+            case *Variable:
                 val := y.Value()
                 blk.cur.vars[t.VarName(a)] = val
                 blk.Register(val)
-            } else {
+            default:
                 blk.cur.vars[t.VarName(a)] = b
                 blk.Register(b)
             }
         case ":", "define":
-            blk.cur.vars[t.VarName(a)] = b
-            blk.cur.hash[t.VarName(a)] = b
-            blk.Register(b)
+            switch y := b.(type) {
+            case *Block:
+                blk.cur.vars[t.VarName(a)] = b
+                blk.cur.hash[t.VarName(a)] = b
+                blk.Register(Null { })
+            case *Variable:
+                val := y.Value()
+                blk.cur.vars[t.VarName(a)] = val
+                blk.cur.hash[t.VarName(a)] = val
+                blk.Register(val)
+            default:
+                blk.cur.vars[t.VarName(a)] = b
+                blk.cur.hash[t.VarName(a)] = b
+                blk.Register(b)
+            }
         case "+=":
-            val := Add(blk.Value(a), blk.Value(b))
+            val := Add(a, b)
             blk.cur.vars[t.VarName(a)] = val
             blk.Register(val)
         case "-=":
-            val := Subtract(blk.Value(a), blk.Value(b))
+            val := Subtract(a, b)
             blk.cur.vars[t.VarName(a)] = val
             blk.Register(val)
         case "*=":
-            val := Multiply(blk.Value(a), blk.Value(b))
+            val := Multiply(a, b)
             blk.cur.vars[t.VarName(a)] = val
             blk.Register(val)
         case "/=":
-            val := Divide(blk.Value(a), blk.Value(b))
+            val := Divide(a, b)
             blk.cur.vars[t.VarName(a)] = val
             blk.Register(val)
         case "%=":
-            val := Mod(blk.Value(a), blk.Value(b))
+            val := Mod(a, b)
             blk.cur.vars[t.VarName(a)] = val
             blk.Register(val)
         case "&=":

@@ -388,7 +388,7 @@ func (l *Lexer) Lexify() *Token {
                 return l.Tokenize(l.pos, OP2, string(r) + string(n)).LexArgs(l)
             case r:
                 switch r {
-                case '+', '-', '>', '<':
+                case '*', '+', '-', '>', '<':
                     if len(l.toks) > 0 && !l.toks[len(l.toks) - 1].Term() {
                         return l.Tokenize(s, OP1, string(r) + string(n))
                     }

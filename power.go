@@ -10,7 +10,7 @@ func Power(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case *Block:
-            return Power(x, y.Run())
+            return x.Array().UserSort(y)
         case *Variable:
             return Power(x, y.Value())
         default:
@@ -19,7 +19,7 @@ func Power(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
-            return Power(x, y.Run())
+            return x.UserSort(y)
         case *Variable:
             return Power(x, y.Value())
         case String:
@@ -34,7 +34,7 @@ func Power(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-            return Power(x, y.Run())
+            return Join(x.Array().UserSort(y), String(""))
         case *Variable:
             return Power(x, y.Value())
         default:
@@ -71,8 +71,8 @@ func Power(a interface{}, b interface{}) interface{} {
 func (a Array) Rotate(b Number) Array {
     out := Array { }
 
-    e := int(b)
-    i := int(b)
+    e := -int(b)
+    i := -int(b)
 
     if i < 0 {
         e = len(a) + i

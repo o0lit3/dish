@@ -23,6 +23,10 @@ func TestKeys(t *testing.T) {
     test(t, "tests/keys.dish")
 }
 
+func TestSort(t *testing.T) {
+    test(t, "tests/sort.dish")
+}
+
 func TestItemize(t *testing.T) {
     test(t, "tests/itemize.dish")
 }
@@ -118,6 +122,26 @@ func TestBase(t *testing.T) {
 
 func TestConvert(t *testing.T) {
     test(t, "tests/convert.dish")
+}
+
+func TestPush(t *testing.T) {
+    test(t, "tests/push.dish")
+}
+
+func TestUnshift(t *testing.T) {
+    test(t, "tests/unshift.dish")
+}
+
+func TestIntersect(t *testing.T) {
+    test(t, "tests/intersect.dish")
+}
+
+func TestExclude(t *testing.T) {
+    test(t, "tests/exclude.dish")
+}
+
+func TestUnion(t *testing.T) {
+    test(t, "tests/union.dish")
 }
 
 func TestBelow(t *testing.T) {
