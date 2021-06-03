@@ -84,6 +84,10 @@ func TestSwitch(t *testing.T) {
     test(t, "tests/switch.dish")
 }
 
+func TestRedo(t *testing.T) {
+    test(t, "tests/redo.dish")
+}
+
 func TestFind(t *testing.T) {
     test(t, "tests/find.dish")
 }
