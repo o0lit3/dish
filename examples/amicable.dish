@@ -1,0 +1,11 @@
+sums = (0..3000).map:i(
+  (1..i*0.5).grep:n(
+    i % n == 0
+  ).sum
+)
+
+sums.grep:val:key(
+  sums.(val) == key && key < val
+).map:n(
+  "$(sums.(n)) $(n)"
+).join("\n")

@@ -152,7 +152,7 @@ func (t *Token) Term() bool {
     }
 
     switch t.tok {
-    case STR, NUM, VAR:
+    case STR, NUM, VAR, OPX:
         return true
     default:
         return false
@@ -161,40 +161,42 @@ func (t *Token) Term() bool {
 
 func (t *Token) Precedence() int {
     if t.tok == OP1 {
-        return 14
+        return 16
     }
 
     switch t.lit {
-    case "..", ".", "@", "?", "??", "++", "~~":
+    case "@", "?", "??", "++", "~~", "~":
         return 14
     case "**":
-        return 12
+        return 13
     case "*", "/", "%":
-        return 11
+        return 12
     case "+", "-":
-        return 10
+        return 11
     case "<<", ">>":
-        return 9
+        return 10
     case "&":
-        return 8
+        return 9
     case "^":
-        return 7
+        return 8
     case "|":
-        return 6
+        return 7
     case "<", "<=", ">", ">=":
-        return 5
+        return 6
     case "==", "!=":
-        return 4
+        return 5
     case "&&":
-        return 3
+        return 4
     case "^^":
-        return 2
+        return 3
     case "||":
+        return 2
+    case "..":
         return 1
     case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
         return 0
     default:
-        return 13
+        return 15
     }
 }
 
@@ -381,7 +383,7 @@ func (l *Lexer) Lexify() *Token {
             case 0:
                 s.UnexpectedToken(r)
             case '=':
-                if len(l.toks) == 0 || !l.toks[len(l.toks ) - 1].Term() || r == '~' || r == ':' {
+                if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() || r == '~' || r == ':' {
                     s.UnexpectedToken(r)
                 }
 
