@@ -464,7 +464,7 @@ func (blk *Block) Interpret() interface{} {
             switch blk.dim {
             case VAL:
                 if len(blk.cur.stck) > 0 {
-                    out = blk.Value(blk.cur.stck[len(blk.cur.stck) - 1])
+                    out = blk.cur.stck[len(blk.cur.stck) - 1]
                 } else {
                     out = Null { }
                 }
@@ -508,7 +508,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Number(val))
         }
     case STR:
-        blk.Register(String(t.lit))
+        blk.Register(blk.Interpolate(t.lit))
     default:
         t.UnexpectedToken()
     }

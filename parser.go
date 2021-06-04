@@ -1,5 +1,11 @@
 package main
 
+import (
+    "fmt"
+    "bufio"
+    "strings"
+)
+
 type Parser struct {
     ops []*Token
     lexr *Lexer
@@ -21,6 +27,103 @@ type Block struct {
     toks []*Token
     runs []*Run
     cur *Run
+}
+
+func NewBlock() *Block {
+    return &Block {
+        dep: 0,
+        dim: VAL,
+        args: []string{ "true", "false", "null" },
+    }
+}
+
+func (b *Block) Interpolate(s string) String {
+    toks := []string{ }
+    ipol := false
+    out := ""
+    tok := ""
+    dep := 0
+    i := 0
+
+    for {
+        r := byte(0)
+
+        if i < len(s) {
+            r = s[i]
+            i = i + 1
+        } else {
+            toks = append(toks, tok)
+            break
+        }
+
+        switch r {
+        case '\\':
+            tok += string(r)
+
+            if i < len(s) {
+                tok += string(s[i])
+                i = i + 1
+            }
+        case '$':
+            n := byte(0)
+
+            if i < len(s) {
+                n = s[i]
+                i = i + 1
+            }
+
+            switch n {
+            case 0:
+                tok += string(r)
+            case '(':
+                toks = append(toks, tok)
+                ipol = true
+                tok = "$("
+            default:
+                tok += string(r) + string(n)
+            }
+        case '(':
+            if ipol {
+                dep = dep + 1
+            }
+
+            tok += string(r)
+        case ')':
+            switch {
+            case ipol && dep > 0:
+                tok += string(r)
+                dep = dep - 1
+            case ipol:
+                tok += string(r)
+                toks = append(toks, tok)
+                ipol = false
+                tok = ""
+            default:
+                tok += string(r)
+            }
+        default:
+            tok += string(r)
+        }
+    }
+
+    for _, val := range toks {
+        if len(val) > 1 && val[0] == '$' && val[1] == '(' {
+            reader := bufio.NewReader(strings.NewReader(val))
+            parser := process(reader, b.Branch(VAL))
+
+            switch x := parser.blk.Run().(type) {
+            case Null:
+            case String:
+                out += string(x)
+            default:
+                out += fmt.Sprintf("%v", x)
+            }
+        } else {
+            out += val
+        }
+    }
+
+    return String(out)
 }
 
 func (b *Block) String() string {

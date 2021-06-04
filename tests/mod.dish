@@ -7,7 +7,7 @@
     [1, 2, 3] % false               // null
     [-1, 0, 4, -4, 1].grep:n(n < 0) // [-1, -4]
     "foobar" % "bar"                // null
-    "foobar" % ($_ == 'o')          // ["o", "o"]
+    "foobar" % ($_ == 'o')          // "oo"
     "foobar" % 2                    // "foa"
     "foobar" % "3"                  // "fb"
     15 % 3                          // 0

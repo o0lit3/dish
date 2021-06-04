@@ -165,25 +165,25 @@ func (a String) Divide(b Number) Array {
     i := 0
 
     for len(out) < len(a) % int(b) {
-        set := String("")
+        set := ""
 
         for len(set) < x + 1 {
-            set += String(a[i])
+            set += string(a[i])
             i = i + 1
         }
 
-        out = append(out, set)
+        out = append(out, String(set))
     }
 
     for len(out) < int(b) {
-        set := String("")
+        set := ""
 
         for len(set) < x {
-            set += String(a[i])
+            set += string(a[i])
             i = i + 1
         }
 
-        out = append(out, set)
+        out = append(out, String(set))
     }
 
     return out

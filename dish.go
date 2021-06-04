@@ -29,7 +29,7 @@ func main() {
         reader = open(source)
     }
 
-    parser := process(reader)
+    parser := process(reader, NewBlock())
 
     if debug {
         for _, term := range parser.blk.toks {
@@ -58,7 +58,7 @@ func open(source string) *bufio.Reader {
     return bufio.NewReader(file)
 }
 
-func process(rdr *bufio.Reader) *Parser {
+func process(rdr *bufio.Reader, blk *Block) *Parser {
     lexer := &Lexer {
         pos: Position { row: 1, col: 0},
         rdr: rdr,
@@ -75,11 +75,7 @@ func process(rdr *bufio.Reader) *Parser {
 
     parser := &Parser {
         lexr: lexer,
-        blk: &Block {
-            dep: 0,
-            dim: VAL,
-            args: []string{ "true", "false", "null" },
-        },
+        blk: blk,
     }
 
     for len(parser.lexr.toks) > 0 {
@@ -91,7 +87,7 @@ func process(rdr *bufio.Reader) *Parser {
 
 func test(test *testing.T, source string) {
     r := open(source)
-    p := process(r)
+    p := process(r, NewBlock())
     c := 0
     f := 0
 

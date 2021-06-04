@@ -45,7 +45,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-            return x.Array().Map(y)
+            return Multiply(x, y.Run())
         case *Variable:
             return Multiply(x, y.Value())
         case String:

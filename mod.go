@@ -33,7 +33,7 @@ func Mod(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-            return x.Array().Filter(y)
+            return Join(x.Array().Filter(y), String(""))
         case *Variable:
             return Mod(x, y.Value())
         case String:
