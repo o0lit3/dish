@@ -184,6 +184,29 @@ func (v *Variable) Value() interface{} {
     return v.blk.Value(v)
 }
 
+func (b *Block) Eval(a interface{}) interface{} {
+    switch x := a.(type) {
+    case Hash:
+        out := Hash { }
+
+        for key, val := range x {
+            out[key] = b.Value(val)
+        }
+
+        return out
+    case Array:
+        out := Array { }
+
+        for _, val := range x {
+            out = append(out, b.Value(val))
+        }
+
+        return out
+    default:
+        return b.Value(a)
+    }
+}
+
 func (b *Block) Value(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
@@ -211,22 +234,6 @@ func (b *Block) Value(a interface{}) interface{} {
         }
 
         return b.Value(b.cur.vars[x.nom])
-    case Hash:
-        out := Hash { }
-
-        for key, val := range x {
-            out[key] = b.Value(val)
-        }
-
-        return out
-    case Array:
-        out := Array { }
-
-        for _, val := range x {
-            out = append(out, b.Value(val))
-        }
-
-        return out
     default:
         return x
     }
@@ -462,7 +469,7 @@ func (blk *Block) Interpret() interface{} {
         blk.Register(t.blk)
     case FIN:
         if len(blk.cur.stck) > 0 {
-            blk.cur.stck[len(blk.cur.stck) - 1] = blk.Value(blk.cur.stck[len(blk.cur.stck) - 1])
+            blk.cur.stck[len(blk.cur.stck) - 1] = blk.Eval(blk.cur.stck[len(blk.cur.stck) - 1])
         }
 
         if blk.dim == MAP && len(blk.cur.hash) < len(blk.cur.stck) {

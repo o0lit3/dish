@@ -3,13 +3,11 @@
 stdin.map:word(
   sorted = word.sort
   anagram.sorted << word
-  //(#(anagram.sorted) > max).and(max = #(anagram.sorted))
+  (#(anagram.sorted) > max).and(max = #(anagram.sorted))
 )
 
-anagram
-
-//anagram.values.grep:set(
-//  #set == max
-//)
-
-//max
+anagram.values.grep:set(
+  #set == max
+).map:set(
+  set.join(", ")
+).sort.join("\n")
