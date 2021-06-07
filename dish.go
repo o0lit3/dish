@@ -39,12 +39,34 @@ func main() {
         return
     }
 
-    switch x := parser.blk.Run(Boolean(true), Boolean(false), Null { }).(type) {
+    switch x := parser.blk.Run(Boolean(true), Boolean(false), Null { }, stdin()).(type) {
     case Null:
     case String:
         fmt.Printf("%v\n", string(x))
     default:
         fmt.Printf("%v\n", x)
+    }
+}
+
+func stdin() interface{} {
+    stat, _ := os.Stdin.Stat()
+
+    if (stat.Mode() & os.ModeCharDevice) != 0 {
+        return Null { }
+    }
+
+    out := Array { }
+    scanner := bufio.NewScanner(os.Stdin)
+
+    for scanner.Scan() {
+        out = append(out, String(scanner.Text()))
+    }
+
+    switch len(out) {
+    case 1:
+        return out[0]
+    default:
+        return out
     }
 }
 
@@ -91,7 +113,7 @@ func test(test *testing.T, source string) {
     c := 0
     f := 0
 
-    if val, ok := p.blk.Run(Boolean(true), Boolean(false), Null { }).(Array); ok {
+    if val, ok := p.blk.Run(Boolean(true), Boolean(false), Null { }, stdin()).(Array); ok {
         for i, _ := range val {
             if i < len(p.lexr.coms) && fmt.Sprintf("%v", val[i]) != p.lexr.coms[i] {
                 test.Errorf("%s expected %s at index %d; got %v", source, p.lexr.coms[i], i, val[i])

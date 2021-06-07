@@ -11,7 +11,10 @@ import (
 
 type Variable struct {
     blk *Block
+    obj interface{}
+    par *Variable
     nom string
+    idx int
 }
 
 type Hash map[string]interface{}
@@ -186,6 +189,27 @@ func (b *Block) Value(a interface{}) interface{} {
     case *Block:
         return x.Run()
     case *Variable:
+        switch obj := x.obj.(type) {
+        case Hash:
+            if _, ok := obj[x.nom]; ok {
+                return b.Value(obj[x.nom])
+            }
+
+            return Null { }
+        case Array:
+            if x.idx < len(obj) {
+                return b.Value(obj[x.idx])
+            }
+
+            return Null { }
+        case String:
+            if x.idx < len(obj) {
+                return String(string(obj[x.idx]))
+            }
+
+            return Null { }
+        }
+
         return b.Value(b.cur.vars[x.nom])
     case Hash:
         out := Hash { }
@@ -251,9 +275,13 @@ func (blk *Block) Interpret() interface{} {
     case OP1:
         a := blk.Deregister(t)
 
-        if vblk, ok := blk.FindVar(t.lit).(*Block); ok {
-            blk.Register(Member(a, vblk))
-            return blk.Interpret()
+        if len(t.lit) > 0 && unicode.IsLetter(rune(t.lit[0])) {
+            switch op := blk.FindVar(t.lit).(type) {
+            case Null:
+            default:
+                blk.Register(Member(a, op))
+                return blk.Interpret()
+            }
         }
 
         switch t.lit {
@@ -275,11 +303,11 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Negate(a))
         case ">>", "pop":
             val, obj := Pop(a)
-            blk.cur.vars[t.VarName(a)] = obj
+            blk.Assign(a, obj)
             blk.Register(val)
         case "<<", "shift":
             val, obj := Shift(a)
-            blk.cur.vars[t.VarName(a)] = obj
+            blk.Assign(a, obj)
             blk.Register(val)
         case "~", "stringify", "string", "str":
             blk.Register(Stringify(a))
@@ -294,13 +322,9 @@ func (blk *Block) Interpret() interface{} {
         case "#", "size", "length", "len":
             blk.Register(Length(a))
         case "++", "increment", "incr":
-            val := Increment(a)
-            blk.cur.vars[t.VarName(a)] = val
-            blk.Register(val)
+            blk.Register(blk.Assign(a, Increment(a)))
         case "--", "decrement", "decr":
-            val := Decrement(a)
-            blk.cur.vars[t.VarName(a)] = val
-            blk.Register(val)
+            blk.Register(blk.Assign(a, Decrement(a)))
         default:
             switch {
             case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):
@@ -317,9 +341,13 @@ func (blk *Block) Interpret() interface{} {
             y.args = t.args
         }
 
-        if vblk, ok := blk.FindVar(t.lit).(*Block); ok {
-            blk.Register(Member(Array { blk.Value(a), blk.Value(b) }, vblk))
-            return blk.Interpret()
+        if len(t.lit) > 0 && unicode.IsLetter(rune(t.lit[0])) {
+            switch op := blk.FindVar(t.lit).(type) {
+            case Null:
+            default:
+                blk.Register(Member(Array { blk.Value(a), blk.Value(b) }, op))
+                return blk.Interpret()
+            }
         }
 
         switch t.lit {
@@ -348,9 +376,27 @@ func (blk *Block) Interpret() interface{} {
         case "++", "convert":
             blk.Register(Convert(a, b))
         case "<<", "push", "append", "lshift":
-            blk.Register(Push(a, b))
+            val := Push(a, b)
+
+            switch val.(type) {
+            case Hash:
+                blk.Register(blk.Assign(a, val))
+            case Array:
+                blk.Register(blk.Assign(a, val))
+            default:
+                blk.Register(val)
+            }
         case ">>", "unshift", "prepend", "rshift":
-            blk.Register(Unshift(a, b))
+            val := Unshift(a, b)
+
+            switch val.(type) {
+            case Hash:
+                blk.Register(blk.Assign(a, val))
+            case Array:
+                blk.Register(blk.Assign(a, val))
+            default:
+                blk.Register(val)
+            }
         case "&", "intersect":
             blk.Register(Intersect(a, b))
         case "^", "exclude":
@@ -379,56 +425,34 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Range(a, b))
         case "=", "assign":
             switch y := b.(type) {
-            case *Block:
-                blk.cur.vars[t.VarName(a)] = b
-                blk.Register(Null { })
             case *Variable:
-                val := y.Value()
-                blk.cur.vars[t.VarName(a)] = val
-                blk.Register(val)
+                blk.Register(blk.Assign(a, y.Value()))
             default:
-                blk.cur.vars[t.VarName(a)] = b
-                blk.Register(b)
+                blk.Register(blk.Assign(a, b))
             }
         case ":", "define":
             switch y := b.(type) {
-            case *Block:
-                blk.cur.vars[t.VarName(a)] = b
-                blk.cur.hash[t.VarName(a)] = b
-                blk.Register(Null { })
             case *Variable:
-                val := y.Value()
-                blk.cur.vars[t.VarName(a)] = val
-                blk.cur.hash[t.VarName(a)] = val
-                blk.Register(val)
+                blk.Register(blk.Define(a, y.Value()))
             default:
-                blk.cur.vars[t.VarName(a)] = b
-                blk.cur.hash[t.VarName(a)] = b
-                blk.Register(b)
+                blk.Register(blk.Define(a, b))
             }
         case "+=":
-            val := Add(a, b)
-            blk.cur.vars[t.VarName(a)] = val
-            blk.Register(val)
+            blk.Register(blk.Assign(a, Add(a, b)))
         case "-=":
-            val := Subtract(a, b)
-            blk.cur.vars[t.VarName(a)] = val
-            blk.Register(val)
+            blk.Register(blk.Assign(a, Subtract(a, b)))
         case "*=":
-            val := Multiply(a, b)
-            blk.cur.vars[t.VarName(a)] = val
-            blk.Register(val)
+            blk.Register(blk.Assign(a, Multiply(a, b)))
         case "/=":
-            val := Divide(a, b)
-            blk.cur.vars[t.VarName(a)] = val
-            blk.Register(val)
+            blk.Register(blk.Assign(a, Divide(a, b)))
         case "%=":
-            val := Mod(a, b)
-            blk.cur.vars[t.VarName(a)] = val
-            blk.Register(val)
+            blk.Register(blk.Assign(a, Mod(a, b)))
         case "&=":
+            blk.Register(blk.Assign(a, Intersect(a, b)))
         case "^=":
+            blk.Register(blk.Assign(a, Exclude(a, b)))
         case "|=":
+            blk.Register(blk.Assign(a, Union(a, b)))
         case "", "member", "item":
             blk.Register(Member(a, b))
         default:

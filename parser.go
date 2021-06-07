@@ -33,8 +33,69 @@ func NewBlock() *Block {
     return &Block {
         dep: 0,
         dim: VAL,
-        args: []string{ "true", "false", "null" },
+        args: []string{ "true", "false", "null", "stdin" },
     }
+}
+
+func (blk *Block) Assign(a interface{}, b interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        blk.Assign(x.Run(), b)
+    case *Variable:
+        switch obj := x.obj.(type) {
+        case Hash:
+            obj[x.nom] = b
+            blk.cur.vars[x.par.nom] = obj
+        case Array:
+            if x.idx < 0 {
+                if len(obj) == 0 {
+                    obj = append(obj, Null { })
+                }
+
+                x.idx = len(obj) + x.idx
+            }
+
+            for x.idx + 1 > len(obj) {
+                obj = append(obj, Null { })
+            }
+
+            obj[x.idx] = b
+            blk.cur.vars[x.par.nom] = obj
+        default:
+            blk.cur.vars[x.nom] = b
+        }
+    case String:
+        blk.cur.vars[string(x)] = b
+    default:
+        blk.cur.vars[fmt.Sprintf("%v", x)] = b
+    }
+
+    return b
+}
+
+func (blk *Block) Define(a interface{}, b interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        blk.Define(x.Run(), b)
+    case *Variable:
+        switch obj := x.obj.(type) {
+        case Hash:
+            obj[x.nom] = b
+        case Array:
+            obj[x.idx] = b
+        default:
+            blk.cur.vars[x.nom] = b
+            blk.cur.hash[x.nom] = b
+        }
+    case String:
+        blk.cur.vars[string(x)] = b
+        blk.cur.hash[string(x)] = b
+    default:
+        blk.cur.vars[fmt.Sprintf("%v", x)] = b
+        blk.cur.hash[fmt.Sprintf("%v", x)] = b
+    }
+
+    return b
 }
 
 func (b *Block) Interpolate(s string) String {

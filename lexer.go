@@ -125,27 +125,6 @@ func (t *Token) Assignment() bool {
     return false
 }
 
-func (t *Token) VarName(a interface{}) string {
-    switch x := a.(type) {
-    case *Block:
-        return t.VarName(x.Run())
-    case *Variable:
-        return x.nom
-    case String:
-        if t.lit != ":" {
-            panic(fmt.Sprintf("Assignment operator \"%s\" requires variable invocant at %s", t.lit, t.pos))
-        }
-
-        return string(x)
-    default:
-        if t.lit != ":" {
-            panic(fmt.Sprintf("Assignment operator \"%s\" requires variable invocant at %s", t.lit, t.pos))
-        }
-
-        return fmt.Sprintf("%v", x)
-    }
-}
-
 func (t *Token) Term() bool {
     if t.BlockClose() {
         return true

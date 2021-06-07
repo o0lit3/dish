@@ -12,6 +12,8 @@ func Itemize(a interface{}) Array {
         return x
     case String:
         return x.Array()
+    case Null:
+        return Array { }
     default:
         return Array { x }
     }

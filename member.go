@@ -6,7 +6,25 @@ func Member(a interface{}, b interface{}) interface{} {
     case *Block:
         return Member(x.Run(), b)
     case *Variable:
-        return Member(x.Value(), b)
+        switch x.Value().(type) {
+        case Null:
+            switch y := b.(type) {
+            case String:
+                x.blk.cur.vars[x.nom] = Hash { }
+                return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], nom: string(y) }
+            case Number:
+                x.blk.cur.vars[x.nom] = Array { }
+                return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], idx: int(y) }
+            }
+        default:
+            switch out := Member(x.Value(), b).(type) {
+            case *Variable:
+                out.par = x
+                return out
+            default:
+                return out
+            }
+        }
     case Hash:
         switch y := b.(type) {
         case *Block:
@@ -102,12 +120,8 @@ func (a Hash) Members(b Array) Array {
     return out
 }
 
-func (a Hash) Member(b string) interface{} {
-    if _, ok := a[b]; ok {
-        return a[b]
-    }
-
-    return Null { }
+func (a Hash) Member(b string) *Variable {
+    return &Variable{ obj: a, nom: b }
 }
 
 func (a Array) Members(b Array) Array {
@@ -124,16 +138,20 @@ func (a Array) Members(b Array) Array {
     return out
 }
 
-func (a Array) Member(b int) interface{} {
+func (a Array) Member(b int) *Variable {
     if b < 0 && len(a) > 0 && len(a) + b < len(a) {
-        return a[len(a) + b]
+        return &Variable{ obj: a, idx: len(a) + b }
     }
 
     if len(a) > 0 && b < len(a) {
-        return a[b]
+        return &Variable{ obj: a, idx: b }
     }
 
-    return Null { }
+    if b < 0 {
+        return &Variable{ obj: a, idx: -b }
+    }
+
+    return &Variable{ obj: a, idx: b }
 }
 
 func (a String) Members(b Array) Array {
@@ -150,10 +168,18 @@ func (a String) Members(b Array) Array {
     return out
 }
 
-func (a String) Member(b int) interface{} {
-    if b < len(a) {
-        return String(string(string(a)[b]))
+func (a String) Member(b int) *Variable {
+    if b < 0 && len(a) > 0 && len(a) + b < len(a) {
+        return &Variable{ obj: a, idx: len(a) + b }
     }
 
-    return Null { }
+    if len(a) > 0 && b < len(a) {
+        return &Variable{ obj: a, idx: b }
+    }
+
+    if b < 0 {
+        return &Variable{ obj: a, idx: -b }
+    }
+
+    return &Variable{ obj: a, idx: b }
 }

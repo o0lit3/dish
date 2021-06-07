@@ -5,7 +5,7 @@ sums = (0..3000).map:i(
 )
 
 sums.grep:val:key(
-  sums.(val) == key && key < val
+  sums.val == key && key < val
 ).map:n(
-  "$(sums.(n)) $(n)"
+  [sums.n, n].join(" ")
 ).join("\n")
