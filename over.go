@@ -7,9 +7,9 @@ func Over(a interface{}, b interface{}) Boolean {
     case *Variable:
         return Over(x.Value(), b)
     case Hash:
-        return Over(Number(len(x)), b)
+        return Over(NewNumber(len(x)), b)
     case Array:
-        return Over(Number(len(x)), b)
+        return Over(NewNumber(len(x)), b)
     case String:
         switch y := b.(type) {
         case *Block:
@@ -19,13 +19,13 @@ func Over(a interface{}, b interface{}) Boolean {
         case String:
             return Boolean(x >= y)
         case Number:
-            return Boolean(x.Number() >= y)
+            return Boolean(x.Number().val.Cmp(y.val) >= 0)
         case Boolean:
-            return Boolean(x.Number() >= y.Number())
+            return Boolean(x.Number().val.Cmp(y.Number().val) >= 0)
         case Null:
-            return Boolean(x.Number() >= Number(0))
+            return Boolean(x.Number().val.Cmp(NewNumber(0).val) >= 0)
         default:
-            return Over(Number(len(x)), y)
+            return Over(NewNumber(len(x)), y)
         }
     case Number:
         switch y := b.(type) {
@@ -34,22 +34,22 @@ func Over(a interface{}, b interface{}) Boolean {
         case *Variable:
             return Over(x, y.Value())
         case Hash:
-            return Boolean(x >= Number(len(y)))
+            return Boolean(x.val.Cmp(NewNumber(len(y)).val) >= 0)
         case Array:
-            return Boolean(x >= Number(len(y)))
+            return Boolean(x.val.Cmp(NewNumber(len(y)).val) >= 0)
         case String:
-            return Boolean(x >= y.Number())
+            return Boolean(x.val.Cmp(y.Number().val) >= 0)
         case Number:
-            return Boolean(x >= y)
+            return Boolean(x.val.Cmp(y.val) >= 0)
         case Boolean:
-            return Boolean(x >= y.Number())
+            return Boolean(x.val.Cmp(y.Number().val) >= 0)
         case Null:
-            return Boolean(x >= Number(0))
+            return Boolean(x.val.Cmp(NewNumber(0).val) >= 0)
         }
     case Boolean:
         return Over(x.Number(), b)
     case Null:
-        return Over(Number(0), b)
+        return Over(NewNumber(0), b)
     }
 
     return Boolean(false)

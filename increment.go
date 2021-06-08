@@ -13,12 +13,12 @@ func Increment(a interface{}) interface{} {
     case String:
         return x.Increment()
     case Number:
-        return x + 1
+        return Number{ val: NewNumber(0).val.Add(x.val, NewNumber(1).val) }
     case Boolean:
         return Increment(x.Number())
     }
 
-    return Number(1)
+    return NewNumber(1)
 }
 
 func (a Hash) Increment() Hash {

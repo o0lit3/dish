@@ -28,7 +28,7 @@ func Mod(a interface{}, b interface{}) interface{} {
         case Boolean:
             return x.Mod(y.Number())
         case Null:
-            return x.Mod(Number(0))
+            return x.Mod(NewNumber(0))
         }
     case String:
         switch y := b.(type) {
@@ -43,7 +43,7 @@ func Mod(a interface{}, b interface{}) interface{} {
         case Boolean:
             return x.Mod(y.Number())
         case Null:
-            return x.Mod(Number(0))
+            return x.Mod(NewNumber(0))
         }
     case Number:
         switch y := b.(type) {
@@ -53,23 +53,23 @@ func Mod(a interface{}, b interface{}) interface{} {
             return Mod(x, y.Value())
         case Hash:
             if len(y) != 0 {
-                return Number(int(x) % len(y))
+                return NewNumber(x.Int() % len(y))
             }
         case Array:
             if len(y) != 0 {
-                return Number(int(x) % len(y))
+                return NewNumber(x.Int() % len(y))
             }
         case String:
             if len(y) != 0 {
-                return Number(int(x) % len(y))
+                return NewNumber(x.Int() % len(y))
             }
         case Number:
-            if y != 0 {
-                return Number(int(x) % int(y))
+            if y.val.Cmp(NewNumber(0).val) != 0 {
+                return NewNumber(x.Int() % y.Int())
             }
         case Boolean:
             if y {
-                return Number(0)
+                return NewNumber(0)
             }
         }
     case Boolean:
@@ -97,7 +97,7 @@ func (a Array) Filter(b *Block) Array {
     out := Array { }
 
     for i, val := range a {
-        if Not(b.Run(val, Number(i))) {
+        if Not(b.Run(val, NewNumber(i))) {
             continue
         }
 
@@ -108,14 +108,14 @@ func (a Array) Filter(b *Block) Array {
 }
 
 func (a Array) Mod(b Number) interface{} {
-    if b == 0 {
+    if b.val.Cmp(NewNumber(0).val) == 0 {
         return Null { }
     }
 
     out := Array { }
 
     for i, val := range a{
-        if i % int(b) > 0 {
+        if i % b.Int() > 0 {
             continue
         }
 
@@ -126,14 +126,14 @@ func (a Array) Mod(b Number) interface{} {
 }
 
 func (a String) Mod(b Number) interface{} {
-    if b == 0 {
+    if b.val.Cmp(NewNumber(0).val) == 0 {
         return Null { }
     }
 
     out := ""
 
     for i, c := range a {
-        if i % int(b) > 0 {
+        if i % b.Int() > 0 {
             continue
         }
 

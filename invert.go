@@ -13,12 +13,12 @@ func Invert(a interface{}) interface{} {
     case String:
         return x.Invert()
     case Number:
-        return Number(^int(x))
+        return NewNumber(^x.Int())
     case Boolean:
         return Boolean(!x)
     }
 
-    return Number(^0)
+    return NewNumber(^0)
 }
 
 func (a Hash) Invert() Hash {

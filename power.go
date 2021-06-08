@@ -1,5 +1,4 @@
 package main
-import("math")
 
 func Power(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -29,7 +28,7 @@ func Power(a interface{}, b interface{}) interface{} {
         case Boolean:
             return x.Rotate(y.Number())
         case Null:
-            return x.Rotate(Number(0))
+            return x.Rotate(NewNumber(0))
         }
     case String:
         switch y := b.(type) {
@@ -51,28 +50,28 @@ func Power(a interface{}, b interface{}) interface{} {
         case Array:
             return y.Rotate(x)
         case String:
-            return Number(math.Pow(float64(x), float64(y.Number())))
+            return x.Power(y.Number())
         case Number:
-            return Number(math.Pow(float64(x), float64(y)))
+            return x.Power(y)
         case Boolean:
-            return Number(math.Pow(float64(x), float64(y.Number())))
+            return x.Power(y.Number())
         case Null:
-            return Number(math.Pow(float64(x), 0))
+            return NewNumber(1)
         }
     case Boolean:
         return Power(x.Number(), b)
     case Null:
-        return Number(0)
+        return NewNumber(0)
     }
 
-    return Number(0)
+    return NewNumber(0)
 }
 
 func (a Array) Rotate(b Number) Array {
     out := Array { }
 
-    e := -int(b)
-    i := -int(b)
+    e := -b.Int()
+    i := -b.Int()
 
     if i < 0 {
         e = len(a) + i
@@ -89,6 +88,18 @@ func (a Array) Rotate(b Number) Array {
     for i < e && i < len(a) {
         out = append(out, a[i])
         i = i + 1
+    }
+
+    return out
+}
+
+func (a Number) Power(b Number) Number {
+    out := NewNumber(1)
+    idx := NewNumber(0)
+
+    for idx.val.Cmp(b.val) == -1 {
+        out = Number{ val: out.val.Mul(out.val, a.val) }
+        idx = Number{ val: idx.val.Add(idx.val, NewNumber(1).val) }
     }
 
     return out

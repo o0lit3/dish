@@ -17,18 +17,18 @@ func Product(a interface{}) interface{} {
     case Boolean:
         return x.Number()
     case Null:
-        return Number(0)
+        return NewNumber(0)
     }
 
     return Null { }
 }
 
 func (a Array) Product() Number {
-    out := Number(1)
+    out := NewNumber(1)
 
     for _, val := range a {
         if x, ok := Product(val).(Number); ok {
-            out *= x
+            out = Number{ val: out.val.Mul(out.val, x.val) }
         }
     }
 

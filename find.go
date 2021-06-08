@@ -3,6 +3,7 @@ package main
 import(
     "fmt"
     "strings"
+    "math/big"
 )
 
 func Find(a interface{}, b interface{}) interface{} {
@@ -36,13 +37,30 @@ func Find(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Find(x, y.Value())
         case String:
-            return Number(strings.Index(string(x), string(y)))
+            return NewNumber(strings.Index(string(x), string(y)))
         default:
-            return Number(strings.Index(string(x), fmt.Sprintf("%v", y)))
+            return NewNumber(strings.Index(string(x), fmt.Sprintf("%v", y)))
         }
+    case Number:
+        switch y := b.(type) {
+        case *Block:
+            return Find(x, y.Run())
+        case *Variable:
+            return Find(x, y.Value())
+        case String:
+            return x.Round(y.Number())
+        case Number:
+            return x.Round(y)
+        case Boolean:
+            return x.Round(y.Number())
+        case Null:
+            return x.Round(NewNumber(0))
+        }
+    case Boolean:
+       return Find(x.Number(), b)
     }
 
-    return Null { }
+    return NewNumber(0)
 }
 
 func (a Hash) Find(b interface{}) String {
@@ -58,9 +76,21 @@ func (a Hash) Find(b interface{}) String {
 func (a Array) Find(b interface{}) Number {
     for i, val := range a {
         if Equals(val, b) {
-            return Number(i)
+            return NewNumber(i)
         }
     }
 
-    return Number(-1)
+    return NewNumber(-1)
+}
+
+func (a Number) Round(b Number) Number {
+    if pow, ok := Power(NewNumber(10), b).(Number); ok {
+        o := new(big.Rat).Mul(a.val, pow.val)
+        i := new(big.Int).Quo(o.Num(), o.Denom())
+
+        o = o.SetInt(i)
+        return Number{ val: o.Quo(o, pow.val) }
+    }
+
+    return NewNumber(0)
 }

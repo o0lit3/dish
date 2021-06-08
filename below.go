@@ -7,9 +7,9 @@ func Below(a interface{}, b interface{}) Boolean {
     case *Variable:
         return Below(x.blk.Value(x), b)
     case Hash:
-        return Below(Number(len(x)), b)
+        return Below(NewNumber(len(x)), b)
     case Array:
-        return Below(Number(len(x)), b)
+        return Below(NewNumber(len(x)), b)
     case String:
         switch y := b.(type) {
         case *Block:
@@ -19,13 +19,13 @@ func Below(a interface{}, b interface{}) Boolean {
         case String:
             return Boolean(x < y)
         case Number:
-            return Boolean(x.Number() < y)
+            return Boolean(x.Number().val.Cmp(y.val) == -1)
         case Boolean:
-            return Boolean(x.Number() < y.Number())
+            return Boolean(x.Number().val.Cmp(y.Number().val) == -1)
         case Null:
-            return Boolean(x.Number() < Number(0))
+            return Boolean(x.Number().val.Cmp(NewNumber(0).val) == -1)
         default:
-            return Below(Number(len(x)), y)
+            return Below(NewNumber(len(x)), y)
         }
     case Number:
         switch y := b.(type) {
@@ -34,22 +34,22 @@ func Below(a interface{}, b interface{}) Boolean {
         case *Variable:
             return Below(x, y.blk.Value(y))
         case Hash:
-            return Boolean(x < Number(len(y)))
+            return Boolean(x.val.Cmp(NewNumber(len(y)).val) == -1)
         case Array:
-            return Boolean(x < Number(len(y)))
+            return Boolean(x.val.Cmp(NewNumber(len(y)).val) == -1)
         case String:
-            return Boolean(x < y.Number())
+            return Boolean(x.val.Cmp(y.Number().val) == -1)
         case Number:
-            return Boolean(x < y)
+            return Boolean(x.val.Cmp(y.val) == -1)
         case Boolean:
-            return Boolean(x < y.Number())
+            return Boolean(x.val.Cmp(y.Number().val) == -1)
         case Null:
-            return Boolean(x < Number(0))
+            return Boolean(x.val.Cmp(NewNumber(0).val) == -1)
         }
     case Boolean:
         return Below(x.Number(), b)
     case Null:
-        return Below(Number(0), b)
+        return Below(NewNumber(0), b)
     }
 
     return Boolean(false)

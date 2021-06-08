@@ -2,11 +2,11 @@ package main
 
 import (
     "fmt"
-    "math"
     "sort"
     "strings"
     "strconv"
     "unicode"
+    "math/big"
 )
 
 type Variable struct {
@@ -23,7 +23,9 @@ type Array []interface{}
 
 type String string
 
-type Number float64
+type Number struct {
+    val *big.Rat
+}
 
 type Boolean bool
 
@@ -35,25 +37,34 @@ func (n Null) String() string {
 
 func (b Boolean) Number() Number {
     if b {
-        return Number(1)
+        return NewNumber(1)
     }
 
-    return Number(0)
+    return NewNumber(0)
+}
+
+func NewNumber(num int) Number {
+    return Number{ val: big.NewRat(int64(num), 1) }
+}
+
+func (n Number) Int() int {
+    return int(new(big.Int).Quo(n.val.Num(), n.val.Denom()).Int64())
 }
 
 func (n Number) String() string {
-    if n == 0 {
-        return "0"
+    if n.val.IsInt() {
+        return n.val.RatString()
     }
 
-    if float64(n) == float64(int64(n)) {
-        return strconv.FormatFloat(float64(n), 'f', -1, 64)
+    prec := 100
+    val := n.val.FloatString(prec)
+
+    for !strings.HasSuffix(val, "0000000000") && prec < 1000 {
+        prec += 100
+        val = n.val.FloatString(prec)
     }
 
-    p := math.Pow(10, float64(12))
-    r := int(float64(n) * p + math.Copysign(0.5, float64(n) * p))
-
-    return strconv.FormatFloat(float64(r) / p, 'f', -1, 64)
+    return strings.TrimRight(val, "0")
 }
 
 func (s String) String() string {
@@ -84,38 +95,13 @@ func (s String) String() string {
 }
 
 func (s String) Number() Number {
-    num := ""
-    dec := false;
+    out := NewNumber(0)
 
-    for _, c := range s {
-        if unicode.IsDigit(c) || (c == '.' && !dec) {
-            num += string(c)
-
-            if c == '.' {
-                dec = true
-            }
-        } else {
-            break
-        }
+    if val, ok := out.val.SetString(string(s)); ok {
+        return Number{ val: val }
     }
 
-    if num != "" {
-        if dec {
-            val, err := strconv.ParseFloat(num, 64)
-
-            if err == nil {
-                return Number(val)
-            }
-        } else {
-            val, err := strconv.Atoi(num)
-
-            if err == nil {
-                return Number(val)
-            }
-        }
-    }
-
-    return Number(0)
+    return out
 }
 
 func (s String) Array() Array {
@@ -324,7 +310,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Average(a))
         case ">", "maxium", "max", "ceiling", "ceil":
             blk.Register(Max(a))
-        case "|", "unique", "uniq":
+        case "|", "unique", "uniq", "abs":
             blk.Register(Unique(a))
         case "#", "size", "length", "len":
             blk.Register(Length(a))
@@ -362,7 +348,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Switch(blk.Blockify(a), blk.Blockify(b)))
         case "??", "redo":
             blk.Register(Redo(Blockify(a), Blockify(b)))
-        case "@", "find", "index":
+        case "@", "find", "index", "round":
             blk.Register(Find(a, b))
         case "**", "power", "pow", "sort":
             blk.Register(Power(a, b))
@@ -521,22 +507,10 @@ func (blk *Block) Interpret() interface{} {
         blk.cur.vars[t.lit] = blk.FindVar(t.lit)
         blk.Register(&Variable { blk: blk, nom: t.lit })
     case NUM:
-        if strings.Contains(t.lit, ".") {
-            val, err := strconv.ParseFloat(t.lit, 64)
-
-            if err != nil {
-                panic(fmt.Sprintf("Malformed number at %s", t.pos))
-            }
-
-            blk.Register(Number(val))
+        if val, ok := new(big.Rat).SetString(t.lit); ok {
+            blk.Register(Number{ val: val })
         } else {
-            val, err := strconv.Atoi(t.lit)
-
-            if err != nil {
-                panic(fmt.Sprintf("Malformed number at %s", t.pos))
-            }
-
-            blk.Register(Number(val))
+            blk.Register(NewNumber(0))
         }
     case STR:
         blk.Register(blk.Interpolate(t.lit))

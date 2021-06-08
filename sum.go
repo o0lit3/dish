@@ -17,18 +17,18 @@ func Sum(a interface{}) interface{} {
     case Boolean:
         return x.Number()
     case Null:
-        return Number(0)
+        return NewNumber(0)
     }
 
     return Null { }
 }
 
 func (a Array) Sum() Number {
-    out := Number(0)
+    out := NewNumber(0)
 
     for _, val := range a {
         if x, ok := Sum(val).(Number); ok {
-            out += x
+            out = Number{ val: out.val.Add(out.val, x.val) }
         }
     }
 

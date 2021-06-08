@@ -14,12 +14,13 @@ func Max(a interface{}) interface{} {
     case String:
         return x.Max()
     case Number:
-        return Number(math.Ceil(float64(x)))
+        val, _ := x.val.Float64()
+        return NewNumber(int(math.Ceil(val)))
     case Boolean:
         return x.Number()
     }
 
-    return Number(0)
+    return NewNumber(0)
 }
 
 func (a Array) Max() interface{} {

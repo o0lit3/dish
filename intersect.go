@@ -53,22 +53,22 @@ func Intersect(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Intersect(x, y.Value())
         case Hash:
-            return int(x) & len(y)
+            return NewNumber(x.Int() & len(y))
         case Array:
-            return int(x) & len(y)
+            return NewNumber(x.Int() & len(y))
         case String:
-            return int(x) & int(y.Number())
+            return NewNumber(x.Int() & y.Number().Int())
         case Number:
-            return int(x) & int(y)
+            return NewNumber(x.Int() & y.Int())
         case Boolean:
-            return int(x) & int(y.Number())
+            return NewNumber(x.Int() & y.Number().Int())
         case Null:
-            return int(x) & 0
+            return NewNumber(x.Int() & 0)
         }
     case Boolean:
         return Intersect(x.Number(), b)
     case Null:
-        return Intersect(Number(0), b)
+        return Intersect(NewNumber(0), b)
     }
 
     return Null { }

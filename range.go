@@ -18,7 +18,7 @@ func Range(a interface{}, b interface{}) interface{} {
         start = int([]rune(string(x))[len(x) - 1])
         str = true
     case Number:
-        start = int(x)
+        start = x.Int()
     case Boolean:
         start = map[bool]int{true: 1, false: 0}[bool(x)]
     default:
@@ -37,7 +37,7 @@ func Range(a interface{}, b interface{}) interface{} {
     case String:
         end = int([]rune(string(y))[len(y) - 1])
     case Number:
-        end = int(y)
+        end = y.Int()
     case Boolean:
         end = map[bool]int{true: 1, false: 0}[bool(y)]
     default:
@@ -52,7 +52,7 @@ func Range(a interface{}, b interface{}) interface{} {
             if str {
                 out = append(out, String(string(n)))
             } else {
-                out = append(out, Number(n))
+                out = append(out, NewNumber(n))
             }
 
             n = n + 1
@@ -67,7 +67,7 @@ func Range(a interface{}, b interface{}) interface{} {
             if str {
                 out = append(out, String(string(n)))
             } else {
-                out = append(out, Number(n))
+                out = append(out, NewNumber(n))
             }
 
             n = n - 1

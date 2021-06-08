@@ -14,7 +14,7 @@ func Member(a interface{}, b interface{}) interface{} {
                 return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], nom: string(y) }
             case Number:
                 x.blk.cur.vars[x.nom] = Array { }
-                return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], idx: int(y) }
+                return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], idx: y.Int() }
             }
         default:
             switch out := Member(x.Value(), b).(type) {
@@ -59,11 +59,11 @@ func Member(a interface{}, b interface{}) interface{} {
         case Array:
             return x.Members(y)
         case String:
-            return x.Member(int(y.Number()))
+            return x.Member(y.Number().Int())
         case Number:
-            return x.Member(int(y))
+            return x.Member(y.Int())
         case Boolean:
-            return x.Member(int(y.Number()))
+            return x.Member(y.Number().Int())
         case Null:
             return x.Member(0)
         }
@@ -82,11 +82,11 @@ func Member(a interface{}, b interface{}) interface{} {
         case Array:
             return x.Members(y)
         case String:
-            return x.Member(int(y.Number()))
+            return x.Member(y.Number().Int())
         case Number:
-            return x.Member(int(y))
+            return x.Member(y.Int())
         case Boolean:
-            return x.Member(int(y.Number()))
+            return x.Member(y.Number().Int())
         case Null:
             return x.Member(0)
         }

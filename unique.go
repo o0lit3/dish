@@ -13,9 +13,13 @@ func Unique(a interface{}) interface{} {
         return x.Unique()
     case String:
         return x.Unique()
-    default:
-        return x
+    case Number:
+        return x.Abs()
+    case Boolean:
+        return x.Number().Abs()
     }
+
+    return NewNumber(0)
 }
 
 func (a Array) Unique() Array {
@@ -46,4 +50,12 @@ func (a String) Unique() String {
     }
 
     return String(out)
+}
+
+func (a Number) Abs() Number {
+    if a.Int() > 0 {
+        return a
+    }
+
+    return Number{ val: NewNumber(0).val.Neg(a.val) }
 }

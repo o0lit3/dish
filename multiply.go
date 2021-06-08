@@ -19,7 +19,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case Boolean:
             return x.Multiply(y.Number())
         case Null:
-            return x.Multiply(Number(0))
+            return x.Multiply(NewNumber(0))
         }
     case Array:
         switch y := b.(type) {
@@ -40,7 +40,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case Boolean:
             return x.Multiply(y.Number())
         case Null:
-            return x.Multiply(Number(0))
+            return x.Multiply(NewNumber(0))
         }
     case String:
         switch y := b.(type) {
@@ -55,7 +55,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case Boolean:
             return x.Multiply(y.Number())
         case Null:
-            return x.Multiply(Number(0))
+            return x.Multiply(NewNumber(0))
         }
     case Number:
         switch y := b.(type) {
@@ -70,11 +70,11 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case String:
             return y.Multiply(x)
         case Number:
-            return x * y
+            return Number{ val: NewNumber(0).val.Mul(x.val, y.val) }
         case Boolean:
-            return x * y.Number()
+            return Number{ val: NewNumber(0).val.Mul(x.val, y.Number().val) }
         case Null:
-            return x * Number(0)
+            return NewNumber(0)
         }
     case Boolean:
         return Multiply(x.Number(), b)
@@ -97,7 +97,7 @@ func (a Array) Map(b *Block) Array {
     out := Array { }
 
     for i, val := range a {
-        out = append(out, b.Run(val, Number(i)))
+        out = append(out, b.Run(val, NewNumber(i)))
     }
 
     return out
@@ -126,15 +126,16 @@ func (a Array) Multiply(b Number) Array {
 func (a String) Multiply(b Number) String {
     out := ""
 
-    for n := 0; n < int(b); n++ {
+    for n := 0; n < b.Int(); n++ {
         out += string(a)
     }
 
-    if b != Number(int(b)) {
-        rem := Number(len(a)) * (b - Number(int(b)))
+    if !b.val.IsInt() {
+        val, _ := b.val.Float64()
+        rem := int(float64(len(a)) * (val - float64(b.Int())))
 
         for _, c := range a {
-            if Number(len(out)) < Number(int(b) * len(a)) + rem {
+            if len(out) < b.Int() * len(a) + rem {
                 out += string(c)
             } else {
                 break
@@ -156,7 +157,7 @@ func (a Array) DotProduct(b Array) Array {
                 if bcols, ok := brow.(Array); ok {
                     for j, bval := range bcols {
                         if j >= len(row) {
-                            row = append(row, Number(0))
+                            row = append(row, NewNumber(0))
                         }
 
                         if k < len(acols) {

@@ -13,12 +13,12 @@ func Decrement(a interface{}) interface{} {
     case String:
         return x.Decrement()
     case Number:
-        return x - 1
+        return Number{ val: NewNumber(0).val.Sub(x.val, NewNumber(1).val) }
     case Boolean:
         return Decrement(x.Number())
     }
 
-    return Number(-1)
+    return NewNumber(-1)
 }
 
 func (a Hash) Decrement() Hash {

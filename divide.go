@@ -16,16 +16,16 @@ func Divide(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Divide(x, y.Value())
         case String:
-            if y.Number() != 0 {
+            if y.Number().val.Cmp(NewNumber(0).val) != 0 {
                 return x.Divide(y.Number())
             }
         case Number:
-            if y != 0 {
+            if y.val.Cmp(NewNumber(0).val) != 0 {
                 return x.Divide(y)
             }
         case Boolean:
             if y {
-                return x.Divide(Number(1))
+                return x.Divide(NewNumber(1))
             }
         }
     case String:
@@ -44,12 +44,12 @@ func Divide(a interface{}, b interface{}) interface{} {
         case String:
             return x.Split(y)
         case Number:
-            if y != 0 {
+            if y.val.Cmp(NewNumber(0).val) != 0 {
                 return x.Divide(y)
             }
         case Boolean:
             if y {
-                return x.Divide(Number(1))
+                return x.Divide(NewNumber(1))
             }
         }
     case Number:
@@ -60,19 +60,19 @@ func Divide(a interface{}, b interface{}) interface{} {
             return Divide(x, y.Value())
         case Hash:
             if len(y) != 0 {
-                return x / Number(len(y))
+                return Number{ val: NewNumber(0).val.Quo(x.val, NewNumber(len(y)).val) }
             }
         case Array:
             if len(y) != 0 {
-                return x / Number(len(y))
+                return Number{ val: NewNumber(0).val.Quo(x.val, NewNumber(len(y)).val) }
             }
         case String:
             if len(y) != 0 {
-                return x / Number(len(y))
+                return Number{ val: NewNumber(0).val.Quo(x.val, NewNumber(len(y)).val) }
             }
         case Number:
-            if y != 0 {
-                return x / y
+            if y.val.Cmp(NewNumber(0).val) != 0 {
+                return Number{ val: NewNumber(0).val.Quo(x.val, y.val) }
             }
         case Boolean:
             if y {
@@ -93,9 +93,9 @@ func (a Array) Split(b *Block) Array {
     for _, val := range a {
         switch y := b.Run(val).(type) {
         case Hash:
-            return a.Divide(Number(len(y)))
+            return a.Divide(NewNumber(len(y)))
         case Array:
-            return a.Divide(Number(len(y)))
+            return a.Divide(NewNumber(len(y)))
         case Boolean:
             if y {
                 items = append(items, Array { })
@@ -131,10 +131,10 @@ func (a String) Split(b String) Array {
 
 func (a Array) Divide(b Number) Array {
     out := Array { }
-    x := int(len(a) / int(b))
+    x := int(len(a) / b.Int())
     i := 0
 
-    for len(out) < len(a) % int(b) {
+    for len(out) < len(a) % b.Int() {
         set := Array { }
 
         for len(set) < x + 1 {
@@ -145,7 +145,7 @@ func (a Array) Divide(b Number) Array {
         out = append(out, set)
     }
 
-    for len(out) < int(b) {
+    for len(out) < b.Int() {
         set := Array { }
 
         for len(set) < x {
@@ -161,10 +161,10 @@ func (a Array) Divide(b Number) Array {
 
 func (a String) Divide(b Number) Array {
     out := Array { }
-    x := int(len(a) / int(b))
+    x := int(len(a) / b.Int())
     i := 0
 
-    for len(out) < len(a) % int(b) {
+    for len(out) < len(a) % b.Int() {
         set := ""
 
         for len(set) < x + 1 {
@@ -175,7 +175,7 @@ func (a String) Divide(b Number) Array {
         out = append(out, String(set))
     }
 
-    for len(out) < int(b) {
+    for len(out) < b.Int() {
         set := ""
 
         for len(set) < x {

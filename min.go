@@ -14,12 +14,13 @@ func Min(a interface{}) interface{} {
     case String:
         return x.Min()
     case Number:
-        return Number(math.Floor(float64(x)))
+        val, _ := x.val.Float64()
+        return NewNumber(int(math.Floor(val)))
     case Boolean:
         return x.Number()
     }
 
-    return Number(0)
+    return NewNumber(0)
 }
 
 func (a Array) Min() interface{} {

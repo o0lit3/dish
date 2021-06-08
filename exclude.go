@@ -53,22 +53,22 @@ func Exclude(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Exclude(x, y.Value())
         case Hash:
-            return int(x) ^ len(y)
+            return NewNumber(x.Int() ^ len(y))
         case Array:
-            return int(x) ^ len(y)
+            return NewNumber(x.Int() ^ len(y))
         case String:
-            return int(x) ^ int(y.Number())
+            return NewNumber(x.Int() ^ y.Number().Int())
         case Number:
-            return int(x) ^ int(y)
+            return NewNumber(x.Int() ^ y.Int())
         case Boolean:
-            return int(x) ^ int(y.Number())
+            return NewNumber(x.Int() ^ y.Number().Int())
         case Null:
-            return int(x) ^ 0
+            return NewNumber(x.Int() ^ 0)
         }
     case Boolean:
         return Exclude(x.Number(), b)
     case Null:
-        return Exclude(Number(0), b)
+        return Exclude(NewNumber(0), b)
     }
 
     return Null { }

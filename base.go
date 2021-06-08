@@ -14,9 +14,9 @@ func Base(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Base(x, y.Value())
         case Hash:
-            return x.Base(Number(len(y)))
+            return x.Base(NewNumber(len(y)))
         case Array:
-            return x.Base(Number(len(y)))
+            return x.Base(NewNumber(len(y)))
         case String:
             return x.Base(y.Number())
         case Number:
@@ -29,9 +29,9 @@ func Base(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Base(x, y.Value())
         case Hash:
-            return x.Base(Number(len(y)))
+            return x.Base(NewNumber(len(y)))
         case Array:
-            return x.Base(Number(len(y)))
+            return x.Base(NewNumber(len(y)))
         case String:
             return x.Base(y.Number())
         case Number:
@@ -46,9 +46,9 @@ func Base(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Base(x, y.Value())
         case Hash:
-            return x.Base(Number(len(y)))
+            return x.Base(NewNumber(len(y)))
         case Array:
-            return x.Base(Number(len(y)))
+            return x.Base(NewNumber(len(y)))
         case String:
             return x.Base(y.Number())
         case Number:
@@ -84,9 +84,9 @@ func (a Array) Base(b Number) Array {
 }
 
 func (a Number) Base(b Number) String {
-    if b < 2 || b > 36 {
+    if b.val.Cmp(NewNumber(2).val) == -1 || b.val.Cmp(NewNumber(36).val) == 1 {
         return String("")
     }
 
-    return String(strconv.FormatInt(int64(a), int(b)))
+    return String(strconv.FormatInt(int64(a.Int()), b.Int()))
 }

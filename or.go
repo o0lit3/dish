@@ -25,7 +25,7 @@ func Or(a interface{}, b interface{}) interface{} {
 
         return Or(Boolean(false), b)
     case Number:
-        if x != 0 {
+        if x.val.Cmp(NewNumber(0).val) != 0 {
             return x
         }
 
@@ -59,7 +59,7 @@ func Or(a interface{}, b interface{}) interface{} {
 
             return Boolean(false)
         case Number:
-            if y != 0 {
+            if y.val.Cmp(NewNumber(0).val) != 0 {
                 return y
             }
 

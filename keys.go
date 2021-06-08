@@ -31,7 +31,7 @@ func (a Array) Keys() Array {
     out := Array { }
 
     for i := range a {
-        out = append(out, Number(i))
+        out = append(out, NewNumber(i))
     }
 
     return out

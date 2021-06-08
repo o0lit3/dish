@@ -18,7 +18,7 @@ func Average(a interface{}) interface{} {
         return x.Number()
     }
 
-    return Number(0)
+    return NewNumber(0)
 }
 
 func (a Array) Average() interface{} {

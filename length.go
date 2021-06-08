@@ -7,16 +7,16 @@ func Length(a interface{}) interface{} {
     case *Variable:
         return Length(x.Value())
     case Hash:
-        return Number(len(x))
+        return NewNumber(len(x))
     case Array:
-        return Number(len(x))
+        return NewNumber(len(x))
     case String:
-        return Number(len(x))
+        return NewNumber(len(x))
     case Number:
-        return Number(1)
+        return NewNumber(1)
     case Boolean:
-        return Number(1)
+        return NewNumber(1)
     }
 
-    return Number(0)
+    return NewNumber(0)
 }

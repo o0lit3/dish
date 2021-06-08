@@ -24,11 +24,11 @@ func Equals(a interface{}, b interface{}) Boolean {
         case String:
             return Boolean(x == y)
         case Number:
-            return Boolean(x.Number() == y)
+            return Boolean(x.Number().val.Cmp(y.val) == 0)
         case Boolean:
-            return Boolean(x.Number() == y.Number())
+            return Boolean(x.Number().val.Cmp(y.Number().val) == 0)
         case Null:
-            return Boolean(x.Number() == Number(0))
+            return Boolean(x.Number().val.Cmp(NewNumber(0).val) == 0)
         }
     case Number:
         switch y := b.(type) {
@@ -37,22 +37,22 @@ func Equals(a interface{}, b interface{}) Boolean {
         case *Variable:
             return Equals(x, y.Value())
         case Hash:
-            return Boolean(x == Number(len(y)))
+            return Boolean(x.val.Cmp(NewNumber(len(y)).val) == 0)
         case Array:
-            return Boolean(x == Number(len(y)))
+            return Boolean(x.val.Cmp(NewNumber(len(y)).val) == 0)
         case String:
-            return Boolean(x == y.Number())
+            return Boolean(x.val.Cmp(y.Number().val) == 0)
         case Number:
-            return Boolean(x == y)
+            return Boolean(x.val.Cmp(y.val) == 0)
         case Boolean:
-            return Boolean(x == y.Number())
+            return Boolean(x.val.Cmp(y.Number().val) == 0)
         case Null:
-            return Boolean(x == Number(0))
+            return Boolean(x.val.Cmp(NewNumber(0).val) == 0)
         }
     case Boolean:
         return Equals(x.Number(), b)
     case Null:
-        return Equals(Number(0), b)
+        return Equals(NewNumber(0), b)
     }
 
     return Boolean(false)

@@ -46,7 +46,7 @@ func Subtract(a interface{}, b interface{}) interface{} {
         case Array:
             return Array{ x }.Subtract(y)
         case String:
-            return x.Number() - y.Number()
+            return Number{ val: NewNumber(0).val.Sub(x.Number().val, y.Number().val) }
         default:
             return Subtract(x.Number(), y)
         }
@@ -61,18 +61,18 @@ func Subtract(a interface{}, b interface{}) interface{} {
         case Array:
             return Array{ x }.Subtract(y)
         case String:
-            return x - y.Number()
+            return Number{ val: NewNumber(0).val.Sub(x.val, y.Number().val) }
         case Number:
-            return x - y
+            return Number{ val: NewNumber(0).val.Sub(x.val, y.val) }
         case Boolean:
-            return x - y.Number()
+            return Number{ val: NewNumber(0).val.Sub(x.val, y.Number().val) }
         case Null:
-            return x - Number(0)
+            return x
         }
     case Boolean:
         return Subtract(x.Number(), b)
     case Null:
-        return Subtract(Number(0), b)
+        return Subtract(NewNumber(0), b)
     }
 
     return Null { }

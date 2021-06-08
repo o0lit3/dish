@@ -3,7 +3,7 @@
     a = 0
     b = 1
   ] + (
-    (0..28).map(
+    (0..98).map(
       prev = a
       a = b
       b += prev

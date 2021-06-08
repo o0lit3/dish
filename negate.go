@@ -11,28 +11,24 @@ func Negate(a interface{}) interface{} {
     case Array:
         return x.Negate()
     case String:
-        return -x.Number()
+        return Number{ val: NewNumber(0).val.Neg(x.Number().val) }
     case Number:
-        return -x
+        return Number{ val: x.val.Neg(x.val) }
     case Boolean:
-        return -x.Number()
+        return Number{ val: NewNumber(0).val.Neg(x.Number().val) }
     case Null:
-        return Number(0)
+        return NewNumber(0)
     }
 
     return Null { }
 }
 
 func (a Array) Negate() Number {
-    out := Number(0)
+    out := NewNumber(0)
 
-    for i, val := range a {
+    for _, val := range a {
         if x, ok := Negate(val).(Number); ok {
-            if i == 0 {
-                out = x
-            } else {
-                out += x
-            }
+            out = Number{ val: out.val.Add(out.val, x.val) }
         }
     }
 

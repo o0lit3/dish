@@ -14,9 +14,9 @@ func Convert(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Convert(x, y.Value())
         case Hash:
-            return x.Convert(Number(len(y)))
+            return x.Convert(NewNumber(len(y)))
         case Array:
-            return x.Convert(Number(len(y)))
+            return x.Convert(NewNumber(len(y)))
         case String:
             return x.Convert(y.Number())
         case Number:
@@ -29,9 +29,9 @@ func Convert(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Convert(x, y.Value())
         case Hash:
-            return x.Convert(Number(len(y)))
+            return x.Convert(NewNumber(len(y)))
         case Array:
-            return x.Convert(Number(len(y)))
+            return x.Convert(NewNumber(len(y)))
         case String:
             return x.Convert(y.Number())
         case Number:
@@ -44,9 +44,9 @@ func Convert(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Convert(x, y.Value())
         case Hash:
-            return x.Convert(Number(len(y)))
+            return x.Convert(NewNumber(len(y)))
         case Array:
-            return x.Convert(Number(len(y)))
+            return x.Convert(NewNumber(len(y)))
         case String:
             return x.Convert(y.Number())
         case Number:
@@ -57,7 +57,7 @@ func Convert(a interface{}, b interface{}) interface{} {
     case Boolean:
         return Base(x.Number(), b)
     case Null:
-        return Number(0)
+        return NewNumber(0)
     }
 
     return Null { }
@@ -84,11 +84,11 @@ func (a Array) Convert(b Number) Array {
 }
 
 func (a String) Convert(b Number) Number {
-    if b < 2 || b > 36 {
-        return Number(0)
+    if b.val.Cmp(NewNumber(2).val) == -1 || b.val.Cmp(NewNumber(36).val) == 1 {
+        return NewNumber(0)
     }
 
-    out, _ := strconv.ParseInt(string(a), int(b), 64)
+    out, _ := strconv.ParseInt(string(a), b.Int(), 64)
 
-    return Number(out)
+    return NewNumber(int(out))
 }

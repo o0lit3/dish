@@ -7,7 +7,7 @@ func Redo(a *Block, b *Block) interface{} {
     i := 0
 
     for !Not(a.Run()) {
-        val = b.Run(a, Number(i))
+        val = b.Run(a, NewNumber(i))
         i = i + 1
     }
 
