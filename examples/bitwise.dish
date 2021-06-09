@@ -1,0 +1,17 @@
+// https://rosettacode.org/wiki/Bitwise_operations
+
+a = 14
+b = 3
+
+[
+  ["a", a]
+  ["b", b]
+  ["a & b", a & b]
+  ["a | b", a | b]
+  ["a ^ b", a ^ b]
+  ["^a", ^a]
+  ["a << b", a << b]
+  ["a >> b", a >> b]
+].map:n(
+  n.join(" = ")
+).join("\n")
