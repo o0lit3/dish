@@ -234,15 +234,24 @@ func (b *Block) Blockify(a interface{}) Array {
         case VAL:
             return Array { x }
         case LST:
-            out := Array { }
             blk := b.Branch(VAL)
+            out := Array { }
+            i := 0
 
-            for _, t := range x.toks {
-                blk.toks = append(blk.toks, t)
+            for i < len(x.toks) {
+                if i + 1 < len(x.toks) && x.toks[i].tok == BLK && x.toks[i + 1].tok == FIN {
+                    x.toks[i].blk.src = b
+                    out = append(out, x.toks[i].blk)
+                    i = i + 2
+                } else {
+                    blk.toks = append(blk.toks, x.toks[i])
 
-                if t.tok == FIN {
-                    out = append(out, blk)
-                    blk = b.Branch(VAL)
+                    if x.toks[i].tok == FIN {
+                        out = append(out, blk)
+                        blk = b.Branch(VAL)
+                    }
+
+                    i = i + 1
                 }
             }
 

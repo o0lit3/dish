@@ -1,5 +1,10 @@
 package main
 
+import(
+    "math"
+    "math/big"
+)
+
 func Power(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
@@ -94,6 +99,13 @@ func (a Array) Rotate(b Number) Array {
 }
 
 func (a Number) Power(b Number) Number {
+    if b.val.Cmp(NewNumber(0).val) == -1 || !b.val.IsInt() {
+        x, _ := a.val.Float64()
+        y, _ := b.val.Float64()
+
+        return Number{ val: new(big.Rat).SetFloat64(math.Pow(x, y)) }
+    }
+
     out := NewNumber(1)
     idx := NewNumber(0)
 

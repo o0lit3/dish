@@ -1,11 +1,21 @@
-sums = (0..3000).map:i(
-  (1..i*0.5).grep:n(
-    i % n == 0
-  ).sum
+// https://rosettacode.org/wiki/Amicable_pairs
+
+divisors = :i(
+  out: [1]
+
+  (1..i**0.5).map:j(
+    (i % j == 0 && j > 1).and(out << j, (j != i / j).and(out << i / j))
+  )
+
+  (i == 1).switch([], out)
 )
 
-sums.grep:val:key(
-  sums.val == key && key < val
+sums = (0..20000).map:i(
+  i.divisors.sum
+)
+
+sums.grep:sum:i(
+  sums.sum == i && i < sum
 ).map:n(
   [sums.n, n].join(" ")
 ).join("\n")

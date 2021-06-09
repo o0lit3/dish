@@ -253,6 +253,7 @@ func (b *Block) Run(args ...interface{}) interface{} {
 
             if i < len(b.args) {
                 b.cur.vars[b.args[i]] = val
+                b.cur.hash[b.args[i]] = val
             }
         }
     }
@@ -352,7 +353,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Find(a, b))
         case "**", "power", "pow", "sort":
             blk.Register(Power(a, b))
-        case "*", "multiply", "repeat", "map":
+        case "*", "multiply", "repeat", "map", "each", "dot":
             blk.Register(Multiply(a, b))
         case "/", "divide", "split":
             blk.Register(Divide(a, b))

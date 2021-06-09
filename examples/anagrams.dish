@@ -1,7 +1,8 @@
+// https://rosettacode.org/wiki/Anagrams
 // curl -s "http://wiki.puzzlers.org/pub/wordlists/unixdict.txt" | dish examples/anagrams.dish
 
 stdin.map:word(
-  sorted = word.sort
+  sorted: word.sort
   anagram.sorted << word
   (#(anagram.sorted) > max).and(max = #(anagram.sorted))
 )

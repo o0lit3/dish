@@ -1,9 +1,11 @@
+// https://rosettacode.org/wiki/Fibonacci_sequence
+
 (
   [
     a = 0
     b = 1
   ] + (
-    (0..98).map(
+    (0..48).map(
       prev = a
       a = b
       b += prev

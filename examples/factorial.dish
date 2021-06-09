@@ -1,3 +1,5 @@
-(0..50).map:n(
+// https://rosettacode.org/wiki/Factorial
+
+(0..28).map:n(
   *(1..n)
 ).join("\n")

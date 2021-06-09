@@ -39,6 +39,7 @@ type Position struct {
 type Token struct {
     pos Position
     tok Lexeme
+    opx bool
     lit string
     blk *Block
     args []string
@@ -140,7 +141,7 @@ func (t *Token) Term() bool {
 
 func (t *Token) Precedence() int {
     if t.tok == OP1 {
-        return 16
+        return 15
     }
 
     switch t.lit {
@@ -175,11 +176,15 @@ func (t *Token) Precedence() int {
     case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
         return 0
     default:
-        return 15
+        return 16
     }
 }
 
 func (a *Token) Higher(b *Token) bool {
+    if a.opx && b.opx {
+        return true
+    }
+
     if a.Precedence() > b.Precedence() {
         return true
     }
@@ -287,7 +292,7 @@ func (l *Lexer) Reset() Position {
 }
 
 func (l *Lexer) Tokenize(pos Position, tok Lexeme, lit string) *Token {
-    token := &Token { pos: pos, tok: tok, lit: lit }
+    token := &Token { pos: pos, tok: tok, opx: tok == OPX, lit: lit }
     l.toks = append(l.toks, token)
     return token
 }
@@ -525,6 +530,7 @@ func (t *Token) LexArgs(l *Lexer) *Token {
     r := l.Read()
 
     switch r {
+    case 0:
     case ' ', '\t', '\r':
         t = t.LexArgs(l)
     case ':':
