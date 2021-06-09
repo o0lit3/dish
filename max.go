@@ -12,7 +12,7 @@ func Max(a interface{}) interface{} {
     case Array:
         return x.Max()
     case String:
-        return x.Max()
+        return Max(x.Number())
     case Number:
         val, _ := x.val.Float64()
         return NewNumber(int(math.Ceil(val)))
@@ -31,20 +31,6 @@ func (a Array) Max() interface{} {
             out = val
         } else if Above(val, out) {
             out = val
-        }
-    }
-
-    return out
-}
-
-func (a String) Max() interface{} {
-    var out interface{}
-
-    for _, c := range a {
-        if out == nil {
-            out = String(c)
-        } else if x, ok := out.(String); ok && String(c) > x {
-            out = String(c)
         }
     }
 

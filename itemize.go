@@ -1,4 +1,5 @@
 package main
+import("math/big")
 
 func Itemize(a interface{}) Array {
     switch x := a.(type) {
@@ -12,9 +13,14 @@ func Itemize(a interface{}) Array {
         return x
     case String:
         return x.Array()
-    case Null:
-        return Array { }
-    default:
-        return Array { x }
+    case Number:
+        return Array{
+            Number{ val: new(big.Rat).SetInt(x.val.Num()) },
+            Number{ val: new(big.Rat).SetInt(x.val.Denom()) },
+        }
+    case Boolean:
+        return Itemize(x.Number())
     }
+
+    return Array{ }
 }

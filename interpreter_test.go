@@ -19,6 +19,10 @@ func TestProduct(t *testing.T) {
     test(t, "tests/product.dish")
 }
 
+func TestHashify(t *testing.T) {
+    test(t, "tests/hashify.dish")
+}
+
 func TestKeys(t *testing.T) {
     test(t, "tests/keys.dish")
 }

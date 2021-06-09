@@ -283,13 +283,15 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Not(a))
         case "^", "invert":
             blk.Register(Invert(a))
+        case "%", "hashify", "hash":
+            blk.Register(Hashify(a))
         case "@", "keys":
             blk.Register(Keys(a))
         case "**", "sort":
             blk.Register(Sort(a))
         case "*", "product":
             blk.Register(Product(a))
-        case "/", "itemize", "array", "values":
+        case "/", "itemize", "array", "values", "ratio":
             blk.Register(Itemize(a))
         case "+", "number", "num", "sum":
             blk.Register(Sum(a))
@@ -305,7 +307,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(val)
         case "~", "stringify", "string", "str":
             blk.Register(Stringify(a))
-        case "<", "minimum", "min", "floor":
+        case "<", "minimum", "min", "floor", "int":
             blk.Register(Min(a))
         case "=", "average", "avg", "mean":
             blk.Register(Average(a))

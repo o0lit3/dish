@@ -12,7 +12,7 @@ func Min(a interface{}) interface{} {
     case Array:
         return x.Min()
     case String:
-        return x.Min()
+        return Min(x.Number())
     case Number:
         val, _ := x.val.Float64()
         return NewNumber(int(math.Floor(val)))
@@ -31,20 +31,6 @@ func (a Array) Min() interface{} {
             out = val
         } else if Below(val, out) {
             out = val
-        }
-    }
-
-    return out
-}
-
-func (a String) Min() interface{} {
-    var out interface{}
-
-    for _, c := range a {
-        if out == nil {
-            out = String(c)
-        } else if x, ok := out.(String); ok && String(c) < x {
-            out = String(c)
         }
     }
 
