@@ -196,6 +196,10 @@ func (b *Block) Eval(a interface{}) interface{} {
 func (b *Block) Value(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
+        if len(x.args) > 0 {
+            return x
+        }
+
         return x.Run()
     case *Variable:
         switch obj := x.obj.(type) {
@@ -351,7 +355,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Switch(blk.Blockify(a), blk.Blockify(b)))
         case "??", "redo":
             blk.Register(Redo(Blockify(a), Blockify(b)))
-        case "@", "find", "index", "round":
+        case "@", "find", "index", "format", "round":
             blk.Register(Find(a, b))
         case "**", "power", "pow", "sort":
             blk.Register(Power(a, b))

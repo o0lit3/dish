@@ -42,28 +42,7 @@ func (blk *Block) Assign(a interface{}, b interface{}) interface{} {
     case *Block:
         blk.Assign(x.Run(), b)
     case *Variable:
-        switch obj := x.obj.(type) {
-        case Hash:
-            obj[x.nom] = b
-            blk.cur.vars[x.par.nom] = obj
-        case Array:
-            if x.idx < 0 {
-                if len(obj) == 0 {
-                    obj = append(obj, Null { })
-                }
-
-                x.idx = len(obj) + x.idx
-            }
-
-            for x.idx + 1 > len(obj) {
-                obj = append(obj, Null { })
-            }
-
-            obj[x.idx] = b
-            blk.cur.vars[x.par.nom] = obj
-        default:
-            blk.cur.vars[x.nom] = b
-        }
+        x.Assign(blk, b)
     case String:
         blk.cur.vars[string(x)] = b
     default:
@@ -71,6 +50,41 @@ func (blk *Block) Assign(a interface{}, b interface{}) interface{} {
     }
 
     return b
+}
+
+func (v *Variable) Assign(blk *Block, b interface{}) {
+    switch obj := v.obj.(type) {
+    case Hash:
+        obj[v.nom] = b
+
+        if v.par.obj == nil {
+            blk.cur.vars[v.par.nom] = obj
+        } else {
+            v.par.Assign(blk, obj)
+        }
+    case Array:
+        if v.idx < 0 {
+            if len(obj) == 0 {
+                obj = append(obj, Null { })
+            }
+
+            v.idx = len(obj) + v.idx
+        }
+
+        for v.idx + 1 > len(obj) {
+            obj = append(obj, Null { })
+        }
+
+        obj[v.idx] = b
+
+        if v.par.obj == nil {
+            blk.cur.vars[v.par.nom] = obj
+        } else {
+            v.par.Assign(blk, obj)
+        }
+    default:
+        blk.cur.vars[v.nom] = b
+    }
 }
 
 func (blk *Block) Define(a interface{}, b interface{}) interface{} {

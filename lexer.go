@@ -345,10 +345,10 @@ func (l *Lexer) Lexify() *Token {
                 return l.Tokenize(s, OP2, string(r) + string(n))
             case unicode.IsDigit(n):
                 if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() {
-                    return l.Tokenize(l.Backup(), NUM, l.LexNum())
+                    return l.Tokenize(l.Backup(), NUM, l.LexNum(false))
                 }
 
-                return l.Tokenize(l.Backup(), OPX, l.LexNum())
+                return l.Tokenize(l.Backup(), OPX, l.LexNum(true))
             case n == '"':
                 return l.Tokenize(l.pos, OPX, l.LexStr(n))
             default:
@@ -403,7 +403,7 @@ func (l *Lexer) Lexify() *Token {
         default:
             switch {
             case unicode.IsDigit(r):
-                return l.Tokenize(l.Backup(), NUM, l.LexNum())
+                return l.Tokenize(l.Backup(), NUM, l.LexNum(false))
             case unicode.IsLetter(r):
                 return l.Tokenize(l.Backup(), VAR, l.LexVar())
             default:
@@ -437,7 +437,7 @@ func (l *Lexer) LexCom() string {
     }
 }
 
-func (l *Lexer) LexNum() string {
+func (l *Lexer) LexNum(idx bool) string {
     var lit string
 
     for {
@@ -447,6 +447,11 @@ func (l *Lexer) LexNum() string {
         case r == 0:
             return lit
         case r == '.':
+            if idx {
+                l.Backup()
+                return lit
+            }
+
             l.buf = r
             n := l.Read()
 

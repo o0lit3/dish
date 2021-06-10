@@ -6,7 +6,7 @@ func Member(a interface{}, b interface{}) interface{} {
     case *Block:
         return Member(x.Run(), b)
     case *Variable:
-        switch x.Value().(type) {
+        switch val := x.Value().(type) {
         case Null:
             switch y := b.(type) {
             case String:
@@ -17,7 +17,7 @@ func Member(a interface{}, b interface{}) interface{} {
                 return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], idx: y.Int() }
             }
         default:
-            switch out := Member(x.Value(), b).(type) {
+            switch out := Member(val, b).(type) {
             case *Variable:
                 out.par = x
                 return out
