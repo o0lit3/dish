@@ -24,4 +24,4 @@ bernoulli = :n(
   (n.0 != 0).then(
     "B($(i)) = "~(' '*(max - #~n.0))~n.join("/")
   )
-).grep:n(n).join("\n")
+).compact.join("\n")

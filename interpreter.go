@@ -295,7 +295,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Sort(a))
         case "*", "product":
             blk.Register(Product(a))
-        case "/", "itemize", "array", "values", "ratio":
+        case "/", "itemize", "array", "arr", "values", "ratio":
             blk.Register(Itemize(a))
         case "+", "number", "num", "sum":
             blk.Register(Sum(a))
@@ -317,6 +317,8 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Average(a))
         case ">", "maxium", "max", "ceiling", "ceil":
             blk.Register(Max(a))
+        case "&", "compact":
+            blk.Register(Compact(a))
         case "|", "unique", "uniq", "abs":
             blk.Register(Unique(a))
         case "#", "size", "length", "len":

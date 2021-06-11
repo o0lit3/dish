@@ -67,6 +67,10 @@ func TestMax(t *testing.T) {
     test(t, "tests/max.dish")
 }
 
+func TestCompact(t *testing.T) {
+    test(t, "tests/compact.dish")
+}
+
 func TestUnique(t *testing.T) {
     test(t, "tests/uniq.dish")
 }

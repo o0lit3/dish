@@ -41,7 +41,7 @@ func Find(a interface{}, b interface{}) interface{} {
         case String:
             return x.Format(y)
         default:
-            return NewNumber(strings.Index(string(x), fmt.Sprintf("%v", y)))
+            return x.Array().Find(y)
         }
     case Number:
         switch y := b.(type) {
@@ -65,24 +65,28 @@ func Find(a interface{}, b interface{}) interface{} {
     return NewNumber(0)
 }
 
-func (a Hash) Find(b interface{}) String {
+func (a Hash) Find(b interface{}) Array {
+    out := Array { }
+
     for key, val := range a {
         if Equals(val, b) {
-            return String(key)
+            out = append(out, String(key))
         }
     }
 
-    return String("-1")
+    return out
 }
 
-func (a Array) Find(b interface{}) Number {
+func (a Array) Find(b interface{}) Array {
+    out := Array { }
+
     for i, val := range a {
         if Equals(val, b) {
-            return NewNumber(i)
+            out = append(out, NewNumber(i))
         }
     }
 
-    return NewNumber(-1)
+    return out
 }
 
 func (a String) Format(b String) String {

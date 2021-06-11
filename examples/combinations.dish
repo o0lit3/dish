@@ -1,0 +1,12 @@
+// https://rosettacode.org/wiki/Combinations
+
+comb = :n:m(
+  (0..2**n-1).map:i(
+    bits: i.format("%0$(n)b").find(1)
+    (#bits == m).then(bits)
+  ).compact
+)
+
+5.comb(3).map:i(
+  i.join(" ")
+).sort.join("\n")
