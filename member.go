@@ -9,6 +9,8 @@ func Member(a interface{}, b interface{}) interface{} {
         switch val := x.Value().(type) {
         case Null:
             switch y := b.(type) {
+            case *Block:
+                return y.Run(val)
             case String:
                 x.blk.cur.vars[x.nom] = Hash { }
                 return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], nom: string(y) }

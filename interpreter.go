@@ -262,6 +262,14 @@ func (b *Block) Run(args ...interface{}) interface{} {
         }
     }
 
+    i := len(args)
+
+    for i < len(b.args) {
+        b.cur.vars[b.args[i]] = Null { }
+        b.cur.hash[b.args[i]] = Null { }
+        i = i + 1
+    }
+
     return b.Interpret()
 }
 

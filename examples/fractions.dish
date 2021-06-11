@@ -1,0 +1,15 @@
+// https://rosettacode.org/wiki/Continued_fraction
+
+depth = 1000
+
+estimate = :a:b:n(
+  n.a + ((n < depth) && n.b / [a, b, ++n].estimate)
+)
+
+[
+  ["sqrt(2)", :n(n ? [2, 1]), :(1)]
+  ["euler", :n(n || 2), :n(n || 1)]
+  ["pi", :n(n ? [6, 3]), :n((2 * n + 1)**2)]
+].map:frac(
+  "$(<< frac) = $(frac.estimate @ 9)"
+).join("\n")

@@ -70,7 +70,7 @@ func Or(a interface{}, b interface{}) interface{} {
             return Boolean(false)
         }
     case Null:
-        return Boolean(false)
+        return Or(Boolean(false), b)
     }
 
     return Boolean(false)
