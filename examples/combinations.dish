@@ -7,6 +7,6 @@ comb = :n:m(
   ).compact
 )
 
-5.comb(3).map:i(
-  i.join(" ")
+5.comb(3).map:list(
+  list.join(" ")
 ).sort.join("\n")

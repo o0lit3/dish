@@ -29,6 +29,6 @@ Dish has 3 types of syntax blocks, Scalar Blocks `()`, Array blocks `[]`, and Ha
 
 Scalar blocks `()` return the last expression or statement in the block. A full **dish** program is inside an implicit scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[]` and Hash blocks `{}` return the entire array or hash.
 
-Comments in **dish** start with a double slash `//` and end with a newline. There are no multiline comments in **dish**.
+Comments in **dish** start with a double slash `//` and end with a newline. There are no multi- or in-line comments in **dish**.
 
 <sub>*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>

@@ -1,0 +1,12 @@
+// https://rosettacode.org/wiki/Comments
+
+// This is a comment
+a = "Hello"             // This is an in-line comment.
+b = "World!"            // There are no multi- or in-line comments in dish.
+
+"""
+This is not really a comment because the lexer reads it as a string, and the interpreter evaluates it.
+But because dish programs are evalutated as implicit scalar blocks, only the last expression is output to stdout.
+In this case, that is an empty string. Note this is NOT a triple-quote multi-line string operator.
+Instead we have an empty string, followed by this multi-line block, followed by another empty string.
+"""
