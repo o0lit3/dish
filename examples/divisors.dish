@@ -4,22 +4,25 @@ divisors = :i(
   out: [1]
 
   (1..i**0.5).map:j(
-    (i % j == 0 && j > 1).and(out << j, (j != i / j).and(out << i / j))
+    (i % j == 0 && j > 1).then(
+      out << j
+      (j != i / j).then(out << i / j)
+    )
   )
 
-  (i == 1).switch[[], out]
+  i > 1 ? [out, []]
 )
 
 // Only check multiples of 2, 3, 5, and 7 since highly composite numbers above 840 all contain the first 4 primes
 ((i += 210) < 20000).redo(
   divs: i.divisors
-  (#divs > max).and(max = #divs, n = [])
-  (#divs == max).and(n << i)
+  (#divs > max).then(max = #divs, n = [])
+  (#divs == max).then(n << i)
 )
 
 (
   (1..10).map:i(
     "$(i): $(i.divisors)"
-  ) + n.map:n("$(n) has $(max) proper divisors")
+  ) + "" + n.map:n("$(n) has $(max) proper divisors")
 ).join("\n")
 

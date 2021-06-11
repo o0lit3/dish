@@ -145,13 +145,13 @@ func (t *Token) Precedence() int {
     }
 
     switch t.lit {
-    case "@", "?", "??", "++", "~~", "~":
+    case "@", "++", "~~":
         return 14
     case "**":
         return 13
     case "*", "/", "%":
         return 12
-    case "+", "-":
+    case "+", "-", "~":
         return 11
     case "<<", ">>":
         return 10
@@ -171,7 +171,7 @@ func (t *Token) Precedence() int {
         return 3
     case "||":
         return 2
-    case "..":
+    case "..", "?", "??":
         return 1
     case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
         return 0
@@ -349,8 +349,8 @@ func (l *Lexer) Lexify() *Token {
                 }
 
                 return l.Tokenize(l.Backup(), OPX, l.LexNum(true))
-            case n == '"':
-                return l.Tokenize(l.pos, OPX, l.LexStr(n))
+            case n == '"', n == '\'':
+                return l.Tokenize(l.pos, OP1, l.LexStr(n))
             default:
                 return l.Tokenize(l.Backup(), OPX, l.LexVar()).LexArgs(l)
             }

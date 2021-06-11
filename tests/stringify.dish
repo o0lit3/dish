@@ -6,7 +6,7 @@
     ~3.14                   // "3.14"
     ~5                      // "5"
     ~true                   // "true"
-    false.str()             // "false"
+    false.str               // "false"
     (-4).str                // "-4"
     ~-4                     // "-4"
 ]

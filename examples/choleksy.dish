@@ -5,12 +5,13 @@ cholesky = :a(
 
   (0..#a-1).each:i(
     (0..i).each:j(
-      sum: (j > 0).switch[(0..j-1).map:k(out.i.k * out.j.k).sum, 0]
+      sum: (j > 0).then((0..j-1).map:k(out.i.k * out.j.k).sum).else(0)
 
-      out.i.j = (i == j).switch[
+      out.i.j = (i == j).then(
         ((a.i.i - sum)**0.5)
+      ).else(
         (1 / out.j.j * (a.i.j - sum))
-      ]
+      )
     )
   )
 

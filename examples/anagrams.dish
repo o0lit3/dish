@@ -4,10 +4,10 @@
 stdin.map:word(
   sorted: word.sort
   anagram.sorted << word
-  (#(anagram.sorted) > max).and(max = #(anagram.sorted))
+  (#anagram.sorted > max).then(max = #anagram.sorted)
 )
 
-anagram.values.grep:set(
+anagram.values.filter:set(
   #set == max
 ).map:set(
   set.join(", ")

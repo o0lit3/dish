@@ -273,7 +273,7 @@ func (blk *Block) Interpret() interface{} {
     case OP1:
         a := blk.Deregister(t)
 
-        if len(t.lit) > 0 && unicode.IsLetter(rune(t.lit[0])) {
+        if len(t.lit) > 0 && t.opx && unicode.IsLetter(rune(t.lit[0])) {
             switch op := blk.FindVar(t.lit).(type) {
             case Null:
             default:
@@ -341,7 +341,7 @@ func (blk *Block) Interpret() interface{} {
             y.args = t.args
         }
 
-        if len(t.lit) > 0 && unicode.IsLetter(rune(t.lit[0])) {
+        if len(t.lit) > 0 && t.opx && unicode.IsLetter(rune(t.lit[0])) {
             switch op := blk.FindVar(t.lit).(type) {
             case Null:
             default:
@@ -415,11 +415,11 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Equals(a, b))
         case "!=", "isnt":
             blk.Register(Not(Equals(a, b)))
-        case "&&", "and":
+        case "&&", "and", "then":
             blk.Register(And(a, b))
         case "^^", "xor":
             blk.Register(Xor(a, b))
-        case "||", "or":
+        case "||", "or", "else":
             blk.Register(Or(a, b))
         case "..", "range", "to":
             blk.Register(Range(a, b))
