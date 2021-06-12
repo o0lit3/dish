@@ -17,6 +17,10 @@ func Find(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case *Block:
+            if len(y.args) > 0 {
+                return y.Find(x)
+            }
+
             return Find(x, y.Run())
         case *Variable:
             return Find(x, y.Value())
@@ -26,6 +30,10 @@ func Find(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
+            if len(y.args) > 0 {
+                return y.Find(x)
+            }
+
             return Find(x, y.Run())
         case *Variable:
             return Find(x, y.Value())
@@ -35,6 +43,10 @@ func Find(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
+            if len(y.args) > 0 {
+                return y.Find(x.Array())
+            }
+
             return Find(x, y.Run())
         case *Variable:
             return Find(x, y.Value())
@@ -136,4 +148,25 @@ func (a Number) Round(b Number) Number {
     }
 
     return NewNumber(0)
+}
+
+func (b *Block) Find(a interface{}) Array {
+    out := Array { }
+
+    switch x := a.(type) {
+    case Hash:
+        for key, val := range x {
+            if b, ok := b.Run(val).(Boolean); ok && bool(b) {
+                out = append(out, key)
+            }
+        }
+    case Array:
+        for i, val := range x {
+            if b, ok := b.Run(val).(Boolean); ok && bool(b) {
+                out = append(out, i)
+            }
+        }
+    }
+
+    return out
 }

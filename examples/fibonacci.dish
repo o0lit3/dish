@@ -5,7 +5,7 @@
     a = 0
     b = 1
   ] + (
-    (0..48).map(
+    (0..48).each:(
       prev = a
       a = b
       b += prev

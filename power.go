@@ -1,6 +1,7 @@
 package main
 
 import(
+    "sort"
     "math"
     "math/big"
 )
@@ -14,7 +15,11 @@ func Power(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case *Block:
-            return x.Array().UserSort(y)
+            if len(y.args) > 0 {
+                return y.Sort(x.Array())
+            }
+
+            return Power(x, y.Run())
         case *Variable:
             return Power(x, y.Value())
         default:
@@ -23,7 +28,11 @@ func Power(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
-            return x.UserSort(y)
+            if len(y.args) > 0 {
+                return y.Sort(x)
+            }
+
+            return Power(x, y.Run())
         case *Variable:
             return Power(x, y.Value())
         case String:
@@ -38,7 +47,11 @@ func Power(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-            return Join(x.Array().UserSort(y), String(""))
+            if len(y.args) > 0 {
+                return Join(y.Sort(x.Array()), String(""))
+            }
+
+            return Power(x, y.Run())
         case *Variable:
             return Power(x, y.Value())
         default:
@@ -115,4 +128,16 @@ func (a Number) Power(b Number) Number {
     }
 
     return out
+}
+
+func (b *Block) Sort(a Array) Array {
+    sort.Slice(a, func(i, j int) bool {
+        if b, ok := b.Run(a[i], a[j]).(Boolean); ok {
+            return bool(b)
+        }
+
+        return bool(Below(a[i], a[j]))
+    })
+
+    return a
 }

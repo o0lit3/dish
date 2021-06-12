@@ -25,9 +25,11 @@ Similarly, traditional unary operators (which must be used as prefix operators w
 <sub>*Postfix `++` and `--` are not legal in **dish**</sub>
 
 ## Syntax
-Dish has 3 types of syntax blocks, Scalar Blocks `()`, Array blocks `[]`, and Hash blocks `{}`. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup> or by a comma (unless the newline or comma is encapsulated in a string literal).
+Dish has 4 types of syntax blocks, Scalar Blocks `(...)`, Array blocks `[...]`, Hash blocks `{...}`, and logic blocks. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup> or by a comma (unless the newline or comma is encapsulated in a string literal).
 
-Scalar blocks `()` return the last expression or statement in the block. A full **dish** program is inside an implicit scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[]` and Hash blocks `{}` return the entire array or hash.
+Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire array or hash.
+
+Logic blocks are represented by a colonized list of arguments followed by any of the above block symbols, as in `:x(...)` or `:x:y[...]`, returning a data type corresponding to the block type. A logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`.
 
 Comments in **dish** start with a double slash `//` and end with a newline. There are no multi- or in-line comments in **dish**.
 

@@ -9,7 +9,11 @@ func Multiply(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case *Block:
-            return x.Map(y)
+            if len(y.args) > 0 {
+                return x.Map(y)
+            }
+
+            return Multiply(x, y.Run())
         case *Variable:
             return Multiply(x, y.Value())
         case Hash:
@@ -28,13 +32,22 @@ func Multiply(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
-            if y.dim == LST {
-                if blk, ok := y.Run().(Array); ok {
-                    return x.DotProduct(blk)
+            if len(y.args) > 0 {
+                return x.Map(y)
+            }
+
+            switch y.dim {
+            case LST:
+                if arr, ok := y.Run().(Array); ok {
+                    return x.DotProduct(arr)
+                }
+            case MAP:
+                if hash, ok := y.Run().(Hash); ok {
+                    return x.DotProduct(hash.Array())
                 }
             }
 
-            return x.Map(y)
+            return Multiply(x, y.Run())
         case *Variable:
             return Multiply(x, y.Value())
         case Hash:

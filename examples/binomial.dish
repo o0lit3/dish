@@ -12,4 +12,4 @@ choose = :n:k(
   67.choose(31)
   100.choose(2)
   100.choose(50)
-]
+].join("\n")

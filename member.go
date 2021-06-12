@@ -1,5 +1,9 @@
 package main
-import("fmt")
+
+import(
+    "fmt"
+    "strconv"
+)
 
 func Member(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -10,7 +14,11 @@ func Member(a interface{}, b interface{}) interface{} {
         case Null:
             switch y := b.(type) {
             case *Block:
-                return y.Run(val)
+                if len(y.args) > 0 {
+                    return y.Run(val)
+                }
+
+                return Member(x, y.Run())
             case String:
                 x.blk.cur.vars[x.nom] = Hash { }
                 return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], nom: string(y) }
@@ -92,7 +100,43 @@ func Member(a interface{}, b interface{}) interface{} {
         case Null:
             return x.Member(0)
         }
-    default:
+    case Number:
+        switch y := b.(type) {
+        case *Block:
+            if len(y.args) > 0 {
+                return y.Run(x)
+            }
+
+            return Member(x, y.Run())
+        case *Variable:
+            return Member(x, y.Value())
+        case Hash:
+            return x.Members(y.Array())
+        case Array:
+            return x.Members(y)
+        case String:
+            return x.Member(y.Number().Int())
+        case Number:
+            return x.Member(y.Int())
+        case Boolean:
+            return x.Member(y.Number().Int())
+        case Null:
+            return x.Member(0)
+        }
+    case Boolean:
+        switch y := b.(type) {
+        case *Block:
+            if len(y.args) > 0 {
+                return y.Run(x)
+            }
+
+            return Member(x, y.Run())
+        case *Variable:
+            return Member(x, y.Value())
+        default:
+            return Member(x.Number(), y)
+        }
+    case Null:
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
@@ -170,18 +214,51 @@ func (a String) Members(b Array) Array {
     return out
 }
 
-func (a String) Member(b int) *Variable {
+func (a String) Member(b int) String {
     if b < 0 && len(a) > 0 && len(a) + b < len(a) {
-        return &Variable{ obj: a, idx: len(a) + b }
+        return String(a[len(a) + b])
     }
 
     if len(a) > 0 && b < len(a) {
-        return &Variable{ obj: a, idx: b }
+        return String(a[b])
     }
 
     if b < 0 {
-        return &Variable{ obj: a, idx: -b }
+        return String(a[-b])
     }
 
-    return &Variable{ obj: a, idx: b }
+    return String("")
+}
+
+func (a Number) Members(b Array) Array {
+    out := Array { }
+
+    for _, val := range b {
+        x := Member(a, val)
+
+        if _, ok := x.(Null); !ok {
+            out = append(out, x)
+        }
+    }
+
+    return out
+}
+
+func (a Number) Member(b int) Number {
+    bin := strconv.FormatInt(int64(a.Int()), 2)
+    bit := false
+
+    if b < 0 && len(bin) > 0 && -b - 1 < len(bin) {
+        bit = bin[-b - 1] == '1'
+    }
+
+    if len(bin) > 0 && len(bin) - b - 1 >= 0 && len(bin) - b - 1 < len(bin) {
+        bit = bin[len(bin) - b - 1] == '1'
+    }
+
+    if bit {
+        return NewNumber(1)
+    }
+
+    return NewNumber(0)
 }

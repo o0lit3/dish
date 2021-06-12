@@ -25,15 +25,3 @@ func (a Array) Sort() Array {
 
     return a
 }
-
-func (a Array) UserSort(b *Block) Array {
-    sort.Slice(a, func(i, j int) bool {
-        if b, ok := b.Run(a[i], a[j]).(Boolean); ok {
-            return bool(b)
-        }
-
-        return bool(Below(a[i], a[j]))
-    })
-
-    return a
-}

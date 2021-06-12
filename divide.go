@@ -12,7 +12,11 @@ func Divide(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
-            return x.Split(y)
+            if len(y.args) > 0 {
+                return x.Split(y)
+            }
+
+            return Divide(x, y.Run())
         case *Variable:
             return Divide(x, y.Value())
         case String:
@@ -31,14 +35,18 @@ func Divide(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-            items := x.Array().Split(y)
-            out := Array { }
+            if len(y.args) > 0 {
+                items := x.Array().Split(y)
+                out := Array { }
 
-            for _, item := range items {
-                out = append(out, Join(item, ""))
+                for _, item := range items {
+                    out = append(out, Join(item, ""))
+                }
+
+                return out
             }
 
-            return out
+            return Divide(x, y.Run())
         case *Variable:
             return Divide(x, y.Value())
         case String:

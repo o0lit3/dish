@@ -9,7 +9,11 @@ func Mod(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case *Block:
-            return x.Filter(y)
+            if len(y.args) > 0 {
+                return x.Filter(y)
+            }
+
+            return Mod(x, y.Run())
         case *Variable:
             return Mod(x, y.Value())
         default:
@@ -18,7 +22,11 @@ func Mod(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
-            return x.Filter(y)
+            if len(y.args) > 0 {
+                return x.Filter(y)
+            }
+
+            return Mod(x, y.Run())
         case *Variable:
             return Mod(x, y.Value())
         case String:
@@ -33,7 +41,11 @@ func Mod(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-            return Join(x.Array().Filter(y), String(""))
+            if len(y.args) > 0 {
+                return Join(x.Array().Filter(y), String(""))
+            }
+
+            return Mod(x, y.Run())
         case *Variable:
             return Mod(x, y.Value())
         case String:
