@@ -19,7 +19,7 @@ func And(a interface{}, b interface{}) interface{} {
 
         return And(Boolean(true), b)
     case String:
-        if x == "" || x == "0" {
+        if string(x) == "" || string(x) == "0" {
             return Boolean(false)
         }
 
@@ -53,7 +53,7 @@ func And(a interface{}, b interface{}) interface{} {
 
             return y
         case String:
-            if y == "" || y == "0" {
+            if string(y) == "" || string(y) == "0" {
                 return Boolean(false)
             }
 

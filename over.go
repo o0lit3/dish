@@ -17,7 +17,7 @@ func Over(a interface{}, b interface{}) Boolean {
         case *Variable:
             return Over(x, y.Value())
         case String:
-            return Boolean(x >= y)
+            return Boolean(string(x) >= string(y))
         case Number:
             return Boolean(x.Number().val.Cmp(y.val) >= 0)
         case Boolean:

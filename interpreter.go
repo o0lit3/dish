@@ -21,7 +21,7 @@ type Hash map[string]interface{}
 
 type Array []interface{}
 
-type String string
+type String []rune
 
 type Number struct {
     val *big.Rat
@@ -108,7 +108,7 @@ func (s String) Array() Array {
     out := Array { }
 
     for _, c := range s {
-        out = append(out, String(c))
+        out = append(out, String(string(c)))
     }
 
     return out
@@ -317,6 +317,8 @@ func (blk *Block) Interpret() interface{} {
             val, obj := Shift(a)
             blk.Assign(a, obj)
             blk.Register(val)
+        case "~~", "ord", "ascii", "chr":
+            blk.Register(Ascii(a))
         case "~", "stringify", "string", "str":
             blk.Register(Stringify(a))
         case "<", "minimum", "min", "floor", "int":
@@ -381,10 +383,8 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Subtract(a, b))
         case "~", "join":
             blk.Register(Join(a, b))
-        case "~~", "base":
+        case "~~", "base", "convert":
             blk.Register(Base(a, b))
-        case "++", "convert":
-            blk.Register(Convert(a, b))
         case "<<", "push", "append", "lshift":
             val := Push(a, b)
 

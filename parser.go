@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -113,43 +114,39 @@ func (blk *Block) Define(a interface{}, b interface{}) interface{} {
 }
 
 func (b *Block) Interpolate(s string) String {
+    lexer := &Lexer {
+        pos: Position { row: 1, col: 0 },
+        rdr: bufio.NewReader(strings.NewReader(s)),
+        opn: true,
+    }
+
     toks := []string{ }
     ipol := false
     out := ""
     tok := ""
     dep := 0
-    i := 0
 
+    Interpolate:
     for {
-        r := byte(0)
-
-        if i < len(s) {
-            r = s[i]
-            i = i + 1
-        } else {
-            toks = append(toks, tok)
-            break
-        }
+        r := lexer.Read()
 
         switch r {
+        case 0:
+            toks = append(toks, tok)
+            break Interpolate
         case '\\':
             tok += string(r)
 
-            if i < len(s) {
-                tok += string(s[i])
-                i = i + 1
+            if n := lexer.Read(); n != 0 {
+                tok += string(n)
             }
         case '$':
-            n := byte(0)
-
-            if i < len(s) {
-                n = s[i]
-                i = i + 1
-            }
+            n := lexer.Read()
 
             switch n {
             case 0:
                 tok += string(r)
+                break Interpolate
             case '(':
                 toks = append(toks, tok)
                 ipol = true

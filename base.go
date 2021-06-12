@@ -38,7 +38,20 @@ func Base(a interface{}, b interface{}) interface{} {
             return x.Base(y)
         }
     case String:
-        return Base(x.Number(), b)
+        switch y := b.(type) {
+        case *Block:
+           return Base(x, y.Run())
+        case *Variable:
+            return Base(x, y.Value())
+        case Hash:
+            return x.Base(NewNumber(len(y)))
+        case Array:
+            return x.Base(NewNumber(len(y)))
+        case String:
+            return x.Base(y.Number())
+        case Number:
+            return x.Base(y)
+        }
     case Number:
         switch y := b.(type) {
         case *Block:
@@ -56,8 +69,6 @@ func Base(a interface{}, b interface{}) interface{} {
         }
     case Boolean:
         return Base(x.Number(), b)
-    case Null:
-        return String("0")
     }
 
     return Null { }
@@ -81,6 +92,16 @@ func (a Array) Base(b Number) Array {
     }
 
     return out
+}
+
+func (a String) Base(b Number) Number {
+    if b.val.Cmp(NewNumber(2).val) == -1 || b.val.Cmp(NewNumber(36).val) == 1 {
+        return NewNumber(0)
+    }
+
+    out, _ := strconv.ParseInt(string(a), b.Int(), 64)
+
+    return NewNumber(int(out))
 }
 
 func (a Number) Base(b Number) String {

@@ -11,7 +11,7 @@ func Not(a interface{}) Boolean {
     case Array:
         return Boolean(len(x) == 0)
     case String:
-        return Boolean(x == "" || x == "0")
+        return Boolean(string(x) == "" || string(x) == "0")
     case Number:
         return Boolean(x.val.Cmp(NewNumber(0).val) == 0)
     case Boolean:

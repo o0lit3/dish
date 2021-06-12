@@ -132,10 +132,6 @@ func TestBase(t *testing.T) {
     test(t, "tests/base.dish")
 }
 
-func TestConvert(t *testing.T) {
-    test(t, "tests/convert.dish")
-}
-
 func TestPush(t *testing.T) {
     test(t, "tests/push.dish")
 }

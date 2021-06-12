@@ -17,7 +17,7 @@ func Below(a interface{}, b interface{}) Boolean {
         case *Variable:
             return Below(x, y.blk.Value(y))
         case String:
-            return Boolean(x < y)
+            return Boolean(string(x) < string(y))
         case Number:
             return Boolean(x.Number().val.Cmp(y.val) == -1)
         case Boolean:

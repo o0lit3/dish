@@ -22,7 +22,7 @@ func Equals(a interface{}, b interface{}) Boolean {
         case Array:
             return Equals(x, String(fmt.Sprintf("%v", y)))
         case String:
-            return Boolean(x == y)
+            return Boolean(string(x) == string(y))
         case Number:
             return Boolean(x.Number().val.Cmp(y.val) == 0)
         case Boolean:

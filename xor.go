@@ -41,7 +41,7 @@ func Xor(a interface{}, b interface{}) interface{} {
 
         return Boolean(false)
     case String:
-        if x == "" || x == "0" {
+        if string(x) == "" || string(x) == "0" {
             switch y := b.(type) {
             case *Block:
                 return y.Run()

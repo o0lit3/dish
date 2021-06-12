@@ -82,7 +82,7 @@ func open(source string) *bufio.Reader {
 
 func process(rdr *bufio.Reader, blk *Block) *Parser {
     lexer := &Lexer {
-        pos: Position { row: 1, col: 0},
+        pos: Position { row: 1, col: 0 },
         rdr: rdr,
         opn: true,
     }

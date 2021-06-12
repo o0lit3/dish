@@ -216,15 +216,15 @@ func (a String) Members(b Array) Array {
 
 func (a String) Member(b int) String {
     if b < 0 && len(a) > 0 && len(a) + b < len(a) {
-        return String(a[len(a) + b])
+        return String(string(a[len(a) + b]))
     }
 
     if len(a) > 0 && b < len(a) {
-        return String(a[b])
+        return String(string(a[b]))
     }
 
     if b < 0 {
-        return String(a[-b])
+        return String(string(a[-b]))
     }
 
     return String("")

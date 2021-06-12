@@ -10,18 +10,13 @@ table = (0..255).map:rem(
       rem ^= (divisor << i)
     )
   )
-
   rem >> 8
 )
 
 crc = :s(
-  out: 0
-
-  s.each:c(
-    out = (out >> 8) ^ (table.(out & 255) ^ c)
-  )
-
-  out
+  out: (1 << 32) - 1
+  s.each:c(out = (out >> 8) ^ (table.((out & 255) ^ c.ord)))
+  out ^ ((1 << 32) - 1)
 )
 
-"The quick brown fox jumps over the lazy dog".crc
+"The quick brown fox jumps over the lazy dog".crc.format("0x%08x")

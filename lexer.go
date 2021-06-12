@@ -349,10 +349,12 @@ func (l *Lexer) Lexify() *Token {
                 }
 
                 return l.Tokenize(l.Backup(), OPX, l.LexNum(true))
+            case unicode.IsLetter(n):
+                return l.Tokenize(l.Backup(), OPX, l.LexVar()).LexArgs(l)
             case n == '"', n == '\'':
                 return l.Tokenize(l.pos, OP1, l.LexStr(n))
             default:
-                return l.Tokenize(l.Backup(), OPX, l.LexVar()).LexArgs(l)
+                return l.Tokenize(l.Backup(), OPX, "").LexArgs(l)
             }
         case '+', '-', '*', '/', '%', '!', '~', '#', '@', '?', '&', '|', '^', ':', '=', '<', '>':
             if r == ':' && (len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term()) {
@@ -373,14 +375,14 @@ func (l *Lexer) Lexify() *Token {
             case 0:
                 s.UnexpectedToken(r)
             case '=':
-                if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() || r == '~' || r == ':' {
+                if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() || r == ':' {
                     s.UnexpectedToken(r)
                 }
 
                 return l.Tokenize(l.pos, OP2, string(r) + string(n)).LexArgs(l)
             case r:
                 switch r {
-                case '*', '+', '-', '>', '<':
+                case '*', '+', '-', '>', '<', '~':
                     if len(l.toks) > 0 && !l.toks[len(l.toks) - 1].Term() {
                         return l.Tokenize(s, OP1, string(r) + string(n))
                     }
@@ -545,8 +547,16 @@ func (t *Token) LexArgs(l *Lexer) *Token {
     case ' ', '\t', '\r':
         t = t.LexArgs(l)
     case ':':
-        t.args = append(t.args, l.LexVar())
-        t = t.LexArgs(l)
+        n := l.Read()
+
+        switch {
+        case unicode.IsLetter(n), n == '$', n == '{', n == '[', n == '(':
+            l.Backup()
+            t.args = append(t.args, l.LexVar())
+            t = t.LexArgs(l)
+        default:
+            panic(fmt.Sprintf("Logic block arguments must start with a letter or '$' near \"%v\" at %s", string(n), l.pos))
+        }
     default:
         l.Backup()
     }
