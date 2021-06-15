@@ -297,7 +297,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Invert(a))
         case "%", "hashify", "hash":
             blk.Register(Hashify(a))
-        case "@", "keys":
+        case "@", "keys", "reverse", "rev":
             blk.Register(Keys(a))
         case "**", "sort":
             blk.Register(Sort(a))
@@ -369,7 +369,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Redo(Blockify(a), Blockify(b)))
         case "@", "find", "index", "format", "round":
             blk.Register(Find(a, b))
-        case "**", "power", "pow", "sort":
+        case "**", "power", "pow", "rotate", "sort":
             blk.Register(Power(a, b))
         case "*", "multiply", "repeat", "map", "each", "dot":
             blk.Register(Multiply(a, b))
@@ -447,6 +447,8 @@ func (blk *Block) Interpret() interface{} {
             default:
                 blk.Register(blk.Define(a, b))
             }
+        case "~=":
+            blk.Register(blk.Assign(a, Join(a, b)))
         case "+=":
             blk.Register(blk.Assign(a, Add(a, b)))
         case "-=":

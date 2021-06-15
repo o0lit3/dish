@@ -1,6 +1,6 @@
 package main
 
-func Keys(a interface{}) Array {
+func Keys(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
         return Keys(x.Run())
@@ -9,11 +9,15 @@ func Keys(a interface{}) Array {
     case Hash:
         return x.Keys()
     case Array:
-        return x.Keys()
+        return x.Reverse()
     case String:
-        return x.Array().Keys()
+        return x.Reverse()
+    case Number:
+        return String(x.String()).Reverse().Number()
+    case Boolean:
+        return Not(x)
     default:
-        return Array { }
+        return Null { }
     }
 }
 
@@ -27,12 +31,22 @@ func (a Hash) Keys() Array {
     return out
 }
 
-func (a Array) Keys() Array {
+func (a Array) Reverse() Array {
     out := Array { }
 
     for i := range a {
-        out = append(out, NewNumber(i))
+        out = append(out, a[len(a) - i - 1])
     }
 
     return out
+}
+
+func (a String) Reverse() String {
+    out := ""
+
+    for i := range a {
+        out += string(a[len(a) - i - 1])
+    }
+
+    return String(out)
 }

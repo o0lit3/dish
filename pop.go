@@ -19,7 +19,7 @@ func Pop(a interface{}) (interface{}, interface{}) {
 
 func (a Hash) Pop() (interface{}, interface{}) {
     var val interface{}
-    keys := Keys(a)
+    keys := Keys(a).(Array)
 
     val = Null { }
 

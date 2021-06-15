@@ -19,7 +19,7 @@ func Shift(a interface{}) (interface{}, interface{}) {
 
 func (a Hash) Shift() (interface{}, interface{}) {
     var val interface{}
-    keys := Keys(a)
+    keys := Keys(a).(Array)
 
     val = Null { }
 

@@ -119,7 +119,7 @@ func (t *Token) Assignment() bool {
     }
 
     switch t.lit {
-    case "=", ":", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "++", "--", "<<", ">>":
+    case "=", ":", "~=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "++", "--", "<<", ">>":
         return true
     }
 
@@ -173,7 +173,7 @@ func (t *Token) Precedence() int {
         return 2
     case "..", "?", "??":
         return 1
-    case ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
+    case ":", "=", "~=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
         return 0
     default:
         return 16
@@ -383,7 +383,7 @@ func (l *Lexer) Lexify() *Token {
             case r:
                 switch r {
                 case '*', '+', '-', '>', '<', '~':
-                    if len(l.toks) > 0 && !l.toks[len(l.toks) - 1].Term() {
+                    if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() {
                         return l.Tokenize(s, OP1, string(r) + string(n))
                     }
                 }

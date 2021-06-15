@@ -214,20 +214,20 @@ func (a String) Members(b Array) Array {
     return out
 }
 
-func (a String) Member(b int) String {
+func (a String) Member(b int) *Variable {
     if b < 0 && len(a) > 0 && len(a) + b < len(a) {
-        return String(string(a[len(a) + b]))
+        return &Variable{ obj: a, idx: len(a) + b }
     }
 
     if len(a) > 0 && b < len(a) {
-        return String(string(a[b]))
+        return &Variable{ obj: a, idx: b }
     }
 
     if b < 0 {
-        return String(string(a[-b]))
+        return &Variable{ obj: a, idx: -b }
     }
 
-    return String("")
+    return &Variable{ obj: a, idx: b }
 }
 
 func (a Number) Members(b Array) Array {

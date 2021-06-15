@@ -83,6 +83,38 @@ func (v *Variable) Assign(blk *Block, b interface{}) {
         } else {
             v.par.Assign(blk, obj)
         }
+    case String:
+        if v.idx < 0 {
+            if len(obj) == 0 {
+                obj = append(obj, ' ')
+            }
+
+            v.idx = len(obj) + v.idx
+        }
+
+        for v.idx + 1 > len(obj) {
+            obj = append(obj, ' ')
+        }
+
+        y := ""
+        switch b.(type) {
+        case String:
+            y = string(b.(String))
+        default:
+            y = fmt.Sprintf("%v", b)
+        }
+
+        if len(y) > 0 {
+            obj[v.idx] = rune(y[0])
+        } else {
+            obj[v.idx] = ' '
+        }
+
+        if v.par.obj == nil {
+            blk.cur.vars[v.par.nom] = obj
+        } else {
+            v.par.Assign(blk, obj)
+        }
     default:
         blk.cur.vars[v.nom] = b
     }

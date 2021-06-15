@@ -31,6 +31,8 @@ func Join(a interface{}, b interface{}) interface{} {
         default:
             return String(string(x) + fmt.Sprintf("%v", y))
         }
+    case Null:
+        return Join(String(""), b)
     default:
         switch y := b.(type) {
         case *Block:
