@@ -13,7 +13,7 @@ func Negate(a interface{}) interface{} {
     case String:
         return Number{ val: NewNumber(0).val.Neg(x.Number().val) }
     case Number:
-        return Number{ val: x.val.Neg(x.val) }
+        return Number{ val: NewNumber(0).val.Neg(x.val) }
     case Boolean:
         return Number{ val: NewNumber(0).val.Neg(x.Number().val) }
     case Null:

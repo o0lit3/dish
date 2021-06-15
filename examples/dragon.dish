@@ -1,0 +1,26 @@
+// https://rosettacode.org/wiki/Dragon_curve
+
+dragon = :n(
+  a: [" "*(8 << n/2)] * (8 << n/2)
+  x:y: 4 << n/2
+  p:q: 1 + x
+  r: 3
+
+  (1..1 << n).each:i(
+    d: (r & 2) - 1
+
+    (r % 2).then(
+      a.y.((x += 2 * d) - d) = '_'
+    ).else(
+      a.([y, y += d].max).x = '|'
+      (x < p).then(p = x)
+      (x > q).then(q = x)
+    )
+
+    r += (i / (i & -i))
+  )
+
+  a.grep:e(e != " "*(8 << n/2)).map:e(e.(p..q)).join("\n")
+)
+
+10.dragon

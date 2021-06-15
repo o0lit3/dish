@@ -261,6 +261,14 @@ func (b *Block) Eval(a interface{}) interface{} {
         }
 
         return out
+    case String:
+        out := ""
+
+        for _, c := range x {
+            out += string(c)
+        }
+
+        return String(out)
     default:
         return b.Value(a)
     }
