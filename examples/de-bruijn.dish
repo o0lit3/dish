@@ -13,15 +13,15 @@
 
 check = :seq(
   hash: {}
-  (0..#seq-1).each:i(++hash.(~(seq.(i..i+3))))
+  (0..#seq-1).each:i(++hash.(seq.(i..i+3)))
   (0..9999).grep:pin(!hash.(pin.format('%04d')))
 )
 
 [
   "Sequence Length: $(#(seq ~= '000'))"
-  "First 130 characters:\n$(~(seq.(0..129)))"
-  "Last 130 characters:\n$(~(seq.(-130..-1)))"
+  "First 130 characters:\n$(seq.(0..129))"
+  "Last 130 characters:\n$(seq.(-130..-1))"
   "Missing 4 digit PINs: $(seq.check)"
-  "Missing 4 digit PINs in reversed string: $(@seq.check)"
-  "Missing 4 digit PINs in revised string: $(~(seq.4444 = '.', seq).check)"
+  "Missing 4 digit PINs in reversed string: $(seq.reverse.check)"
+  "Missing 4 digit PINs in revised string: $((seq.4444 = '.', seq).check)"
 ].join("\n\n")

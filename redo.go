@@ -6,7 +6,7 @@ func Redo(a *Block, b *Block) interface{} {
     val = Null { }
     i := 0
 
-    for !Not(a.Run()) {
+    for Boolify(a.Run()) {
         val = b.Run(a, NewNumber(i))
         i = i + 1
     }

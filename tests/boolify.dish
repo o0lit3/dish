@@ -1,0 +1,14 @@
+[
+    ?{}                 // false
+    ?{foo: 1, bar: 2}   // true
+    ?[]                 // false
+    ?[1, 2, 3]          // true
+    ?''                 // false
+    ?'foobar'           // true
+    ?0.0                // false
+    ?3.14               // true
+    ?0                  // false
+    ?5                  // true
+    ?false              // false
+    ?true               // true
+]

@@ -1,7 +1,7 @@
 package main
 import("fmt")
 
-func Stringify(a interface{}) interface{} {
+func Stringify(a interface{}) String {
     switch x := a.(type) {
     case *Block:
         return Stringify(x.Run())
@@ -10,7 +10,7 @@ func Stringify(a interface{}) interface{} {
     case Hash:
         return Stringify(x.Array())
     case Array:
-        return Join(x, "")
+        return Join(x, "").(String)
     case String:
         return x
     default:

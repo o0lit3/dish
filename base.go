@@ -1,5 +1,11 @@
 package main
-import("strconv")
+
+import(
+    "fmt"
+    "strings"
+    "strconv"
+    "unicode"
+)
 
 func Base(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -48,7 +54,7 @@ func Base(a interface{}, b interface{}) interface{} {
         case Array:
             return x.Base(NewNumber(len(y)))
         case String:
-            return x.Base(y.Number())
+            return x.Format(y)
         case Number:
             return x.Base(y)
         }
@@ -63,7 +69,7 @@ func Base(a interface{}, b interface{}) interface{} {
         case Array:
             return x.Base(NewNumber(len(y)))
         case String:
-            return x.Base(y.Number())
+            return x.Format(y)
         case Number:
             return x.Base(y)
         }
@@ -94,6 +100,10 @@ func (a Array) Base(b Number) Array {
     return out
 }
 
+func (a String) Format(b String) String {
+    return String(fmt.Sprintf(string(b), string(a)))
+}
+
 func (a String) Base(b Number) Number {
     if b.val.Cmp(NewNumber(2).val) == -1 || b.val.Cmp(NewNumber(36).val) == 1 {
         return NewNumber(0)
@@ -110,4 +120,37 @@ func (a Number) Base(b Number) String {
     }
 
     return String(strconv.FormatInt(int64(a.Int()), b.Int()))
+}
+
+func (a Number) Format(b String) String {
+    parts := strings.Split(string(b), ".")
+
+    if len(parts) > 1 {
+        out := ""
+        dec := ""
+
+        for _, c := range parts[1] {
+            if unicode.IsDigit(c) {
+                dec += string(c)
+            } else {
+                break
+            }
+        }
+
+        if n, err := strconv.Atoi(dec); err == nil {
+            out = a.val.FloatString(n)
+        }
+
+        return String(fmt.Sprintf(parts[0] + "s", out))
+    }
+
+    if val, ok := a.val.Float64(); ok {
+        if strings.Contains(parts[0], "f") {
+            return String(fmt.Sprintf(parts[0], val))
+        }
+
+        return String(fmt.Sprintf(parts[0], int(val)))
+    }
+
+    return String(a.val.FloatString(0))
 }

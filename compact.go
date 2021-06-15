@@ -19,7 +19,7 @@ func (a Hash) Compact() Hash {
     out := Hash { }
 
     for key, val := range a {
-        if !Not(val) {
+        if Boolify(val) {
             out[key] = val
         }
     }
@@ -31,7 +31,7 @@ func (a Array) Compact() Array {
     out := Array { }
 
     for _, val := range a {
-        if !Not(val) {
+        if Boolify(val) {
             out = append(out, val)
         }
     }

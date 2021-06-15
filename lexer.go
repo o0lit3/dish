@@ -388,7 +388,11 @@ func (l *Lexer) Lexify() *Token {
                     }
                 }
 
-                return l.Tokenize(s, OP2, string(r) + string(n)).LexArgs(l)
+                if len(l.toks) > 0 && l.toks[len(l.toks) - 1].Term() {
+                    return l.Tokenize(s, OP2, string(r) + string(n)).LexArgs(l)
+                }
+
+                return l.Tokenize(l.Backup(), OP1, string(r))
             default:
                 l.Backup()
 

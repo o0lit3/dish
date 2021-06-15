@@ -13,6 +13,7 @@ type Variable struct {
     blk *Block
     obj interface{}
     par *Variable
+    arr Array
     nom string
     idx int
 }
@@ -170,6 +171,78 @@ func (v *Variable) Value() interface{} {
     return v.blk.Value(v)
 }
 
+func (b *Block) Value(a interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        if len(x.args) > 0 {
+            return x
+        }
+
+        return x.Run()
+    case *Variable:
+        switch obj := x.obj.(type) {
+        case Hash:
+            if x.arr != nil {
+                out := Array { }
+
+                for _, mem := range x.arr {
+                    if y, ok := mem.(*Variable); ok {
+                        out = append(out, obj[y.nom])
+                    }
+                }
+
+                return out
+            }
+
+            if _, ok := obj[x.nom]; ok {
+                return b.Value(obj[x.nom])
+            }
+
+            return Null { }
+        case Array:
+            if x.arr != nil {
+                out := Array { }
+
+                for _, mem := range x.arr {
+                    if y, ok := mem.(*Variable); ok && y.idx < len(obj) {
+                        out = append(out, obj[y.idx])
+                    }
+                }
+
+                return out
+            }
+
+            if x.idx < len(obj) {
+                return b.Value(obj[x.idx])
+            }
+
+            return Null { }
+        case String:
+            if x.arr != nil {
+                out := ""
+
+                for _, mem := range x.arr {
+                    if y, ok := mem.(*Variable); ok && y.idx < len(obj) {
+                        out += string(obj[y.idx])
+                    }
+                }
+
+                return String(out)
+            }
+
+            if x.idx < len(obj) {
+                return String(string(obj[x.idx]))
+            }
+
+            return Null { }
+        }
+
+        return b.Value(b.cur.vars[x.nom])
+    default:
+        return x
+    }
+}
+
 func (b *Block) Eval(a interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
@@ -190,42 +263,6 @@ func (b *Block) Eval(a interface{}) interface{} {
         return out
     default:
         return b.Value(a)
-    }
-}
-
-func (b *Block) Value(a interface{}) interface{} {
-    switch x := a.(type) {
-    case *Block:
-        if len(x.args) > 0 {
-            return x
-        }
-
-        return x.Run()
-    case *Variable:
-        switch obj := x.obj.(type) {
-        case Hash:
-            if _, ok := obj[x.nom]; ok {
-                return b.Value(obj[x.nom])
-            }
-
-            return Null { }
-        case Array:
-            if x.idx < len(obj) {
-                return b.Value(obj[x.idx])
-            }
-
-            return Null { }
-        case String:
-            if x.idx < len(obj) {
-                return String(string(obj[x.idx]))
-            }
-
-            return Null { }
-        }
-
-        return b.Value(b.cur.vars[x.nom])
-    default:
-        return x
     }
 }
 
@@ -293,6 +330,8 @@ func (blk *Block) Interpret() interface{} {
         switch t.lit {
         case "!", "not":
             blk.Register(Not(a))
+        case "?", "boolean", "bool":
+            blk.Register(Boolify(a))
         case "^", "invert":
             blk.Register(Invert(a))
         case "%", "hashify", "hash":
@@ -367,7 +406,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Switch(blk.Blockify(a), blk.Blockify(b)))
         case "??", "redo":
             blk.Register(Redo(Blockify(a), Blockify(b)))
-        case "@", "find", "index", "format", "round":
+        case "@", "find", "index", "round":
             blk.Register(Find(a, b))
         case "**", "power", "pow", "rotate", "sort":
             blk.Register(Power(a, b))
@@ -383,7 +422,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Subtract(a, b))
         case "~", "join":
             blk.Register(Join(a, b))
-        case "~~", "base", "convert":
+        case "~~", "base", "convert", "format":
             blk.Register(Base(a, b))
         case "<<", "push", "append", "lshift":
             val := Push(a, b)

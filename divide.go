@@ -126,17 +126,6 @@ func (a Array) Split(b *Block) Array {
     return out
 }
 
-func (a String) Split(b String) Array {
-    items := strings.Split(string(a), string(b))
-    out := Array { }
-
-    for _, item := range items {
-        out = append(out, String(item))
-    }
-
-    return out
-}
-
 func (a Array) Divide(b Number) Array {
     out := Array { }
     x := int(len(a) / b.Int())
@@ -162,6 +151,17 @@ func (a Array) Divide(b Number) Array {
         }
 
         out = append(out, set)
+    }
+
+    return out
+}
+
+func (a String) Split(b String) Array {
+    items := strings.Split(string(a), string(b))
+    out := Array { }
+
+    for _, item := range items {
+        out = append(out, String(item))
     }
 
     return out

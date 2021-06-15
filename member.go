@@ -152,7 +152,7 @@ func Member(a interface{}, b interface{}) interface{} {
     return Null { }
 }
 
-func (a Hash) Members(b Array) Array {
+func (a Hash) Members(b Array) *Variable {
     out := Array { }
 
     for _, val := range b {
@@ -163,14 +163,14 @@ func (a Hash) Members(b Array) Array {
         }
     }
 
-    return out
+    return &Variable{ obj: a, arr: out }
 }
 
 func (a Hash) Member(b string) *Variable {
     return &Variable{ obj: a, nom: b }
 }
 
-func (a Array) Members(b Array) Array {
+func (a Array) Members(b Array) *Variable {
     out := Array { }
 
     for _, val := range b {
@@ -181,7 +181,7 @@ func (a Array) Members(b Array) Array {
         }
     }
 
-    return out
+    return &Variable{ obj: a, arr: out }
 }
 
 func (a Array) Member(b int) *Variable {
@@ -200,7 +200,7 @@ func (a Array) Member(b int) *Variable {
     return &Variable{ obj: a, idx: b }
 }
 
-func (a String) Members(b Array) Array {
+func (a String) Members(b Array) *Variable {
     out := Array { }
 
     for _, val := range b {
@@ -211,7 +211,7 @@ func (a String) Members(b Array) Array {
         }
     }
 
-    return out
+    return &Variable{ obj: a, arr: out }
 }
 
 func (a String) Member(b int) *Variable {

@@ -1,12 +1,5 @@
 package main
-
-import(
-    "fmt"
-    "strings"
-    "strconv"
-    "unicode"
-    "math/big"
-)
+import("math/big")
 
 func Find(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -51,7 +44,7 @@ func Find(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Find(x, y.Value())
         case String:
-            return x.Format(y)
+            return x.Find(y)
         default:
             return x.Array().Find(y)
         }
@@ -62,7 +55,7 @@ func Find(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Find(x, y.Value())
         case String:
-            return x.Format(y)
+            return x.Round(y.Number())
         case Number:
             return x.Round(y)
         case Boolean:
@@ -101,41 +94,16 @@ func (a Array) Find(b interface{}) Array {
     return out
 }
 
-func (a String) Format(b String) String {
-    return String(fmt.Sprintf(string(b), string(a)))
-}
+func (a String) Find(b String) Array {
+    out := Array { }
 
-func (a Number) Format(b String) String {
-    parts := strings.Split(string(b), ".")
-
-    if len(parts) > 1 {
-        out := ""
-        dec := ""
-
-        for _, c := range parts[1] {
-            if unicode.IsDigit(c) {
-                dec += string(c)
-            } else {
-                break
-            }
+    for i := range a {
+        if i + len(b) <= len(a) && string(a[i:i + len(b)]) == string(b) {
+            out = append(out, i)
         }
-
-        if n, err := strconv.Atoi(dec); err == nil {
-            out = a.val.FloatString(n)
-        }
-
-        return String(fmt.Sprintf(parts[0] + "s", out))
     }
 
-    if val, ok := a.val.Float64(); ok {
-        if strings.Contains(parts[0], "f") {
-            return String(fmt.Sprintf(parts[0], val))
-        }
-
-        return String(fmt.Sprintf(parts[0], int(val)))
-    }
-
-    return String(a.val.FloatString(0))
+    return out
 }
 
 func (a Number) Round(b Number) Number {
