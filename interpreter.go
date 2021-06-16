@@ -430,7 +430,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Subtract(a, b))
         case "~", "join":
             blk.Register(Join(a, b))
-        case "~~", "base", "convert", "format":
+        case "~~", "base", "convert", "format", "fmt":
             blk.Register(Base(a, b))
         case "<<", "push", "append", "lshift":
             val := Push(a, b)

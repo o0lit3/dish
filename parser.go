@@ -41,7 +41,33 @@ func NewBlock() *Block {
 func (blk *Block) Assign(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
-        blk.Assign(x.Run(), b)
+        switch y := b.(type) {
+        case *Block:
+            return blk.Assign(x, y.Run())
+        case *Variable:
+            return blk.Assign(x, y.Value())
+        }
+
+        for i, item := range x.Variate() {
+            switch y := b.(type) {
+            case Hash:
+                arr := y.Array()
+
+                if i < len(arr) {
+                    blk.Assign(item, arr[i])
+                } else {
+                    blk.Assign(item, Null { })
+                }
+            case Array:
+                if i < len(y) {
+                    blk.Assign(item, y[i])
+                } else {
+                    blk.Assign(item, Null { })
+                }
+            default:
+                blk.Assign(item, y)
+            }
+        }
     case *Variable:
         x.Assign(blk, b)
     case String:
@@ -123,7 +149,33 @@ func (v *Variable) Assign(blk *Block, b interface{}) {
 func (blk *Block) Define(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
-        blk.Define(x.Run(), b)
+        switch y := b.(type) {
+        case *Block:
+            return blk.Define(x, y.Run())
+        case *Variable:
+            return blk.Define(x, y.Value())
+        }
+
+        for i, item := range x.Variate() {
+            switch y := b.(type) {
+            case Hash:
+                arr := y.Array()
+
+                if i < len(arr) {
+                    blk.Define(item, arr[i])
+                } else {
+                    blk.Define(item, Null { })
+                }
+            case Array:
+                if i < len(y) {
+                    blk.Define(item, y[i])
+                } else {
+                    blk.Define(item, Null { })
+                }
+            default:
+                blk.Define(item, y)
+            }
+        }
     case *Variable:
         switch obj := x.obj.(type) {
         case Hash:
@@ -268,6 +320,22 @@ func Blockify(a interface{}) *Block {
     }
 
     return &Block { }
+}
+
+func (b *Block) Variate() []*Variable {
+    out := []*Variable{}
+
+    for _, t := range b.toks {
+        switch t.tok {
+        case VAR:
+            out = append(out, &Variable{ blk: b, nom: t.lit })
+        case FIN:
+        default:
+            panic(fmt.Sprintf("Assigment block may only contain variables near %s at %s", t.lit, t.pos))
+        }
+    }
+
+    return out
 }
 
 func (b *Block) Blockify(a interface{}) Array {
