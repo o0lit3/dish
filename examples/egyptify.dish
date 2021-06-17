@@ -13,12 +13,20 @@ egyptify = :f(
     )
   )
 
-  (f.ratio.0 != 1).redo(
+  (f.ratio.0 > 1).redo(
     out << 1 / (1 / f).ceil
     f = ((-f.ratio.1 % f.ratio.0 + f.ratio.0) % f.ratio.0) / (f.ratio.1 * (1 / f).ceil)
   )
 
   (out << f).map:r((r.ratio.1 == 1).then(r).else(r.ratio.join('/')))
+)
+
+(2..99).each:a(
+  (2..99).each:b(
+    e: (a / b).egyptify
+    (#e > tmax).then(tmax = #e, term = a / b)
+    (#e.(-1) - 2 > dmax).then(dmax = #e.(-1) - 2, denom = a / b)
+  )
 )
 
 [
@@ -27,4 +35,7 @@ egyptify = :f(
   2014/59
 ].map:f(
   "$(f.ratio.join('/')) = $(f.egyptify.join(' + '))"
-).join("\n")
+).join("\n") ~ "\n\n" ~ [
+  "Fraction with the highest number of terms ($(tmax)): $(term.ratio.join('/'))"
+  "Fraction with the largest denominator ($(dmax)): $(denom.ratio.join('/'))"
+].join("\n")

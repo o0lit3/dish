@@ -1,5 +1,5 @@
 package main
-import("math")
+import("math/big")
 
 func Min(a interface{}) interface{} {
     switch x := a.(type) {
@@ -14,8 +14,8 @@ func Min(a interface{}) interface{} {
     case String:
         return Min(x.Number())
     case Number:
-        val, _ := x.val.Float64()
-        return NewNumber(int(math.Floor(val)))
+        v := new(big.Int).Quo(x.val.Num(), x.val.Denom())
+        return Number{ val: new(big.Rat).SetInt(v) }
     case Boolean:
         return x.Number()
     }

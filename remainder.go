@@ -1,11 +1,12 @@
 package main
+import("math/big")
 
-func Mod(a interface{}, b interface{}) interface{} {
+func Remainder(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
-        return Mod(x.Run(), b)
+        return Remainder(x.Run(), b)
     case *Variable:
-        return Mod(x.Value(), b)
+        return Remainder(x.Value(), b)
     case Hash:
         switch y := b.(type) {
         case *Block:
@@ -13,11 +14,11 @@ func Mod(a interface{}, b interface{}) interface{} {
                 return x.Filter(y)
             }
 
-            return Mod(x, y.Run())
+            return Remainder(x, y.Run())
         case *Variable:
-            return Mod(x, y.Value())
+            return Remainder(x, y.Value())
         default:
-            return Mod(x.Array(), b)
+            return Remainder(x.Array(), b)
         }
     case Array:
         switch y := b.(type) {
@@ -26,17 +27,17 @@ func Mod(a interface{}, b interface{}) interface{} {
                 return x.Filter(y)
             }
 
-            return Mod(x, y.Run())
+            return Remainder(x, y.Run())
         case *Variable:
-            return Mod(x, y.Value())
+            return Remainder(x, y.Value())
         case String:
-            return x.Mod(y.Number())
+            return x.Remainder(y.Number())
         case Number:
-            return x.Mod(y)
+            return x.Remainder(y)
         case Boolean:
-            return x.Mod(y.Number())
+            return x.Remainder(y.Number())
         case Null:
-            return x.Mod(NewNumber(0))
+            return x.Remainder(NewNumber(0))
         }
     case String:
         switch y := b.(type) {
@@ -45,39 +46,35 @@ func Mod(a interface{}, b interface{}) interface{} {
                 return Join(x.Array().Filter(y), String(""))
             }
 
-            return Mod(x, y.Run())
+            return Remainder(x, y.Run())
         case *Variable:
-            return Mod(x, y.Value())
+            return Remainder(x, y.Value())
         case String:
-            return x.Mod(y.Number())
+            return x.Remainder(y.Number())
         case Number:
-            return x.Mod(y)
+            return x.Remainder(y)
         case Boolean:
-            return x.Mod(y.Number())
+            return x.Remainder(y.Number())
         case Null:
-            return x.Mod(NewNumber(0))
+            return x.Remainder(NewNumber(0))
         }
     case Number:
         switch y := b.(type) {
         case *Block:
-            return Mod(x, y.Run())
+            return Remainder(x, y.Run())
         case *Variable:
-            return Mod(x, y.Value())
+            return Remainder(x, y.Value())
         case Hash:
-            if len(y) != 0 {
-                return NewNumber(x.Int() % len(y))
-            }
+            return Remainder(x, NewNumber(len(y)))
         case Array:
-            if len(y) != 0 {
-                return NewNumber(x.Int() % len(y))
-            }
+            return Remainder(x, NewNumber(len(y)))
         case String:
-            if len(y) != 0 {
-                return NewNumber(x.Int() % len(y))
-            }
+            return Remainder(x, y.Number())
         case Number:
             if y.val.Cmp(NewNumber(0).val) != 0 {
-                return NewNumber(x.Int() % y.Int())
+                i := new(big.Int).Quo(x.val.Num(), x.val.Denom())
+                j := new(big.Int).Quo(y.val.Num(), y.val.Denom())
+                return Number{ val: new(big.Rat).SetInt(new(big.Int).Rem(i, j)) }
             }
         case Boolean:
             if y {
@@ -85,7 +82,7 @@ func Mod(a interface{}, b interface{}) interface{} {
             }
         }
     case Boolean:
-        return Mod(x.Number(), b)
+        return Remainder(x.Number(), b)
     }
 
     return Null { }
@@ -119,7 +116,7 @@ func (a Array) Filter(b *Block) Array {
     return out
 }
 
-func (a Array) Mod(b Number) interface{} {
+func (a Array) Remainder(b Number) interface{} {
     if b.val.Cmp(NewNumber(0).val) == 0 {
         return Null { }
     }
@@ -137,7 +134,7 @@ func (a Array) Mod(b Number) interface{} {
     return out
 }
 
-func (a String) Mod(b Number) interface{} {
+func (a String) Remainder(b Number) interface{} {
     if b.val.Cmp(NewNumber(0).val) == 0 {
         return Null { }
     }

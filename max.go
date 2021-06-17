@@ -1,5 +1,5 @@
 package main
-import("math")
+import("math/big")
 
 func Max(a interface{}) interface{} {
     switch x := a.(type) {
@@ -14,8 +14,11 @@ func Max(a interface{}) interface{} {
     case String:
         return Max(x.Number())
     case Number:
-        val, _ := x.val.Float64()
-        return NewNumber(int(math.Ceil(val)))
+        if x.val.Denom().Cmp(big.NewInt(1)) == 0 {
+            return x
+        }
+
+        return Add(Min(x), NewNumber(1))
     case Boolean:
         return x.Number()
     }

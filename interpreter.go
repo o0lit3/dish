@@ -422,8 +422,8 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Multiply(a, b))
         case "/", "divide", "split":
             blk.Register(Divide(a, b))
-        case "%", "mod", "filter", "select", "grep":
-            blk.Register(Mod(a, b))
+        case "%", "remainder", "rem", "filter", "select", "grep":
+            blk.Register(Remainder(a, b))
         case "+", "add":
             blk.Register(Add(a, b))
         case "-", "subtract":
@@ -505,7 +505,7 @@ func (blk *Block) Interpret() interface{} {
         case "/=":
             blk.Register(blk.Assign(a, Divide(a, b)))
         case "%=":
-            blk.Register(blk.Assign(a, Mod(a, b)))
+            blk.Register(blk.Assign(a, Remainder(a, b)))
         case "&=":
             blk.Register(blk.Assign(a, Intersect(a, b)))
         case "^=":
