@@ -127,30 +127,18 @@ func (a Array) Split(b *Block) Array {
 }
 
 func (a Array) Divide(b Number) Array {
+    step := b.Int()
     out := Array { }
-    x := int(len(a) / b.Int())
     i := 0
 
-    for len(out) < len(a) % b.Int() {
-        set := Array { }
-
-        for len(set) < x + 1 {
-            set = append(set, a[i])
-            i = i + 1
+    for i < len(a) {
+        if i + step < len(a) {
+            out = append(out, a[i:i + step])
+        } else {
+            out = append(out, a[i:len(a)])
         }
 
-        out = append(out, set)
-    }
-
-    for len(out) < b.Int() {
-        set := Array { }
-
-        for len(set) < x {
-            set = append(set, a[i])
-            i = i + 1
-        }
-
-        out = append(out, set)
+        i = i + step
     }
 
     return out

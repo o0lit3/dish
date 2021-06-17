@@ -79,7 +79,7 @@ func (blk *Block) Assign(a interface{}, b interface{}) interface{} {
     return b
 }
 
-func (v *Variable) Assign(blk *Block, b interface{}) {
+func (v *Variable) Assign(blk *Block, b interface{}) interface{} {
     switch obj := v.obj.(type) {
     case Hash:
         obj[v.nom] = b
@@ -89,6 +89,8 @@ func (v *Variable) Assign(blk *Block, b interface{}) {
         } else {
             v.par.Assign(blk, obj)
         }
+
+        return obj
     case Array:
         if v.idx < 0 {
             if len(obj) == 0 {
@@ -109,6 +111,8 @@ func (v *Variable) Assign(blk *Block, b interface{}) {
         } else {
             v.par.Assign(blk, obj)
         }
+
+        return obj
     case String:
         if v.idx < 0 {
             if len(obj) == 0 {
@@ -136,13 +140,18 @@ func (v *Variable) Assign(blk *Block, b interface{}) {
             obj[v.idx] = ' '
         }
 
-        if v.par.obj == nil {
+        if v.par == nil {
+            blk.cur.stck = append(blk.cur.stck, obj)
+        } else if v.par.obj == nil {
             blk.cur.vars[v.par.nom] = obj
         } else {
             v.par.Assign(blk, obj)
         }
+
+        return obj
     default:
         blk.cur.vars[v.nom] = b
+        return obj
     }
 }
 

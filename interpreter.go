@@ -350,7 +350,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Sort(a))
         case "*", "product":
             blk.Register(Product(a))
-        case "/", "itemize", "array", "arr", "values", "ratio":
+        case "/", "itemize", "array", "arr", "flatten", "flat", "values", "ratio":
             blk.Register(Itemize(a))
         case "+", "number", "num", "sum":
             blk.Register(Sum(a))
@@ -485,14 +485,25 @@ func (blk *Block) Interpret() interface{} {
             case *Variable:
                 blk.Register(blk.Assign(a, y.Value()))
             default:
-                blk.Register(blk.Assign(a, b))
+                blk.Register(blk.Assign(a, y))
             }
         case ":", "define":
             switch y := b.(type) {
             case *Variable:
                 blk.Register(blk.Define(a, y.Value()))
             default:
-                blk.Register(blk.Define(a, b))
+                blk.Register(blk.Define(a, y))
+            }
+        case ":=":
+            if x, ok := a.(*Variable); ok && x.obj != nil {
+                switch y := b.(type) {
+                case *Variable:
+                    blk.Register(x.Assign(blk, y.Value()))
+                default:
+                    blk.Register(x.Assign(blk, y))
+                }
+            } else {
+                panic(fmt.Sprintf("Unexpected operand for member assignment \"%s\" at %s", t.lit, t.pos))
             }
         case "~=":
             blk.Register(blk.Assign(a, Join(a, b)))

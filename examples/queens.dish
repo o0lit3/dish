@@ -1,0 +1,23 @@
+// https://rosettacode.org/wiki/N-queens_problem
+
+queens = :n(
+  nums: (2..n).grep:i(i % 2 == 0)
+  odds: (1..n).grep:i(i % 2)
+  rem: n % 12
+
+  (rem == 3 || rem == 9).then(nums = nums.rotate(1))
+  (rem == 8).then(odds = (odds / 2).map:i(i.reverse).flat)
+
+  nums += odds
+
+  (rem == 3 || rem == 9).then(
+    nums = nums.grep:i(i != 1) + nums.grep:i(i == 1)
+    nums = nums.grep:i(i != 3) + nums.grep:i(i == 3)
+  )
+
+  nums.map:i(
+    ('.' * n).(i - 1) := 'Q'
+  ).join("\n")
+)
+
+8.queens

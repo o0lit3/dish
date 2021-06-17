@@ -20,7 +20,7 @@ Dish has 5 data types (Booleans, Numbers, Strings, Arrays, and Hashes), all of w
 
 As such, all binary operators apply the right-hand operand as a parameter to a method on the left-hand object. In the expression `5 + 2`, `2` is a parameter of the `add` method on the Number object `5`, e.g. `5.add(2)`.
 
-Similarly, traditional unary operators (which must be used as prefix operators when represented in shorthand notation<sup>*</sup>) correspond to methods with no parameters that are invoked on the single operand as an object. In the expression `!ready`, `ready` is the Boolean object on which the `not` method is invoked, e.g. `ready.not()` 
+Similarly, traditional unary operators (which must be used as prefix operators when represented in shorthand notation<sup>*</sup>) correspond to methods with no parameters that are invoked on the single operand as an object. In the expression `!ready`, `ready` is the Boolean object on which the `not` method is invoked, e.g. `ready.not` 
 
 <sub>*Postfix `++` and `--` are not legal in **dish**</sub>
 

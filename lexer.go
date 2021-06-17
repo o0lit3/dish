@@ -173,7 +173,7 @@ func (t *Token) Precedence() int {
         return 2
     case "..", "?", "??":
         return 1
-    case ":", "=", "~=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
+    case ":", "=", ":=", "~=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=":
         return 0
     default:
         return 16
@@ -375,7 +375,7 @@ func (l *Lexer) Lexify() *Token {
             case 0:
                 s.UnexpectedToken(r)
             case '=':
-                if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() || r == ':' {
+                if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() {
                     s.UnexpectedToken(r)
                 }
 
