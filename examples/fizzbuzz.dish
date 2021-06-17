@@ -1,0 +1,10 @@
+// https://rosettacode.org/wiki/FizzBuzz
+
+(1..100).each:n(
+  [n % 15 == 0, n % 5 == 0, n % 3 == 0].switch[
+    'FizzBuzz'
+    'Buzz'
+    'Fizz'
+    n
+  ]
+).join("\n")
