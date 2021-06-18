@@ -356,13 +356,21 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Sum(a))
         case "-", "negative", "negate":
             blk.Register(Negate(a))
-        case ">>", "pop":
+        case ">>", "pop", "last":
             val, obj := Pop(a)
-            blk.Assign(a, obj)
+
+            if _, ok := a.(*Variable); ok && t.lit != "last" {
+                blk.Assign(a, obj)
+            }
+
             blk.Register(val)
-        case "<<", "shift":
+        case "<<", "shift", "first":
             val, obj := Shift(a)
-            blk.Assign(a, obj)
+
+            if _, ok := a.(*Variable); ok && t.lit != "first" {
+                blk.Assign(a, obj)
+            }
+
             blk.Register(val)
         case "~~", "ord", "ascii", "chr":
             blk.Register(Ascii(a))
