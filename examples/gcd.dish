@@ -1,0 +1,17 @@
+// https://rosettacode.org/wiki/Greatest_common_divisor
+
+gcd = :n:m(
+  << (m.redo([n, m] = [m, n % m]))
+)
+
+[
+  [23, 7]
+  [10, 15]
+  [18 12]
+  [21, 35]
+  [1071, 1029]
+  [3528, 3780]
+  [40902, 24140]
+].map:i(
+  "$(i.0).gcd($(i.1)) = $(i.0.gcd(i.1))"
+).join("\n")
