@@ -42,9 +42,9 @@ func Subtract(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Subtract(x, y.Value())
         case Hash:
-            return Hash{ string(x): x }.Subtract(y)
+            return Subtract(x.Number(), NewNumber(len(y)))
         case Array:
-            return Array{ x }.Subtract(y)
+            return Subtract(x.Number(), NewNumber(len(y)))
         case String:
             return Number{ val: NewNumber(0).val.Sub(x.Number().val, y.Number().val) }
         default:
@@ -57,9 +57,9 @@ func Subtract(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Subtract(x, y.Value())
         case Hash:
-            return Hash { fmt.Sprintf("%v", x): x }.Subtract(y)
+            return Subtract(x, NewNumber(len(y)))
         case Array:
-            return Array{ x }.Subtract(y)
+            return Subtract(x, NewNumber(len(y)))
         case String:
             return Number{ val: NewNumber(0).val.Sub(x.val, y.Number().val) }
         case Number:

@@ -432,9 +432,9 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Divide(a, b))
         case "%", "remainder", "rem", "filter", "select", "grep":
             blk.Register(Remainder(a, b))
-        case "+", "add":
+        case "+", "add", "concat":
             blk.Register(Add(a, b))
-        case "-", "subtract":
+        case "-", "subtract", "sub", "remove":
             blk.Register(Subtract(a, b))
         case "~", "join":
             blk.Register(Join(a, b))

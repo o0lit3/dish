@@ -15,8 +15,10 @@ Dish is interpreted by [Go](https://github.com/golang/go#readme). With Go instal
 ## Output
 By default **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
 
-## Data Types and Operators
-Dish has 5 data types (Booleans, Numbers, Strings, Arrays, and Hashes), all of which are objects with their own object methods. Traditional, symbolic operators (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods.
+## [Data Types and Operators](tests/README.md)
+For a detailed decription of operators, precedence, and implicit operator context, [read the documentation at tests/README.md](tests/README.md).
+
+Dish has 6 data types (Null, Boolean, Number, String, Array, and Hash), all of which are objects with their own object methods. Traditional, symbolic operators (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods.
 
 As such, all binary operators apply the right-hand operand as a parameter to a method on the left-hand object. In the expression `5 + 2`, `2` is a parameter of the `add` method on the Number object `5`, e.g. `5.add(2)`.
 

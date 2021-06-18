@@ -116,7 +116,7 @@ func TestRemainder(t *testing.T) {
     test(t, "tests/remainder.dish")
 }
 
-func TestPlus(t *testing.T) {
+func TestAdd(t *testing.T) {
     test(t, "tests/add.dish")
 }
 

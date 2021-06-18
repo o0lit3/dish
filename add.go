@@ -42,9 +42,9 @@ func Add(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Add(x, y.Value())
         case Hash:
-            return Hash{ string(x): x }.Add(y)
+            return Add(x.Number(), NewNumber(len(y)))
         case Array:
-            return Array{ x }.Add(y)
+            return Add(x.Number(), NewNumber(len(y)))
         case String:
             return Number{ val: NewNumber(0).val.Add(x.Number().val, y.Number().val) }
         default:
@@ -57,9 +57,9 @@ func Add(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Add(x, y.Value())
         case Hash:
-            return Hash{ fmt.Sprintf("%v", x):x }.Add(y)
+            return Add(x, NewNumber(len(y)))
         case Array:
-            return Array{ x }.Add(y)
+            return Add(x, NewNumber(len(y)))
         case String:
             return Number{ val: NewNumber(0).val.Add(x.val, y.Number().val) }
         case Number:
