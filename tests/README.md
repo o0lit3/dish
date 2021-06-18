@@ -2,6 +2,7 @@
 Symbolic operators in *dish* (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods. The tables below outline which shorthand, symbolic operands correspond to which method name. Some binary operators change behavior depending on the data types of their operands; in these cases, the left-hand operand forces the right-hand operand into the same data type context with the following conversion rules:
 
 |         | Boolean             | Number  | String            | Array    | Hash    |
+| ------- | ------------------- | ------- | ----------------- | -------- | ------- |
 | Boolean | x                   | 1, 0    | "true", "false"   | [x]      | {~x: x} |
 | Number  | x != 0              | x       | ~x                | [x]      | {~x: x} |
 | String  | x != "0" && x != "" | +x || 0 | x                 | [x]      | {~x: x} |
@@ -12,6 +13,7 @@ With the exception of special assignment operators, all symbolic operators in *d
 
 ## Arithmetic Operators
 | Operator | Operands                          | Method Name   | Example                            |
+| -------- | --------------------------------- | ------------- | ---------------------------------- |
 | +        | Scalar + Implicit Numeric Context | a.add(b)      | 10 + 20 = 30                       |
 |          | Array + Implicit Array Context    | a.concat(b)   | [1, 2] + [2, 3] = [1, 2, 2, 3]     |
 |          | Hash + Implicit Hash Context      | a.concat(b)   | {x: 1} + {y: 2} = {"x": 1, "y": 2} |
