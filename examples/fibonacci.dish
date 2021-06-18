@@ -6,9 +6,8 @@
     b = 1
   ] + (
     (0..48)*:(
-      prev = a
-      a = b
-      b += prev
+      [a, b] = [b, a + b]
+      b
     )
   )
 ).join("\n")

@@ -5,6 +5,7 @@ import (
     "fmt"
     "bufio"
     "strings"
+    "unicode"
 )
 
 type Parser struct {
@@ -48,24 +49,39 @@ func (blk *Block) Assign(a interface{}, b interface{}) interface{} {
             return blk.Assign(x, y.Value())
         }
 
-        for i, item := range x.Variate() {
+        var obj interface{}
+        x.cur = blk.cur
+
+        for i, v := range x.Variate() {
+            if v.par != nil && v.par.obj == nil {
+                v.obj = blk.cur.vars[v.par.nom]
+            }
+
             switch y := b.(type) {
             case Hash:
                 arr := y.Array()
 
                 if i < len(arr) {
-                    blk.Assign(item, arr[i])
+                    obj = v.Assign(blk, arr[i])
                 } else {
-                    blk.Assign(item, Null { })
+                    obj = v.Assign(blk, Null { })
                 }
             case Array:
                 if i < len(y) {
-                    blk.Assign(item, y[i])
+                   obj = v.Assign(blk, y[i])
                 } else {
-                    blk.Assign(item, Null { })
+                    obj = v.Assign(blk, Null { })
                 }
             default:
-                blk.Assign(item, y)
+                obj = v.Assign(blk, y)
+            }
+
+            if v.par == nil {
+                blk.cur.stck = append(blk.cur.stck, obj)
+            } else if v.par.obj == nil {
+                blk.cur.vars[v.par.nom] = obj
+            } else {
+                v.par.Assign(blk, obj)
             }
         }
     case *Variable:
@@ -81,10 +97,18 @@ func (blk *Block) Assign(a interface{}, b interface{}) interface{} {
 
 func (v *Variable) Assign(blk *Block, b interface{}) interface{} {
     switch obj := v.obj.(type) {
+    case *Block:
+        v.obj = obj.Run()
+        return v.Assign(blk, b)
+    case *Variable:
+        v.obj = obj.Value()
+        return v.Assign(blk, b)
     case Hash:
         obj[v.nom] = b
 
-        if v.par.obj == nil {
+        if v.par == nil {
+            blk.cur.stck = append(blk.cur.stck, obj)
+        } else if v.par.obj == nil {
             blk.cur.vars[v.par.nom] = obj
         } else {
             v.par.Assign(blk, obj)
@@ -106,7 +130,9 @@ func (v *Variable) Assign(blk *Block, b interface{}) interface{} {
 
         obj[v.idx] = b
 
-        if v.par.obj == nil {
+        if v.par == nil {
+            blk.cur.stck = append(blk.cur.stck, obj)
+        } else if v.par.obj == nil {
             blk.cur.vars[v.par.nom] = obj
         } else {
             v.par.Assign(blk, obj)
@@ -164,6 +190,8 @@ func (blk *Block) Define(a interface{}, b interface{}) interface{} {
         case *Variable:
             return blk.Define(x, y.Value())
         }
+
+        x.cur = blk.cur
 
         for i, item := range x.Variate() {
             switch y := b.(type) {
@@ -332,13 +360,51 @@ func Blockify(a interface{}) *Block {
 }
 
 func (b *Block) Variate() []*Variable {
+    var reg *Variable = nil
     out := []*Variable{}
 
     for _, t := range b.toks {
         switch t.tok {
+        case OP1:
+            switch {
+            case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):
+                if v, ok := Member(reg, String(t.lit).Number()).(*Variable); ok {
+                    v.par = reg
+                    reg = v
+                } else {
+                    reg = &Variable{ blk: reg.blk, par: reg, obj: Array{ }, idx: String(t.lit).Number().Int() }
+                }
+            default:
+                res := false
+
+                if len(t.lit) > 0 && t.opx && unicode.IsLetter(rune(t.lit[0])) {
+                    switch op := b.FindVar(t.lit).(type) {
+                    case Null:
+                    default:
+                        if v, ok := Member(reg, op).(*Variable); ok {
+                            v.par = reg
+                            reg = v
+                            res = true
+                        }
+                    }
+                }
+
+                if !res {
+                    if v, ok := Member(reg, String(t.lit)).(*Variable); ok {
+                        v.par = reg
+                        reg = v
+                    } else {
+                        reg = &Variable{ blk: reg.blk, par: reg, obj: Hash{ }, nom: t.lit }
+                    }
+                }
+            }
         case VAR:
-            out = append(out, &Variable{ blk: b, nom: t.lit })
+            reg = &Variable{ blk: b, nom: t.lit }
         case FIN:
+            if reg != nil {
+                out = append(out, reg)
+                reg = nil
+            }
         default:
             panic(fmt.Sprintf("Assigment block may only contain variables near %s at %s", t.lit, t.pos))
         }

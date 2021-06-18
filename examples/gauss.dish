@@ -1,0 +1,53 @@
+// https://rosettacode.org/wiki/Gaussian_elimination
+
+gauss = :a:b(
+  (0..#a - 1).each:k(
+    max: a.k.k.abs
+    lmax: k
+
+    (k + 1 <= #a - 1).then(
+      (k + 1..#a - 1).each:l(
+        (max < a.l.k.abs).then([max, lmax] = [a.l.k.abs, l])
+      )
+    )
+
+    (k != lmax).then(
+      [a.k, a.lmax] = [a.lmax, a.k]
+      [b.k, b.lmax] = [b.lmax, b.k]
+    )
+
+    akk: a.k.k
+
+    (k..#a - 1).each:j(
+      a.k.j /= akk
+    )
+
+    b.k /= akk
+
+    (0..#a - 1).each:i(
+      (i != k).then(
+        aik: a.i.k
+
+        (k..#a - 1).each:j(
+          a.i.j -= a.k.j * aik
+        )
+
+        b.i -= b.k * aik
+      )
+    )
+  )
+
+  b.map:i((i > 0).switch[' ', ''] ~ i.fmt('%.20f'))
+)
+
+[
+  [
+    [1.00, 0.00, 0.00,  0.00,  0.00,   0.00]
+    [1.00, 0.63, 0.39,  0.25,  0.16,   0.10]
+    [1.00, 1.26, 1.58,  1.98,  2.49,   3.13]
+    [1.00, 1.88, 3.55,  6.70, 12.62,  23.80]
+    [1.00, 2.51, 6.32, 15.88, 39.90, 100.28]
+    [1.00, 3.14, 9.87, 31.01, 97.41, 306.02]
+  ]
+  [-0.01, 0.61, 0.91, 0.99, 0.60, 0.02]
+].gauss.join("\n")
