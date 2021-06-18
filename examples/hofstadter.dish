@@ -1,0 +1,12 @@
+// https://rosettacode.org/wiki/Hofstadter_Q_sequence
+
+Q = [0, 1, 1]
+
+(0..998)*:(
+  Q << Q.(-Q.(-1)) + Q.(-Q.(-2))
+)
+
+[
+    "First 10 terms: $(Q.(1..10))"
+    "Term 1000: $(Q.1000)"
+].join("\n")
