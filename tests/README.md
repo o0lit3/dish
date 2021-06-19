@@ -20,31 +20,31 @@ For the purposes of the tables below, "Scalar" refers to a Boolean or Number in 
 |          | String + Implicit Number    | `a.add(b)`        | `'10' + '20'`              | `30`                  |
 |          | Array + Implicit Array      | `a.concat(b)`     | `[1, 2] + [2, 3]`          | `[1, 2, 2, 3]`        |
 |          | Hash + Implicit Hash        | `a.concat(b)`     | `{x: 1} + {y: 2}`          | `{"x": 1, "y": 2}`    |
-
+|          |                             |                   |                            |                       |
 | `-`      | Scalar - Implicit Number    | `a.subtract(b)`   | `10 - 20`                  | `-10`                 |
 |          | String - Implicit Number    | `a.subtract(b)`   | `'10' - '20'`              | `-10`                 |
 |          | Array - Implicit Array      | `a.remove(b)`     | `[1, 2] - [2, 3]`          | `[1]`                 |
 |          | Hash - Implicit Hash        | `a.remove(b)`     | `{x: 1, y: 2} - {"x"}`     | `{"y": 2}`            |
-
+|          |                             |                   |                            |                       |
 | `*`      | Scalar * Implicit Number    | `a.multiply(b)`   | `10 * 20`                  | `200`                 |
 |          | String * Implicit Number    | `a.repeat(b)`     | `"a" * 5`                  | `"aaaaa"`             |
 |          | List * :(Block)             | `a.map:i(...)`    | `[1, 2, 3] * :i(i + 1)`    | `[2, 3, 4]`           |
 |          | List * List                 | `a.dot(b)`        | `[1, 2] * [3, 4]`          | `[3, 8]`              |
 |          | List * Implicit Number      | `a.repeat(b)`     | `[2] * 5`                  | `[2, 2, 2, 2, 2]`     |
-
+|          |                             |                   |                            |                       |
 | `/`      | Scalar / Implicit Number    | `a.divide(b)`     | `10 / 20`                  | `0.5`                 |
 |          | String / :(Block)           | `a.split:i(...)`  | `'binary' / :i(i.vowel)`   | `["b", "n", "ry"]`    |
 |          | String / String             | `a.split(b)`      | `'binary' / 'in'`          | `["b", "ary"]`        |
 |          | String / Implicit Number    | `a.split(b)`      | `'binary' / 2`             | ` ["bi", "na", "ry"]` |
 |          | List / :(Block)             | `a.split:i(...)`  | `[2, 2, 3, 4] / :i(i % 2)` | `[[2, 2], [4]]`       |
 |          | List / Implicit Number      | `a.split(b)`      | `[2, 2, 3, 4] / 2`         | `[[2, 2], [3, 4]]`    |
-
+|          |                             |                   |                            |                       |
 | `%`      | Scalar % Implicit Number    | `a.remainder(b)`  | `20 % 7`                   | `6`                   |
 |          | String % :(Block)           | `a.filter:i(...)` | `'binary' % :i(i.vowel)`   | `"ia"`                |
 |          | String % Implicit Number    | `a.every(b)`      | `'binary' % 2`             | `"bnr"`               |
 |          | List % :(Block)             | `a.filter:i(...)` | `[1, 1, 2, 3] % :i(i % 2)` | `[1, 1, 3]`           |
 |          | List % Implicit Number      | `a.every(b)`      | `[1, 1, 2, 3] % 2`         | `[1, 2]`              |
-
+|          |                             |                   |                            |                       |
 | `**`     | Scalar \*\* Implicit Number | `a.pow(b)`        | `2 ** 3`                   | `8`                   |
 |          | String \*\* :(Block)        | `a.sort:x:y(...)` | `'binary' ** :x:y(y < x)`  | `"yrniba"`            | 
 |          | String \*\* Implicit Number | `a.pow(b)`        | `"2" ** "3"`               | `8`                   |
