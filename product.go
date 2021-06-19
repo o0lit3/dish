@@ -1,4 +1,5 @@
 package main
+import("math/big")
 
 func Product(a interface{}) interface{} {
     switch x := a.(type) {
@@ -11,13 +12,13 @@ func Product(a interface{}) interface{} {
     case Array:
         return x.Product()
     case String:
-        return x.Number()
+        return x.Vowel()
     case Number:
-        return x
+        return x.Prime()
     case Boolean:
-        return x.Number()
+        return Product(x.Number())
     case Null:
-        return NewNumber(0)
+        return Boolean(false)
     }
 
     return Null { }
@@ -27,10 +28,23 @@ func (a Array) Product() Number {
     out := NewNumber(1)
 
     for _, val := range a {
-        if x, ok := Product(val).(Number); ok {
-            out = Number{ val: out.val.Mul(out.val, x.val) }
-        }
+        out = Multiply(out, Numberize(val)).(Number)
     }
 
     return out
+}
+
+func (a String) Vowel() Boolean {
+    if len(a) > 0 {
+        switch a[0] {
+        case 'A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u':
+            return Boolean(true)
+        }
+    }
+
+    return Boolean(false)
+}
+
+func (a Number) Prime() Boolean {
+    return Boolean(new(big.Int).Quo(a.val.Num(), a.val.Denom()).ProbablyPrime(0))
 }

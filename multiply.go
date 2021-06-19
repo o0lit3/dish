@@ -16,18 +16,8 @@ func Multiply(a interface{}, b interface{}) interface{} {
             return Multiply(x, y.Run())
         case *Variable:
             return Multiply(x, y.Value())
-        case Hash:
-            return x.Array().Repeat(NewNumber(len(y)))
-        case Array:
-            return x.Array().Repeat(NewNumber(len(y)))
-        case String:
-            return x.Array().Repeat(y.Number())
-        case Number:
-            return x.Array().Repeat(y)
-        case Boolean:
-            return x.Array().Repeat(y.Number())
-        case Null:
-            return Hash { }
+        default:
+            return Multiply(x.Array(), y)
         }
     case Array:
         switch y := b.(type) {
@@ -51,9 +41,9 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Multiply(x, y.Value())
         case Hash:
-            return x.Repeat(NewNumber(len(y)))
+            return x.DotProduct(y.Array())
         case Array:
-            return x.Repeat(NewNumber(len(y)))
+            return x.DotProduct(y)
         case String:
             return x.Repeat(y.Number())
         case Number:
@@ -93,9 +83,9 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Multiply(x, y.Value())
         case Hash:
-            return y.Multiply(x)
+            return Multiply(x, NewNumber(len(y)))
         case Array:
-            return y.Multiply(x)
+            return Multiply(x, NewNumber(len(y)))
         case String:
             return Number{ val: NewNumber(0).val.Mul(x.val, y.Number().val) }
         case Number:

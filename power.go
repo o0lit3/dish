@@ -64,9 +64,9 @@ func Power(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Power(x, y.Value())
         case Hash:
-            return y.Array().Rotate(x)
+            return Power(x, NewNumber(len(y)))
         case Array:
-            return y.Rotate(x)
+            return Power(x, NewNumber(len(y)))
         case String:
             return x.Power(y.Number())
         case Number:

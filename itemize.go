@@ -8,7 +8,7 @@ func Itemize(a interface{}) Array {
     case *Variable:
         return Itemize(x.Value())
     case Hash:
-        return Flatten(x)
+        return x.Array()
     case Array:
         return Flatten(x)
     case String:

@@ -20,17 +20,13 @@ func Divide(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Divide(x, y.Value())
         case String:
-            if y.Number().val.Cmp(NewNumber(0).val) != 0 {
-                return x.Divide(y.Number())
-            }
+            return Divide(x, y.Number())
         case Number:
             if y.val.Cmp(NewNumber(0).val) != 0 {
                 return x.Divide(y)
             }
         case Boolean:
-            if y {
-                return x.Divide(NewNumber(1))
-            }
+            return Divide(x, y.Number())
         }
     case String:
         switch y := b.(type) {
@@ -49,6 +45,10 @@ func Divide(a interface{}, b interface{}) interface{} {
             return Divide(x, y.Run())
         case *Variable:
             return Divide(x, y.Value())
+        case Hash:
+            return Divide(x, NewNumber(len(y)))
+        case Array:
+            return Divide(x, NewNumber(len(y)))
         case String:
             return x.Split(y)
         case Number:
@@ -56,9 +56,7 @@ func Divide(a interface{}, b interface{}) interface{} {
                 return x.Divide(y)
             }
         case Boolean:
-            if y {
-                return x.Divide(NewNumber(1))
-            }
+            return Divide(x, y.Number())
         }
     case Number:
         switch y := b.(type) {
@@ -111,7 +109,7 @@ func (a Array) Split(b *Block) Array {
                 items[len(items) - 1] = append(items[len(items) - 1], val)
             }
         default:
-            if Equals(val, y) {
+            if Boolify(y) {
                 items = append(items, Array { })
             } else {
                 items[len(items) - 1] = append(items[len(items) - 1], val)
@@ -156,30 +154,18 @@ func (a String) Split(b String) Array {
 }
 
 func (a String) Divide(b Number) Array {
+    step := b.Int()
     out := Array { }
-    x := int(len(a) / b.Int())
     i := 0
 
-    for len(out) < len(a) % b.Int() {
-        set := ""
-
-        for len(set) < x + 1 {
-            set += string(a[i])
-            i = i + 1
+    for i < len(a) {
+        if i + step < len(a) {
+            out = append(out, a[i:i + step])
+        } else {
+            out = append(out, a[i:len(a)])
         }
 
-        out = append(out, String(set))
-    }
-
-    for len(out) < b.Int() {
-        set := ""
-
-        for len(set) < x {
-            set += string(a[i])
-            i = i + 1
-        }
-
-        out = append(out, String(set))
+        i = i + step
     }
 
     return out

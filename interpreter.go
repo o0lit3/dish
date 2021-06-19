@@ -44,6 +44,27 @@ func (b Boolean) Number() Number {
     return NewNumber(0)
 }
 
+func Numberize(n interface{}) Number {
+    switch x := n.(type) {
+    case *Block:
+        return Numberize(x.Run())
+    case *Variable:
+        return Numberize(x.Value())
+    case Hash:
+        return NewNumber(len(x))
+    case Array:
+        return NewNumber(len(x))
+    case String:
+        return x.Number()
+    case Number:
+        return x
+    case Boolean:
+        return x.Number()
+    default:
+        return NewNumber(0)
+    }
+}
+
 func NewNumber(num int) Number {
     return Number{ val: big.NewRat(int64(num), 1) }
 }
@@ -348,11 +369,11 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Keys(a))
         case "**", "sort":
             blk.Register(Sort(a))
-        case "*", "product":
+        case "*", "product", "vowel", "prime":
             blk.Register(Product(a))
         case "/", "itemize", "array", "arr", "flatten", "flat", "values", "ratio":
             blk.Register(Itemize(a))
-        case "+", "number", "num", "sum":
+        case "+", "sum", "number", "num":
             blk.Register(Sum(a))
         case "-", "negative", "negate":
             blk.Register(Negate(a))
@@ -430,7 +451,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Multiply(a, b))
         case "/", "divide", "split":
             blk.Register(Divide(a, b))
-        case "%", "remainder", "rem", "filter", "select", "grep":
+        case "%", "remainder", "rem", "filter", "select", "every", "grep":
             blk.Register(Remainder(a, b))
         case "+", "add", "concat":
             blk.Register(Add(a, b))
