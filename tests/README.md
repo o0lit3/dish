@@ -75,7 +75,7 @@ When initializing a variable for local scope, use `:`; when initializing a varia
 |          |                             |                   |                            |                       |
 | `=`      | Variable = Any              | `a.assign(b)`     | `a = [1, 2, 3]`            | `[1, 2, 3]`           |
 | `:=`     | Member := Any               |                   | `a.0 = 4`                  | `[4, 2, 3]`           |
-| `~=`     |                             |                   | `a = 'bin', a ~= 'ary'`    | `"binary"             |
+| `~=`     |                             |                   | `a = 'bin', a ~= 'ary'`    | `"binary"`            |
 | `+=`     |                             |                   | `a = 1, a += 1`            | `2`                   |
 | `-=`     |                             |                   | `a = 1, a -= 1`            | `0`                   |
 | `*=`     |                             |                   | `a = 2, a *= 2`            | `4`                   |
