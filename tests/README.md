@@ -85,7 +85,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | `%=`     |                             |                   | `a = 5, a %= 4`            | `1`                   |
 | `&=`     |                             |                   | `a = 5, a &= 3`            | `1`                   |
 | `^=`     |                             |                   | `a = 5, a ^= 3`            | `6`                   |
-| `\|=`    |                             |                   | `a = 5, a |= 3`            | `7`                   |
+| `\|=`    |                             |                   | `a = 5, a \|= 3`           | `7`                   |
 
 **Dish** also supports parallel assignment when the left-hand operand is an Array of variables, as in `[a, b, c] = [1, 2, 3]`. Parallel assigment is useful for swapping the values held in two variables without the need of a temporary holding variable: `[a, b] = [b, a]` is equivalent to `t = a, a = b, b = t`.
 
