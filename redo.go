@@ -3,7 +3,7 @@ package main
 func Redo(a *Block, b *Block) interface{} {
     var val interface{}
 
-    val = Null { }
+    val = Boolean(false)
     i := 0
 
     for Boolify(a.Run()) {
