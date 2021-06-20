@@ -67,7 +67,7 @@ Logical operators and methods in **dish** serve as the control structures for th
 |          | List <= Implicit Number     | `a.under(b)`      | `[1, 1] <= [2, 2]`         | `true`                |
 
 ## Assignment Operators
-When initializing a variable in global scope, use `=`; when initializing a variable in local scope, use `:`. After initialization, `=` (and all variants) should be used to re-assign existing global _or_ local variable.
+When initializing a variable for local scope, use `:`; when initializing a variable for global scope, use `=`. After initialization, `=` (and all variants) should be used to re-assign existing global _or_ local variable.
 
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
@@ -75,7 +75,7 @@ When initializing a variable in global scope, use `=`; when initializing a varia
 |          |                             |                   |                            |                       |
 | `=`      | Variable = Any              | `a.assign(b)`     | `a = [1, 2, 3]`            | `[1, 2, 3]`           |
 | `:=`     | Member := Any               |                   | `a.0 = 4`                  | `[4, 2, 3]`           |
-| `~=`     |                             |                   | `a = 'bin', a ~= 'ary'     | `"binary"             |
+| `~=`     |                             |                   | `a = 'bin', a ~= 'ary'`    | `"binary"             |
 | `+=`     |                             |                   | `a = 1, a += 1`            | `2`                   |
 | `-=`     |                             |                   | `a = 1, a -= 1`            | `0`                   |
 | `*=`     |                             |                   | `a = 2, a *= 2`            | `4`                   |
