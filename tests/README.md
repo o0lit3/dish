@@ -69,6 +69,8 @@ Logical operators and methods in **dish** serve as the control structures for th
 ## Assignment Operators
 When initializing a variable for local scope, use `:`; when initializing a variable for global scope, use `=`. After initialization, `=` (and all variants) should be used to re-assign existing global _or_ local variable.
 
+The member assignment operator (`:=`) is a special assignment operator that allows you to assign a value to a variable member (an array index or hash property) and return the parent variable.
+
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `:`      | Variable : Any              | `a.define(b)`     | `a: 5`                     | `5`                   |
