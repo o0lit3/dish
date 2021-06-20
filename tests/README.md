@@ -23,7 +23,7 @@ Logical operators and methods in **dish** serve as the control structures for th
 | `&&`     | Implicit Boolean && Any     | `a.then(b)`       | `3 && 2`                   | `2`                   |
 |          |                             |                   | `true && 0`                | `false`               |
 |          |                             |                   |                            |                       |
-| `||`     | Implicit Boolean || Any     | `a.else(b)`       | `3 || 2`                   | `3`                   |
+| `\|\|`   | Implicit Boolean || Any     | `a.else(b)`       | `3 || 2`                   | `3`                   |
 |          |                             |                   | `false || 0`               | `false`               |
 |          |                             |                   |                            |                       |
 | `^^`     | Implicit Boolean ^^ Any     | `a.xor(b)`        | `3 ^^ 2`                   | `false`               |
@@ -80,7 +80,7 @@ When initializing a variable in global scope, use `=`; when initializing a varia
 | `%=`     |                             |                   | `a = 5, a %= 4`            | `1`                   |
 | `&=`     |                             |                   | `a = 5, a &= 3`            | `1`                   |
 | `^=`     |                             |                   | `a = 5, a ^= 3`            | `6`                   |
-| `|=`     |                             |                   | `a = 5, a |= 3`            | `7`                   |
+| `\|=`    |                             |                   | `a = 5, a |= 3`            | `7`                   |
 
 **Dish** also supports parallel assignment when the left-hand operand is an Array of variables, as in `[a, b, c] = [1, 2, 3]`. Parallel assigment is useful for swapping the values held in two variables without the need of a temporary holding variable: `[a, b] = [b, a]` is equivalent to `t = a, a = b, b = t`.
 
