@@ -23,7 +23,7 @@ Logical operators and methods in **dish** serve as the control structures for th
 | `&&`     | Implicit Boolean && Any     | `a.then(b)`       | `3 && 2`                   | `2`                   |
 |          |                             |                   | `true && 0`                | `false`               |
 |          |                             |                   |                            |                       |
-| `\|\|`   | Implicit Boolean || Any     | `a.else(b)`       | `3 || 2`                   | `3`                   |
+| `\|\|`   | Implicit Boolean \|\| Any   | `a.else(b)`       | `3 \|\| 2`                 | `3`                   |
 |          |                             |                   | `false || 0`               | `false`               |
 |          |                             |                   |                            |                       |
 | `^^`     | Implicit Boolean ^^ Any     | `a.xor(b)`        | `3 ^^ 2`                   | `false`               |
