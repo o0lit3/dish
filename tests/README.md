@@ -71,11 +71,14 @@ When initializing a variable in global scope, use `=`; when initializing a varia
 
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
-| `=`      | Variable = Any              | `a.assign(b)`     | `a = [1, 2, 3]`            | `[1, 2, 3]            |
+| `:`      | Variable : Any              | `a.define(b)`     | `a: 5`                     | `5`                   |
+|          |                             |                   |                            |                       |
+| `=`      | Variable = Any              | `a.assign(b)`     | `a = [1, 2, 3]`            | `[1, 2, 3]`           |
+| `:=`     | a.member := Any             |                   | `a.0 = 4`                  | `[4, 2, 3]`           |
 | `~=`     |                             |                   | `a = 'bin', a ~= 'ary'     | `"binary"             |
 | `+=`     |                             |                   | `a = 1, a += 1`            | `2`                   |
 | `-=`     |                             |                   | `a = 1, a -= 1`            | `0`                   |
-| `*=`     |                             |                   | `a = 2, a *= 2`            | `4`                   |
+| `\*=`    |                             |                   | `a = 2, a \*= 2`           | `4`                   |
 | `/=`     |                             |                   | `a = 6, a /= 2`            | `3`                   |
 | `%=`     |                             |                   | `a = 5, a %= 4`            | `1`                   |
 | `&=`     |                             |                   | `a = 5, a &= 3`            | `1`                   |
@@ -101,11 +104,11 @@ When initializing a variable in global scope, use `=`; when initializing a varia
 |          | Array - Implicit Array      | `a.remove(b)`     | `[1, 2] - [2, 3]`          | `[1]`                 |
 |          | Hash - Implicit Hash        | `a.remove(b)`     | `{x: 1, y: 2} - {"x"}`     | `{"y": 2}`            |
 |          |                             |                   |                            |                       |
-| `*`      | Scalar * Implicit Number    | `a.multiply(b)`   | `10 * 20`                  | `200`                 |
-|          | String * Implicit Number    | `a.repeat(b)`     | `"a" * 5`                  | `"aaaaa"`             |
-|          | List * :(Block)             | `a.map:i(...)`    | `[1, 2, 3] * :i(i + 1)`    | `[2, 3, 4]`           |
-|          | List * List                 | `a.dot(b)`        | `[1, 2] * [3, 4]`          | `[3, 8]`              |
-|          | List * Implicit Number      | `a.repeat(b)`     | `[2] * 5`                  | `[2, 2, 2, 2, 2]`     |
+| `\*`     | Scalar * Implicit Number    | `a.multiply(b)`   | `10 \* 20`                 | `200`                 |
+|          | String * Implicit Number    | `a.repeat(b)`     | `"a" \* 5`                 | `"aaaaa"`             |
+|          | List * :(Block)             | `a.map:i(...)`    | `[1, 2, 3] \* :i(i + 1)`   | `[2, 3, 4]`           |
+|          | List * List                 | `a.dot(b)`        | `[1, 2] \* [3, 4]`         | `[3, 8]`              |
+|          | List * Implicit Number      | `a.repeat(b)`     | `[2] \* 5`                 | `[2, 2, 2, 2, 2]`     |
 |          |                             |                   |                            |                       |
 | `/`      | Scalar / Implicit Number    | `a.divide(b)`     | `10 / 20`                  | `0.5`                 |
 |          | String / :(Block)           | `a.split:i(...)`  | `'binary' / :i(i.vowel)`   | `["b", "n", "ry"]`    |
@@ -120,7 +123,7 @@ When initializing a variable in global scope, use `=`; when initializing a varia
 |          | List % :(Block)             | `a.filter:i(...)` | `[1, 1, 2, 3] % :i(i % 2)` | `[1, 1, 3]`           |
 |          | List % Implicit Number      | `a.every(b)`      | `[1, 1, 2, 3] % 2`         | `[1, 2]`              |
 |          |                             |                   |                            |                       |
-| `**`     | Scalar \*\* Implicit Number | `a.pow(b)`        | `2 ** 3`                   | `8`                   |
+| `\*\*`   | Scalar \*\* Implicit Number | `a.pow(b)`        | `2 ** 3`                   | `8`                   |
 |          | String \*\* :(Block)        | `a.sort:x:y(...)` | `'binary' ** :x:y(y < x)`  | `"yrniba"`            | 
 |          | String \*\* Implicit Number | `a.pow(b)`        | `"2" ** "3"`               | `8`                   |
 |          | List \*\* :(Block)          | `a.sort:x:y(...)` | `[7, 9, 4] ** :x:y(y < x)` | `[9, 7, 4]`           |
