@@ -18,6 +18,10 @@ func Range(a interface{}, b interface{}) interface{} {
         start = int([]rune(string(x))[len(x) - 1])
         str = true
     case Number:
+        if x.inf == INF || x.inf == -INF {
+            return Array { }
+        }
+
         start = x.Int()
     case Boolean:
         start = map[bool]int{true: 1, false: 0}[bool(x)]
@@ -37,6 +41,10 @@ func Range(a interface{}, b interface{}) interface{} {
     case String:
         end = int([]rune(string(y))[len(y) - 1])
     case Number:
+        if y.inf == INF || y.inf == -INF {
+            return Array { }
+        }
+
         end = y.Int()
     case Boolean:
         end = map[bool]int{true: 1, false: 0}[bool(y)]

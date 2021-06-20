@@ -53,17 +53,29 @@ func Union(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Union(x, y.Value())
         case Hash:
-            return NewNumber(x.Int() | len(y))
+            return Union(x, NewNumber(len(y)))
         case Array:
-            return NewNumber(x.Int() | len(y))
+            return Union(x, NewNumber(len(y)))
         case String:
-            return NewNumber(x.Int() | y.Number().Int())
+            return Union(x, y.Number())
         case Number:
+            if (x.inf == INF || x.inf == -INF) && (y.inf == INF || y.inf == -INF) {
+                return NewNumber(0)
+            }
+
+            if x.inf == INF || x.inf == -INF {
+                return y
+            }
+
+            if y.inf == INF || y.inf == -INF {
+                return x
+            }
+
             return NewNumber(x.Int() | y.Int())
         case Boolean:
-            return NewNumber(x.Int() | y.Number().Int())
+            return Union(x, y.Number())
         case Null:
-            return NewNumber(x.Int() | 0)
+            return Union(x, NewNumber(0))
         }
     case Boolean:
         return Union(x.Number(), b)

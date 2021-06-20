@@ -70,6 +70,26 @@ func Power(a interface{}, b interface{}) interface{} {
         case String:
             return x.Power(y.Number())
         case Number:
+            switch y.inf {
+            case INF:
+                return Number{ inf: INF }
+            case -INF:
+                return NewNumber(0)
+            }
+
+            if x.inf == INF || x.inf == -INF {
+                switch y.val.Cmp(NewNumber(0).val) {
+                case -1:
+                    return NewNumber(0)
+                case 0:
+                    return NewNumber(1)
+                case 1:
+                    return Number{ inf: x.inf }
+                }
+
+                return Null { }
+            }
+
             return x.Power(y)
         case Boolean:
             return x.Power(y.Number())

@@ -14,6 +14,13 @@ func Itemize(a interface{}) Array {
     case String:
         return x.Array()
     case Number:
+        if x.inf == INF || x.inf == -INF {
+            return Array{
+                Number{ inf: x.inf },
+                NewNumber(1),
+            }
+        }
+
         return Array{
             Number{ val: new(big.Rat).SetInt(x.val.Num()) },
             Number{ val: new(big.Rat).SetInt(x.val.Denom()) },

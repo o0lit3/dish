@@ -16,16 +16,18 @@ func Above(a interface{}, b interface{}) Boolean {
             return Above(x, y.Run())
         case *Variable:
             return Above(x, y.Value())
+        case Hash:
+            return Above(x.Number(), NewNumber(len(y)))
+        case Array:
+            return Above(x.Number(), NewNumber(len(y)))
         case String:
             return Boolean(string(x) > string(y))
         case Number:
-            return Boolean(x.Number().val.Cmp(y.val) == 1)
+            return Above(x.Number(), y)
         case Boolean:
-            return Boolean(x.Number().val.Cmp(y.Number().val) == 1)
+            return Above(x.Number(), y.Number())
         case Null:
-            return Boolean(x.Number().val.Cmp(NewNumber(0).val) == 1)
-        default:
-            return Above(NewNumber(len(x)), y)
+            return Above(x.Number(), NewNumber(0))
         }
     case Number:
         switch y := b.(type) {
@@ -34,17 +36,29 @@ func Above(a interface{}, b interface{}) Boolean {
         case *Variable:
             return Above(x, y.Value())
         case Hash:
-            return Boolean(x.val.Cmp(NewNumber(len(y)).val) == 1)
+            return Above(x, NewNumber(len(y)))
         case Array:
-            return Boolean(x.val.Cmp(NewNumber(len(y)).val) == 1)
+            return Above(x, NewNumber(len(y)))
         case String:
-            return Boolean(x.val.Cmp(y.Number().val) == 1)
+            return Above(x, y.Number())
         case Number:
-            return Boolean(x.val.Cmp(y.val) == 1)
+            if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
+                return Boolean(false)
+            }
+
+            if x.inf == -INF || y.inf == INF {
+                return Boolean(false)
+            }
+
+            if x.inf == INF || y.inf == -INF {
+                return Boolean(true)
+            }
+
+            return Boolean(x.val.Cmp(y.val) > 0)
         case Boolean:
-            return Boolean(x.val.Cmp(y.Number().val) == 1)
+            return Above(x, y.Number())
         case Null:
-            return Boolean(x.val.Cmp(NewNumber(0).val) == 1)
+            return Above(x, NewNumber(0))
         }
     case Boolean:
         return Above(x.Number(), b)

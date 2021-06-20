@@ -13,6 +13,10 @@ func Not(a interface{}) Boolean {
     case String:
         return Boolean(string(x) == "" || string(x) == "0")
     case Number:
+        if x.inf == INF || x.inf == -INF {
+            return Boolean(false)
+        }
+
         return Boolean(x.val.Cmp(NewNumber(0).val) == 0)
     case Boolean:
         return Boolean(!x)

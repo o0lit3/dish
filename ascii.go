@@ -17,6 +17,10 @@ func Ascii(a interface{}) interface{} {
 
         return x.Array().Ascii()
     case Number:
+        if x.inf == INF || x.inf == -INF {
+            return Null { }
+        }
+
         return x.Ascii()
     case Boolean:
         return Ascii(x.Number())

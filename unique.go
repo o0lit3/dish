@@ -53,5 +53,9 @@ func (a String) Unique() String {
 }
 
 func (a Number) Abs() Number {
+    if a.inf == INF || a.inf == -INF {
+        return Number{ inf: INF }
+    }
+
     return Number{ val: NewNumber(0).val.Abs(a.val) }
 }

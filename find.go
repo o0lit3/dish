@@ -107,6 +107,14 @@ func (a String) Find(b String) Array {
 }
 
 func (a Number) Round(b Number) Number {
+    if b.inf == INF || b.inf == -INF {
+        return a
+    }
+
+    if a.inf == INF || a.inf == -INF {
+        return a
+    }
+
     if pow, ok := Power(NewNumber(10), b).(Number); ok {
         o := new(big.Rat).Mul(a.val, pow.val)
         i := new(big.Int).Quo(o.Num(), o.Denom())

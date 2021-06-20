@@ -46,5 +46,9 @@ func (a String) Vowel() Boolean {
 }
 
 func (a Number) Prime() Boolean {
+    if a.inf == INF || a.inf == -INF {
+        return Boolean(false)
+    }
+
     return Boolean(new(big.Int).Quo(a.val.Num(), a.val.Denom()).ProbablyPrime(0))
 }

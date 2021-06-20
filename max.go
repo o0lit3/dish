@@ -14,8 +14,16 @@ func Max(a interface{}) interface{} {
     case String:
         return Max(x.Number())
     case Number:
+        if x.inf == INF || x.inf == -INF {
+            return x
+        }
+
         if x.val.Denom().Cmp(big.NewInt(1)) == 0 {
             return x
+        }
+
+        if x.val.Cmp(NewNumber(0).val) == -1 {
+            return Negate(Min(Negate(x)))
         }
 
         return Add(Min(x), NewNumber(1))

@@ -13,6 +13,10 @@ func Invert(a interface{}) interface{} {
     case String:
         return x.Invert()
     case Number:
+        if x.inf == INF || x.inf == -INF {
+            return NewNumber(-1)
+        }
+
         return NewNumber(^x.Int())
     case Boolean:
         return Boolean(!x)

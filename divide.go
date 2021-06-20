@@ -65,25 +65,42 @@ func Divide(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Divide(x, y.Value())
         case Hash:
-            if len(y) != 0 {
-                return Number{ val: NewNumber(0).val.Quo(x.val, NewNumber(len(y)).val) }
-            }
+            return Divide(x, NewNumber(len(y)))
         case Array:
-            if len(y) != 0 {
-                return Number{ val: NewNumber(0).val.Quo(x.val, NewNumber(len(y)).val) }
-            }
+            return Divide(x, NewNumber(len(y)))
         case String:
-            if len(y) != 0 {
-                return Number{ val: NewNumber(0).val.Quo(x.val, NewNumber(len(y)).val) }
-            }
+            return Divide(x, y.Number())
         case Number:
+            if (x.inf == INF || x.inf == -INF) && (y.inf == INF || y.inf == -INF) {
+                return Null { }
+            }
+
+            if y.inf == INF || y.inf == -INF {
+                return NewNumber(0)
+            }
+
+            if x.inf == INF || x.inf == -INF {
+                if y.val.Cmp(NewNumber(0).val) == -1 {
+                    return Number{ inf: -x.inf }
+                }
+
+                return Number { inf: x.inf }
+            }
+
             if y.val.Cmp(NewNumber(0).val) != 0 {
                 return Number{ val: NewNumber(0).val.Quo(x.val, y.val) }
+            } else {
+                switch x.val.Cmp(NewNumber(0).val) {
+                case -1:
+                    return Number{ inf: -INF }
+                case 1:
+                    return Number{ inf: INF }
+                }
+
+                return Null { }
             }
         case Boolean:
-            if y {
-                return x
-            }
+            return Divide(x, y.Number())
         }
     case Boolean:
         return Divide(x.Number(), b)
@@ -97,23 +114,10 @@ func (a Array) Split(b *Block) Array {
     out := Array { }
 
     for _, val := range a {
-        switch y := b.Run(val).(type) {
-        case Hash:
-            return a.Divide(NewNumber(len(y)))
-        case Array:
-            return a.Divide(NewNumber(len(y)))
-        case Boolean:
-            if y {
-                items = append(items, Array { })
-            } else {
-                items[len(items) - 1] = append(items[len(items) - 1], val)
-            }
-        default:
-            if Boolify(y) {
-                items = append(items, Array { })
-            } else {
-                items[len(items) - 1] = append(items[len(items) - 1], val)
-            }
+        if Boolify(b.Run(val)) {
+            items = append(items, Array { })
+        } else {
+            items[len(items) - 1] = append(items[len(items) - 1], val)
         }
     }
 

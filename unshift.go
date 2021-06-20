@@ -44,17 +44,25 @@ func Unshift(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Unshift(x, y.Value())
         case Hash:
-            return NewNumber(x.Int() >> uint(len(y)))
+            return Unshift(x, NewNumber(len(y)))
         case Array:
-            return NewNumber(x.Int() >> uint(len(y)))
+            return Unshift(x, NewNumber(len(y)))
         case String:
-            return NewNumber(x.Int() >> uint(y.Number().Int()))
+            return Unshift(x, y.Number())
         case Number:
+            if x.inf == INF || x.inf == -INF {
+                return NewNumber(0)
+            }
+
+            if y.inf == INF || y.inf == -INF {
+                return x
+            }
+
             return NewNumber(x.Int() >> uint(y.Int()))
         case Boolean:
-            return NewNumber(x.Int() >> uint(y.Number().Int()))
+            return Unshift(x, y.Number())
         case Null:
-            return NewNumber(x.Int() << 0)
+            return Unshift(x, NewNumber(0))
         }
     case Boolean:
         return Unshift(x.Number(), b)

@@ -13,13 +13,22 @@ With the exception of special [assignment operators](#assignment-operators) and 
 
 For the purposes of the tables below, "Scalar" refers to a Boolean or Number in numeric context; "List" refers to an Array or Hash in array context.
 
-## Arithmetic Operators
+## Logical Operators
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
+| `&&`     | 
+
+## Binary Operators
+| Operator | Operands                    | Method Name       | Example                    | Result                |
+| -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
+| `~`      | Scalar + Implicit String    | `a.concat(b)`     | `10 ~ 20`                  | `"1020"`              |
+|          | String + Implicit String    | `a.concat(b)`     | `"10" ~ "20"`              | `"1020"`              |
+|          | List + Implicit String      | `a.join(b)`       | `[1, 2, 3] ~ ' '`          | `"1 2 3"`             |
+|          |                             |                   |                            |                       |
 | `+`      | Scalar + Implicit Number    | `a.add(b)`        | `10 + 20`                  | `30`                  |
 |          | String + Implicit Number    | `a.add(b)`        | `'10' + '20'`              | `30`                  |
-|          | Array + Implicit Array      | `a.concat(b)`     | `[1, 2] + [2, 3]`          | `[1, 2, 2, 3]`        |
-|          | Hash + Implicit Hash        | `a.concat(b)`     | `{x: 1} + {y: 2}`          | `{"x": 1, "y": 2}`    |
+|          | Array + Implicit Array      | `a.add(b)`        | `[1, 2] + [2, 3]`          | `[1, 2, 2, 3]`        |
+|          | Hash + Implicit Hash        | `a.add(b)`        | `{x: 1} + {y: 2}`          | `{"x": 1, "y": 2}`    |
 |          |                             |                   |                            |                       |
 | `-`      | Scalar - Implicit Number    | `a.subtract(b)`   | `10 - 20`                  | `-10`                 |
 |          | String - Implicit Number    | `a.subtract(b)`   | `'10' - '20'`              | `-10`                 |

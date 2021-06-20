@@ -13,6 +13,10 @@ func Increment(a interface{}) interface{} {
     case String:
         return x.Increment()
     case Number:
+        if x.inf == INF || x.inf == -INF {
+            return Number{ inf: x.inf }
+        }
+
         return Number{ val: NewNumber(0).val.Add(x.val, NewNumber(1).val) }
     case Boolean:
         return Increment(x.Number())

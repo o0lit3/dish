@@ -87,11 +87,41 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case Array:
             return Multiply(x, NewNumber(len(y)))
         case String:
-            return Number{ val: NewNumber(0).val.Mul(x.val, y.Number().val) }
+            return Multiply(x, y.Number())
         case Number:
+            if (x.inf == INF && y.inf == -INF) || (x.inf == -INF && y.inf == INF) {
+                return Number{ inf: -INF }
+            }
+
+            if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
+                return Number{ inf: INF }
+            }
+
+            if x.inf == INF || x.inf == -INF {
+                switch y.val.Cmp(NewNumber(0).val) {
+                case -1:
+                    return Number{ inf: -x.inf }
+                case 1:
+                    return Number{ inf: x.inf }
+                }
+
+                return Null { }
+            }
+
+            if y.inf == INF || y.inf == -INF {
+                switch x.val.Cmp(NewNumber(0).val) {
+                case -1:
+                    return Number{ inf: -y.inf }
+                case 1:
+                    return Number{ inf: y.inf }
+                }
+
+                return Null { }
+            }
+
             return Number{ val: NewNumber(0).val.Mul(x.val, y.val) }
         case Boolean:
-            return Number{ val: NewNumber(0).val.Mul(x.val, y.Number().val) }
+            return Multiply(x, y.Number())
         case Null:
             return NewNumber(0)
         }

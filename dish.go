@@ -39,7 +39,7 @@ func main() {
         return
     }
 
-    switch x := parser.blk.Run(Boolean(true), Boolean(false), Null { }, stdin()).(type) {
+    switch x := parser.blk.Run(parser.blk.def...).(type) {
     case Null:
     case String:
         fmt.Printf("%v\n", string(x))
@@ -113,7 +113,7 @@ func test(test *testing.T, source string) {
     c := 0
     f := 0
 
-    if val, ok := p.blk.Run(Boolean(true), Boolean(false), Null { }, stdin()).(Array); ok {
+    if val, ok := p.blk.Run(p.blk.def...).(Array); ok {
         for i, _ := range val {
             if i < len(p.lexr.coms) && fmt.Sprintf("%v", val[i]) != p.lexr.coms[i] {
                 test.Errorf("%s expected %s at index %d; got %v", source, p.lexr.coms[i], i, val[i])

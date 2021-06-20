@@ -58,7 +58,7 @@ func Xor(a interface{}, b interface{}) interface{} {
 
         return Boolean(false)
     case Number:
-        if x.val.Cmp(NewNumber(0).val) == 0 {
+        if x.inf == 0 && x.val.Cmp(NewNumber(0).val) == 0 {
             switch y := b.(type) {
             case *Block:
                 return y.Run()

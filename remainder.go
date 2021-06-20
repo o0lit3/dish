@@ -71,15 +71,21 @@ func Remainder(a interface{}, b interface{}) interface{} {
         case String:
             return Remainder(x, y.Number())
         case Number:
+            if x.inf == INF || x.inf == -INF {
+                return Null { }
+            }
+
+            if y.inf == INF || y.inf == -INF {
+                return x
+            }
+
             if y.val.Cmp(NewNumber(0).val) != 0 {
                 i := new(big.Int).Quo(x.val.Num(), x.val.Denom())
                 j := new(big.Int).Quo(y.val.Num(), y.val.Denom())
                 return Number{ val: new(big.Rat).SetInt(new(big.Int).Rem(i, j)) }
             }
         case Boolean:
-            if y {
-                return NewNumber(0)
-            }
+            return Remainder(x, y.Number())
         }
     case Boolean:
         return Remainder(x.Number(), b)

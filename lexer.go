@@ -145,7 +145,7 @@ func (t *Token) Precedence() int {
     }
 
     switch t.lit {
-    case "@", "++", "~~":
+    case "@", "~~":
         return 14
     case "**":
         return 13

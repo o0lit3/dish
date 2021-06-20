@@ -26,6 +26,7 @@ type Block struct {
     dim Dimension
     src *Block
     args []string
+    def []interface{}
     toks []*Token
     runs []*Run
     cur *Run
@@ -35,7 +36,8 @@ func NewBlock() *Block {
     return &Block {
         dep: 0,
         dim: VAL,
-        args: []string{ "true", "false", "null", "stdin" },
+        args: []string{ "null", "true", "false", "inf", "stdin" },
+        def: []interface{}{ Null{ }, Boolean(true), Boolean(false), Number{ inf: INF }, stdin() },
     }
 }
 
@@ -469,6 +471,12 @@ func (p *Parser) Shift() {
     p.ops = p.ops[:len(p.ops) - 1]
 }
 
+func (p *Parser) Branch(t *Token) {
+    p.blk.toks = append(p.blk.toks, &Token { pos: t.pos, tok: FIN, lit: "" })
+    p.blk.src.toks = append(p.blk.src.toks, &Token { pos: t.pos, tok: BLK, blk: p.blk, lit: "" })
+    p.blk = p.blk.src
+}
+
 func (p *Parser) Operator() Lexeme {
     if len(p.lexr.toks) > 0 && (p.lexr.toks[0].BlockOpen() || p.lexr.toks[0].tok == OP1) {
         if len(p.lexr.toks) > 1 && p.lexr.toks[1].BlockClose() {
@@ -495,14 +503,16 @@ func (p *Parser) Parse() {
                 op.UnmatchedBlock()
             }
 
+            if p.ops[len(p.ops) - 1].ShortCircuit() {
+                p.Branch(t)
+            }
+
             p.Shift()
         }
     case t.tok == FIN:
         for len(p.ops) > 0 && !p.ops[len(p.ops) - 1].BlockOpen() {
             if p.ops[len(p.ops) - 1].ShortCircuit() {
-                p.blk.toks = append(p.blk.toks, &Token { pos: t.pos, tok: FIN, lit: "" })
-                p.blk.src.toks = append(p.blk.src.toks, &Token { pos: t.pos, tok: BLK, blk: p.blk, lit: "" })
-                p.blk = p.blk.src
+                p.Branch(t)
             }
 
             p.Shift()
@@ -517,9 +527,7 @@ func (p *Parser) Parse() {
         }
 
         if len(p.ops) > 0 && p.ops[len(p.ops) - 1].ShortCircuit() && p.ops[len(p.ops) - 1].Higher(t) {
-            p.blk.toks = append(p.blk.toks, &Token { pos: t.pos, tok: FIN, lit: "" })
-            p.blk.src.toks = append(p.blk.src.toks, &Token { pos: t.pos, tok: BLK, blk: p.blk, lit: "" })
-            p.blk = p.blk.src
+            p.Branch(t)
 
             for len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen() {
                 p.Shift()
@@ -553,9 +561,7 @@ func (p *Parser) Parse() {
     case t.BlockClose():
         for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].lit != t.BlockMatch()) {
             if p.ops[len(p.ops) - 1].ShortCircuit() {
-				p.blk.toks = append(p.blk.toks, &Token { pos: t.pos, tok: FIN, lit: "" })
-				p.blk.src.toks = append(p.blk.src.toks, &Token { pos: t.pos, tok: BLK, blk: p.blk, lit: "" })
-				p.blk = p.blk.src
+                p.Branch(t)
             }
 
             p.Shift()

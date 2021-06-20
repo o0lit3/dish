@@ -25,7 +25,7 @@ func And(a interface{}, b interface{}) interface{} {
 
         return And(Boolean(true), b)
     case Number:
-        if x.val.Cmp(NewNumber(0).val) == 0 {
+        if x.inf == 0 && x.val.Cmp(NewNumber(0).val) == 0 {
             return Boolean(false)
         }
 
@@ -59,7 +59,7 @@ func And(a interface{}, b interface{}) interface{} {
 
             return y
         case Number:
-            if y.val.Cmp(NewNumber(0).val) == 0 {
+            if y.inf == 0 && y.val.Cmp(NewNumber(0).val) == 0 {
                 return Boolean(false)
             }
 

@@ -14,8 +14,15 @@ func Min(a interface{}) interface{} {
     case String:
         return Min(x.Number())
     case Number:
-        v := new(big.Int).Quo(x.val.Num(), x.val.Denom())
-        return Number{ val: new(big.Rat).SetInt(v) }
+        if x.inf == INF || x.inf == -INF {
+            return x
+        }
+
+        if x.val.Cmp(NewNumber(0).val) == -1 {
+            return Negate(Max(Negate(x)))
+        }
+
+        return Number{ val: new(big.Rat).SetInt(new(big.Int).Quo(x.val.Num(), x.val.Denom())) }
     case Boolean:
         return x.Number()
     }

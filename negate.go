@@ -11,11 +11,19 @@ func Negate(a interface{}) interface{} {
     case Array:
         return x.Negate()
     case String:
-        return Number{ val: NewNumber(0).val.Neg(x.Number().val) }
+        return Negate(x.Number())
     case Number:
+        if x.inf == INF {
+            return Number{ inf: -INF }
+        }
+
+        if x.inf == -INF {
+            return Number{ inf: INF }
+        }
+
         return Number{ val: NewNumber(0).val.Neg(x.val) }
     case Boolean:
-        return Number{ val: NewNumber(0).val.Neg(x.Number().val) }
+        return Negate(x.Number())
     case Null:
         return NewNumber(0)
     }

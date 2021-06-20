@@ -115,6 +115,14 @@ func (a String) Base(b Number) Number {
 }
 
 func (a Number) Base(b Number) String {
+    if b.inf == INF || b.inf == -INF {
+        return String("")
+    }
+
+    if a.inf == INF || a.inf == -INF {
+        return String(a.String())
+    }
+
     if b.val.Cmp(NewNumber(2).val) == -1 || b.val.Cmp(NewNumber(36).val) == 1 {
         return String("")
     }
@@ -123,6 +131,10 @@ func (a Number) Base(b Number) String {
 }
 
 func (a Number) Format(b String) String {
+    if a.inf == INF || a.inf == -INF {
+        return String(a.String())
+    }
+
     parts := strings.Split(string(b), ".")
 
     if len(parts) > 1 {

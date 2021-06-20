@@ -16,16 +16,18 @@ func Below(a interface{}, b interface{}) Boolean {
             return Below(x, y.Run())
         case *Variable:
             return Below(x, y.blk.Value(y))
+        case Hash:
+            return Below(x.Number(), NewNumber(len(y)))
+        case Array:
+            return Below(x.Number(), NewNumber(len(y)))
         case String:
             return Boolean(string(x) < string(y))
         case Number:
-            return Boolean(x.Number().val.Cmp(y.val) == -1)
+            return Below(x.Number(), y)
         case Boolean:
-            return Boolean(x.Number().val.Cmp(y.Number().val) == -1)
+            return Below(x.Number(), y.Number())
         case Null:
-            return Boolean(x.Number().val.Cmp(NewNumber(0).val) == -1)
-        default:
-            return Below(NewNumber(len(x)), y)
+            return Below(x.Number(), NewNumber(0))
         }
     case Number:
         switch y := b.(type) {
@@ -34,17 +36,29 @@ func Below(a interface{}, b interface{}) Boolean {
         case *Variable:
             return Below(x, y.blk.Value(y))
         case Hash:
-            return Boolean(x.val.Cmp(NewNumber(len(y)).val) == -1)
+            return Below(x, NewNumber(len(y)))
         case Array:
-            return Boolean(x.val.Cmp(NewNumber(len(y)).val) == -1)
+            return Below(x, NewNumber(len(y)))
         case String:
-            return Boolean(x.val.Cmp(y.Number().val) == -1)
+            return Below(x, y.Number())
         case Number:
-            return Boolean(x.val.Cmp(y.val) == -1)
+            if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
+                return Boolean(false)
+            }
+
+            if x.inf == -INF || y.inf == INF {
+                return Boolean(true)
+            }
+
+            if x.inf == INF || y.inf == -INF {
+                return Boolean(false)
+            }
+
+            return Boolean(x.val.Cmp(y.val) < 0)
         case Boolean:
-            return Boolean(x.val.Cmp(y.Number().val) == -1)
+            return Below(x, y.Number())
         case Null:
-            return Boolean(x.val.Cmp(NewNumber(0).val) == -1)
+            return Below(x, NewNumber(0))
         }
     case Boolean:
         return Below(x.Number(), b)

@@ -44,17 +44,25 @@ func Push(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Push(x, y.Value())
         case Hash:
-            return NewNumber(x.Int() << uint(len(y)))
+            return Push(x, NewNumber(len(y)))
         case Array:
-            return NewNumber(x.Int() << uint(len(y)))
+            return Push(x, NewNumber(len(y)))
         case String:
-            return NewNumber(x.Int() << uint(y.Number().Int()))
+            return Push(x, y.Number())
         case Number:
+            if x.inf == INF || x.inf == -INF {
+                return NewNumber(0)
+            }
+
+            if y.inf == INF || y.inf == -INF {
+                return x
+            }
+
             return NewNumber(x.Int() << uint(y.Int()))
         case Boolean:
-            return NewNumber(x.Int() << uint(y.Number().Int()))
+            return Push(x, y.Number())
         case Null:
-            return NewNumber(x.Int() << 0)
+            return Push(x, NewNumber(0))
         }
     case Boolean:
         return Push(x.Number(), b)

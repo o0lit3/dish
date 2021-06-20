@@ -46,7 +46,7 @@ func Add(a interface{}, b interface{}) interface{} {
         case Array:
             return Add(x.Number(), NewNumber(len(y)))
         case String:
-            return Number{ val: NewNumber(0).val.Add(x.Number().val, y.Number().val) }
+            return Add(x.Number(), y.Number())
         default:
             return Add(x.Number(), y)
         }
@@ -61,11 +61,23 @@ func Add(a interface{}, b interface{}) interface{} {
         case Array:
             return Add(x, NewNumber(len(y)))
         case String:
-            return Number{ val: NewNumber(0).val.Add(x.val, y.Number().val) }
+            return Add(x, y.Number())
         case Number:
+            if x.inf == INF || y.inf == INF {
+                return Number{ inf: INF }
+            }
+
+            if x.inf == -INF || y.inf == -INF {
+                return Number{ inf: -INF }
+            }
+
+            if (x.inf == INF && y.inf == -INF) || (x.inf == -INF && y.inf == INF) {
+                return Null { }
+            }
+
             return Number{ val: NewNumber(0).val.Add(x.val, y.val) }
         case Boolean:
-            return Number{ val: NewNumber(0).val.Add(x.val, y.Number().val) }
+            return Add(x, y.Number())
         case Null:
             return x
         }

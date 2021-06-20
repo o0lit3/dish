@@ -9,6 +9,8 @@ import (
     "math/big"
 )
 
+const INF = 1
+
 type Variable struct {
     blk *Block
     obj interface{}
@@ -26,6 +28,7 @@ type String []rune
 
 type Number struct {
     val *big.Rat
+    inf int
 }
 
 type Boolean bool
@@ -74,6 +77,14 @@ func (n Number) Int() int {
 }
 
 func (n Number) String() string {
+    if n.inf == INF {
+        return "inf"
+    }
+
+    if n.inf == -INF {
+        return "-inf"
+    }
+
     if n.val.IsInt() {
         return n.val.RatString()
     }
@@ -453,11 +464,11 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Divide(a, b))
         case "%", "remainder", "rem", "filter", "select", "every", "grep":
             blk.Register(Remainder(a, b))
-        case "+", "add", "concat":
+        case "+", "add":
             blk.Register(Add(a, b))
         case "-", "subtract", "sub", "remove":
             blk.Register(Subtract(a, b))
-        case "~", "join":
+        case "~", "join", "concat":
             blk.Register(Join(a, b))
         case "~~", "base", "convert", "format", "fmt":
             blk.Register(Base(a, b))
