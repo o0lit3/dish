@@ -40,34 +40,8 @@ func Or(a interface{}, b interface{}) interface{} {
             return Or(Boolean(false), y.Run())
         case *Variable:
             return Or(Boolean(false), y.Value())
-        case Hash:
-            if len(y) != 0 {
-                return y
-            }
-
-            return Boolean(false)
-        case Array:
-            if len(y) != 0 {
-                return y
-            }
-
-            return Boolean(false)
-        case String:
-            if string(y) != "" && string(y) != "0" {
-                return y
-            }
-
-            return Boolean(false)
-        case Number:
-            if y.inf != 0 || y.val.Cmp(NewNumber(0).val) != 0 {
-                return y
-            }
-
-            return Boolean(false)
-        case Boolean:
+        default:
             return y
-        case Null:
-            return Boolean(false)
         }
     case Null:
         return Or(Boolean(false), b)

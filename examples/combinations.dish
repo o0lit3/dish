@@ -2,7 +2,7 @@
 
 comb = :n:m(
   (0..2**n-1).map:i(
-    bits: i.format("%0$(n)b").find(1)
+    bits: i.fmt("%0$(n)b").find(1)
     (#bits == m).then(bits)
   ).compact
 )

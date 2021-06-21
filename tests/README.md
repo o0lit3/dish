@@ -24,7 +24,7 @@ Logical operators and methods in **dish** serve as the control structures for th
 |          |                             |                   | `true && 0`                | `false`               |
 |          |                             |                   |                            |                       |
 | `\|\|`   | Implicit Boolean \|\| Any   | `a.else(b)`       | `3 \|\| 2`                 | `3`                   |
-|          |                             |                   | `false \|\| 0`             | `false`               |
+|          |                             |                   | `false \|\| 0`             | `0`                   |
 |          |                             |                   |                            |                       |
 | `^^`     | Implicit Boolean ^^ Any     | `a.xor(b)`        | `3 ^^ 2`                   | `false`               |
 |          |                             |                   | `false ^^ 2`               | `2`                   |
@@ -124,6 +124,10 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | Array ^ Implicit Array      | `a.exclude(b)`    | `[1, 2, 3] ^ [4, 3, 2]`    | `[1, 4]`              |
 |          | Hash ^ Implicit Hash        | `a.exclude(b)`    | `{foo: 1} ^ {foo: 2}`      | `{}`                  |
 |          |                             |                   |                            |                       |
+| `^`      | ^Scalar                     | `a.invert`        | `^5`                       | `-6`                  |
+| (Unary)  | ^String                     | `a.invert`        | `^'binary'`                | `������`              |
+|          | ^List                       | `a.invert`        | `^[1, 2, 3]`               | `[-2, -3, -4]`        |
+|          |                             |                   |                            |                       |
 | `\|`     | Scalar \| Implicit Number   | `a.union(b)`      | `5 \| 3`                   | `7`                   |
 |          | String \| String            | `a.union(b)`      | `'JA' \| '  dh!'`          | `"jadh!"`             |
 |          | String \| Implicit Number   | `a.union(b)`      | `'5' \| 3`                 | `7`                   |
@@ -203,3 +207,47 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | Scalar .. Implicit Number   | `a.to(b)`         | `3 .. 1`                   | `[3, 2, 1]`           |
 |          | String .. String            | `a.to(b)`         | `'a' .. 'c'`               | `["a", "b", "c"]`     |
 |          | String .. Implicit Number   | `a.to(b)`         | `'a' .. 99`                | `["a", "b", "c"]`     |
+
+## Unary Operators
+| Operator | Operands                    | Method Name       | Example                    | Result                |
+| -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
+| `!`      | !Implicit Boolean           | `a.not`           | `!5`                       | `false`               |
+|          |                             |                   |                            |                       |
+| `?`      | ?Implicit Boolean           | `a.bool`          | `?5`                       | `true`                |
+|          |                             |                   |                            |                       |
+| `-`      | -Scalar                     | `a.negate`        | `-5`                       | `-5`                  |
+|          | -String                     | `a.negate`        | `-"5"`                     | `-5`                  |
+|          | -List                       | `a.negate`        | `-[1, 2, 3]`               | `-6`                  |
+|          |                             |                   |                            |                       |
+| `+`      | +Scalar                     | `a.num`           | `+5`                       | `5`                   |
+|          | +String                     | `a.num`           | `+"5"                      | `5`                   |
+|          | +List                       | `a.sum`           | `+[1, 2, 3]`               | `6`                   |
+|          |                             |                   |                            |                       |
+| `~`      | ~Scalar                     | `a.str`           | `~5`                       | `"5"`                 |
+|          | ~String                     | `a.str`           | `~"5"`                     | `"5"`                 |
+|          | ~List                       | `a.str`           | `~[1, 2, 3]`               | `"123"`               |
+|          |                             |                   |                            |                       |
+| `/`      | ~Scalar                     | `a.ratio`         | `/3.14`                    | `[157, 50]`           |
+|          | ~String                     | `a.arr`           | `/'foo'`                   | `["f", "o", "o"]`     |
+|          | ~List                       | `a.arr`           | `/{foo: 1, bar: 2}`        | `[1, 2]`              |
+|          |                             |                   |                            |                       |
+| `%`      | %Scalar                     | `a.hash`          | `%5`                       | `{"5": 5}`            |
+|          | %String                     | `a.hash`          | `%'foo'`                   | `{"foo": "foo"}`      |
+|          | %List                       | `a.hash`          | `%[1, 2]`                  | `{"1": 1, "2": 2}`    |
+|          |                             |                   |                            |                       |
+| `@`      | @Scalar                     | `a.reverse`       | `@3.14`                    | `41.3`                |
+|          | @String                     | `a.reverse`       | `@'binary'`                | `"yranib"`            |
+|          | @Array                      | `a.reverse`       | `@[1, 2, 3]`               | `[3, 2, 1]`           |
+|          | @Hash                       | `a.keys`          | `@{foo: 1, bar: 2}`        | `["foo", "bar"]`      |
+|          |                             |                   |                            |                       |
+| `#`      | #Scalar                     | `a.size`          | `#15`                      | `2`                   |
+|          | #String                     | `a.length`        | `#'binary'`                | `6`                   |
+|          | #List                       | `a.length`        | `#[1, 2, 3]`               | `3`                   |
+|          |                             |                   |                            |                       |
+| `^`      | Any [See Bitwise Ops](#bitwise-operators)       | |                          |                       |
+|          |                             |                   |                            |                       |
+| `++`     | Any [See Assignment Ops](#assignment-operators) | |                          |                       |
+|          |                             |                   |                            |                       |
+| `--`     | Any [See Assignment Ops](#assignment-operators) | |                          |                       |
+|          |                             |                   |                            |                       |
+| 

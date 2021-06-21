@@ -1,11 +1,11 @@
 // https://rosettacode.org/wiki/De_Bruijn_sequences
 
 (0..99).each:a(
-  a: a.format('%02d')
+  a: a.fmt('%02d')
   (a.1 >= a.0).then(
     seq ~= [a.1 > a.0, a.1 == a.0].switch[a, a.0, ""]
     (a+1..99).each:b(
-      b: b.format('%02d')
+      b: b.fmt('%02d')
       (b.1 > a.0).then(seq ~= a ~ b)
     )
   )
@@ -14,7 +14,7 @@
 check = :seq(
   hash: {}
   (0..#seq-1).each:i(++hash.(seq.(i..i+3)))
-  (0..9999).grep:pin(!hash.(pin.format('%04d')))
+  (0..9999).grep:pin(!hash.(pin.fmt('%04d')))
 )
 
 [

@@ -13,7 +13,7 @@ func Length(a interface{}) interface{} {
     case String:
         return NewNumber(len(x))
     case Number:
-        return NewNumber(1)
+        return Length(String(x.String()))
     case Boolean:
         return NewNumber(1)
     }

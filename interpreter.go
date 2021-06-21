@@ -386,7 +386,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Itemize(a))
         case "+", "sum", "number", "num":
             blk.Register(Sum(a))
-        case "-", "negative", "negate":
+        case "-", "negative", "negate", "neg":
             blk.Register(Negate(a))
         case ">>", "pop", "last":
             val, obj := Pop(a)
