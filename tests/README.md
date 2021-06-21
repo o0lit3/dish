@@ -44,7 +44,7 @@ Logical operators and methods in **dish** serve as the control structures for th
 |          |                             |                   |                            |                       |
 | `!=`     | Scalar != Implicit Number   | `a.isnt(b)`       | `2 != 2`                   | `false`               |
 |          | String != Implicit String   | `a.isnt(b)`       | `"2" != "2.0"`             | `true`                |
-|          | List != Implicit List       | `a.isnt(b)`       | `[1, 2, 3] != [1, 2, 3]    | `false`               |
+|          | List != Implicit List       | `a.isnt(b)`       | `[1, 2, 3] != [1, 2, 3]`   | `false`               |
 |          |                             |                   |                            |                       |
 | `>`      | Scalar > Implicit Number    | `a.above(b)`      | `3 > 10`                   | `false`               |
 |          | String > String             | `a.above(b)`      | `"3" > "10"`               | `true`                |
@@ -99,7 +99,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          |                             |                   |                            |                       |
 | `<<`     | Scalar [See Bitwise Ops](#bitwise-operators) |  |                            |                       |
 |          | String [See Bitiwse Ops](#bitwise-operators) |  |                            |                       |
-|          | Arary << Implicit Array     | `a.push(b)`       | `a = [1, 2], a << 3``      | `[1, 2, 3]`           |
+|          | Arary << Implicit Array     | `a.push(b)`       | `a = [1, 2], a << 3`       | `[1, 2, 3]`           |
 |          | Hash << Implicit Hash       | `a.push(b)`       | `a = {foo: 1}, a << 2`     | `{"foo": 1, "2": 2}`  |
 |          |                             |                   |                            |                       |
 | `>>`     | Scalar [See Bitwise Ops](#bitwise-operators) |  |                            |                       |
@@ -108,6 +108,37 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | Hash >> Implicit Hash       | `a.unshift(b)`    | `a = {foo: 1}, a >> 2`     | `{"2": 2, "foo": 1}`  |
 
 **Dish** also supports parallel assignment when the left-hand operand is an Array of variables, as in `[a, b, c] = [1, 2, 3]`. Parallel assigment is useful for swapping the values held in two variables without the need of a temporary holding variable: `[a, b] = [b, a]` is equivalent to `t = a, a = b, b = t`.
+
+## Bitwise Operators
+| Operator | Operands                    | Method Name       | Example                    | Result                |
+| -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
+| `&`      | Scalar & Implicit Number    | `a.intersect(b)`  | `5 & 3`                    | `1`                   |
+|          | String & String             | `a.intersect(b)`  | `"jadh!" & "____"`         | `"JADH"`              |
+|          | String & Implicit Number    | `a.intersect(b)`  | `"5" & 3`                  | `1`                   |
+|          | Array & Implicit Array      | `a.intersect(b)`  | `[1, 2, 3] & [4, 3, 2]`    | `[2, 3]`              |
+|          | Hash & Implicit Hash        | `a.intersect(b)`  | `{f: 1} & {f: 2, b: 2}`    | `{"f": 2}`            |
+|          |                             |                   |                            |                       |
+| `^`      | Scalar ^ Implicit Number    | `a.exclude(b)`    | `5 ^ 3`                    | `6`                   |
+|          | String ^ String             | `a.exclude(b)`    | `"d O!" ^ " I<I!"`         | `"Dish!"`             |
+|          | String ^ Implicit Number    | `a.exclude(b)`    | `"5" ^ 3`                  | `6`                   |
+|          | Array ^ Implicit Array      | `a.exclude(b)`    | `[1, 2, 3] ^ [4, 3, 2]`    | `[1, 4]`              |
+|          | Hash ^ Implicit Hash        | `a.exclude(b)`    | `{foo: 1} ^ {foo: 2}`      | `{}`                  |
+|          |                             |                   |                            |                       |
+| `\|`     | Scalar \| Implicit Number   | `a.union(b)`      | `5 \| 3`                   | `7`                   |
+|          | String \| String            | `a.union(b)`      | `"JA" \| "  dh!"`          | `"jadh!"`             |
+|          | String \| Implicit Number   | `a.union(b)`      | `"5" \| 3`                 | `7`                   |
+|          | Array \| Implicit Array     | `a.union(b)`      | `[1, 2, 3] \| [4, 2, 1]`   | `[1, 2, 3, 4]`        |
+|          | Hash \| Implicit Hash       | `a.union(b)`      | `{foo: 1} \| {foo: 2}`     | `{"foo": 2}`          |
+|          |                             |                   |                            |                       |
+| `<<`     | Scalar << Implicit Number   | `a.push(b)`       | `5 << 3`                   | `40`                  |
+|          | String << Implicit Number   | `a.push(b)`       | `"5" << 3`                 | `40`                  |
+|          | Array [See Assignment Ops](#assignment-operators) |                        | |                       |
+|          | Hash [See Assignment Ops](#assignment-operators)  |                        | |                       |
+|          |                             |                   |                            |                       |
+| `>>`     | Scalar >> Implicit Number   | `a.unshift(b)`    | `40 >> 3`                  | `5`                   |
+|          | String >> Implicit Number   | `a.unshift(b)`    | `"40" >> 3`                | `5`                   |
+|          | Array [See Assignment Ops](#assignment-operators) |                        | |                       |
+|          | Hash [See Assignment Ops](#assignment-operators)  |                        | |                       |
 
 ## Binary Operators
 | Operator | Operands                    | Method Name       | Example                    | Result                |
