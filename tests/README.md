@@ -86,6 +86,26 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | `&=`     |                             |                   | `a = 5, a &= 3`            | `1`                   |
 | `^=`     |                             |                   | `a = 5, a ^= 3`            | `6`                   |
 | `\|=`    |                             |                   | `a = 5, a \|= 3`           | `7`                   |
+|          |                             |                   |                            |                       |
+| `++`     | ++Scalar                    | `a.increment`     | `a = 8, ++a`               | `9`                   |
+| (Unary)  | ++String                    | `a.increment`     | `a = 'binary', ++a`        | `"cjobsz"`            |
+|          | ++Array                     | `a.increment`     | `a = [1, 2, 3], ++a`       | `[2, 3, 4]`           | 
+|          | ++Hash                      | `a.increment`     | `a = {foo: 5}, ++a`        | `{"foo": 6}`          |
+|          |                             |                   |                            |                       |
+| `--`     | --Scalar                    | `a.decrement`     | `a = 9, --a`               | `8`                   |
+| (Unary)  | --String                    | `a.decrement`     | `a = 'cjobsz', --a`        | `"binary"`            |
+|          | --Array                     | `a.decrement`     | `a = [1, 2, 3], --a`       | `[0, 1, 2]`           |
+|          | --Hash                      | `a.decrement`     | `a = {foo: 5}, --a`        | `{"foo": 4}`          |
+|          |                             |                   |                            |                       |
+| `<<`     | Scalar [See Bitwise Ops](#bitwise-operators) |  |                            |                       |
+|          | String [See Bitiwse Ops](#bitwise-operators) |  |                            |                       |
+|          | Arary << Implicit Array     | `a.push(b)`       | `a = [1, 2], a << 3``      | `[1, 2, 3]`           |
+|          | Hash << Implicit Hash       | `a.push(b)`       | `a = {foo: 1}, a << 2`     | `{"foo": 1, "2": 2}`  |
+|          |                             |                   |                            |                       |
+| `>>`     | Scalar [See Bitwise Ops](#bitwise-operators) |  |                            |                       |
+|          | String [See Bitiwse Ops](#bitwise-operators) |  |                            |                       |
+|          | Array >> Implicit Array     | `a.unshift(b)`    | `a = [1, 2], a >> 3`       | `[3, 1, 2]`           |
+|          | Hash >> Implicit Hash       | `a.unshift(b)`    | `a = {foo: 1}, a >> 2`     | `{"2": 2, "foo": 1}`  |
 
 **Dish** also supports parallel assignment when the left-hand operand is an Array of variables, as in `[a, b, c] = [1, 2, 3]`. Parallel assigment is useful for swapping the values held in two variables without the need of a temporary holding variable: `[a, b] = [b, a]` is equivalent to `t = a, a = b, b = t`.
 
