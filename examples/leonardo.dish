@@ -1,0 +1,12 @@
+// https://rosettacode.org/wiki/Leonardo_numbers
+
+leonardo = :a:b:add:limit(
+  out: [], (--limit).redo(out << ([a, b] = [b, a + b + add])), out
+)
+
+[
+  [1, 1, 1, 24].leonardo
+  [0, 1, 0, 24].leonardo
+].map:list(
+  list.join(' ')
+).join("\n\n")

@@ -9,7 +9,7 @@ Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand rep
 | **Array**   | `#x != 0`             | `#x`        | `x.join('')`        | `x`        | `x.hash`  |
 | **Hash**    | `#x != 0`             | `#x`        | `x.values.join('')` | `x.values` | `x`       |
 
-With the exception of special [assignment operators](#assignment-operators) and [comparison operators](#comparison-operators) that use the `=` symbol as its second character, all symbolic operators in **dish** consist of either a single symbolic character or a doubled, symbolic character; `|` and `||` are a valid symbolic operators, `?:` is not.
+With the exception of special [assignment operators](#assignment-operators) and [comparison operators](#comparison-operators) that use the `=` symbol as its second character, all symbolic operators in **dish** consist of either a single symbolic character or a doubled, symbolic character; `|`, `||`, and `|=` are a valid symbolic operators, `?:`, `=~`, and `>>=` are not.
 
 For the purposes of the tables below, "Scalar" refers to a Boolean or Number in numeric context; "List" refers to an Array or Hash in array context.
 
