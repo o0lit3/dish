@@ -262,10 +262,12 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | `<<`     | `<<`Scalar                  | `a.first`         | `<<15`                     | `15`                  |
 |          | `<<`String                  | `a.first`         | `<<'binary'`               | `"b"`                 |
 |          | `<<`List                    | `a.first`         | `<<[1, 2, 3]`              | `1`                   |
+|          | [Also See Assignment Ops](#assignment-operators) |                         | |                       |
 |          |                             |                   |                            |                       |
 | `>>`     | `>>`Scalar                  | `a.last`          | `>>15`                     | `15`                  |
 |          | `>>`String                  | `a.last`          | `>>'binary'`               | `"y"`                 |
 |          | `>>`List                    | `a.last`          | `>>[1, 2, 3]`              | `3`                   |
+|          | [Also See Assignment Ops](#assignment-operators) |                         | |                       |
 |          |                             |                   |                            |                       |
 | `*`      | `*`Scalar                   | `a.prime`         | `*7`                       | `true`                |
 |          | `*`String                   | `a.vowel`         | `*'a'`                     | `true`                |
