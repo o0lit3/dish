@@ -253,7 +253,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `#`String                   | `a.length`        | `#'binary'`                | `6`                   |
 |          | `#`List                     | `a.length`        | `#[1, 2, 3]`               | `3`                   |
 |          |                             |                   |                            |                       |
-| `^`      | Any [See Bitwise Ops](#bitwise-operators)       | |                          |                       |
+| `^`      | [See Bitwise Ops](#bitwise-operators)           | |                          |                       |
 |          |                             |                   |                            |                       |
 | `++`     | `++`Scalar                  | `a.increment`     | `++15`                     | `16`                  |
 |          | `++`String                  | `a.increment`     | `++'binary'`               | `"cjobsz"`            |
