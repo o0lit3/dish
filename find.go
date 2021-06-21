@@ -1,5 +1,9 @@
 package main
-import("math/big")
+
+import(
+    "fmt"
+    "math/big"
+)
 
 func Find(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -46,7 +50,7 @@ func Find(a interface{}, b interface{}) interface{} {
         case String:
             return x.Find(y)
         default:
-            return x.Array().Find(y)
+            return x.Find(String(fmt.Sprintf("%v", y)))
         }
     case Number:
         switch y := b.(type) {
@@ -54,6 +58,10 @@ func Find(a interface{}, b interface{}) interface{} {
             return Find(x, y.Run())
         case *Variable:
             return Find(x, y.Value())
+        case Hash:
+            return x.Round(NewNumber(len(y)))
+        case Array:
+            return x.Round(NewNumber(len(y)))
         case String:
             return x.Round(y.Number())
         case Number:
@@ -132,13 +140,13 @@ func (b *Block) Find(a interface{}) Array {
     switch x := a.(type) {
     case Hash:
         for key, val := range x {
-            if b, ok := b.Run(val).(Boolean); ok && bool(b) {
-                out = append(out, key)
+            if Boolify(b.Run(val)) {
+                out = append(out, String(key))
             }
         }
     case Array:
         for i, val := range x {
-            if b, ok := b.Run(val).(Boolean); ok && bool(b) {
+            if Boolify(b.Run(val)) {
                 out = append(out, i)
             }
         }

@@ -24,7 +24,7 @@ func Base(a interface{}, b interface{}) interface{} {
         case Array:
             return x.Base(NewNumber(len(y)))
         case String:
-            return x.Base(y.Number())
+            return x.Format(y)
         case Number:
             return x.Base(y)
         }
@@ -39,7 +39,7 @@ func Base(a interface{}, b interface{}) interface{} {
         case Array:
             return x.Base(NewNumber(len(y)))
         case String:
-            return x.Base(y.Number())
+            return x.Format(y)
         case Number:
             return x.Base(y)
         }
@@ -91,6 +91,26 @@ func (a Hash) Base(b Number) Hash {
 }
 
 func (a Array) Base(b Number) Array {
+    out := Array { }
+
+    for _, val := range a {
+        out = append(out, Base(val, b))
+    }
+
+    return out
+}
+
+func (a Hash) Format(b String) Hash {
+    out := Hash { }
+
+    for key, val := range a {
+        out[key] = Base(val, b)
+    }
+
+    return out
+}
+
+func (a Array) Format(b String) Array {
     out := Array { }
 
     for _, val := range a {

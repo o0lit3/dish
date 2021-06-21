@@ -39,31 +39,31 @@ Logical operators and methods in **dish** serve as the control structures for th
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `==`     | Scalar == Implicit Number   | `a.equals(b)`     | `2 == 2`                   | `true`                |
-|          | String == Implicit String   | `a.equals(b)`     | `"2" == "2.0"`             | `false`               |
+|          | String == Implicit String   | `a.equals(b)`     | `'2' == '2.0'`             | `false`               |
 |          | List == Implicit List       | `a.equals(b)`     | `[1, 2, 3] == [1, 2, 3]`   | `true`                |
 |          |                             |                   |                            |                       |
 | `!=`     | Scalar != Implicit Number   | `a.isnt(b)`       | `2 != 2`                   | `false`               |
-|          | String != Implicit String   | `a.isnt(b)`       | `"2" != "2.0"`             | `true`                |
+|          | String != Implicit String   | `a.isnt(b)`       | `'2' != '2.0'`             | `true`                |
 |          | List != Implicit List       | `a.isnt(b)`       | `[1, 2, 3] != [1, 2, 3]`   | `false`               |
 |          |                             |                   |                            |                       |
 | `>`      | Scalar > Implicit Number    | `a.above(b)`      | `3 > 10`                   | `false`               |
-|          | String > String             | `a.above(b)`      | `"3" > "10"`               | `true`                |
-|          | String > Implicit Number    | `a.above(b)`      | `"3" > 10`                 | `false`               |
+|          | String > String             | `a.above(b)`      | `'3' > '10'`               | `true`                |
+|          | String > Implicit Number    | `a.above(b)`      | `'3' > 10`                 | `false`               |
 |          | List > Implicit Number      | `a.above(b)`      | `[1, 1, 1] > [2, 2]`       | `true`                |
 |          |                             |                   |                            |                       |
 | `<`      | Scalar < Implicit Number    | `a.below(b)`      | `3 < 10`                   | `true`                |
-|          | String < String             | `a.below(b)`      | `"3" < "10"`               | `false`               |
-|          | String < Implicit Number    | `a.below(b)`      | `"3" < 10`                 | `true`                |
+|          | String < String             | `a.below(b)`      | `'3' < '10'`               | `false`               |
+|          | String < Implicit Number    | `a.below(b)`      | `'3' < 10`                 | `true`                |
 |          | List < Implicit Number      | `a.below(b)`      | `[1, 1, 1] < [2, 2]`       | `false`               |
 |          |                             |                   |                            |                       |
 | `>=`     | Scalar >= Implicit Number   | `a.over(b)`       | `3 >= 10`                  | `false`               |
-|          | String >= String            | `a.over(b)`       | `"3" >= "10"`              | `true`                |
-|          | String >= Implicit Number   | `a.over(b)`       | `"3" >= 10`                | `false`               |
+|          | String >= String            | `a.over(b)`       | `'3' >= '10'`              | `true`                |
+|          | String >= Implicit Number   | `a.over(b)`       | `'3' >= 10`                | `false`               |
 |          | List >= Implicit Number     | `a.over(b)`       | `[1, 1] >= [2, 2]`         | `true`                |
 |          |                             |                   |                            |                       |
 | `<=`     | Scalar <= Implicit Number   | `a.under(b)`      | `3 <= 10`                  | `true`                |
 |          | String <= String            | `a.under(b)`      | `"3" <= "10"`              | `false`               |
-|          | String <= Implicit Number   | `a.under(b)`      | `"3" <= 10`                | `true`                |
+|          | String <= Implicit Number   | `a.under(b)`      | `'3' <= 10`                | `true`                |
 |          | List <= Implicit Number     | `a.under(b)`      | `[1, 1] <= [2, 2]`         | `true`                |
 
 ## Assignment Operators
@@ -113,30 +113,30 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `&`      | Scalar & Implicit Number    | `a.intersect(b)`  | `5 & 3`                    | `1`                   |
-|          | String & String             | `a.intersect(b)`  | `"jadh!" & "____"`         | `"JADH"`              |
-|          | String & Implicit Number    | `a.intersect(b)`  | `"5" & 3`                  | `1`                   |
+|          | String & String             | `a.intersect(b)`  | `'jadh!' & '____'`         | `"JADH"`              |
+|          | String & Implicit Number    | `a.intersect(b)`  | `'5' & 3`                  | `1`                   |
 |          | Array & Implicit Array      | `a.intersect(b)`  | `[1, 2, 3] & [4, 3, 2]`    | `[2, 3]`              |
 |          | Hash & Implicit Hash        | `a.intersect(b)`  | `{f: 1} & {f: 2, b: 2}`    | `{"f": 2}`            |
 |          |                             |                   |                            |                       |
 | `^`      | Scalar ^ Implicit Number    | `a.exclude(b)`    | `5 ^ 3`                    | `6`                   |
-|          | String ^ String             | `a.exclude(b)`    | `"d O!" ^ " I<I!"`         | `"Dish!"`             |
-|          | String ^ Implicit Number    | `a.exclude(b)`    | `"5" ^ 3`                  | `6`                   |
+|          | String ^ String             | `a.exclude(b)`    | `'d O!' ^ ' I<I!'`         | `"Dish!"`             |
+|          | String ^ Implicit Number    | `a.exclude(b)`    | `'5' ^ 3`                  | `6`                   |
 |          | Array ^ Implicit Array      | `a.exclude(b)`    | `[1, 2, 3] ^ [4, 3, 2]`    | `[1, 4]`              |
 |          | Hash ^ Implicit Hash        | `a.exclude(b)`    | `{foo: 1} ^ {foo: 2}`      | `{}`                  |
 |          |                             |                   |                            |                       |
 | `\|`     | Scalar \| Implicit Number   | `a.union(b)`      | `5 \| 3`                   | `7`                   |
-|          | String \| String            | `a.union(b)`      | `"JA" \| "  dh!"`          | `"jadh!"`             |
-|          | String \| Implicit Number   | `a.union(b)`      | `"5" \| 3`                 | `7`                   |
+|          | String \| String            | `a.union(b)`      | `'JA' \| '  dh!'`          | `"jadh!"`             |
+|          | String \| Implicit Number   | `a.union(b)`      | `'5' \| 3`                 | `7`                   |
 |          | Array \| Implicit Array     | `a.union(b)`      | `[1, 2, 3] \| [4, 2, 1]`   | `[1, 2, 3, 4]`        |
 |          | Hash \| Implicit Hash       | `a.union(b)`      | `{foo: 1} \| {foo: 2}`     | `{"foo": 2}`          |
 |          |                             |                   |                            |                       |
 | `<<`     | Scalar << Implicit Number   | `a.push(b)`       | `5 << 3`                   | `40`                  |
-|          | String << Implicit Number   | `a.push(b)`       | `"5" << 3`                 | `40`                  |
+|          | String << Implicit Number   | `a.push(b)`       | `'5' << 3`                 | `40`                  |
 |          | Array [See Assignment Ops](#assignment-operators) |                        | |                       |
 |          | Hash [See Assignment Ops](#assignment-operators)  |                        | |                       |
 |          |                             |                   |                            |                       |
 | `>>`     | Scalar >> Implicit Number   | `a.unshift(b)`    | `40 >> 3`                  | `5`                   |
-|          | String >> Implicit Number   | `a.unshift(b)`    | `"40" >> 3`                | `5`                   |
+|          | String >> Implicit Number   | `a.unshift(b)`    | `'40' >> 3`                | `5`                   |
 |          | Array [See Assignment Ops](#assignment-operators) |                        | |                       |
 |          | Hash [See Assignment Ops](#assignment-operators)  |                        | |                       |
 
@@ -144,7 +144,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `~`      | Scalar + Implicit String    | `a.concat(b)`     | `10 ~ 20`                  | `"1020"`              |
-|          | String + Implicit String    | `a.concat(b)`     | `"10" ~ "20"`              | `"1020"`              |
+|          | String + Implicit String    | `a.concat(b)`     | `'10' ~ '20'`              | `"1020"`              |
 |          | List + Implicit String      | `a.join(b)`       | `[1, 2, 3] ~ ' '`          | `"1 2 3"`             |
 |          |                             |                   |                            |                       |
 | `+`      | Scalar + Implicit Number    | `a.add(b)`        | `10 + 20`                  | `30`                  |
@@ -158,7 +158,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | Hash - Implicit Hash        | `a.remove(b)`     | `{x: 1, y: 2} - {"x"}`     | `{"y": 2}`            |
 |          |                             |                   |                            |                       |
 | `*`      | Scalar * Implicit Number    | `a.multiply(b)`   | `10 * 20`                  | `200`                 |
-|          | String * Implicit Number    | `a.repeat(b)`     | `"a" * 5`                  | `"aaaaa"`             |
+|          | String * Implicit Number    | `a.repeat(b)`     | `'a' * 5`                  | `"aaaaa"`             |
 |          | List * :(Block)             | `a.map:i(...)`    | `[1, 2, 3] * :i(i + 1)`    | `[2, 3, 4]`           |
 |          | List * List                 | `a.dot(b)`        | `[1, 2] * [3, 4]`          | `[3, 8]`              |
 |          | List * Implicit Number      | `a.repeat(b)`     | `[2] * 5`                  | `[2, 2, 2, 2, 2]`     |
@@ -178,6 +178,28 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          |                             |                   |                            |                       |
 | `**`     | Scalar \*\* Implicit Number | `a.pow(b)`        | `2 ** 3`                   | `8`                   |
 |          | String \*\* :(Block)        | `a.sort:x:y(...)` | `'binary' ** :x:y(y < x)`  | `"yrniba"`            | 
-|          | String \*\* Implicit Number | `a.pow(b)`        | `"2" ** "3"`               | `8`                   |
+|          | String \*\* Implicit Number | `a.pow(b)`        | `'2' ** '3'`               | `8`                   |
 |          | List \*\* :(Block)          | `a.sort:x:y(...)` | `[7, 9, 4] ** :x:y(y < x)` | `[9, 7, 4]`           |
 |          | List \*\* Implicit Number   | `a.rotate(b)`     | `[7, 9, 4] ** 1`           | `[4, 7, 9]`           |
+|          |                             |                   |                            |                       |
+| `@`      | Scalar @ Implicit Number    | `a.round(b)`      | `3.14 @ 1`                 | `3.1`                 |
+|          | String @ :(Block)           | `a.index:i(...)`  | `'binary' @ :i(i.vowel)`   | `[1, 3]`              |
+|          | String @ Implicit String    | `a.index(b)`      | `'binary' @ 'ary'          | `[3]`                 |
+|          | Array @ :(Block)            | `a.index:i(...)`  | `[1, 2, 3] @ :i(i % 2)`    | `[0, 2]`              |
+|          | Array @ Any                 | `a.index(b)`      | `[1, 2, 3] @ 3             | `[2]`                 |
+|          | Hash @ :(Block)             | `a.index:i(...)`  | `{f: 1, b: 2} @ :i(i % 2)` | `["f"]`               |
+|          | Hash @ Any                  | `a.index(b)`      | `{a: 1, b: 2, c: 2} @ 2`   | `["b", "c"]`          |
+|          |                             |                   |                            |                       |
+| `~~`     | Scalar ~~ String            | `a.fmt(b)`        | `9 ~~ '%.02f'`             | `"9.00"`              |
+|          | Scalar ~~ Implicit Number   | `a.base(b)`       | `9 ~~ 2`                   | `"1001"`              |
+|          | String ~~ String            | `a.fmt(b)`        | `'binary' ~~ '%10s'`       | `"    binary"`        |
+|          | String ~~ Implicit Number   | `a.base(b)`       | `'1001' ~~ 2`              | `9`                   |
+|          | Array ~~ String             | `a.fmt(b)`        | `[1, 2] ~~ '%.01f'`        | `["1.0", "2.0"]`      |
+|          | Array ~~ Implicit Number    | `a.base(b)`       | `[1, 2, 3] ~~ 2            | `["1", "10", "11"]`   |
+|          | Hash ~~ String              | `a.fmt(b)`        | `{foo: 1} ~~ '%.01f'`      | `{"foo": "1.0"}`      |
+|          | Hash ~~ Implicit Number     | `a.base(b)`       | `{a: 3} ~~ 2`              | `{"a": "11"}`         |
+|          |                             |                   |                            |                       |
+| `..`     | Scalar .. String            | `a.to(b)`         | `95 .. 'a'`                | `[95, 96, 97]`        |
+|          | Scalar .. Implicit Number   | `a.to(b)`         | `3 .. 1`                   | `[3, 2, 1]`           |
+|          | String .. String            | `a.to(b)`         | `'a' .. 'c'`               | `["a", "b", "c"]`     |
+|          | String .. Implicit Number   | `a.to(b)`         | `'a' .. 99`                | `["a", "b", "c"]`     |
