@@ -255,9 +255,15 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          |                             |                   |                            |                       |
 | `^`      | Any [See Bitwise Ops](#bitwise-operators)       | |                          |                       |
 |          |                             |                   |                            |                       |
-| `++`     | Any [See Assignment Ops](#assignment-operators) | |                          |                       |
+| `++`     | `++`Scalar                  | `a.increment`     | `++15`                     | `16`                  |
+|          | `++`String                  | `a.increment`     | `++'binary'`               | `"cjobsz"`            |
+|          | `++`List                    | `a.increment`     | `++[1, 2, 3]`              | `[2, 3, 4]`           |
+|          | [Also See Assignment Ops](#assignment-operators) |                         | |                       |
 |          |                             |                   |                            |                       |
-| `--`     | Any [See Assignment Ops](#assignment-operators) | |                          |                       |
+| `--`     | `--`Scalar                  | `a.decrement`     | `--15`                     | `14`                  |
+|          | `--`String                  | `a.decrement`     | `--'cjobsz'`               | `"binary"`            |
+|          | `--`List                    | `a.decrement`     | `--[1, 2, 3]`              | `[0, 1, 2]`           |
+|          | [Also See Assignment Ops](#assignment-operators) |                         | |                       |
 |          |                             |                   |                            |                       |
 | `<<`     | `<<`Scalar                  | `a.first`         | `<<15`                     | `15`                  |
 |          | `<<`String                  | `a.first`         | `<<'binary'`               | `"b"`                 |

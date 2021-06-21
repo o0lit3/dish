@@ -421,9 +421,21 @@ func (blk *Block) Interpret() interface{} {
         case "#", "size", "length", "len":
             blk.Register(Length(a))
         case "++", "increment", "incr":
-            blk.Register(blk.Assign(a, Increment(a)))
+            obj := Increment(a)
+
+            if _, ok := a.(*Variable); ok {
+                blk.Assign(a, obj)
+            }
+
+            blk.Register(obj)
         case "--", "decrement", "decr":
-            blk.Register(blk.Assign(a, Decrement(a)))
+            obj := Decrement(a)
+
+            if _, ok := a.(*Variable); ok {
+                blk.Assign(a, obj)
+            }
+
+            blk.Register(obj)
         default:
             switch {
             case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):
