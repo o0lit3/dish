@@ -12,8 +12,12 @@ func Shift(a interface{}) (interface{}, interface{}) {
         return x.Shift()
     case String:
         return x.Shift()
+    case Number:
+        return x, NewNumber(0)
+    case Boolean:
+        return x, Boolean(false)
     default:
-        return x, x
+        return x, Null{ }
     }
 }
 

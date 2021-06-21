@@ -106,6 +106,9 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | String [See Bitiwse Ops](#bitwise-operators) |  |                            |                       |
 |          | Array >> Implicit Array     | `a.unshift(b)`    | `a = [1, 2], a >> 3`       | `[3, 1, 2]`           |
 |          | Hash >> Implicit Hash       | `a.unshift(b)`    | `a = {foo: 1}, a >> 2`     | `{"2": 2, "foo": 1}`  |
+|          |                             |                   |                            |                       |
+| `<<`     | <<Scalar                    | `a.
+
 
 **Dish** also supports parallel assignment when the left-hand operand is an Array of variables, as in `[a, b, c] = [1, 2, 3]`. Parallel assigment is useful for swapping the values held in two variables without the need of a temporary holding variable: `[a, b] = [b, a]` is equivalent to `t = a, a = b, b = t`.
 
@@ -134,15 +137,23 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | Array \| Implicit Array     | `a.union(b)`      | `[1, 2, 3] \| [4, 2, 1]`   | `[1, 2, 3, 4]`        |
 |          | Hash \| Implicit Hash       | `a.union(b)`      | `{foo: 1} \| {foo: 2}`     | `{"foo": 2}`          |
 |          |                             |                   |                            |                       |
-| `<<`     | Scalar << Implicit Number   | `a.push(b)`       | `5 << 3`                   | `40`                  |
-|          | String << Implicit Number   | `a.push(b)`       | `'5' << 3`                 | `40`                  |
+| `<<`     | Scalar << Implicit Number   | `a.lshift(b)`     | `5 << 3`                   | `40`                  |
+|          | String << Implicit Number   | `a.lshift(b)`     | `'5' << 3`                 | `40`                  |
 |          | Array [See Assignment Ops](#assignment-operators) |                        | |                       |
 |          | Hash [See Assignment Ops](#assignment-operators)  |                        | |                       |
 |          |                             |                   |                            |                       |
-| `>>`     | Scalar >> Implicit Number   | `a.unshift(b)`    | `40 >> 3`                  | `5`                   |
-|          | String >> Implicit Number   | `a.unshift(b)`    | `'40' >> 3`                | `5`                   |
+| `>>`     | Scalar >> Implicit Number   | `a.rshift(b) `    | `40 >> 3`                  | `5`                   |
+|          | String >> Implicit Number   | `a.rshift(b)`     | `'40' >> 3`                | `5`                   |
 |          | Array [See Assignment Ops](#assignment-operators) |                        | |                       |
 |          | Hash [See Assignment Ops](#assignment-operators)  |                        | |                       |
+|          |                             |                   |                            |                       |
+| `<<`     | <<Scalar                    | `a.shift`         | `a = 3, [<<a, a]`          | `[3, 0]`              |
+| (Unary)  | <<String                    | `a.shift`         | `a = 'binary', [<<a, a]`   | `["b", "inary"]`      |
+|          | <<List                      | `a.shift`         | `a = [1, 2, 3], [<<a, a]`  | `[1, [2, 3]]`         |
+|          |                             |                   |                            |                       |
+| `>>`     | >>Scalar                    | `a.pop`           | `a = 3, [>>a, a]`          | `[3, 0]`              |
+| (Unary)  | >>String                    | `a.pop`           | `a = 'binary', [>>a, a]`   | `["y", "binar"]`      |
+|          | >>List                      | `a.pop`           | `a = [1, 2, 3], [>>a, a]`  | `[3, [1, 2]]`         |
 
 ## Binary Operators
 | Operator | Operands                    | Method Name       | Example                    | Result                |
@@ -250,4 +261,18 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          |                             |                   |                            |                       |
 | `--`     | Any [See Assignment Ops](#assignment-operators) | |                          |                       |
 |          |                             |                   |                            |                       |
-| 
+| `<<`     | <<Scalar                    | `a.first`         | `<<15`                     | `15`                  |
+|          | <<String                    | `a.first`         | `<<'binary'`               | `"b"`                 |
+|          | <<List                      | `a.first`         | `<<[1, 2, 3]`              | `1`                   |
+|          |                             |                   |                            |                       |
+| `>>`     | >>Scalar                    | `a.last`          | `>>15`                     | `15`                  |
+|          | >>String                    | `a.last`          | `>>'binary'`               | `"y"`                 |
+|          | >>List                      | `a.last`          | `>>[1, 2, 3]`              | `3`                   |
+|          |                             |                   |                            |                       |
+| `*`      | \*Scalar                    | `a.prime`         | `*7`                       | `true`                |
+|          | \*String                    | `a.vowel`         | `*'a'`                     | `true`                |
+|          | \*List                      | `a.product`       | `*[1, 2, 3, 4]`            | `24`                  |
+|          |                             |                   |                            |                       |
+| `**`     | \*\*Scalar                  | `a.divisors`      | `**8`                      | `[1, 2, 4]`           |
+|          | \*\*String                  | `a.sort`          | `**'binary'`               | `"abinry"`            |
+|          | \*\*List                    | `a.sort`          | `**[10, 1, 2, 4]`          | `[1, 2, 4, 10]`       |

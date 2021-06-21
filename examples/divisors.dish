@@ -1,7 +1,9 @@
 // https://rosettacode.org/wiki/Proper_divisors
 
-divisors = :i(
+// If there wasn't a built-in:
+divs = :i(
   out: [1]
+  i: i.abs
 
   (1..i**0.5).map:j(
     (i % j == 0 && j > 1).then(

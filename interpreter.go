@@ -378,7 +378,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Hashify(a))
         case "@", "keys", "reverse", "rev":
             blk.Register(Keys(a))
-        case "**", "sort":
+        case "**", "sort", "divisors":
             blk.Register(Sort(a))
         case "*", "product", "vowel", "prime":
             blk.Register(Product(a))
