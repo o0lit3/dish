@@ -13,19 +13,16 @@
 **dish** is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '"Hello World!"'`
 
 ## Input
-By default **dish** places STDIN into a variable called `stdin`. If the data from STDIN is JSON, `stdin` is a data type representing that JSON data ([see Data Types](#data-types-and-operators)), otherwise `stdin` is an Array of STDIN lines.
+By default, **dish** places STDIN into a variable called `stdin`. If the data from STDIN is JSON, `stdin` is a data type representing that JSON data ([see Data Types](#data-types-and-operators)), otherwise `stdin` is an Array of STDIN lines.
 
 As an example, the following curl/**dish** command will output a list of the last 5 github commits to the **dish** codebase:
 
 ```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=5" | dish -e 'stdin.map:data("$(data.commit.message): $(data.parents.0.html_url)").join("\n")'```
 
 ## Output
-By default **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
+By default, **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
 
 This behavior allows you to pipe the output of one dish executable into another and use it as JSON input via `stdin` downstream.
-
-## String Interpolation
-**dish** supports string interpolation by injecting a SCALAR block prefixed with a `$` character inside a double-quoted string (`"$(...)"`), for example: `dish -e '(0..9).map:i("i: $(i)").join("\n")'`. Any **dish** expression can be included in a string interpolated SCALAR block, but you will need to escape any double quote characters used in your expression.
 
 ## Data Types and Operators
 For a detailed decription of operators, precedence, and implicit operator context, [read the operator documentation at tests/README.md](tests/README.md).
@@ -34,7 +31,7 @@ Like JSON itself, **dish** has 6 data types (Hash, Array, String, Number, Boolea
 
 As such, all binary operators apply the right-hand operand as a parameter to a method on the left-hand object. In the expression `5 + 2`, `2` is a parameter of the `add` method on the Number object `5`, e.g. `5.add(2)`.
 
-Similarly, traditional unary operators (which must be used as prefix operators when represented in shorthand notation<sup>*</sup>) correspond to methods with no parameters that are invoked on the single operand as an object. In the expression `!ready`, `ready` is the Boolean object on which the `not` method is invoked, e.g. `ready.not`.
+Similarly, traditional unary operators (which are always prefix operators when represented in shorthand notation<sup>*</sup>) correspond to methods with no parameters that are invoked on the single operand as an object. In the expression `!ready`, `ready` is the Boolean object on which the `not` method is invoked, e.g. `ready.not`.
 
 <sub>*Postfix `++` and `--` are not legal in **dish**</sub>
 
@@ -48,3 +45,12 @@ Logic blocks are represented by a colonized list of arguments followed by a Scal
 Comments in **dish** start with a double slash `//` and end with a newline. There are no multi- or in-line comments in **dish**.
 
 <sub>*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
+
+## Variables and Member Access
+Variables in **dish** must start with either a letter or a `$` character, and may only contain letters, numbers, underscores (`_`), or dollar signs (`$`).
+
+Member access in **dish** is indicated by the special `.` operator. The expression after the `.` is evaluated, and the member at that evaluated expression is returned. Because **dish** variables can not begin with numbers, array index member access, as in `a = [1, 2, 3], a.0`, is unambiguous; Hash key members, however, because they can be ambiguous, should be quoted. Compare `a = {foo: 1, bar: 2}, a."foo"` vs. `a = {foo: 1, bar: 2}, foo = 'bar', a.foo`; the former returns `1`, the latter returns `2`.
+
+## String Interpolation
+**dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string (`"$(...)"`), for example: `dish -e '(0..9).map:i("i: $(i)").join("\n")'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
+

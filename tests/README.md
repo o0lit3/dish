@@ -295,7 +295,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          |                             |                   |                            |                       |
 | `~~`     | `~~`Scalar                  | `a.chr`           | `~~65`                     | `"A"`                 |
 |          | `~~`String                  | `a.ord`           | `~~'f'`                    | `102`                 |
-|          | `~~`List`                   | `a.ascii`         | `~~[65, 'B', 67]`          | `["A", 65, "C"]`      |
+|          | `~~`List                    | `a.ascii`         | `~~[65, 'B', 67]`          | `["A", 65, "C"]`      |
 |          |                             |                   |                            |                       |
 | `^`      | [See Bitwise Ops](#bitwise-operators)           | |                          |                       |
 |          |                             |                   |                            |                       |

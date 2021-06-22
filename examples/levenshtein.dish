@@ -15,7 +15,7 @@ levenshtein = :a:b(
     )
   )
 
-  costs.(#b)
+  costs.#b
 )
 
 [
