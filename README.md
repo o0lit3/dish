@@ -49,7 +49,10 @@ Comments in **dish** start with a double slash `//` and end with a newline. Ther
 ## Variables and Member Access
 Variables in **dish** must start with either a letter or a `$` character, and may only contain letters, numbers, underscores (`_`), and dollar signs (`$`).
 
-Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Because **dish** variables can not begin with numbers, array index members such as `a = [1, 2, 3], a.0` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted. Compare `dish -e 'a = {foo: 1, bar: 2}, a."foo"'` vs. `dish -e 'a = {foo: 1, bar: 2}, foo = "bar", a.foo'`; the former returns `1`, the latter returns `2`.
+Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Because **dish** variables can not begin with numbers, array index members such as `a = [1, 2, 3], a.0` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted. Compare the following:
+
+`dish -e 'a = {foo: 1, bar: 2}, a."foo"'` >> `1`
+`dish -e 'a = {foo: 1, bar: 2}, foo = "bar", a.foo'` >> `2`
 
 ## String Interpolation
 **dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string (`"$(...)"`), for example: `dish -e '(0..9).map:i("i: $(i)").join("\n")'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
