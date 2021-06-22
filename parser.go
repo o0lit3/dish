@@ -33,11 +33,13 @@ type Block struct {
 }
 
 func NewBlock() *Block {
+    stdin := stdin()
+
     return &Block {
         dep: 0,
         dim: VAL,
-        args: []string{ "null", "true", "false", "inf", "stdin" },
-        def: []interface{}{ Null{ }, Boolean(true), Boolean(false), Number{ inf: INF }, stdin() },
+        args: []string{ "null", "true", "false", "inf", "stdin", "$_" },
+        def: []interface{}{ Null{ }, Boolean(true), Boolean(false), Number{ inf: INF }, stdin, stdin },
     }
 }
 

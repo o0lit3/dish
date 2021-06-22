@@ -10,7 +10,7 @@ Dish is a dynamically-typed programming language designed with the following goa
 * Allow for contextual parsing of variables and statements without requiring end-of-statement identifiers (while avoiding the "where does this block end?" criticisms of [python](https://github.com/python/cpython#readme))
 
 ## Installation
-Dish is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e 'Hello World!'`
+Dish is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '"Hello World!"'`
 
 ## Input
 By default **dish** places STDIN into a variable called `stdin`. If the data from STDIN is JSON, `stdin` is an object representing that JSON data, otherwise `stdin` is an Array of STDIN lines.
@@ -22,7 +22,10 @@ As an example, the following curl/**dish** command will output a list of the las
 ## Output
 By default **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
 
-## [Data Types and Operators](tests/README.md)
+## String Interpolation
+**dish** supports string interpolation by injecting a SCALAR block prefixed with a `$` character inside a double-quoted string `$(...)`, for example: `dish -e '(0..9).map:i("i: $(i)").join("\n")'`.
+
+## Data Types and Operators
 For a detailed decription of operators, precedence, and implicit operator context, [read the documentation at tests/README.md](tests/README.md).
 
 Dish has 6 data types (Null, Boolean, Number, String, Array, and Hash), all of which are objects with their own object methods. Traditional, symbolic operators (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods.
