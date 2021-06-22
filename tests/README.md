@@ -304,6 +304,6 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `&`Array                    | `a.compact`       | `&[0, 1, 2]`               | `[1, 2]`              |
 |          | `&`Hash                     | `a.compact`       | `&{a: 0, b: 1, c: null}`   | `{"b": 1}`            |
 |          |                             |                   |                            |                       |
-| `|`      | `|`Scalar                   | `a.abs`           | `|-3`                      | `3`                   |
-|          | `|`String                   | `a.uniq`          | `|'bookkeeper'`            | `"bokepr"`            |
-|          | `|`List                     | `a.uniq`          | `|[1, 1, 2, 3, 3]`         | `[1, 2, 3]`           |
+| `\|`     | `\|`Scalar                  | `a.abs`           | `\|-3`                     | `3`                   |
+|          | `\|`String                  | `a.uniq`          | `\|'bookkeeper'`           | `"bokepr"`            |
+|          | `\|`List                    | `a.uniq`          | `\|[1, 1, 2, 3, 3]`        | `[1, 2, 3]`           |
