@@ -17,9 +17,7 @@ By default **dish** places STDIN into a variable called `stdin`. If the data fro
 
 As an example, the following curl/**dish** command will output a list of the last 5 github commits to the **dish** codebase:
 
-```
-curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=5" | dish -e 'stdin.map:data("$(data.commit.message): $(data.parents.0.html_url)").join("\n")'
-```
+```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=5" | dish -e 'stdin.map:data("$(data.commit.message): $(data.parents.0.html_url)").join("\n")'```
 
 ## Output
 By default **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
