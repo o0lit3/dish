@@ -1,4 +1,5 @@
 package main
+import("math/big")
 
 func Average(a interface{}) interface{} {
     switch x := a.(type) {
@@ -13,7 +14,7 @@ func Average(a interface{}) interface{} {
     case String:
         return x.Average()
     case Number:
-        return x
+        return Number{ val: new(big.Rat).SetInt(new(big.Int).Quo(x.val.Num(), x.val.Denom())) }
     case Boolean:
         return x.Number()
     }

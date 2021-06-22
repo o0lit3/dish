@@ -16,7 +16,7 @@ For the purposes of the tables below, "Scalar" refers to a Boolean or Number in 
 ## Logical Operators
 Logical operators in **dish**, like many languages, short circuit the right-hand argument if the left-hand argument does not suffice to determine the value of the expression. As such, the right-hand argument of logical operators are implicit Blocks that are only evaluated if needed (or in the case of the `switch` operator, an array of implicit Blocks for both operands).
 
-Logical operators and methods in **dish** serve as the control structures for the language.
+Logical operators and methods in **dish** serve as the control structures for the language. **Note bene**: Be careful with logical chains such as `(condition).then(0).else(1)`--falsy values like 0 prevent the `else` block from ever being entered. Therefore, to avoid any traps of falsy values, the ternary `[condition].switch[0, 1]` is preferred.
 
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
@@ -253,8 +253,6 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `#`String                   | `a.length`        | `#'binary'`                | `6`                   |
 |          | `#`List                     | `a.length`        | `#[1, 2, 3]`               | `3`                   |
 |          |                             |                   |                            |                       |
-| `^`      | [See Bitwise Ops](#bitwise-operators)           | |                          |                       |
-|          |                             |                   |                            |                       |
 | `++`     | `++`Scalar                  | `a.increment`     | `++15`                     | `16`                  |
 |          | `++`String                  | `a.increment`     | `++'binary'`               | `"cjobsz"`            |
 |          | `++`List                    | `a.increment`     | `++[1, 2, 3]`              | `[2, 3, 4]`           |
@@ -291,4 +289,21 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `>`String                   | `a.upper`         | `>'binary'`                | `"BINARY"`            |
 |          | `>`List`                    | `a.max`           | `>[1, 2, 3]`               | `3`                   |
 |          |                             |                   |                            |                       |
-
+| `=`      | `=`Scalar                   | `a.int`           | `=3.14`                    | `3`                   |
+|          | `=`String                   | `a.avg`           | `='binary'`                | `"k"`                 |
+|          | `=`List                     | `a.avg`           | `=[1, 2, 3]`               | `2`                   |
+|          |                             |                   |                            |                       |
+| `~~`     | `~~`Scalar                  | `a.chr`           | `~~65`                     | `"A"`                 |
+|          | `~~`String                  | `a.ord`           | `~~'f'`                    | `102`                 |
+|          | `~~`List`                   | `a.ascii`         | `~~[65, 'B', 67]`          | `["A", 65, "C"]`      |
+|          |                             |                   |                            |                       |
+| `^`      | [See Bitwise Ops](#bitwise-operators)           | |                          |                       |
+|          |                             |                   |                            |                       |
+| `&`      | `&`Scalar                   | `a.defined`       | `&a`                       | `false`               |
+|          | `&`String                   | `a.defined`       | `a = 'foo', &a`            | `true`                | 
+|          | `&`Array                    | `a.compact`       | `&[0, 1, 2]`               | `[1, 2]`              |
+|          | `&`Hash                     | `a.compact`       | `&{a: 0, b: 1, c: null}`   | `{"b": 1}`            |
+|          |                             |                   |                            |                       |
+| `|`      | `|`Scalar                   | `a.abs`           | `|-3`                      | `3`                   |
+|          | `|`String                   | `a.uniq`          | `|'bookkeeper'`            | `"bokepr"`            |
+|          | `|`List                     | `a.uniq`          | `|[1, 1, 2, 3, 3]`         | `[1, 2, 3]`           |

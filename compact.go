@@ -10,8 +10,14 @@ func Compact(a interface{}) interface{} {
         return x.Compact()
     case Array:
         return x.Compact()
+    case String:
+        return Boolean(true)
+    case Number:
+        return Boolean(true)
+    case Boolean:
+        return Boolean(true)
     default:
-        return x
+        return Boolean(false)
     }
 }
 
