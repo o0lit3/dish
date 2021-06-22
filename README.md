@@ -52,6 +52,7 @@ Variables in **dish** must start with either a letter or a `$` character, and ma
 Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Because **dish** variables can not begin with numbers, array index members such as `a = [1, 2, 3], a.0` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted. Compare the following:
 
 `dish -e 'a = {foo: 1, bar: 2}, a."foo"'` >> `1`
+
 `dish -e 'a = {foo: 1, bar: 2}, foo = "bar", a.foo'` >> `2`
 
 ## String Interpolation
