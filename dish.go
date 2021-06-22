@@ -6,6 +6,8 @@ import (
     "bufio"
     "strings"
 	"testing"
+    "math/big"
+    "encoding/json"
 )
 
 func main() {
@@ -56,10 +58,25 @@ func stdin() interface{} {
     }
 
     out := Array { }
+    stdin := []byte{ }
     scanner := bufio.NewScanner(os.Stdin)
 
     for scanner.Scan() {
-        out = append(out, String(scanner.Text()))
+        bytes := scanner.Bytes()
+        line := ""
+
+        for _, b := range bytes {
+            line += string(b)
+            stdin = append(stdin, b)
+        }
+
+        out = append(out, String(line))
+    }
+
+    var j interface{}
+
+    if err := json.Unmarshal(stdin, &j); err == nil {
+        return parse(j)
     }
 
     switch len(out) {
@@ -68,6 +85,37 @@ func stdin() interface{} {
     default:
         return out
     }
+}
+
+func parse(j interface{}) interface{} {
+    switch x := j.(type) {
+    case map[string]interface{}:
+        out := Hash { }
+
+        for key, val := range x {
+            out[key] = parse(val)
+        }
+
+        return out
+    case []interface{}:
+        out := Array { }
+
+        for _, val := range x {
+            out = append(out, parse(val))
+        }
+
+        return out
+    case string:
+        return String(x)
+    case float64:
+        return Number{ val: new(big.Rat).SetFloat64(x) }
+    case bool:
+        return Boolean(x)
+    case nil:
+        return Null { }
+    }
+
+    return Null { }
 }
 
 func open(source string) *bufio.Reader {
