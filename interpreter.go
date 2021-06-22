@@ -408,11 +408,11 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Ascii(a))
         case "~", "stringify", "string", "str":
             blk.Register(Stringify(a))
-        case "<", "minimum", "min", "floor", "int":
+        case "<", "minimum", "min", "lower", "floor", "int":
             blk.Register(Min(a))
         case "=", "average", "avg", "mean":
             blk.Register(Average(a))
-        case ">", "maxium", "max", "ceiling", "ceil":
+        case ">", "maxium", "max", "upper", "ceiling", "ceil":
             blk.Register(Max(a))
         case "&", "compact":
             blk.Register(Compact(a))

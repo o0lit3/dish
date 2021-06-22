@@ -1,7 +1,7 @@
 // https://rosettacode.org/wiki/Infinity
 
 [
-  ["i = inf", i = inf]
+  ["i", i = inf]
   ["i == inf", i == inf]
   ["inf > 1", inf > 1]
   ["-inf > 1", -inf > 1]
@@ -14,5 +14,5 @@
   ["2 / inf", 2 / inf]
   ["1 / 0", 1 / 0]
 ].map:i(
-  "$(i.0) => $(i.1)"
+  "$(i.0) = $(i.1)"
 ).join("\n")

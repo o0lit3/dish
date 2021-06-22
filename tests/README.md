@@ -14,14 +14,14 @@ With the exception of special [assignment operators](#assignment-operators) and 
 For the purposes of the tables below, "Scalar" refers to a Boolean or Number in numeric context; "List" refers to an Array or Hash in array context.
 
 ## Logical Operators
-Logical operators in **dish**, like many languages, short circuit the right-hand argument if the left-hand argument does not suffice to determine the value of the expression. As such, the right-hand argument of logical operators are implicit Blocks that are only evaluated if needed (or in the case of the `switch` operator, an array of implicit Blocks for both operands). These operators return either `false` or a truthy value of any data type.
+Logical operators in **dish**, like many languages, short circuit the right-hand argument if the left-hand argument does not suffice to determine the value of the expression. As such, the right-hand argument of logical operators are implicit Blocks that are only evaluated if needed (or in the case of the `switch` operator, an array of implicit Blocks for both operands).
 
 Logical operators and methods in **dish** serve as the control structures for the language.
 
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `&&`     | Implicit Boolean `&&` Any   | `a.then(b)`       | `3 && 2`                   | `2`                   |
-|          |                             |                   | `true && 0`                | `false`               |
+|          |                             |                   | `true && 0`                | `0`                   |
 |          |                             |                   |                            |                       |
 | `\|\|`   | Implicit Boolean `\|\|` Any | `a.else(b)`       | `3 \|\| 2`                 | `3`                   |
 |          |                             |                   | `false \|\| 0`             | `0`                   |
@@ -282,3 +282,13 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | `**`     | `**`Scalar                  | `a.divisors`      | `**8`                      | `[1, 2, 4]`           |
 |          | `**`String                  | `a.sort`          | `**'binary'`               | `"abinry"`            |
 |          | `**`List                    | `a.sort`          | `**[10, 1, 2, 4]`          | `[1, 2, 4, 10]`       |
+|          |                             |                   |                            |                       |
+| `<`      | `<`Scalar                   | `a.floor`         | `<3.14`                    | `3`                   |
+|          | `<`String                   | `a.lower`         | `<'BINARY'`                | `"binary"`            |
+|          | `<`List                     | `a.min`           | `<[1, 2, 3]`               | `1`                   |
+|          |                             |                   |                            |                       |
+| `>`      | `>`Scalar                   | `a.ceil`          | `>3.14`                    | `4`                   |
+|          | `>`String                   | `a.upper`         | `>'binary'`                | `"BINARY"`            |
+|          | `>`List`                    | `a.max`           | `>[1, 2, 3]`               | `3`                   |
+|          |                             |                   |                            |                       |
+

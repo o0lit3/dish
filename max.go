@@ -1,5 +1,9 @@
 package main
-import("math/big")
+
+import(
+    "strings"
+    "math/big"
+)
 
 func Max(a interface{}) interface{} {
     switch x := a.(type) {
@@ -12,7 +16,7 @@ func Max(a interface{}) interface{} {
     case Array:
         return x.Max()
     case String:
-        return Max(x.Number())
+        return String(strings.ToUpper(string(x)))
     case Number:
         if x.inf == INF || x.inf == -INF {
             return x

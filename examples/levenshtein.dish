@@ -1,0 +1,27 @@
+// https://rosettacode.org/wiki/Levenshtein_distance
+
+levenshtein = :a:b(
+  [a, b]: [a.lower, b.lower]
+  costs: (0..#b)
+
+  (1..#a).each:i(
+    [costs.0, new] = [i, i - 1]
+
+    (1..#b).each:j(
+      [costs.j, new] = [
+        [costs.j + 1, costs.(j - 1) + 1, new + !(a.(i - 1) == b.(j - 1))].min
+        costs.j
+      ]
+    )
+  )
+
+  costs.(#b)
+)
+
+[
+  ['kitten', 'sitting']
+  ['saturday', 'sunday']
+  ['rosettacode', 'raisethysword']
+].map:i(
+  "['$(i.0)', '$(i.1)'].levenshtein = $([i.0, i.1].levenshtein)"
+).join("\n")

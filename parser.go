@@ -401,6 +401,7 @@ func (b *Block) Variate() []*Variable {
                 }
             }
         case VAR:
+            b.cur.vars[t.lit] = b.FindVar(t.lit)
             reg = &Variable{ blk: b, nom: t.lit }
         case FIN:
             if reg != nil {

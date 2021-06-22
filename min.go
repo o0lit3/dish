@@ -1,5 +1,9 @@
 package main
-import("math/big")
+
+import(
+    "strings"
+    "math/big"
+)
 
 func Min(a interface{}) interface{} {
     switch x := a.(type) {
@@ -12,7 +16,7 @@ func Min(a interface{}) interface{} {
     case Array:
         return x.Min()
     case String:
-        return Min(x.Number())
+        return String(strings.ToLower(string(x)))
     case Number:
         if x.inf == INF || x.inf == -INF {
             return x

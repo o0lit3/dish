@@ -40,34 +40,8 @@ func And(a interface{}, b interface{}) interface{} {
             return And(Boolean(true), y.Run())
         case *Variable:
             return And(Boolean(true), y.Value())
-        case Hash:
-            if len(y) == 0 {
-                return Boolean(false)
-            }
-
+        default:
             return y
-        case Array:
-            if len(y) == 0 {
-                return Boolean(false)
-            }
-
-            return y
-        case String:
-            if string(y) == "" || string(y) == "0" {
-                return Boolean(false)
-            }
-
-            return y
-        case Number:
-            if y.inf == 0 && y.val.Cmp(NewNumber(0).val) == 0 {
-                return Boolean(false)
-            }
-
-            return y
-        case Boolean:
-            return y
-        case Null:
-            return Boolean(false)
         }
     case Null:
         return Boolean(false)
