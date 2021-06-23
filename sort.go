@@ -34,7 +34,7 @@ func (a Array) Sort() Array {
     return a
 }
 
-func (a Number) Divisors() Array {
+func (a Number) Divisors() interface{} {
     i := new(big.Int).Quo(a.val.Num(), a.val.Denom())
     j := big.NewInt(1)
 
@@ -62,5 +62,5 @@ func (a Number) Divisors() Array {
         j = new(big.Int).Add(j, big.NewInt(1))
     }
 
-    return out
+    return Sort(out)
 }

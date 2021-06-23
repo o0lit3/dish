@@ -1,0 +1,7 @@
+// https://rosettacode.org/wiki/Mersenne_primes
+
+(2..100).filter:n(
+  (2 ** n - 1).prime
+).map:n(
+  "2 ** $(n) - 1 = $(2 ** n - 1)"
+).join("\n")
