@@ -51,11 +51,11 @@ Variables in **dish** must start with either a letter or a `$` character, and ma
 
 Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Because **dish** variables can not begin with numbers, array index members such as `a = [1, 2, 3], a.0` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted. Compare the following:
 
-`dish -e 'a = {foo: 1, bar: 2}, a."foo"'` outputs `1`
+`dish -e 'a = {foo: 1, bar: 2}, foo = "bar", a."foo"'` outputs `1`
 
 `dish -e 'a = {foo: 1, bar: 2}, foo = "bar", a.foo'` outputs `2`
 
-The member expression for member access can also be a Logic block, as in `dish -e '[1, 2, 3].:a:b:c(a + b + c)'` or a variable that points to a Logic block as in `dish -e 'power = :a:b(a ** b), [2, 3].power'`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in `dish -e '"foobar".:s(s.upper)'` or `dish -e 'squared = :a(a ** 2), 3.squared'`.
+The member expression can also be a Logic block, as in `dish -e '[1, 2, 3].:a:b:c(a + b + c)'` or a variable that points to a Logic block as in `dish -e 'power = :a:b(a ** b), [2, 3].power'`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in `dish -e '"foobar".:s(s.upper)'` or `dish -e 'squared = :a(a ** 2), 3.squared'`.
 
 In cases were a Logic block contains exactly two arguments, you can use the the following (alternative) binary syntax for passing arguments: `dish -e 'power = :a:b(a ** b), 2.power(3)'` where the first argument is the object on which the Logic block is invoked and where the second argument is passed from a Scalar block following the member expression.
 
