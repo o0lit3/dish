@@ -36,11 +36,11 @@ Similarly, traditional unary operators (which are always prefix operators when r
 <sub>*Postfix `++` and `--` are not legal in **dish**</sub>
 
 ## Syntax
-**dish** has 4 types of syntax blocks, Scalar Blocks `(...)`, Array blocks `[...]`, Hash blocks `{...}`, and logic blocks. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup> or by a comma (unless the newline or comma is encapsulated in a string literal).
+**dish** has 4 types of syntax blocks, Scalar Blocks `(...)`, Array blocks `[...]`, Hash blocks `{...}`, and logic blocks. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup>, by a comma, or by a semicolon (unless the newline, comma, or semicolon is encapsulated in a string literal).
 
 Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire array or hash, where hash blocks contain all locally-scoped variables when returned.
 
-Logic blocks are represented by a colonized list of arguments followed by a Scalar block, as in `:x(...)` or `:x:y(...)`, returning a data type corresponding to the last expression. A logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`.
+Logic blocks are represented by a colonized list of arguments followed by a Scalar block, as in `:x(...)` or `:x:y(...)`, returning a data type corresponding to the last expression. A logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a logic block are locally scoped.
 
 Comments in **dish** start with a double slash `//` and end with a newline. There are no multi- or in-line comments in **dish**.
 
@@ -49,15 +49,15 @@ Comments in **dish** start with a double slash `//` and end with a newline. Ther
 ## Variables and Member Access
 Variables in **dish** must start with either a letter or a `$` character, and may only contain letters, numbers, underscores (`_`), and dollar signs (`$`).
 
-Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Because **dish** variables can not begin with numbers, array index members such as `a = [1, 2, 3], a.0` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted. Compare the following:
+Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Because **dish** variables can not begin with numbers, array index members such as `a = [1, 2, 3]; a.0` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted. Compare the following:
 
-`dish -e 'a = {foo: 1, bar: 2}, foo = "bar", a."foo"'` outputs `1`
+`dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a."foo"'` outputs `1`
 
-`dish -e 'a = {foo: 1, bar: 2}, foo = "bar", a.foo'` outputs `2`
+`dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a.foo'` outputs `2`
 
-The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ** b), [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in `"foobar".:s(s.upper)` or `squared = :a(a ** 2), 3.squared`.
+The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ** b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in `"foobar".:s(s.upper)` or `squared = :a(a ** 2); 3.squared`.
 
-In cases were a Logic block contains exactly two arguments, you can use the the following (alternative) binary syntax for passing arguments: `dish -e 'power = :a:b(a ** b), 2.power(3)'` where the first argument is the object on which the Logic block is invoked and where the second argument is passed from a Scalar block following the member expression.
+In cases where a Logic block contains exactly two arguments, you can use the the following, alternative binary syntax for passing arguments: `power = :a:b(a ** b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed from a Scalar block following the member expression.
 
 ## String Interpolation
 **dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string (`"$(...)"`), for example: `dish -e '(0..9).map:i("i: $(i)").join("\n")'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
