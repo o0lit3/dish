@@ -1,6 +1,6 @@
 // https://rosettacode.org/wiki/Look-and-say_sequence
 
-look$say = :s(
+look = :s(
   [out, digit, count]: ["", s.0, 1]
 
   (<< s).redo(
@@ -14,7 +14,7 @@ look$say = :s(
 (
   [s = 1] + (
     (0..13).map:(
-      s = s.look$say 
+      s = s.look
     )
   )
 ).join("\n")

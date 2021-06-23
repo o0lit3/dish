@@ -131,6 +131,10 @@ func (t *Token) Term() bool {
         return true
     }
 
+    if t.tok == OPX && t.lit == "" {
+        return false
+    }
+
     switch t.tok {
     case STR, NUM, VAR, OPX:
         return true
