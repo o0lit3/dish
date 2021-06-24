@@ -6,15 +6,15 @@ out = ['']
 (++y < 16).redo(
   x = 0
   (++x < 85).redo(
-    i = j = k = r = 0
+    i = k = r = 0
 
-    (j * j + i * i < 11 && ++k < 10).redo(
-      j = r * r - i * i - 2 + x / 25
-      i = 2 * r * i + y / 10
-      r = j
-    )
+    (
+      j = (r * r - i * i - 2 + x / 25).round(10)
+      i = (2 * r * i + y / 10).round(10)
+      j * j + i * i < 11 && ++k < 112
+    ).redo(r = j)
 
-    out.-1 ~= "  .-:!vxVX ".(k & 15)
+    out.-1 ~= " .:-;!/>)|&IH%*#".(k & 15)
   )
 
   out << ''
