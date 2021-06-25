@@ -1,23 +1,15 @@
 // https://rosettacode.org/wiki/Mandelbrot_set
 
-x = y = -16
-out = ['']
-
-(++y < 16).redo(
-  x = 0
-  (++x < 85).redo(
+(-16..16).map:y(
+  (-5..85).map:x(
     i = k = r = 0
 
     (
-      j = (r * r - i * i - 2 + x / 25).round(10)
-      i = (2 * r * i + y / 10).round(10)
-      j * j + i * i < 11 && ++k < 112
+      j = (r * r - i * i - 2 + x / 25).round(9)
+      i = (2 * r * i + y / 10).round(9)
+      j * j + i * i < 9 && ++k < 96
     ).redo(r = j)
 
-    out.-1 ~= " .:-;!/>)|&IH%*#".(k & 15)
-  )
-
-  out << ''
-)
-
-out.join("\n")
+    " .:-;!/>)|&IH%*#".(k & 15)
+  ).join('')
+).join("\n")

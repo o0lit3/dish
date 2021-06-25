@@ -524,7 +524,7 @@ func (p *Parser) Parse() {
         p.blk.toks = append(p.blk.toks, t)
     case t.tok == OP1:
         p.ops = append(p.ops, t)
-    case t.tok == OP2 || t.tok == OPX:
+    case t.tok == OP2 || t.tok == OPX || t.tok == MEM:
         for len(p.ops) > 0 && p.ops[len(p.ops) - 1].Higher(t) && !p.ops[len(p.ops) - 1].BlockOpen() && !p.ops[len(p.ops) - 1].ShortCircuit() {
             p.Shift()
         }
@@ -553,7 +553,7 @@ func (p *Parser) Parse() {
             p.blk = p.blk.Branch(VAL)
         }
 
-        if t.tok == OPX {
+        if t.tok == OPX || t.tok == MEM {
             t.tok = p.Operator()
         }
 

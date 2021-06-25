@@ -19,6 +19,7 @@ const (
     OP1 // Unary operators (!, ~, +, -, #, ++, --)
     OP2 // Binary operators
     OPX // Method operators (alphanumeric)
+    MEM // Member access (as string)
     BLK // Grouping lexemes {} [] ()
     FIN // Statement ending lexemes (newline or comma)
     EOF // End of file
@@ -40,6 +41,7 @@ type Token struct {
     pos Position
     tok Lexeme
     opx bool
+    mem bool
     lit string
     blk *Block
     args []string
@@ -127,7 +129,7 @@ func (t *Token) Assignment() bool {
 }
 
 func (t *Token) Term() bool {
-    if t.BlockClose() {
+    if t.BlockClose() || t.tok == MEM {
         return true
     }
 
@@ -296,7 +298,7 @@ func (l *Lexer) Reset() Position {
 }
 
 func (l *Lexer) Tokenize(pos Position, tok Lexeme, lit string) *Token {
-    token := &Token { pos: pos, tok: tok, opx: tok == OPX, lit: lit }
+    token := &Token { pos: pos, tok: tok, opx: tok == OPX, mem: tok == MEM, lit: lit }
     l.toks = append(l.toks, token)
     return token
 }
@@ -356,7 +358,7 @@ func (l *Lexer) Lexify() *Token {
             case unicode.IsLetter(n):
                 return l.Tokenize(l.Backup(), OPX, l.LexVar()).LexArgs(l)
             case n == '"', n == '\'':
-                return l.Tokenize(l.pos, OP1, l.LexStr(n))
+                return l.Tokenize(l.pos, MEM, l.LexStr(n))
             default:
                 return l.Tokenize(l.Backup(), OPX, "").LexArgs(l)
             }

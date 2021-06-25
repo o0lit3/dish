@@ -16,7 +16,7 @@ For the purposes of the tables below, "Scalar" refers to a Boolean or Number in 
 ## Logical Operators
 Logical operators in **dish**, like many languages, short circuit the right-hand argument if the left-hand argument does not suffice to determine the value of the expression. As such, the right-hand argument of logical operators are implicit Blocks that are only evaluated if needed (or in the case of the `switch` operator, an array of implicit Blocks for both operands).
 
-Logical operators and methods in **dish** serve as the control structures for the language. **Note bene**: Be careful with logical chains such as `(cond).then(0).else(1)`--falsy values like 0 prevent the `else` block from being executed. Therefore, to avoid any traps of falsy values, the ternary `[condition].switch[0, 1]` is preferred. Similary, to create traditional if/elseif/else logic in **dish**, you would write `[cond1, cond2].switch[0, 1, 2]`.
+Logical operators and methods in **dish** serve as the control structures for the language. **Note bene**: Be careful with logical chains such as `(cond).then(0).else(1)`--falsy values like 0 force the `else` block into execution regardless of the condition's truthiness. Therefore, to avoid any traps of falsy values, the ternary `[condition].switch[0, 1]` is preferred. Similary, to create traditional if/elseif/else logic in **dish**, use `[cond1, cond2].switch[0, 1, 2]`.
 
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
@@ -74,6 +74,9 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `:`      | Variable `:` Any            | `a.define(b)`     | `a: 5`                     | `5`                   |
+|          |                             |                   |                            |                       |
+| `:`      | `:`Variable                 |                   | `:a(...)`                  | // Block argument     |
+| (Unary)  |                             |                   |                            |                       |
 |          |                             |                   |                            |                       |
 | `=`      | Variable `=` Any            | `a.assign(b)`     | `a = [1, 2, 3]`            | `[1, 2, 3]`           |
 | `:=`     | Member `:=` Any             |                   | `a = [1, 2, 3], a.0 := 4`  | `[4, 2, 3]`           |

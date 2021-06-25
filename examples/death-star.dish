@@ -1,0 +1,66 @@
+// https://rosettacode.org/wiki/Death_Star
+
+normalize = :x:y:z(
+  len: (x ** 2 + y ** 2 + z ** 2) ** 0.5
+  [(x / len).round(9), (y / len).round(9), (z / len).round(9)]
+)
+
+dot = :a:b(
+  ((d = +(a * b)) < 0).then(-d).else(0)
+)
+
+diffuse = :a:b(
+  [a, b].dot ** 3 // diffuse constant: 3
+)
+
+specular = :a:b(
+  r: 2 * [a, b].dot
+  r: [a.0 - r * b.0, a.1 - r * b.1, a.2 - r * b.2].normalize
+  [r, [0, 0, -1]].dot ** 10 // specular constant: 3
+)
+
+hit = :sph:x:y(
+  x: x - sph.'cx'
+  y: y - sph.'cy'
+  z: sph.'r' ** 2 - (x ** 2 + y ** 2)
+  
+  (z >= 0).then(
+    [sph.'cz' - (z = z ** 0.5), sph.'cz' + z]
+  ) 
+)
+
+shades = ".:!*oe&#%@"
+pos = {cx: 20, cy: 20, cz: 0, r: 20}
+neg = {cx: 7, cy: 7, cz: -10, r: 15}
+light = [-50, 30, 50].normalize
+
+char = :x:y:z(
+  v: [x, y, z].normalize
+  b: [light, v].diffuse + [light, v].specular
+  i: ((1 - b) * #shades).floor
+  shades.([#shades - 1, [0, i].max].min)
+)
+
+(pos.'cy' - pos.'r' .. pos.'cy' + pos.'r').map:i(
+  y: i + 0.5
+
+  (pos.'cx' - 2 * pos.'r' .. pos.'cx' + 2 * pos.'r').map:j(
+    x: (j - pos.'cx') / 2 + 0.5 + pos.'cx'
+    deathstar: [pos, x, y].hit
+
+    (!deathstar).then(
+      ' '
+    ).else(
+      superlaser: [neg, x, y].hit
+      vec: [x - pos.'cx', y - pos.'cy', deathstar.0 - pos.'cz']
+      pip: [neg.'cx' - x, neg.'cy' - y, neg.'cz' - superlaser.1]
+
+      [
+        !superlaser
+        superlaser.0 > deathstar.0
+        superlaser.1 > deathstar.1
+        superlaser.1 > deathstar.0
+      ].switch[vec.char, vec.char, ' ', pip.char, vec.char]
+    )
+  ).join('')
+).join("\n")
