@@ -46,21 +46,14 @@ char = :x:y:z(
 
   (pos.'cx' - 2 * pos.'r' .. pos.'cx' + 2 * pos.'r').map:j(
     x: (j - pos.'cx') / 2 + 0.5 + pos.'cx'
-    deathstar: [pos, x, y].hit
 
-    (!deathstar).then(
+    [
+      !(deathstar = [pos, x, y].hit)
+      !(superlaser = [neg, x, y].hit) || superlaser.0 > deathstar.0 || superlaser.1 <= deathstar.0
+    ].switch[
       ' '
-    ).else(
-      superlaser: [neg, x, y].hit
-      vec: [x - pos.'cx', y - pos.'cy', deathstar.0 - pos.'cz']
-      pip: [neg.'cx' - x, neg.'cy' - y, neg.'cz' - superlaser.1]
-
-      [
-        !superlaser
-        superlaser.0 > deathstar.0
-        superlaser.1 > deathstar.1
-        superlaser.1 > deathstar.0
-      ].switch[vec.char, vec.char, ' ', pip.char, vec.char]
-    )
+      [x - pos.'cx', y - pos.'cy', deathstar.0 - pos.'cz'].char
+      [neg.'cx' - x, neg.'cy' - y, neg.'cz' - superlaser.1].char
+    ]
   ).join('')
 ).join("\n")

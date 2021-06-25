@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -435,6 +434,10 @@ func (b *Block) Blockify(a interface{}) Array {
                     out = append(out, x.toks[i].blk)
                     i = i + 2
                 } else {
+                    if x.toks[i].tok == BLK {
+                        x.toks[i].blk.src = b
+                    }
+
                     blk.toks = append(blk.toks, x.toks[i])
 
                     if x.toks[i].tok == FIN {

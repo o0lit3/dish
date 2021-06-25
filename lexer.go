@@ -57,7 +57,7 @@ type Lexer struct {
 }
 
 func (l Lexeme) String() string {
-    return [...]string{"NOP", "NUM", "STR", "VAR", "OP1", "OP2", "OPX", "BLK", "FIN", "EOF"}[l]
+    return [...]string{"NOP", "NUM", "STR", "VAR", "OP1", "OP2", "OPX", "MEM", "BLK", "FIN", "EOF"}[l]
 }
 
 func (d Dimension) String() string {
