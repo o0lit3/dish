@@ -81,7 +81,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | (Unary)  |                             |                   |                            |                       |
 |          |                             |                   |                            |                       |
 | `=`      | Variable `=` Any            | `a.assign(b)`     | `a = [1, 2, 3]`            | `[1, 2, 3]`           |
-| `:=`     | Member `:=` Any             |                   | `a = [1, 2, 3], a.0 := 4`  | `[4, 2, 3]`           |
+| `:=`     | Member `:=` Any             | `a.0.replace(b)`  | `a = [1, 2, 3], a.0 := 4`  | `[4, 2, 3]`           |
 | `~=`     |                             |                   | `a = 'bin', a ~= 'ary'`    | `"binary"`            |
 | `+=`     |                             |                   | `a = 1, a += 1`            | `2`                   |
 | `-=`     |                             |                   | `a = 1, a -= 1`            | `0`                   |

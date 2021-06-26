@@ -358,7 +358,12 @@ func (blk *Block) Interpret() interface{} {
     case OP1:
         a := blk.Deregister(t)
 
-        if len(t.lit) > 0 && t.opx && unicode.IsLetter(rune(t.lit[0])) {
+        if len(t.lit) > 0 && (t.opx || t.mem) && unicode.IsLetter(rune(t.lit[0])) {
+            if t.mem {
+                blk.Register(Member(a, String(t.lit)))
+                return blk.Interpret()
+            }
+
             switch op := blk.FindVar(t.lit).(type) {
             case Null:
             default:
@@ -406,7 +411,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(val)
         case "~~", "ord", "ascii", "chr":
             blk.Register(Ascii(a))
-        case "~", "stringify", "string", "str":
+        case "~", "stringify", "string", "str", "join":
             blk.Register(Stringify(a))
         case "<", "minimum", "min", "lowercase", "downcase", "lc", "floor":
             blk.Register(Min(a))
@@ -550,7 +555,7 @@ func (blk *Block) Interpret() interface{} {
             default:
                 blk.Register(blk.Define(a, y))
             }
-        case ":=":
+        case ":=", "replace":
             if x, ok := a.(*Variable); ok && x.obj != nil {
                 switch y := b.(type) {
                 case *Variable:

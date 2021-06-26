@@ -29,9 +29,9 @@ func Push(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Push(x, y.Value())
         case Hash:
-            return x.Push(y.Array())
+            return x.Push(Array{ y })
         case Array:
-            return x.Push(y)
+            return x.Push(Array { y })
         default:
             return x.Push(Array { y })
         }
