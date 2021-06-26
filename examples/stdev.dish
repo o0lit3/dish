@@ -1,0 +1,9 @@
+// https://rosettacode.org/wiki/Cumulative_standard_deviation
+
+stdev = :set(
+  (+set.map:n(n ** 2) / #set - (+set / #set) ** 2) ** 0.5
+)
+
+[2, 4, 4, 4, 5, 5, 7, 9].map:n(
+  "$(set << n).stdev = $([set].stdev.fmt('%.9f'))"
+).join("\n")
