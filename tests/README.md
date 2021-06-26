@@ -180,14 +180,14 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | List `*` Implicit Number    | `a.repeat(b)`     | `[2] * 5`                  | `[2, 2, 2, 2, 2]`     |
 |          |                             |                   |                            |                       |
 | `/`      | Scalar `/` Implicit Number  | `a.divide(b)`     | `10 / 20`                  | `0.5`                 |
-|          | String `/` :(Block)         | `a.split:i(...)`  | `'binary' / :i(i.vowel)`   | `["b", "n", "ry"]`    |
+|          | String `/` :(Block)         | `a.split:i(...)`  | `'b1n4ry' / :i(i.digit)`   | `["b", "n", "ry"]`    |
 |          | String `/` String           | `a.split(b)`      | `'binary' / 'in'`          | `["b", "ary"]`        |
 |          | String `/` Implicit Number  | `a.split(b)`      | `'binary' / 2`             | ` ["bi", "na", "ry"]` |
 |          | List `/` :(Block)           | `a.split:i(...)`  | `[2, 2, 3, 4] / :i(i % 2)` | `[[2, 2], [4]]`       |
 |          | List `/` Implicit Number    | `a.split(b)`      | `[2, 2, 3, 4] / 2`         | `[[2, 2], [3, 4]]`    |
 |          |                             |                   |                            |                       |
 | `%`      | Scalar `%` Implicit Number  | `a.remainder(b)`  | `20 % 7`                   | `6`                   |
-|          | String `%` :(Block)         | `a.filter:i(...)` | `'binary' % :i(i.vowel)`   | `"ia"`                |
+|          | String `%` :(Block)         | `a.filter:i(...)` | `'b1n4ry' % :i(i.digit)`   | `"14"`                |
 |          | String `%` Implicit Number  | `a.every(b)`      | `'binary' % 2`             | `"bnr"`               |
 |          | List `%` :(Block)           | `a.filter:i(...)` | `[1, 1, 2, 3] % :i(i % 2)` | `[1, 1, 3]`           |
 |          | List `%` Implicit Number    | `a.every(b)`      | `[1, 1, 2, 3] % 2`         | `[1, 2]`              |
@@ -199,7 +199,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | List `**` Implicit Number   | `a.rotate(b)`     | `[7, 9, 4] ** 1`           | `[4, 7, 9]`           |
 |          |                             |                   |                            |                       |
 | `@`      | Scalar `@` Implicit Number  | `a.round(b)`      | `3.14 @ 1`                 | `3.1`                 |
-|          | String `@` :(Block)         | `a.index:i(...)`  | `'binary' @ :i(i.vowel)`   | `[1, 3]`              |
+|          | String `@` :(Block)         | `a.index:i(...)`  | `'b1n4ry' @ :i(i.digit)`   | `[1, 3]`              |
 |          | String `@` Implicit String  | `a.index(b)`      | `'binary' @ 'ary'          | `[3]`                 |
 |          | Array `@` :(Block)          | `a.index:i(...)`  | `[1, 2, 3] @ :i(i % 2)`    | `[0, 2]`              |
 |          | Array `@` Any               | `a.index(b)`      | `[1, 2, 3] @ 3             | `[2]`                 |
@@ -277,7 +277,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | [Also See Assignment Ops](#assignment-operators) |                         | |                       |
 |          |                             |                   |                            |                       |
 | `*`      | `*`Scalar                   | `a.prime`         | `*7`                       | `true`                |
-|          | `*`String                   | `a.vowel`         | `*'a'`                     | `true`                |
+|          | `*`String                   | `a.letter`        | `*'a'`                     | `true`                |
 |          | `*`List                     | `a.product`       | `*[1, 2, 3, 4]`            | `24`                  |
 |          |                             |                   |                            |                       |
 | `**`     | `**`Scalar                  | `a.divisors`      | `**8`                      | `[1, 2, 4]`           |

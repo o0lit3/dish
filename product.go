@@ -12,7 +12,7 @@ func Product(a interface{}) interface{} {
     case Array:
         return x.Product()
     case String:
-        return x.Vowel()
+        return x.Digit()
     case Number:
         return x.Prime()
     case Boolean:
@@ -34,10 +34,10 @@ func (a Array) Product() Number {
     return out
 }
 
-func (a String) Vowel() Boolean {
+func (a String) Digit() Boolean {
     if len(a) > 0 {
         switch a[0] {
-        case 'A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u':
+        case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
             return Boolean(true)
         }
     }

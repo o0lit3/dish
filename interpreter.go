@@ -380,7 +380,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Keys(a))
         case "**", "sort", "divisors":
             blk.Register(Sort(a))
-        case "*", "product", "vowel", "prime":
+        case "*", "product", "digit", "prime":
             blk.Register(Product(a))
         case "/", "itemize", "array", "arr", "flatten", "flat", "values", "ratio":
             blk.Register(Itemize(a))
@@ -436,6 +436,8 @@ func (blk *Block) Interpret() interface{} {
             }
 
             blk.Register(obj)
+        case "sqrt", "log", "sin", "cos", "tan", "asin", "acos", "atan":
+            blk.Register(Math(a, t))
         default:
             switch {
             case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):

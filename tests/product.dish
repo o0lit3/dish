@@ -2,9 +2,9 @@
     *{foo: 1, bar: 2}   // 2
     *[1, 2, 3]          // 6
     *[1, "foo", 3]      // 0
-    *"i"                // true
+    *"4"                // true
     *"f"                // false
-    *"apple"            // true
+    *"1pple"            // true
     *"foo"              // false
     *7                  // true
     *9                  // false

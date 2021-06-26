@@ -1,4 +1,5 @@
 package main
+import("unicode")
 
 func Compact(a interface{}) interface{} {
     switch x := a.(type) {
@@ -43,4 +44,12 @@ func (a Array) Compact() Array {
     }
 
     return out
+}
+
+func (a String) Letter() Boolean {
+    if len(a) > 0 && unicode.IsLetter(a[0]) {
+        return Boolean(true)
+    }
+
+    return Boolean(false)
 }
