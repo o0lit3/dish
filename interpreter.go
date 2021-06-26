@@ -436,7 +436,7 @@ func (blk *Block) Interpret() interface{} {
             }
 
             blk.Register(obj)
-        case "sqrt", "log", "sin", "cos", "tan", "asin", "acos", "atan":
+        case "rand", "sqrt", "log", "sin", "cos", "tan", "asin", "acos", "atan":
             blk.Register(Math(a, t))
         default:
             switch {

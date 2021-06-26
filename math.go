@@ -1,8 +1,10 @@
 package main
 
 import(
+    "time"
     "math"
     "math/big"
+    "math/rand"
 )
 
 func Math(a interface{}, tok *Token) interface{} {
@@ -21,6 +23,9 @@ func Math(a interface{}, tok *Token) interface{} {
         val, _ := x.val.Float64()
 
         switch tok.lit {
+        case "rand":
+            rand.Seed(time.Now().UnixNano())
+            return Number{ val: new(big.Rat).SetFloat64(rand.Float64() * val) }
         case "sqrt":
             return Number{ val: new(big.Rat).SetFloat64(math.Sqrt(val)) }
         case "log":
