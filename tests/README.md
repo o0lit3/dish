@@ -93,22 +93,22 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | `++`     | `++`Scalar                  | `a.increment`     | `a = 8, ++a`               | `9`                   |
 | (Unary)  | `++`Strin                   | `a.increment`     | `a = 'binary', ++a`        | `"cjobsz"`            |
 |          | `++`Array                   | `a.increment`     | `a = [1, 2, 3], ++a`       | `[2, 3, 4]`           | 
-|          | `++`Hash                    | `a.increment`     | `a = {foo: 5}, ++a`        | `{"foo": 6}`          |
+|          | `++`Hash                    | `a.increment`     | `a = {x: 5}, ++a`          | `{"x": 6}`            |
 |          |                             |                   |                            |                       |
 | `--`     | `--`Scalar                  | `a.decrement`     | `a = 9, --a`               | `8`                   |
 | (Unary)  | `--`String                  | `a.decrement`     | `a = 'cjobsz', --a`        | `"binary"`            |
 |          | `--`Array                   | `a.decrement`     | `a = [1, 2, 3], --a`       | `[0, 1, 2]`           |
-|          | `--`Hash                    | `a.decrement`     | `a = {foo: 5}, --a`        | `{"foo": 4}`          |
+|          | `--`Hash                    | `a.decrement`     | `a = {x: 5}, --a`          | `{"x": 4}`            |
 |          |                             |                   |                            |                       |
 | `<<`     | Scalar [See Bitwise Ops](#bitwise-operators) |  |                            |                       |
 |          | String [See Bitiwse Ops](#bitwise-operators) |  |                            |                       |
 |          | Arary `<<` Implicit Array   | `a.push(b)`       | `a = [1, 2], a << 3`       | `[1, 2, 3]`           |
-|          | Hash `<<` Implicit Hash     | `a.push(b)`       | `a = {foo: 1}, a << 2`     | `{"foo": 1, "2": 2}`  |
+|          | Hash `<<` Implicit Hash     | `a.push(b)`       | `a = {x: 1}, a << {y: 2}`  | `{"x": 1, "y": 2}`    |
 |          |                             |                   |                            |                       |
 | `>>`     | Scalar [See Bitwise Ops](#bitwise-operators) |  |                            |                       |
 |          | String [See Bitiwse Ops](#bitwise-operators) |  |                            |                       |
 |          | Array `>>` Implicit Array   | `a.unshift(b)`    | `a = [1, 2], a >> 3`       | `[3, 1, 2]`           |
-|          | Hash `>>` Implicit Hash     | `a.unshift(b)`    | `a = {foo: 1}, a >> 2`     | `{"2": 2, "foo": 1}`  |
+|          | Hash `>>` Implicit Hash     | `a.unshift(b)`    | `a = {x: 1}, a >> {y: 2}`  | `{"x": 1, "y": 2}`    |
 |          |                             |                   |                            |                       |
 | `<<`     | `<<`Scalar                  | `a.shift`         | `a = 3, [<<a, a]`          | `[3, 0]`              |
 | (Unary)  | `<<`String                  | `a.shift`         | `a = 'binary', [<<a, a]`   | `["b", "inary"]`      |
@@ -128,13 +128,13 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | String `&` String           | `a.intersect(b)`  | `'jadh!' & '____'`         | `"JADH"`              |
 |          | String `&` Implicit Number  | `a.intersect(b)`  | `'5' & 3`                  | `1`                   |
 |          | Array `&` Implicit Array    | `a.intersect(b)`  | `[1, 2, 3] & [4, 3, 2]`    | `[2, 3]`              |
-|          | Hash `&` Implicit Hash      | `a.intersect(b)`  | `{f: 1} & {f: 2, b: 2}`    | `{"f": 2}`            |
+|          | Hash `&` Implicit Hash      | `a.intersect(b)`  | `{x: 1} & {x: 2, y: 2}`    | `{"x": 2}`            |
 |          |                             |                   |                            |                       |
 | `^`      | Scalar `^` Implicit Number  | `a.exclude(b)`    | `5 ^ 3`                    | `6`                   |
 |          | String `^` String           | `a.exclude(b)`    | `'d O!' ^ ' I<I!'`         | `"Dish!"`             |
 |          | String `^` Implicit Number  | `a.exclude(b)`    | `'5' ^ 3`                  | `6`                   |
 |          | Array `^` Implicit Array    | `a.exclude(b)`    | `[1, 2, 3] ^ [4, 3, 2]`    | `[1, 4]`              |
-|          | Hash `^` Implicit Hash      | `a.exclude(b)`    | `{foo: 1} ^ {foo: 2}`      | `{}`                  |
+|          | Hash `^` Implicit Hash      | `a.exclude(b)`    | `{x: 1} ^ {y: 2}`          | `{}`                  |
 |          |                             |                   |                            |                       |
 | `^`      | `^`Scalar                   | `a.invert`        | `^5`                       | `-6`                  |
 | (Unary)  | `^`String                   | `a.invert`        | `^'binary'`                | `������`              |
@@ -144,7 +144,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | String `\|` String          | `a.union(b)`      | `'JA' \| '  dh!'`          | `"jadh!"`             |
 |          | String `\|` Implicit Number | `a.union(b)`      | `'5' \| 3`                 | `7`                   |
 |          | Array `\|` Implicit Array   | `a.union(b)`      | `[1, 2, 3] \| [4, 2, 1]`   | `[1, 2, 3, 4]`        |
-|          | Hash `\|` Implicit Hash     | `a.union(b)`      | `{foo: 1} \| {foo: 2}`     | `{"foo": 2}`          |
+|          | Hash `\|` Implicit Hash     | `a.union(b)`      | `{x: 1} \| {x: 2}`         | `{"x": 2}`            |
 |          |                             |                   |                            |                       |
 | `<<`     | Scalar `<<` Implicit Number | `a.lshift(b)`     | `5 << 3`                   | `40`                  |
 |          | String `<<` Implicit Number | `a.lshift(b)`     | `'5' << 3`                 | `40`                  |
@@ -170,24 +170,24 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          |                             |                   |                            |                       |
 | `-`      | Scalar `-` Implicit Number  | `a.subtract(b)`   | `10 - 20`                  | `-10`                 |
 |          | String `-` Implicit Number  | `a.subtract(b)`   | `'10' - '20'`              | `-10`                 |
-|          | Array `-` Implicit Array    | `a.remove(b)`     | `[1, 2] - [2, 3]`          | `[1]`                 |
+|          | Array `-` Implicit Array    | `a.remove(b)`     | `[1, 2, 2, 3, 4] - [2, 3]` | `[1, 2, 4]`           |
 |          | Hash `-` Implicit Hash      | `a.remove(b)`     | `{x: 1, y: 2} - {"x"}`     | `{"y": 2}`            |
 |          |                             |                   |                            |                       |
 | `*`      | Scalar `*` Implicit Number  | `a.multiply(b)`   | `10 * 20`                  | `200`                 |
 |          | String `*` Implicit Number  | `a.repeat(b)`     | `'a' * 5`                  | `"aaaaa"`             |
-|          | List `*` :(Block)           | `a.map:i(...)`    | `[1, 2, 3] * :i(i + 1)`    | `[2, 3, 4]`           |
-|          | List `*` List               | `a.dot(b)`        | `[1, 2] * [3, 4]`          | `[3, 8]`              |
-|          | List `*` Implicit Number    | `a.repeat(b)`     | `[2] * 5`                  | `[2, 2, 2, 2, 2]`     |
+|          | List `*` :(Block)           | `a.map:i(...)`    | `[1, 2, 3] * :i(i * 2)`    | `[1, 4, 6]`           |
+|          | List `*` List               | `a.dot(b)`        | `[1, 2, 3] * [1, 2, 3]`    | `[1, 4, 9]`           |
+|          | List `*` Implicit Number    | `a.repeat(b)`     | `[1, 2, 3] * 2`            | `[1, 2, 3, 1, 2, 3]`  |
 |          |                             |                   |                            |                       |
 | `/`      | Scalar `/` Implicit Number  | `a.divide(b)`     | `10 / 20`                  | `0.5`                 |
-|          | String `/` :(Block)         | `a.split:i(...)`  | `'b1n4ry' / :i(i.digit)`   | `["b", "n", "ry"]`    |
+|          | String `/` :(Block)         | `a.split:i(...)`  | `'binary' / :i(i.vowel)`   | `["b", "n", "ry"]`    |
 |          | String `/` String           | `a.split(b)`      | `'binary' / 'in'`          | `["b", "ary"]`        |
 |          | String `/` Implicit Number  | `a.split(b)`      | `'binary' / 2`             | ` ["bi", "na", "ry"]` |
 |          | List `/` :(Block)           | `a.split:i(...)`  | `[2, 2, 3, 4] / :i(i % 2)` | `[[2, 2], [4]]`       |
 |          | List `/` Implicit Number    | `a.split(b)`      | `[2, 2, 3, 4] / 2`         | `[[2, 2], [3, 4]]`    |
 |          |                             |                   |                            |                       |
 | `%`      | Scalar `%` Implicit Number  | `a.remainder(b)`  | `20 % 7`                   | `6`                   |
-|          | String `%` :(Block)         | `a.filter:i(...)` | `'b1n4ry' % :i(i.digit)`   | `"14"`                |
+|          | String `%` :(Block)         | `a.filter:i(...)` | `'binary' % :i(i.vowel)`   | `"ia"`                |
 |          | String `%` Implicit Number  | `a.every(b)`      | `'binary' % 2`             | `"bnr"`               |
 |          | List `%` :(Block)           | `a.filter:i(...)` | `[1, 1, 2, 3] % :i(i % 2)` | `[1, 1, 3]`           |
 |          | List `%` Implicit Number    | `a.every(b)`      | `[1, 1, 2, 3] % 2`         | `[1, 2]`              |
@@ -199,26 +199,32 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | List `**` Implicit Number   | `a.rotate(b)`     | `[7, 9, 4] ** 1`           | `[4, 7, 9]`           |
 |          |                             |                   |                            |                       |
 | `@`      | Scalar `@` Implicit Number  | `a.round(b)`      | `3.14 @ 1`                 | `3.1`                 |
-|          | String `@` :(Block)         | `a.index:i(...)`  | `'b1n4ry' @ :i(i.digit)`   | `[1, 3]`              |
-|          | String `@` Implicit String  | `a.index(b)`      | `'binary' @ 'ary'          | `[3]`                 |
+|          | String `@` :(Block)         | `a.index:i(...)`  | `'binary' @ :i(i.vowel)`   | `[1, 3]`              |
+|          | String `@` Implicit String  | `a.index(b)`      | `'binary' @ 'ary'`         | `[3]`                 |
 |          | Array `@` :(Block)          | `a.index:i(...)`  | `[1, 2, 3] @ :i(i % 2)`    | `[0, 2]`              |
-|          | Array `@` Any               | `a.index(b)`      | `[1, 2, 3] @ 3             | `[2]`                 |
+|          | Array `@` Any               | `a.index(b)`      | `[1, 2, 3] @ 3`            | `[2]`                 |
 |          | Hash `@` :(Block)           | `a.index:i(...)`  | `{f: 1, b: 2} @ :i(i % 2)` | `["f"]`               |
 |          | Hash `@` Any                | `a.index(b)`      | `{a: 1, b: 2, c: 2} @ 2`   | `["b", "c"]`          |
 |          |                             |                   |                            |                       |
-| `~~`     | Scalar `~~` String          | `a.fmt(b)`        | `9 ~~ '%.02f'`             | `"9.00"`              |
+| `~~`     | Scalar `~~` String          | `a.fmt(b)`        | `9 ~~ '%.2f'`              | `"9.00"`              |
 |          | Scalar `~~` Implicit Number | `a.base(b)`       | `9 ~~ 2`                   | `"1001"`              |
-|          | String `~~` String          | `a.fmt(b)`        | `'binary' ~~ '%10s'`       | `"    binary"`        |
+|          | String `~~` String          | `a.fmt(b)`        | `'binary' ~~ '%7s'`        | `" binary"`           |
 |          | String `~~` Implicit Number | `a.base(b)`       | `'1001' ~~ 2`              | `9`                   |
-|          | Array `~~` String           | `a.fmt(b)`        | `[1, 2] ~~ '%.01f'`        | `["1.0", "2.0"]`      |
-|          | Array `~~` Implicit Number  | `a.base(b)`       | `[1, 2, 3] ~~ 2            | `["1", "10", "11"]`   |
-|          | Hash `~~` String            | `a.fmt(b)`        | `{foo: 1} ~~ '%.01f'`      | `{"foo": "1.0"}`      |
+|          | Array `~~` String           | `a.fmt(b)`        | `[1, 2] ~~ '%.1f'`         | `["1.0", "2.0"]`      |
+|          | Array `~~` Implicit Number  | `a.base(b)`       | `[1, 2, 3] ~~ 2`           | `["1", "10", "11"]`   |
+|          | Hash `~~` String            | `a.fmt(b)`        | `{x: 1} ~~ '%.1f'`         | `{"x": "1.0"}`        |
 |          | Hash `~~` Implicit Number   | `a.base(b)`       | `{a: 3} ~~ 2`              | `{"a": "11"}`         |
 |          |                             |                   |                            |                       |
 | `..`     | Scalar `..` String          | `a.to(b)`         | `95 .. 'a'`                | `[95, 96, 97]`        |
 |          | Scalar `..` Implicit Number | `a.to(b)`         | `3 .. 1`                   | `[3, 2, 1]`           |
 |          | String `..` String          | `a.to(b)`         | `'a' .. 'c'`               | `["a", "b", "c"]`     |
 |          | String `..` Implicit Number | `a.to(b)`         | `'a' .. 99`                | `["a", "b", "c"]`     |
+
+**Note bene**: the `..` range/to operator supports positve as well as negative ranges (as forced integers for numbers). In cases where a range is used short-circuit a traditional for loop, you may need to first check that the right-hand operand is greater than the left-hand operand. Compare the following:
+
+`dish -e 'a = 1; (0..3).map:i((1..i).map:j(a *= j)); a'` outputs `0`
+
+`dish -e 'a = 1; (0..3).map:i((i > 1).then((1..i).map:j(a *= j))); a'` outputs `12`
 
 ## Unary Operators
 | Operator | Operands                    | Method Name       | Example                    | Result                |
@@ -240,17 +246,17 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `~`List                     | `a.str`           | `~[1, 2, 3]`               | `"123"`               |
 |          |                             |                   |                            |                       |
 | `/`      | `~`Scalar                   | `a.ratio`         | `/3.14`                    | `[157, 50]`           |
-|          | `~`String                   | `a.arr`           | `/'foo'`                   | `["f", "o", "o"]`     |
-|          | `~`List                     | `a.arr`           | `/{foo: 1, bar: 2}`        | `[1, 2]`              |
+|          | `~`String                   | `a.arr`           | `/'bin'`                   | `["b", "i", "n"]`     |
+|          | `~`List                     | `a.arr`           | `/{x: 1, y: 2}`            | `[1, 2]`              |
 |          |                             |                   |                            |                       |
 | `%`      | `%`Scalar                   | `a.hash`          | `%5`                       | `{"5": 5}`            |
-|          | `%`String                   | `a.hash`          | `%'foo'`                   | `{"foo": "foo"}`      |
+|          | `%`String                   | `a.hash`          | `%'x'`                     | `{"x": "x"}`          |
 |          | `%`List                     | `a.hash`          | `%[1, 2]`                  | `{"1": 1, "2": 2}`    |
 |          |                             |                   |                            |                       |
 | `@`      | `@`Scalar                   | `a.reverse`       | `@3.14`                    | `41.3`                |
 |          | `@`String                   | `a.reverse`       | `@'binary'`                | `"yranib"`            |
 |          | `@`Array                    | `a.reverse`       | `@[1, 2, 3]`               | `[3, 2, 1]`           |
-|          | `@`Hash                     | `a.keys`          | `@{foo: 1, bar: 2}`        | `["foo", "bar"]`      |
+|          | `@`Hash                     | `a.keys`          | `@{x: 1, y: 2}`            | `["x", "y"]`          |
 |          |                             |                   |                            |                       |
 | `#`      | `#`Scalar                   | `a.size`          | `#15`                      | `2`                   |
 |          | `#`String                   | `a.length`        | `#'binary'`                | `6`                   |
@@ -285,11 +291,11 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `**`List                    | `a.sort`          | `**[10, 1, 2, 4]`          | `[1, 2, 4, 10]`       |
 |          |                             |                   |                            |                       |
 | `<`      | `<`Scalar                   | `a.floor`         | `<3.14`                    | `3`                   |
-|          | `<`String                   | `a.lower`         | `<'BINARY'`                | `"binary"`            |
+|          | `<`String                   | `a.lc`            | `<'BINARY'`                | `"binary"`            |
 |          | `<`List                     | `a.min`           | `<[1, 2, 3]`               | `1`                   |
 |          |                             |                   |                            |                       |
 | `>`      | `>`Scalar                   | `a.ceil`          | `>3.14`                    | `4`                   |
-|          | `>`String                   | `a.upper`         | `>'binary'`                | `"BINARY"`            |
+|          | `>`String                   | `a.uc`            | `>'binary'`                | `"BINARY"`            |
 |          | `>`List`                    | `a.max`           | `>[1, 2, 3]`               | `3`                   |
 |          |                             |                   |                            |                       |
 | `=`      | `=`Scalar                   | `a.int`           | `=3.14`                    | `3`                   |
@@ -303,7 +309,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | `^`      | [See Bitwise Ops](#bitwise-operators)           | |                          |                       |
 |          |                             |                   |                            |                       |
 | `&`      | `&`Scalar                   | `a.defined`       | `&a`                       | `false`               |
-|          | `&`String                   | `a.defined`       | `a = 'foo', &a`            | `true`                | 
+|          | `&`String                   | `a.defined`       | `a = 'x', &a`              | `true`                | 
 |          | `&`Array                    | `a.compact`       | `&[0, 1, 2]`               | `[1, 2]`              |
 |          | `&`Hash                     | `a.compact`       | `&{a: 0, b: 1, c: null}`   | `{"b": 1}`            |
 |          |                             |                   |                            |                       |

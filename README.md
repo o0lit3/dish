@@ -42,6 +42,8 @@ Scalar blocks `(...)` return the last expression or statement in the block. A fu
 
 Logic blocks are represented by a colonized list of arguments followed by a Scalar block, as in `:x(...)` or `:x:y(...)`, returning a data type corresponding to the last expression. A logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a logic block are locally scoped.
 
+If a logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the logic block contains multiple arguments and has been invoked on a Hash or an Array, the each Hash or Array item are passed as the arguments.
+
 Comments in **dish** start with a double slash `//` and end with a newline. There are no multi- or in-line comments in **dish**.
 
 <sub>*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>

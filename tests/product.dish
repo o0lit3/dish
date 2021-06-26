@@ -2,10 +2,8 @@
     *{foo: 1, bar: 2}   // 2
     *[1, 2, 3]          // 6
     *[1, "foo", 3]      // 0
-    *"4"                // true
-    *"f"                // false
-    *"1pple"            // true
-    *"foo"              // false
+    *"13"               // true
+    *"4"                // false
     *7                  // true
     *9                  // false
     *3.14               // true

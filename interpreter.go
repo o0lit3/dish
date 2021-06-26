@@ -380,7 +380,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Keys(a))
         case "**", "sort", "divisors":
             blk.Register(Sort(a))
-        case "*", "product", "digit", "prime":
+        case "*", "product", "prime":
             blk.Register(Product(a))
         case "/", "itemize", "array", "arr", "flatten", "flat", "values", "ratio":
             blk.Register(Itemize(a))
@@ -408,11 +408,11 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Ascii(a))
         case "~", "stringify", "string", "str":
             blk.Register(Stringify(a))
-        case "<", "minimum", "min", "lower", "floor", "int":
+        case "<", "minimum", "min", "lowercase", "downcase", "lc", "floor":
             blk.Register(Min(a))
-        case "=", "average", "avg", "mean", "even":
+        case "=", "average", "avg", "mean", "int":
             blk.Register(Average(a))
-        case ">", "maxium", "max", "upper", "ceiling", "ceil":
+        case ">", "maxium", "max", "uppercase", "upcase", "uc", "ceiling", "ceil":
             blk.Register(Max(a))
         case "&", "compact", "defined", "null":
             blk.Register(Compact(a))
@@ -436,6 +436,8 @@ func (blk *Block) Interpret() interface{} {
             }
 
             blk.Register(obj)
+        case "digit", "letter", "consonant", "vowel", "upper", "lower", "space":
+            blk.Register(Strings(a, t))
         case "rand", "sqrt", "log", "sin", "cos", "tan", "asin", "acos", "atan":
             blk.Register(Math(a, t))
         default:

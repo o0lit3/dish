@@ -1,7 +1,7 @@
 // https://rosettacode.org/wiki/Levenshtein_distance
 
 levenshtein = :a:b(
-  [a, b]: [a.lower, b.lower]
+  [a, b]: [a.lc, b.lc]
   costs: (0..#b)
 
   (1..#a).each:i(
@@ -23,5 +23,5 @@ levenshtein = :a:b(
   ['saturday', 'sunday']
   ['rosettacode', 'raisethysword']
 ].map:i(
-  "['$(i.0)', '$(i.1)'].levenshtein = $([i.0, i.1].levenshtein)"
+  "$(i).levenshtein".fmt('%-45s') ~ " \t// " ~ i.levenshtein
 ).join("\n")

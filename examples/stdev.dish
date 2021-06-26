@@ -5,5 +5,5 @@ stdev = :set(
 )
 
 [2, 4, 4, 4, 5, 5, 7, 9].map:n(
-  "$(set << n).stdev = $([set].stdev.fmt('%.9f'))"
+  "$(set << n).stdev".fmt('%-30s') ~ " // " ~ set.stdev.fmt('%.9f')
 ).join("\n")
