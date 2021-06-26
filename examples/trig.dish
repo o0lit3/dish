@@ -1,0 +1,19 @@
+// https://rosettacode.org/wiki/Trigonometric_functions
+
+pi = 3.14159265359
+radians = (pi / 4)
+degrees = 45 * pi / 180
+
+[
+  [' sin', s = radians.sin, degrees.sin]
+  [' cos', c = radians.cos, degrees.cos]
+  [' tan', t = radians.tan, degrees.tan]
+].map:i(
+  "$(i.0)($(radians.fmt('%.9f'))): $(i.1.fmt('%.9f')),$(i.0)(45): $(i.2.fmt('%.9f'))"
+).join("\n") ~ "\n" ~ [
+  ['asin', s, r = s.asin, r * 180 / pi]
+  ['acos', c, r = c.acos, r * 180 / pi]
+  ['atan', t, r = t.atan, r * 180 / pi]
+].map:i(
+  "$(i.0)($(i.1.fmt('%.9f'))): $(i.2.fmt('%.9f')), degrees: $(i.3.fmt('%.1f'))"
+).join("\n")
