@@ -44,7 +44,7 @@ Scalar blocks `(...)` return the last expression or statement in the block. A fu
 
 Logic blocks are represented by a colonized list of arguments followed by a Scalar block, as in `:x(...)` or `:x:y(...)`, returning a data type corresponding to the last expression. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
 
-If a Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the Logic block contains multiple arguments and has been invoked on a Hash or an Array, the each Hash or Array item are passed as the arguments.
+If a Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the Logic block contains multiple arguments and has been invoked on a Hash or an Array, then each Hash or Array item are passed as the arguments.
 
 Comments in **dish** start with a double slash `//` and end with a newline. There are no multi- or in-line comments in **dish**.
 
@@ -59,7 +59,7 @@ Member access in **dish** is indicated by the special `.` operator which precede
 
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a.foo'` outputs `2`
 
-The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ** b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in `"foobar".:s(s.upper)` or `squared = :a(a ** 2); 3.squared`.
+The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ** b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in `"dish".:s(s.uc)` or `squared = :a(a ** 2); 3.squared`.
 
 In cases where a Logic block contains exactly two arguments, you can use the the following, alternative binary syntax for passing arguments: `power = :a:b(a ** b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed from a Scalar block following the member expression.
 
