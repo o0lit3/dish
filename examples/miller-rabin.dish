@@ -1,0 +1,30 @@
+// https://rosettacode.org/wiki/Miller%E2%80%93Rabin_primality_test
+
+prime = :n(
+  out: true
+  d: n - 1
+  s: 0
+  i: 0
+
+  (n > 2 && n % 2).then(
+    (d % 2 == 0).redo(d /= 2, ++s)
+
+    (++i <= 10 && out).redo(
+      a: 2 + (n - 2).rand.floor 
+      x: (a ** d) % n
+      r: 0
+
+      (x != 1 && x != n - 1).then(
+        (++r < s && x != 1 && x != n - 1).redo(
+          x = (x ** 2) % n
+        )
+
+        out = x == n - 1
+      )
+    )
+  )
+
+  n == 2 || (n > 1 && n % 2 && out)
+)
+
+(1..1000).grep:n(n.prime)

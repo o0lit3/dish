@@ -22,7 +22,9 @@ As an example, the following curl/**dish** command will output a list of the las
 ## Output
 By default, **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
 
-This behavior allows you to pipe the output of one dish executable into another and use it as JSON input via `stdin` downstream.
+This behavior allows you to pipe the output of one dish executable into another and use it as JSON input via `stdin` downstream:
+
+`dish -e "[1, 2, 3]" | dish -e "stdin.sum"`
 
 ## Data Types and Operators
 For a detailed decription of operators, precedence, and implicit operator context, [read the operator documentation at tests/README.md](tests/README.md).
