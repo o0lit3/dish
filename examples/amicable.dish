@@ -4,8 +4,8 @@ sums = (0..20000).map:i(
   i.divisors.sum
 )
 
-sums.grep:sum:i(
-  sums.sum == i && i < sum
-).map:n(
-  [sums.n, n].join(" ")
+sums.grep:s:i(
+  sums.s == i && i < s
+).map:s(
+  [sums.s, s].join(" ")
 ).join("\n")

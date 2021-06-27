@@ -5,15 +5,15 @@ radians = (pi / 4)
 degrees = 45 * pi / 180
 
 [
-  ['sin', s = radians.sin, degrees.sin]
-  ['cos', c = radians.cos, degrees.cos]
-  ['tan', t = radians.tan, degrees.tan]
-].map:i(
-  "[(pi / 4).$(i.0), (45 * pi / 180).$(i.0)]" ~ " \t// " ~ [+i.1.fmt('%.9f'), +i.2.fmt('%.9f')]
-).join("\n") ~ "\n\n" ~ [
-  ['asin', s, r = s.asin, r * 180 / pi]
-  ['acos', c, r = c.acos, r * 180 / pi]
-  ['atan', t, r = t.atan, r * 180 / pi]
-].map:i(
-  "[($(i.1.fmt('%.9f'))).$(i.0), $(i.2.fmt('%.9f')) * 180 / pi]" ~ " \t// " ~ [+i.2.fmt('%.9f'), +i.3.fmt('%.1f')]
+  {n: 'sin', r: radians.sin, d: degrees.sin}
+  {n: 'cos', r: radians.cos, d: degrees.cos}
+  {n: 'tan', r: radians.tan, d: degrees.tan}
+].map:obj(
+  "[(pi / 4).$(obj.n), (45 * pi / 180).$(obj.n)]" ~ " \t// " ~ [+(args << obj.r.fmt('%.9f')).-1, +obj.d.fmt('%.9f')]
+).join("\n") ~ "\n\n" ~ {
+  {n: 'asin', a: args.0, r: args.0.asin, d: r * 180 / pi}
+  {n: 'acos', a: args.1, r: args.1.acos, d: r * 180 / pi}
+  {n: 'atan', a: args.2, r: args.2.atan, d: r * 180 / pi}
+}.map:obj(
+  "[($(obj.a)).$(obj.n), $(obj.r.fmt('%.9f')) * 180 / pi]" ~ " \t// " ~ [+obj.r.fmt('%.9f'), +obj.d.fmt('%.1f')]
 ).join("\n")

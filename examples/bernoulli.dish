@@ -22,6 +22,6 @@ bernoulli = :n(
   b
 ).map:n:i(
   (n.0 != 0).then(
-    "B($(i)) = "~(' '*(max - #~n.0))~n.join("/")
+    "B($(i)) = " ~ ' '*(max - #~n.0) ~ n.join("/")
   )
 ).compact.join("\n")

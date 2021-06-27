@@ -13,6 +13,6 @@ stdev = :set(
 [
   "First 10: $(set.(0..9))"
   "Last 10: $(set.(-10..-1))"
-  "Deviation: $([set].stdev.round(4))"
+  "Deviation: $(set.stdev.round(4))"
   "Mean: $(set.avg.round(4))"
 ].join("\n")
