@@ -40,7 +40,7 @@ Similarly, traditional unary operators (which are always prefix operators when r
 ## Syntax
 **dish** has 4 types of syntax blocks, Scalar Blocks `(...)`, Array blocks `[...]`, Hash blocks `{...}`, and Logic blocks. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup>, by a comma, or by a semicolon (unless the newline, comma, or semicolon is encapsulated in a string literal).
 
-Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit Scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire array or hash, where Hash blocks contain all locally-scoped variables when returned.
+Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit Scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire array or hash, where Hash blocks contain all locally-scoped variables when returned--allowing additional logic to exist in Hash block intitialization without changing its structure.
 
 Logic blocks are represented by a colonized list of arguments followed by a Scalar block, as in `:x(...)` or `:x:y(...)`, returning a data type corresponding to the last expression. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
 

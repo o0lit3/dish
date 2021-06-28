@@ -596,15 +596,6 @@ func (blk *Block) Interpret() interface{} {
             blk.cur.stck[len(blk.cur.stck) - 1] = blk.Eval(blk.cur.stck[len(blk.cur.stck) - 1])
         }
 
-        if blk.dim == MAP && len(blk.cur.hash) < len(blk.cur.stck) {
-            switch x := blk.cur.stck[len(blk.cur.stck) - 1].(type) {
-            case String:
-                blk.cur.hash[string(x)] = x
-            default:
-                blk.cur.hash[fmt.Sprintf("%v", x)] = x
-            }
-        }
-
         if blk.cur.idx == len(blk.toks) {
             if blk.src != nil && blk.src.cur != nil {
                 for key, val := range blk.cur.vars {
