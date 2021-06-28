@@ -1,0 +1,23 @@
+// https://rosettacode.org/wiki/Extensible_prime_generator
+
+n = 2
+
+(#primes < 10000).redo(
+  prime: n.prime
+
+  (prime).then(primes << n)
+  (prime && n >= 100 && n <= 150).then(set_x << n)
+  (prime && n >= 7700 && n <= 8000).then(set_y << n)
+
+  [n > 2].switch[
+    n += 2
+    ++n
+  ]
+)
+
+[
+  "First 20: " ~ primes.(0..19).join(' ')
+  "Between 100 and 150: " ~ set_x.join(' ')
+  "Count between 7700 and 8000: " ~ #set_y
+  "Prime 10000: " ~ primes.-1
+].join("\n")
