@@ -1,0 +1,13 @@
+// https://rosettacode.org/wiki/Permutations
+
+perm = :n:m(
+  (n).then(
+    (0..#n-1).map:i(
+      (n - n.i).perm(m + n.i)
+    ).flat / #n
+  ).else(m)
+)
+
+('a'..'d').perm([]).map:list(
+  list.join(' ')
+).join("\n")

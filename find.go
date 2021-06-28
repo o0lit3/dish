@@ -107,7 +107,7 @@ func (a String) Find(b String) Array {
 
     for i := range a {
         if i + len(b) <= len(a) && string(a[i:i + len(b)]) == string(b) {
-            out = append(out, i)
+            out = append(out, NewNumber(i))
         }
     }
 
@@ -147,7 +147,7 @@ func (b *Block) Find(a interface{}) Array {
     case Array:
         for i, val := range x {
             if Boolify(b.Run(val)) {
-                out = append(out, i)
+                out = append(out, NewNumber(i))
             }
         }
     }
