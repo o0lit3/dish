@@ -561,10 +561,10 @@ func (p *Parser) Parse() {
         }
 
         p.ops = append(p.ops, t)
-    case t.BlockOpen():
+    case t.BlockOpen() && t.tok != STR:
         p.blk = p.blk.Branch(t.Dimension())
         p.ops = append(p.ops, t)
-    case t.BlockClose():
+    case t.BlockClose() && t.tok != STR:
         for (len(p.ops) > 0 && p.ops[len(p.ops) - 1].lit != t.BlockMatch()) {
             if p.ops[len(p.ops) - 1].ShortCircuit() {
                 p.Branch(t)
