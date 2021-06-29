@@ -1,4 +1,5 @@
 package main
+import("fmt")
 
 func Under(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
@@ -14,18 +15,10 @@ func Under(a interface{}, b interface{}) Boolean {
         switch y := b.(type) {
         case *Block:
             return Under(x, y.Run())
-        case *Variable:
-            return Under(x, y.Value())
-        case Hash:
-            return Under(x.Number(), NewNumber(len(y)))
         case String:
             return Boolean(string(x) <= string(y))
-        case Number:
-            return Under(x.Number(), y)
-        case Boolean:
-            return Under(x.Number(), y.Number())
-        case Null:
-            return Under(x.Number(), NewNumber(0))
+        default:
+            return Under(x, String(fmt.Sprintf("%v", y)))
         }
     case Number:
         switch y := b.(type) {

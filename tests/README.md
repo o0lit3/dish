@@ -51,24 +51,20 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use `[cond1, 
 |          | String `!=` Implicit String | `a.isnt(b)`       | `'2.0' != 2`               | `true`                |
 |          | List `!=` Implicit List     | `a.isnt(b)`       | `[1, 2, 3] != [1, 2, 3]`   | `false`               |
 |          |                             |                   |                            |                       |
-| `>`      | Scalar `>` Implicit Number  | `a.above(b)`      | `3 > 10`                   | `false`               |
-|          | String `>` String           | `a.above(b)`      | `'3' > '10'`               | `true`                |
-|          | String `>` Implicit Number  | `a.above(b)`      | `'3' > 10`                 | `false`               |
+| `>`      | Scalar `>` Implicit Number  | `a.above(b)`      | `3 > '10'`                 | `false`               |
+|          | String `>` Implicit String  | `a.above(b)`      | `'3' > 10`                 | `true`                |
 |          | List `>` Implicit Number    | `a.above(b)`      | `[1, 1, 1] > [2, 2]`       | `true`                |
 |          |                             |                   |                            |                       |
-| `<`      | Scalar `<` Implicit Number  | `a.below(b)`      | `3 < 10`                   | `true`                |
-|          | String `<` String           | `a.below(b)`      | `'3' < '10'`               | `false`               |
-|          | String `<` Implicit Number  | `a.below(b)`      | `'3' < 10`                 | `true`                |
+| `<`      | Scalar `<` Implicit Number  | `a.below(b)`      | `3 < '10'`                 | `true`                |
+|          | String `<` Implicit String  | `a.below(b)`      | `'3' < 10`                 | `false`               |
 |          | List `<` Implicit Number    | `a.below(b)`      | `[1, 1, 1] < [2, 2]`       | `false`               |
 |          |                             |                   |                            |                       |
-| `>=`     | Scalar `>=` Implicit Number | `a.over(b)`       | `3 >= 10`                  | `false`               |
-|          | String `>=` String          | `a.over(b)`       | `'3' >= '10'`              | `true`                |
-|          | String `>=` Implicit Number | `a.over(b)`       | `'3' >= 10`                | `false`               |
+| `>=`     | Scalar `>=` Implicit Number | `a.over(b)`       | `3 >= '10'`                | `false`               |
+|          | String `>=` Implicit String | `a.over(b)`       | `'3' >= 10`                | `true`                |
 |          | List `>=` Implicit Number   | `a.over(b)`       | `[1, 1] >= [2, 2]`         | `true`                |
 |          |                             |                   |                            |                       |
-| `<=`     | Scalar `<=` Implicit Number | `a.under(b)`      | `3 <= 10`                  | `true`                |
-|          | String `<=` String          | `a.under(b)`      | `"3" <= "10"`              | `false`               |
-|          | String `<=` Implicit Number | `a.under(b)`      | `'3' <= 10`                | `true`                |
+| `<=`     | Scalar `<=` Implicit Number | `a.under(b)`      | `3 <= '10'`                | `true`                |
+|          | String `<=` Implicit String | `a.under(b)`      | `'3' <= 10`                | `false`               |
 |          | List `<=` Implicit Number   | `a.under(b)`      | `[1, 1] <= [2, 2]`         | `true`                |
 
 ## Assignment Operators

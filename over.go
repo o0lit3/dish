@@ -1,4 +1,5 @@
 package main
+import("fmt")
 
 func Over(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
@@ -16,18 +17,10 @@ func Over(a interface{}, b interface{}) Boolean {
             return Over(x, y.Run())
         case *Variable:
             return Over(x, y.Value())
-        case Hash:
-            return Over(x.Number(), NewNumber(len(y)))
-        case Array:
-            return Over(x.Number(), NewNumber(len(y)))
         case String:
             return Boolean(string(x) >= string(y))
-        case Number:
-            return Over(x.Number(), y)
-        case Boolean:
-            return Over(x.Number(), y.Number())
-        case Null:
-            return Over(x.Number(), NewNumber(0))
+        default:
+            return Over(x, String(fmt.Sprintf("%v", y)))
         }
     case Number:
         switch y := b.(type) {

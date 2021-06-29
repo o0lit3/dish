@@ -1,4 +1,5 @@
 package main
+import("fmt")
 
 func Below(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
@@ -16,18 +17,10 @@ func Below(a interface{}, b interface{}) Boolean {
             return Below(x, y.Run())
         case *Variable:
             return Below(x, y.blk.Value(y))
-        case Hash:
-            return Below(x.Number(), NewNumber(len(y)))
-        case Array:
-            return Below(x.Number(), NewNumber(len(y)))
         case String:
             return Boolean(string(x) < string(y))
-        case Number:
-            return Below(x.Number(), y)
-        case Boolean:
-            return Below(x.Number(), y.Number())
-        case Null:
-            return Below(x.Number(), NewNumber(0))
+        default:
+            return Below(x, String(fmt.Sprintf("%v", y)))
         }
     case Number:
         switch y := b.(type) {
