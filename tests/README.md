@@ -24,12 +24,15 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use `[cond1, 
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `&&`     | Implicit Boolean `&&` Any   | `a.then(b)`       | `3 && 2`                   | `2`                   |
 |          |                             |                   | `true && 0`                | `0`                   |
+|          |                             |                   | `0 && 2`                   | `false`               |
 |          |                             |                   |                            |                       |
 | `\|\|`   | Implicit Boolean `\|\|` Any | `a.else(b)`       | `3 \|\| 2`                 | `3`                   |
 |          |                             |                   | `false \|\| 0`             | `0`                   |
+|          |                             |                   | `0 \|\| true`              | `true`                |
 |          |                             |                   |                            |                       |
-| `^^`     | Implicit Boolean `^^` Any   | `a.xor(b)`        | `3 ^^ 2`                   | `false`               |
+| `^^`     | Implicit Boolean `^^` Any   | `a.xor(b)`        | `3 ^^ 0`                   | `3`                   |
 |          |                             |                   | `false ^^ 2`               | `2`                   |
+|          |                             |                   | `3 ^^ 2`                   | `false`               |
 |          |                             |                   |                            |                       |
 | `?`      | Boolean Array `?` Any Array | `a.switch[b]`     | `[1 > 0] ? [3, 4]`         | `3`                   |
 |          |                             |                   | `[1 < 0] ? [3, 4]`         | `4`                   |
