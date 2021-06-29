@@ -112,11 +112,11 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | Array `>>` Implicit Array   | `a.unshift(b)`    | `a = [1, 2], a >> 3`       | `[3, 1, 2]`           |
 |          | Hash `>>` Implicit Hash     | `a.unshift(b)`    | `a = {x: 1}, a >> {y: 2}`  | `{"x": 1, "y": 2}`    |
 |          |                             |                   |                            |                       |
-| `<<`     | `<<`Scalar                  | `a.shift`         | `a = 3, [<<a, a]`          | `[3, 0]`              |
+| `<<`     | `<<`Scalar                  | `a.shift`         | `a = 12, [<<a, a]`         | `[0, 6]` i            |
 | (Unary)  | `<<`String                  | `a.shift`         | `a = 'binary', [<<a, a]`   | `["b", "inary"]`      |
 |          | `<<`List                    | `a.shift`         | `a = [1, 2, 3], [<<a, a]`  | `[1, [2, 3]]`         |
 |          |                             |                   |                            |                       |
-| `>>`     | `>>`Scalar                  | `a.pop`           | `a = 3, [>>a, a]`          | `[3, 0]`              |
+| `>>`     | `>>`Scalar                  | `a.pop`           | `a = 12, [>>a, a]`         | `[1, 4]`              |
 | (Unary)  | `>>`String                  | `a.pop`           | `a = 'binary', [>>a, a]`   | `["y", "binar"]`      |
 |          | `>>`List                    | `a.pop`           | `a = [1, 2, 3], [>>a, a]`  | `[3, [1, 2]]`         |
 
@@ -237,7 +237,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          |                             |                   |                            |                       |
 | `-`      | `-`Scalar                   | `a.negate`        | `-5`                       | `-5`                  |
 |          | `-`String                   | `a.negate`        | `-"5"`                     | `-5`                  |
-|          | `-`List                     | `a.negate`        | `-[1, 2, 3]`               | `-6`                  |
+|          | `-`List                     | `a.negsum`        | `-[1, 2, 3]`               | `-6`                  |
 |          |                             |                   |                            |                       |
 | `+`      | `+`Scalar                   | `a.num`           | `+5`                       | `5`                   |
 |          | `+`String                   | `a.num`           | `+"5"                      | `5`                   |
@@ -245,11 +245,11 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          |                             |                   |                            |                       |
 | `~`      | `~`Scalar                   | `a.str`           | `~5`                       | `"5"`                 |
 |          | `~`String                   | `a.str`           | `~"5"`                     | `"5"`                 |
-|          | `~`List                     | `a.str`           | `~[1, 2, 3]`               | `"123"`               |
+|          | `~`List                     | `a.join`          | `~[1, 2, 3]`               | `"123"`               |
 |          |                             |                   |                            |                       |
 | `/`      | `~`Scalar                   | `a.ratio`         | `/3.14`                    | `[157, 50]`           |
 |          | `~`String                   | `a.arr`           | `/'bin'`                   | `["b", "i", "n"]`     |
-|          | `~`List                     | `a.arr`           | `/{x: 1, y: 2}`            | `[1, 2]`              |
+|          | `~`List                     | `a.vals`          | `/{x: 1, y: 2}`            | `[1, 2]`              |
 |          |                             |                   |                            |                       |
 | `%`      | `%`Scalar                   | `a.hash`          | `%5`                       | `{"5": 5}`            |
 |          | `%`String                   | `a.hash`          | `%'x'`                     | `{"x": "x"}`          |
@@ -260,9 +260,9 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `@`Array                    | `a.reverse`       | `@[1, 2, 3]`               | `[3, 2, 1]`           |
 |          | `@`Hash                     | `a.keys`          | `@{x: 1, y: 2}`            | `["x", "y"]`          |
 |          |                             |                   |                            |                       |
-| `#`      | `#`Scalar                   | `a.size`          | `#15`                      | `2`                   |
-|          | `#`String                   | `a.length`        | `#'binary'`                | `6`                   |
-|          | `#`List                     | `a.length`        | `#[1, 2, 3]`               | `3`                   |
+| `#`      | `#`Scalar                   | `a.len`           | `#15`                      | `null`                |
+|          | `#`String                   | `a.len`           | `#'binary'`                | `6`                   |
+|          | `#`List                     | `a.len`           | `#[1, 2, 3]`               | `3`                   |
 |          |                             |                   |                            |                       |
 | `++`     | `++`Scalar                  | `a.increment`     | `++15`                     | `16`                  |
 |          | `++`String                  | `a.increment`     | `++'binary'`               | `"cjobsz"`            |
@@ -285,7 +285,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | [Also See Assignment Ops](#assignment-operators) |                         | |                       |
 |          |                             |                   |                            |                       |
 | `*`      | `*`Scalar                   | `a.prime`         | `*7`                       | `true`                |
-|          | `*`String                   | `a.letter`        | `*'a'`                     | `true`                |
+|          | `*`String                   | `a.eval`          | `*'2 + 2'`                 | `4`                   |
 |          | `*`List                     | `a.product`       | `*[1, 2, 3, 4]`            | `24`                  |
 |          |                             |                   |                            |                       |
 | `**`     | `**`Scalar                  | `a.divisors`      | `**8`                      | `[1, 2, 4]`           |

@@ -1,4 +1,5 @@
 package main
+import("strconv")
 
 func Shift(a interface{}) (interface{}, interface{}) {
     switch x := a.(type) {
@@ -13,7 +14,7 @@ func Shift(a interface{}) (interface{}, interface{}) {
     case String:
         return x.Shift()
     case Number:
-        return x, NewNumber(0)
+        return x.Shift()
     case Boolean:
         return x, Boolean(false)
     default:
@@ -53,4 +54,15 @@ func (a String) Shift() (interface{}, interface{}) {
     }
 
     return Null { }, a
+}
+
+func (a Number) Shift() (interface{}, interface{}) {
+    if a.inf == INF || a.inf == -INF {
+        return NewNumber(0), a
+    }
+
+    bin := strconv.FormatInt(int64(a.Int()), 2)
+    first, _ := strconv.Atoi(string(bin[len(bin) - 1]))
+    rem, _ := strconv.ParseInt(string(bin[:len(bin) - 1]), 2, 64)
+    return NewNumber(first), NewNumber(int(rem))
 }

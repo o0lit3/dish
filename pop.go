@@ -1,4 +1,5 @@
 package main
+import("strconv")
 
 func Pop(a interface{}) (interface{}, interface{}) {
     switch x := a.(type) {
@@ -13,7 +14,7 @@ func Pop(a interface{}) (interface{}, interface{}) {
     case String:
         return x.Pop()
     case Number:
-        return x, NewNumber(0)
+        return x.Pop()
     case Boolean:
         return x, Boolean(false)
     default:
@@ -53,4 +54,15 @@ func (a String) Pop() (interface{}, interface{}) {
     }
 
     return Null { }, a
+}
+
+func (a Number) Pop() (interface{}, interface{}) {
+    if a.inf == INF || a.inf == -INF {
+        return NewNumber(1), a
+    }
+
+    bin := strconv.FormatInt(int64(a.Int()), 2)
+    last, _ := strconv.Atoi(string(bin[0]))
+    rem, _ := strconv.ParseInt(string(bin[1:]), 2, 64)
+    return NewNumber(last), NewNumber(int(rem))
 }

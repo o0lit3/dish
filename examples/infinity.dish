@@ -14,5 +14,5 @@
   '2 / inf'
   '1 / 0'
 ].map:i(
-  i.fmt('%10s') ~ " \t// " ~ i.eval
+  i.fmt('%-8s') ~ " \t// " ~ i.eval
 ).join("\n")

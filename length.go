@@ -12,11 +12,7 @@ func Length(a interface{}) interface{} {
         return NewNumber(len(x))
     case String:
         return NewNumber(len(x))
-    case Number:
-        return Length(String(x.String()))
-    case Boolean:
-        return NewNumber(1)
+    default:
+        return Null { }
     }
-
-    return NewNumber(0)
 }

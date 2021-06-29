@@ -1,0 +1,52 @@
+// https://rosettacode.org/wiki/Quaternion_type
+
+norm = :q(
+  (sum: 0, >> q.each:e(sum += e ** 2)).sqrt.round(9)
+)
+
+neg = :q(
+  q*:i(-i)
+)
+
+conj = :q(
+  [<< q] + (q*:i(-i))
+)
+
+add = :q:r(
+  (#r).then(
+    q*:i:idx(i + r.idx)
+  ).else(
+    [r + << q] + q
+  )
+)
+
+mult = :q:r(
+  (#r).then(
+    [
+      q.0 * r.0 - q.1 * r.1 - q.2 * r.2 - q.3 * r.3
+      q.0 * r.1 + q.1 * r.0 + q.2 * r.3 - q.3 * r.2
+      q.0 * r.2 - q.1 * r.3 + q.2 * r.0 + q.3 * r.1
+      q.0 * r.3 + q.1 * r.2 - q.2 * r.1 + q.3 * r.0
+    ]
+  ).else(
+    q*:i(i * r)
+  )
+)
+
+[
+  'q = [1, 2, 3, 4]'
+  'q1 = [2, 3, 4, 5]'
+  'q2 = [3, 4, 5, 6]'
+  'r = 7'
+  'q.norm'
+  'q.neg'
+  'q.conj'
+  'q.add(r)'
+  'q1.add(q2)'
+  'q.mult(r)'
+  'q1.mult(q2)'
+  'q2.mult(q1)'
+  'q1.mult(q2) != q2.mult(q1)'
+].map:i(
+  i.fmt('%-25s') ~ " \t// " ~ i.eval
+).join("\n")

@@ -383,15 +383,15 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Hashify(a))
         case "@", "keys", "reverse", "rev":
             blk.Register(Keys(a))
-        case "**", "sort", "divisors":
+        case "**", "sort", "divisors", "divs":
             blk.Register(Sort(a))
-        case "*", "product", "eval", "prime":
+        case "*", "product", "prod", "eval", "prime":
             blk.Register(Product(a))
-        case "/", "itemize", "array", "arr", "flatten", "flat", "values", "ratio":
+        case "/", "itemize", "items", "array", "arr", "flatten", "flat", "values", "vals", "ratio":
             blk.Register(Itemize(a))
         case "+", "sum", "number", "num":
             blk.Register(Sum(a))
-        case "-", "negative", "negate", "neg":
+        case "-", "negative", "negate", "negsum", "neg":
             blk.Register(Negate(a))
         case ">>", "pop", "last":
             val, obj := Pop(a)
