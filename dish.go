@@ -10,6 +10,8 @@ import (
     "encoding/json"
 )
 
+var program *Block
+
 func main() {
     var reader *bufio.Reader
 
@@ -31,7 +33,8 @@ func main() {
         reader = open(source)
     }
 
-    parser := process(reader, NewBlock())
+    program = NewBlock()
+    parser := process(reader, program)
 
     if debug {
         for _, term := range parser.blk.toks {
@@ -156,8 +159,10 @@ func process(rdr *bufio.Reader, blk *Block) *Parser {
 }
 
 func test(test *testing.T, source string) {
+    program = NewBlock()
+
     r := open(source)
-    p := process(r, NewBlock())
+    p := process(r, program)
     c := 0
     f := 0
 

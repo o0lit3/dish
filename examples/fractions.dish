@@ -7,9 +7,9 @@ estimate = :a:b:n(
 )
 
 [
-  ["sqrt(2)", :n(n ? [2, 1]), :(1)]
-  ["euler", :n(n || 2), :n(n || 1)]
-  ["pi", :n(n ? [6, 3]), :n((2 * n + 1) ** 2)]
+  ['sqrt(2)', :n(n ? [2, 1]), :(1)]
+  ['euler', :n(n || 2), :n(n || 1)]
+  ['pi', :n(n ? [6, 3]), :n((2 * n + 1) ** 2)]
 ].map:frac(
   "$(<< frac) = $(frac.estimate.round(9))"
 ).join("\n")

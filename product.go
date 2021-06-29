@@ -1,5 +1,10 @@
 package main
-import("math/big")
+
+import(
+    "bufio"
+    "strings"
+    "math/big"
+)
 
 func Product(a interface{}) interface{} {
     switch x := a.(type) {
@@ -12,7 +17,7 @@ func Product(a interface{}) interface{} {
     case Array:
         return x.Product()
     case String:
-        return Product(x.Number())
+        return x.Eval()
     case Number:
         return x.Prime()
     case Boolean:
@@ -32,6 +37,12 @@ func (a Array) Product() Number {
     }
 
     return out
+}
+
+func (a String) Eval() interface{} {
+    reader := bufio.NewReader(strings.NewReader(string(a)))
+    parser := process(reader, program.Branch(VAL))
+    return parser.blk.Run()
 }
 
 func (a Number) Prime() Boolean {

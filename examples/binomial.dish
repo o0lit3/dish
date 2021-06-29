@@ -5,13 +5,13 @@ choose = :n:k(
 )
 
 [
-  {a: 5, b: 3}
-  {a: 15, b: 10}
-  {a: 33, b: 17}
-  {a: 40, b: 19}
-  {a: 67, b: 31}
-  {a: 100, b: 2}
-  {a: 100, b: 50}
-].map:obj(
-  "$(obj.a).choose($(obj.b))" ~ " \t// " ~ obj.a.choose(obj.b)
+  '5.choose(3)'
+  '15.choose(10)'
+  '33.choose(17)'
+  '40.choose(19)'
+  '67.choose(31)'
+  '100.choose(2)'
+  '100.choose(50)'
+].map:i(
+  i ~ " \t// " ~ i.eval
 ).join("\n")

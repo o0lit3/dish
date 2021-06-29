@@ -1,14 +1,14 @@
 // https://rosettacode.org/wiki/Bitwise_operations
 
 [
-  ["a = 14", a = 14]
-  ["b = 3", b = 3]
-  ["a & b", a & b]
-  ["a | b", a | b]
-  ["a ^ b", a ^ b]
-  ["^a", ^a]
-  ["a << b", a << b]
-  ["a >> b", a >> b]
+  'a = 14'
+  'b = 3'
+  'a & b'
+  'a | b'
+  'a ^ b'
+  '^a'
+  'a << b'
+  'a >> b'
 ].map:i(
-  i.join(" \t// ")
+  i ~ " \t// " ~ i.eval
 ).join("\n")

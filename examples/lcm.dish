@@ -8,14 +8,13 @@ lcm = :n:m(
   (n && m).then((n / n.gcd(m) * m).abs).else(0)
 )
 
-
 [
-  {a: 0, b: 35}
-  {a: 12, b: 18}
-  {a: 14, b: -6}
-  {a: -5, b: 12}
-  {a: 1001, b: 221}
-  {a: 1764, b: 3920} 
-].map:obj(
-  "$(obj.a).lcm($(obj.b))" ~ " \t// " ~ obj.a.lcm(obj.b)
+  '0.lcm(35)'
+  '12.lcm(18)'
+  '14.lcm(-6)'
+  '-5.lcm(12)'
+  '1001.lcm(221)'
+  '1764.lcm(3920)'
+].map:i(
+  i ~ " \t// " ~ i.eval
 ).join("\n")

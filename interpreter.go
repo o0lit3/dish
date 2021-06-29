@@ -385,7 +385,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Keys(a))
         case "**", "sort", "divisors":
             blk.Register(Sort(a))
-        case "*", "product", "prime":
+        case "*", "product", "eval", "prime":
             blk.Register(Product(a))
         case "/", "itemize", "array", "arr", "flatten", "flat", "values", "ratio":
             blk.Register(Itemize(a))

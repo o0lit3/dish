@@ -11,5 +11,5 @@ ack = :m:n(
 (0..3).map:m(
   (0..6).map:n(
     m.ack(n)
-  ).join(" ")
+  ).join(' ')
 ).join("\n")

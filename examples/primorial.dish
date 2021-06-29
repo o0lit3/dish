@@ -1,0 +1,33 @@
+// https://rosettacode.org/wiki/Primorial_numbers
+
+eratosthenes = :n(
+  nums: [null, null] + (2..n)
+
+  (2..n.sqrt).each:i(
+    j: i ** 2
+
+    (nums.i).then(
+      (j <= n).redo(
+        nums.j = null
+        j += i 
+      )
+    )
+  )
+
+  nums.compact
+)
+
+primes = 105000.eratosthenes
+prod = 1
+
+primorials = [1] + primes.map:n(
+  prod *= n
+)
+
+[
+  "First 10: " ~ primorials.(0..9).join(' ')
+  "Digits of p(10 ** 1): " ~ #~primorials.(10 ** 1)
+  "Digits of p(10 ** 2): " ~ #~primorials.(10 ** 2)
+  "Digits of p(10 ** 3): " ~ #~primorials.(10 ** 3)
+  "Digits of p(10 ** 4): " ~ #~primorials.(10 ** 4)
+].join("\n")

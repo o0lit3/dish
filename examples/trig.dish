@@ -1,19 +1,17 @@
 // https://rosettacode.org/wiki/Trigonometric_functions
 
 pi = 3.14159265359
-radians = (pi / 4)
-degrees = 45 * pi / 180
 
 [
-  {n: 'sin', r: radians.sin, d: degrees.sin}
-  {n: 'cos', r: radians.cos, d: degrees.cos}
-  {n: 'tan', r: radians.tan, d: degrees.tan}
+  {radians: '(pi / 4).sin', degrees: '(45 * pi / 180).sin'}
+  {radians: '(pi / 4).cos', degrees: '(45 * pi / 180).cos'}
+  {radians: '(pi / 4).tan', degrees: '(45 * pi / 180).tan'}
 ].map:obj(
-  "[(pi / 4).$(obj.n), (45 * pi / 180).$(obj.n)]" ~ " \t// " ~ [+(args << obj.r.fmt('%.9f')).-1, +obj.d.fmt('%.9f')]
-).join("\n") ~ "\n\n" ~ {
-  {n: 'asin', a: args.0, r: args.0.asin, d: r * 180 / pi}
-  {n: 'acos', a: args.1, r: args.1.acos, d: r * 180 / pi}
-  {n: 'atan', a: args.2, r: args.2.atan, d: r * 180 / pi}
-}.map:obj(
-  "[($(obj.a)).$(obj.n), $(obj.r.fmt('%.9f')) * 180 / pi]" ~ " \t// " ~ [+obj.r.fmt('%.9f'), +obj.d.fmt('%.1f')]
+  "[$(obj.radians), $(obj.degrees)]" ~ " \t// " ~ [obj.radians.eval.round(9), obj.degrees.eval.round(9)]
+).join("\n") ~ "\n\n" ~ [
+  {radians: 'r = (0.707106781).asin', degrees: 'r * 180 / pi'}
+  {radians: 'r = (0.707106781).acos', degrees: 'r * 180 / pi'}
+  {radians: 'r = (1.000000000).atan', degrees: 'r * 180 / pi'}
+].map:obj(
+  "[$(obj.radians), $(obj.degrees)]" ~ "\t// " ~ [obj.radians.eval.round(9), +obj.degrees.eval.fmt('%0.2f')]
 ).join("\n")

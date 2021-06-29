@@ -505,25 +505,29 @@ func (l *Lexer) LexStr(quote rune) string {
             l.Reset()
             lit = lit + string(r)
         case '\\':
-            n := l.Read()
+            if quote == '"' {
+                n := l.Read()
 
-            switch n {
-            case 0:
-                return lit
-            case 'n':
-                lit = lit + "\n"
-            case 'r':
-                lit = lit + "\r"
-            case 't':
-                lit = lit + "\t"
-            case 'b':
-                lit = lit + "\b"
-            case 'f':
-                lit = lit + "\f"
-            case 'v':
-                lit = lit + "\v"
-            default:
-                lit = lit + string(n)
+                switch n {
+                case 0:
+                    return lit
+                case 'n':
+                    lit = lit + "\n"
+                case 'r':
+                    lit = lit + "\r"
+                case 't':
+                    lit = lit + "\t"
+                case 'b':
+                    lit = lit + "\b"
+                case 'f':
+                    lit = lit + "\f"
+                case 'v':
+                    lit = lit + "\v"
+                default:
+                    lit = lit + string(n)
+                }
+            } else {
+                lit = lit + string(r)
             }
         default:
             lit = lit + string(r)

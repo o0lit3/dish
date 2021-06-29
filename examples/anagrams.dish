@@ -10,5 +10,5 @@ stdin.map:word(
 anagram.values.filter:set(
   #set == max
 ).map:set(
-  set.join(", ")
+  set.join(', ')
 ).sort.join("\n")
