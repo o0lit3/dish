@@ -42,7 +42,7 @@ func Exclude(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Exclude(x, y.Value())
         case String:
-            return x.Exclude(y)
+            return Join(x.Array().Exclude(y.Array()), String(""))
         default:
             return Exclude(x.Number(), y)
         }
@@ -138,28 +138,4 @@ func (a Array) Exclude(b Array) Array {
     }
 
     return out
-}
-
-func (a String) Exclude(b String) String {
-    out := ""
-
-    if len(b) > len(a) {
-        for i := range b {
-            if i < len(a) {
-                out += string(a[i] ^ b[i])
-            } else {
-                out += string(b[i])
-            }
-        }
-    } else {
-        for i := range a {
-            if i < len(b) {
-                out += string(a[i] ^ b[i])
-            } else {
-                out += string(a[i])
-            }
-        }
-    }
-
-    return String(out)
 }

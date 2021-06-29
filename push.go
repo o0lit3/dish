@@ -1,5 +1,9 @@
 package main
-import("fmt")
+
+import(
+    "fmt"
+    "strings"
+)
 
 func Push(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -36,7 +40,24 @@ func Push(a interface{}, b interface{}) interface{} {
             return x.Push(Array { y })
         }
     case String:
-        return Push(x.Number(), b)
+        switch y := b.(type) {
+        case *Block:
+            return Push(x, y.Run())
+        case *Variable:
+            return Push(x, y.Value())
+        case Hash:
+            return Push(x, NewNumber(len(y)))
+        case Array:
+            return Push(x, NewNumber(len(y)))
+        case String:
+            return Push(x, y.Number())
+        case Number:
+            return String(string(x) + strings.Repeat(" ", y.Int()))
+        case Boolean:
+            return Push(x, y.Number())
+        case Null:
+            return x
+        }
     case Number:
         switch y := b.(type) {
         case *Block:

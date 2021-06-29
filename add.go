@@ -42,13 +42,17 @@ func Add(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Add(x, y.Value())
         case Hash:
-            return Add(x.Number(), NewNumber(len(y)))
+            return Add(x, NewNumber(len(y)))
         case Array:
-            return Add(x.Number(), NewNumber(len(y)))
+            return Add(x, NewNumber(len(y)))
         case String:
-            return Add(x.Number(), y.Number())
-        default:
-            return Add(x.Number(), y)
+            return String(string(x) + string(y))
+        case Number:
+            return x.Add(y)
+        case Boolean:
+            return x.Add(y.Number())
+        case Null:
+            return x.Add(NewNumber(0))
         }
     case Number:
         switch y := b.(type) {
@@ -116,4 +120,14 @@ func (a Array) Add(b Array) Array {
     }
 
     return out
+}
+
+func (a String) Add(b Number) String {
+    out := ""
+
+    for _, c := range a {
+        out += string(int(c) + b.Int())
+    }
+
+    return String(out)
 }

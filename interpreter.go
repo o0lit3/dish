@@ -479,21 +479,21 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Find(a, b))
         case "**", "power", "pow", "rotate", "sort":
             blk.Register(Power(a, b))
-        case "*", "multiply", "repeat", "map", "each", "dot":
+        case "*", "multiply", "repeat", "times", "map", "each", "dot":
             blk.Register(Multiply(a, b))
         case "/", "divide", "split":
             blk.Register(Divide(a, b))
         case "%", "remainder", "rem", "filter", "select", "every", "grep":
             blk.Register(Remainder(a, b))
-        case "+", "add":
+        case "+", "add", "cipher":
             blk.Register(Add(a, b))
-        case "-", "subtract", "sub", "remove":
+        case "-", "subtract", "sub", "decipher", "remove":
             blk.Register(Subtract(a, b))
         case "~", "join", "concat":
             blk.Register(Join(a, b))
         case "~~", "base", "convert", "format", "fmt":
             blk.Register(Base(a, b))
-        case "<<", "push", "append", "lshift":
+        case "<<", "push", "append", "lshift", "rpad":
             val := Push(a, b)
 
             switch val.(type) {
@@ -504,7 +504,7 @@ func (blk *Block) Interpret() interface{} {
             default:
                 blk.Register(val)
             }
-        case ">>", "unshift", "prepend", "rshift":
+        case ">>", "unshift", "prepend", "rshift", "lpad":
             val := Unshift(a, b)
 
             switch val.(type) {

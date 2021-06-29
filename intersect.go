@@ -42,7 +42,7 @@ func Intersect(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Intersect(x, y.Value())
         case String:
-            return x.Intersect(y)
+            return Join(x.Array().Intersect(y.Array()), String(""))
         default:
             return Intersect(x.Number(), y)
         }
@@ -103,20 +103,4 @@ func (a Array) Intersect(b Array) Array {
     }
 
     return out
-}
-
-func (a String) Intersect(b String) String {
-    out := ""
-
-    if len(b) < len(a) {
-        for i := range b {
-            out += string(a[i] & b[i])
-        }
-    } else {
-        for i := range a {
-            out += string(a[i] & b[i])
-        }
-    }
-
-    return String(out)
 }

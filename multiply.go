@@ -57,7 +57,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                return x.Array().Map(y)
+                return Join(x.Array().Map(y), String(""))
             }
 
             return Multiply(x, y.Run())
@@ -79,6 +79,10 @@ func Multiply(a interface{}, b interface{}) interface{} {
     case Number:
         switch y := b.(type) {
         case *Block:
+            if len(y.args) > 0 {
+                return Multiply(Range(NewNumber(1), x), y)
+            }
+
             return Multiply(x, y.Run())
         case *Variable:
             return Multiply(x, y.Value())

@@ -17,18 +17,10 @@ func Equals(a interface{}, b interface{}) Boolean {
             return Equals(x, y.Run())
         case *Variable:
             return Equals(x, y.Value())
-        case Hash:
-            return Equals(x, String(fmt.Sprintf("%v", y)))
-        case Array:
-            return Equals(x, String(fmt.Sprintf("%v", y)))
         case String:
             return Boolean(string(x) == string(y))
-        case Number:
-            return Equals(x.Number(), y)
-        case Boolean:
-            return Equals(x.Number(), y.Number())
-        case Null:
-            return Equals(x.Number(), NewNumber(0))
+        default:
+            return Equals(x, String(fmt.Sprintf("%v", y)))
         }
     case Number:
         switch y := b.(type) {

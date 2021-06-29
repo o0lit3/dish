@@ -1,5 +1,9 @@
 package main
-import("fmt")
+
+import(
+    "fmt"
+    "strings"
+)
 
 func Subtract(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -42,13 +46,17 @@ func Subtract(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Subtract(x, y.Value())
         case Hash:
-            return Subtract(x.Number(), NewNumber(len(y)))
+            return Subtract(x, NewNumber(len(y)))
         case Array:
-            return Subtract(x.Number(), NewNumber(len(y)))
+            return Subtract(x, NewNumber(len(y)))
         case String:
-            return Subtract(x.Number(), y.Number())
-        default:
-            return Subtract(x.Number(), y)
+            return x.Remove(y)
+        case Number:
+            return x.Subtract(y)
+        case Boolean:
+            return x.Subtract(y.Number())
+        case Null:
+            return x.Subtract(NewNumber(0))
         }
     case Number:
         switch y := b.(type) {
@@ -125,4 +133,18 @@ func (a Array) Subtract(b Array) Array {
     }
 
     return out
+}
+
+func (a String) Subtract(b Number) String {
+    out := ""
+
+    for _, c := range a {
+        out += string(int(c) - b.Int())
+    }
+
+    return String(out)
+}
+
+func (a String) Remove(b String) String {
+    return String(strings.Replace(string(a), string(b), "", 1))
 }

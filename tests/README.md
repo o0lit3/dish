@@ -40,12 +40,12 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use `[cond1, 
 ## Comparison Operators
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
-| `==`     | Scalar `==` Implicit Number | `a.equals(b)`     | `2 == 2`                   | `true`                |
-|          | String `==` Implicit String | `a.equals(b)`     | `'2' == '2.0'`             | `false`               |
+| `==`     | Scalar `==` Implicit Number | `a.equals(b)`     | `2 == '2.0'`               | `true`                |
+|          | String `==` Implicit String | `a.equals(b)`     | `'2.0' == 2`               | `false`               |
 |          | List `==` Implicit List     | `a.equals(b)`     | `[1, 2, 3] == [1, 2, 3]`   | `true`                |
 |          |                             |                   |                            |                       |
-| `!=`     | Scalar `!=` Implicit Number | `a.isnt(b)`       | `2 != 2`                   | `false`               |
-|          | String `!=` Implicit String | `a.isnt(b)`       | `'2' != '2.0'`             | `true`                |
+| `!=`     | Scalar `!=` Implicit Number | `a.isnt(b)`       | `2 != '2.0'`               | `false`               |
+|          | String `!=` Implicit String | `a.isnt(b)`       | `'2.0' != 2`               | `true`                |
 |          | List `!=` Implicit List     | `a.isnt(b)`       | `[1, 2, 3] != [1, 2, 3]`   | `false`               |
 |          |                             |                   |                            |                       |
 | `>`      | Scalar `>` Implicit Number  | `a.above(b)`      | `3 > 10`                   | `false`               |
@@ -127,13 +127,13 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `&`      | Scalar `&` Implicit Number  | `a.intersect(b)`  | `5 & 3`                    | `1`                   |
-|          | String `&` String           | `a.intersect(b)`  | `'jadh!' & '____'`         | `"JADH"`              |
+|          | String `&` String           | `a.intersect(b)`  | `'codfish' & 'airshed'`    | `"dish"`              |
 |          | String `&` Implicit Number  | `a.intersect(b)`  | `'5' & 3`                  | `1`                   |
 |          | Array `&` Implicit Array    | `a.intersect(b)`  | `[1, 2, 3] & [4, 3, 2]`    | `[2, 3]`              |
 |          | Hash `&` Implicit Hash      | `a.intersect(b)`  | `{x: 1} & {x: 2, y: 2}`    | `{"x": 2}`            |
 |          |                             |                   |                            |                       |
 | `^`      | Scalar `^` Implicit Number  | `a.exclude(b)`    | `5 ^ 3`                    | `6`                   |
-|          | String `^` String           | `a.exclude(b)`    | `'d O!' ^ ' I<I!'`         | `"Dish!"`             |
+|          | String `^` String           | `a.exclude(b)`    | `'danish' ^ 'nana'`        | `"dish"`              |
 |          | String `^` Implicit Number  | `a.exclude(b)`    | `'5' ^ 3`                  | `6`                   |
 |          | Array `^` Implicit Array    | `a.exclude(b)`    | `[1, 2, 3] ^ [4, 3, 2]`    | `[1, 4]`              |
 |          | Hash `^` Implicit Hash      | `a.exclude(b)`    | `{x: 1} ^ {y: 2}`          | `{}`                  |
@@ -143,18 +143,18 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `^`List                     | `a.invert`        | `^[1, 2, 3]`               | `[-2, -3, -4]`        |
 |          |                             |                   |                            |                       |
 | `\|`     | Scalar `\|` Implicit Number | `a.union(b)`      | `5 \| 3`                   | `7`                   |
-|          | String `\|` String          | `a.union(b)`      | `'JA' \| '  dh!'`          | `"jadh!"`             |
+|          | String `\|` String          | `a.union(b)`      | `'didi' \| 'sihi'`         | `"dish"`              |
 |          | String `\|` Implicit Number | `a.union(b)`      | `'5' \| 3`                 | `7`                   |
 |          | Array `\|` Implicit Array   | `a.union(b)`      | `[1, 2, 3] \| [4, 2, 1]`   | `[1, 2, 3, 4]`        |
 |          | Hash `\|` Implicit Hash     | `a.union(b)`      | `{x: 1} \| {x: 2}`         | `{"x": 2}`            |
 |          |                             |                   |                            |                       |
 | `<<`     | Scalar `<<` Implicit Number | `a.lshift(b)`     | `5 << 3`                   | `40`                  |
-|          | String `<<` Implicit Number | `a.lshift(b)`     | `'5' << 3`                 | `40`                  |
+|          | String `<<` Implicit Number | `a.rpad(b)`       | `'binary' << 3`            | `"binary   "`         |
 |          | Array [See Assignment Ops](#assignment-operators) |                        | |                       |
 |          | Hash [See Assignment Ops](#assignment-operators)  |                        | |                       |
 |          |                             |                   |                            |                       |
 | `>>`     | Scalar `>>` Implicit Number | `a.rshift(b) `    | `40 >> 3`                  | `5`                   |
-|          | String `>>` Implicit Number | `a.rshift(b)`     | `'40' >> 3`                | `5`                   |
+|          | String `>>` Implicit Number | `a.lpad(b)`       | `'binary' >> 3`            | `"   binary"`         |
 |          | Array [See Assignment Ops](#assignment-operators) |                        | |                       |
 |          | Hash [See Assignment Ops](#assignment-operators)  |                        | |                       |
 
@@ -162,20 +162,24 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `~`      | Scalar `+` Implicit String  | `a.concat(b)`     | `10 ~ 20`                  | `"1020"`              |
-|          | String `+` Implicit String  | `a.concat(b)`     | `'10' ~ '20'`              | `"1020"`              |
+|          | String `+` Implicit String  | `a.concat(b)`     | `'bin' ~ 'ary'`            | `"binary"`            |
 |          | List `+` Implicit String    | `a.join(b)`       | `[1, 2, 3] ~ ' '`          | `"1 2 3"`             |
 |          |                             |                   |                            |                       |
 | `+`      | Scalar `+` Implicit Number  | `a.add(b)`        | `10 + 20`                  | `30`                  |
-|          | String `+` Implicit Number  | `a.add(b)`        | `'10' + '20'`              | `30`                  |
+|          | String `+` String           | `a.add(b)`        | `'bin' + 'ary'`            | `"binary"`            |
+|          | String `+` Implicit Number  | `a.cipher(b)`     | `'BINARY' + 20`            | `"V]bUfm"`            |
 |          | Array `+` Implicit Array    | `a.add(b)`        | `[1, 2] + [2, 3]`          | `[1, 2, 2, 3]`        |
 |          | Hash `+` Implicit Hash      | `a.add(b)`        | `{x: 1} + {y: 2}`          | `{"x": 1, "y": 2}`    |
 |          |                             |                   |                            |                       |
 | `-`      | Scalar `-` Implicit Number  | `a.subtract(b)`   | `10 - 20`                  | `-10`                 |
-|          | String `-` Implicit Number  | `a.subtract(b)`   | `'10' - '20'`              | `-10`                 |
+|          | String `-` String           | `a.remove(b)`     | `'binary' - 'ary'`         | `"bin"`               |
+|          | String `-` Implicit Number  | `a.decipher(b)`   | `'binary' - 20`            | `"NUZM^e"`            |
 |          | Array `-` Implicit Array    | `a.remove(b)`     | `[1, 2, 2, 3, 4] - [2, 3]` | `[1, 2, 4]`           |
 |          | Hash `-` Implicit Hash      | `a.remove(b)`     | `{x: 1, y: 2} - {"x"}`     | `{"y": 2}`            |
 |          |                             |                   |                            |                       |
-| `*`      | Scalar `*` Implicit Number  | `a.multiply(b)`   | `10 * 20`                  | `200`                 |
+| `*`      | Scalar `*` :(Block)         | `a.times(b)`      | `4 * :(++a)`               | `[1, 2, 3, 4]`        |
+|          | Scalar `*` Implicit Number  | `a.multiply(b)`   | `10 * 20`                  | `200`                 |
+|          | String `*` :(Block)         | `a.map:c(...)`    | `'binary' * :c(c + 1)`     | `"cjobsz"`            |
 |          | String `*` Implicit Number  | `a.repeat(b)`     | `'a' * 5`                  | `"aaaaa"`             |
 |          | List `*` :(Block)           | `a.map:i(...)`    | `[1, 2, 3] * :i(i * 2)`    | `[1, 4, 6]`           |
 |          | List `*` List               | `a.dot(b)`        | `[1, 2, 3] * [1, 2, 3]`    | `[1, 4, 9]`           |
@@ -265,12 +269,12 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `#`List                     | `a.len`           | `#[1, 2, 3]`               | `3`                   |
 |          |                             |                   |                            |                       |
 | `++`     | `++`Scalar                  | `a.increment`     | `++15`                     | `16`                  |
-|          | `++`String                  | `a.increment`     | `++'binary'`               | `"cjobsz"`            |
+|          | `++`String                  | `a.increment`     | `++'15'`                   | `16`                  |
 |          | `++`List                    | `a.increment`     | `++[1, 2, 3]`              | `[2, 3, 4]`           |
 |          | [Also See Assignment Ops](#assignment-operators) |                         | |                       |
 |          |                             |                   |                            |                       |
 | `--`     | `--`Scalar                  | `a.decrement`     | `--15`                     | `14`                  |
-|          | `--`String                  | `a.decrement`     | `--'cjobsz'`               | `"binary"`            |
+|          | `--`String                  | `a.decrement`     | `--'15'`                   | `14`                  |
 |          | `--`List                    | `a.decrement`     | `--[1, 2, 3]`              | `[0, 1, 2]`           |
 |          | [Also See Assignment Ops](#assignment-operators) |                         | |                       |
 |          |                             |                   |                            |                       |

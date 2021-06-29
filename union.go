@@ -42,7 +42,7 @@ func Union(a interface{}, b interface{}) interface{} {
         case *Variable:
             return Union(x, y.Value())
         case String:
-            return x.Union(y)
+            return Join(x.Array().Union(y.Array()), String(""))
         default:
             return Union(x.Number(), y)
         }
@@ -112,29 +112,4 @@ func (a Array) Union(b Array) interface{} {
     }
 
     return out.Unique()
-}
-
-func (a String) Union(b String) interface{} {
-    out := ""
-
-    if len(b) > len(a) {
-        for i := range b {
-            if i < len(a) {
-                out += string(a[i] | b[i])
-            } else {
-                out += string(b[i])
-            }
-        }
-    } else {
-        for i := range a {
-            if i < len(b) {
-                out += string(a[i] | b[i])
-            } else {
-                out += string(a[i])
-            }
-        }
-
-    }
-
-    return String(out)
 }

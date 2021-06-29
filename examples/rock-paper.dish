@@ -1,0 +1,42 @@
+// https://rosettacode.org/wiki/Rock-paper-scissors
+
+beats = {
+  rock: 'paper'
+  paper: 'scissors'
+  scissors: 'rock'
+}
+
+choice = :plays(
+  beats.(
+    (@plays).map:p(
+      [p] * plays.p
+    ).flat.((+plays).rand)
+  )
+)
+
+[
+  100.times:('rock')                                               // Human always plays rock
+  100.times:('paper')                                              // Human always plays paper
+  100.times:('scissors')                                           // Human always plays scissors
+  100.times:((['rock'] * 5 + ['paper', 'scissors']).(6.rand))      // Human mostly plays rock
+  100.times:((['paper'] * 5 + ['rock', 'scissors']).(6.rand))      // Human mostly plays paper
+  100.times:((['scissors'] * 5 + ['paper', 'rock']).(6.rand))      // Human mostly plays scissors
+  100.times:(beats.vals.(3.rand))                                  // Human plays randomly
+].map:game(
+  history: {rock: 1, paper: 1, scissors: 1}
+  scores: {human: 0, computer: 0, tie: 0}
+
+  game.each:h(
+    c: history.choice
+
+    [h == c, h == beats.c].switch[
+      ++scores.'tie'                                                // Tie
+      ++scores.'human'                                              // Human wins
+      ++scores.'computer'                                           // Computer wins
+    ]
+
+    ++history.h                                                     // Update human's play history
+  )
+
+  scores
+).join("\n")
