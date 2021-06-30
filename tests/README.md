@@ -5,7 +5,7 @@ Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand rep
 | ----------- | --------------------- | ----------- | ------------------- | ---------- | --------- |
 | **Boolean** | `x`                   | `1`, `0`    | `"true"`, `"false"` | `[x]`      | `{~x: x}` |
 | **Number**  | `x != 0`              | `x`         | `~x`                | `[x]`      | `{~x: x}` |
-| **String**  | `x != "0" && x != ""` | `+x`        | `x`                 | `[x]`      | `{~x: x}` |
+| **String**  | `x != ""`             | `+x`        | `x`                 | `[x]`      | `{~x: x}` |
 | **Array**   | `#x != 0`             | `#x`        | `x.join('')`        | `x`        | `x.hash`  |
 | **Hash**    | `#x != 0`             | `#x`        | `x.values.join('')` | `x.values` | `x`       |
 
@@ -23,16 +23,16 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use `[cond1, 
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
 | `&&`     | Implicit Boolean `&&` Any   | `a.then(b)`       | `3 && 2`                   | `2`                   |
-|          |                             |                   | `true && 0`                | `0`                   |
-|          |                             |                   | `false && 2`               | `false`               |
+|          |                             |                   | `3 && 0`                   | `0`                   |
+|          |                             |                   | `[] && 2`                  | `[]`                  |
 |          |                             |                   |                            |                       |
 | `\|\|`   | Implicit Boolean `\|\|` Any | `a.else(b)`       | `3 \|\| 2`                 | `3`                   |
-|          |                             |                   | `false \|\| 0`             | `0`                   |
-|          |                             |                   | `0 \|\| true`              | `true`                |
+|          |                             |                   | `[] \|\| 0`                | `0`                   |
+|          |                             |                   | `0 \|\| 2`                 | `2`                   |
 |          |                             |                   |                            |                       |
-| `^^`     | Implicit Boolean `^^` Any   | `a.xor(b)`        | `3 ^^ 0`                   | `3`                   |
-|          |                             |                   | `false ^^ 2`               | `2`                   |
-|          |                             |                   | `3 ^^ 2`                   | `false`               |
+| `^^`     | Implicit Boolean `^^` Any   | `a.xor(b)`        | `3 ^^ 2`                   | `false`               |
+|          |                             |                   | `3 ^^ 0`                   | `3`                   |
+|          |                             |                   | `[] ^^ 2`                  | `2`                   |
 |          |                             |                   |                            |                       |
 | `?`      | Boolean Array `?` Any Array | `a.switch[b]`     | `[1 > 0] ? [3, 4]`         | `3`                   |
 |          |                             |                   | `[1 < 0] ? [3, 4]`         | `4`                   |

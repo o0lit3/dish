@@ -1,13 +1,13 @@
 [
     {} && true              // false
     {foo: 0} && true        // true
-    [] && true              // false
+    [] && true              // []
     true && [0, 0]          // [0, 0]
-    "0" && true             // false
+    "0" && true             // true
     true && "foo"           // "foo"
-    "" && true              // false
+    "" && true              // ""
     true && 3.14            // 3.14
-    0 && true               // false
+    0 && true               // 0
     true && true            // true
     [false && ++a, a]       // [false, null]
     [true && ++b, b]        // [1, 1]

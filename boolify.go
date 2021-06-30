@@ -11,7 +11,7 @@ func Boolify(a interface{}) Boolean {
         case Array:
             return Boolean(len(x) > 0)
         case String:
-            return Boolean(string(x) != "" && string(x) != "0")
+            return Boolean(string(x) != "")
         case Number:
             if x.inf == INF || x.inf == -INF {
                 return Boolean(true)

@@ -19,7 +19,7 @@ func Or(a interface{}, b interface{}) interface{} {
 
         return Or(Boolean(false), b)
     case String:
-        if string(x) != "" && string(x) != "0" {
+        if string(x) != "" {
             return x
         }
 

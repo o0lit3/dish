@@ -14,25 +14,25 @@ func And(a interface{}, b interface{}) interface{} {
         return And(Boolean(true), b)
     case Array:
         if len(x) == 0 {
-            return Boolean(false)
+            return x
         }
 
         return And(Boolean(true), b)
     case String:
-        if string(x) == "" || string(x) == "0" {
-            return Boolean(false)
+        if string(x) == "" {
+            return x
         }
 
         return And(Boolean(true), b)
     case Number:
         if x.inf == 0 && x.val.Cmp(NewNumber(0).val) == 0 {
-            return Boolean(false)
+            return x
         }
 
         return And(Boolean(true), b)
     case Boolean:
         if !x {
-            return Boolean(false)
+            return x
         }
 
         switch y := b.(type) {
@@ -44,7 +44,7 @@ func And(a interface{}, b interface{}) interface{} {
             return y
         }
     case Null:
-        return Boolean(false)
+        return x
     }
 
     return Boolean(false)

@@ -3,7 +3,7 @@
     {foo: 0} ^^ true    // false
     [] ^^ true          // true
     false ^^ [0, 0]     // [0, 0]
-    "0" ^^ true         // true
+    "0" ^^ true         // false
     true ^^ "foo"       // false
     "" ^^ 3.14          // 3.14
     "foo" ^^ 0          // "foo"

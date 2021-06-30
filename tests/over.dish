@@ -1,9 +1,9 @@
 [
     {foo: 1, bar: 2} >= [1, 2, 3]   // false
     [1, 2] >= [3, 4]                // true
-    "3" >= +"10.5"                  // false
-    "3" >= "10.5"                   // true
-    "3" >= 10.5                     // false
+    3 >= "10.5"                     // false
+    "3" >= 10.5                     // true
+    3 >= 10.5                       // false
     "foo" >= "foo"                  // true
     2.5 >= 3.14                     // false
     2.5 >= true                     // true

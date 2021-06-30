@@ -3,7 +3,7 @@
     {foo: 0} || false        // {"foo": 0}
     [] || false              // false
     [0, 0] || false          // [0, 0]
-    "0" || false             // false
+    "0" || false             // "0"
     "foo" || false           // "foo"
     "" || false              // false
     3.14 || false            // 3.14

@@ -2,7 +2,7 @@
     <{foo: 1, bar: 2}   // 1
     <[3, 4.5, 1.1, 9]   // 1.1
     <[4, true, 5.5]     // true
-    <[7, "bing", "foo"] // "bing"
+    <[7, "bing", "foo"] // 7
     <"FOOBAR"           // "foobar"
     </"FOOBAR"          // "A"
     [1, 2, 3].min       // 1
