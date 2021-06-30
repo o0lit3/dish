@@ -167,7 +167,7 @@ func (t *Token) Precedence() int {
         return 8
     case "|":
         return 7
-    case "<", "<=", ">", ">=":
+    case "<", "<=", ">", ">=", "?=":
         return 6
     case "==", "!=":
         return 5

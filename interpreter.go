@@ -529,6 +529,8 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Above(a, b))
         case ">=", "over":
             blk.Register(Over(a, b))
+        case "?=", "compare", "comp", "direction", "dir":
+            blk.Register(Direction(a, b))
         case "==", "equals", "is":
             blk.Register(Equals(a, b))
         case "!=", "isnt":

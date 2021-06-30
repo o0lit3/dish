@@ -67,6 +67,10 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary
 | `<=`     | Scalar `<=` Implicit Number | `a.under(b)`      | `3 <= '10'`                | `true`                |
 |          | String `<=` Implicit String | `a.under(b)`      | `'3' <= 10`                | `false`               |
 |          | List `<=` Implicit Number   | `a.under(b)`      | `[1, 1] <= [2, 2]`         | `true`                |
+|          |                             |                   |                            |                       |
+| `?=`     | Scalar `?=` Implicit Number | `a.compare(b)`    | `3 ?= '10'`                | `-1`                  |
+|          | String `?=` Implicit String | `a.compare(b)`    | `'3' ?= 10`                | `1`                   |
+|          | List `?=` Implicit Number   | `a.compare(b)`    | `[1, 1] ?= [2, 2]`         | `0`                   |
 
 ## Assignment Operators
 When initializing a variable for local scope, use `:`; when initializing a variable for global scope, use `=`. After initialization, `=` (and all variants) should be used to re-assign existing global _or_ local variable.

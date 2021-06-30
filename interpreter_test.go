@@ -168,6 +168,10 @@ func TestOver(t *testing.T) {
     test(t, "tests/over.dish")
 }
 
+func TestDirection(t *testing.T) {
+    test(t, "tests/direction.dish")
+}
+
 func TestEquals(t *testing.T) {
     test(t, "tests/equals.dish")
 }
