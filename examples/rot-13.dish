@@ -1,0 +1,8 @@
+// https://rosettacode.org/wiki/Rot-13
+// echo 'Vex abjurer, one ebbs envy & green. Sync!' | dish examples/rot-13.dish
+
+stdin.map:c(
+  c.letter.then(
+    (c.lc < 'n').then(c + 13).else(c - 13)
+  ).else(c)
+)
