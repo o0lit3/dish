@@ -18,7 +18,7 @@ Logical operators in **dish**, like many languages, short circuit the right-hand
 
 Logical operators and methods in **dish** serve as the control structures for the language. **Note bene**: Be careful with logical chains such as `(condition).then(0).else(1)`--falsy values like 0 force the `else` block into execution regardless of the condition's truthiness. Therefore, to avoid any traps of falsy values, the ternary `[condition].switch[0, 1]` is preferred.
 
-Similarly, to create traditional if/elseif/else logic in **dish**, use `[cond1, cond2].switch[0, 1, 2]`. The conditions Array is executed in sequence until it finds a truthy value (with all subsequent conditions being short-cictuited), and only the implicit Logic block from the right-hand Array corresponding to the same truthy index will be executed (or the last index if no truthy conditions were found).
+Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary `[cond1, cond2].switch[0, 1, 2]`. The conditions Array is executed in sequence until it finds a truthy value (with all subsequent conditions being short-cictuited), and only the implicit Logic block from the right-hand Array corresponding to the same truthy index will be executed (or the last index if no truthy conditions were found).
 
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
