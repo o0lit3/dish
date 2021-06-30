@@ -1,0 +1,12 @@
+// https://rosettacode.org/wiki/Roots_of_unity
+
+pi = 3.1415926535
+
+(2..5).map:n(
+  "$(n): " ~ (0..n - 1).map:r(
+    real: (2 * pi * r / n).cos
+    imag: (2 * pi * r / n).sin
+
+    [real >= 0]?['+'] ~ real.fmt('%.4f') ~ [imag >= 0]?['+'] ~ imag.fmt('%.4f') ~ 'i'
+  ).join(' ')
+).join("\n")

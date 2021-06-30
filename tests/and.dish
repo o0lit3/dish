@@ -1,5 +1,5 @@
 [
-    {} && true              // false
+    {} && true              // {}
     {foo: 0} && true        // true
     [] && true              // []
     true && [0, 0]          // [0, 0]

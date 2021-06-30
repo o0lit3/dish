@@ -8,7 +8,7 @@ func And(a interface{}, b interface{}) interface{} {
         return And(x.Value(), b)
     case Hash:
         if len(x) == 0 {
-            return Boolean(false)
+            return x
         }
 
         return And(Boolean(true), b)

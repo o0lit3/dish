@@ -1,0 +1,58 @@
+// https://www.rosettacode.org/wiki/Roman_numerals/Encode
+// https://www.rosettacode.org/wiki/Roman_numerals/Decode
+
+symbols = {
+  M: 1000
+  D: 500
+  C: 100
+  L: 50
+  X: 10
+  V: 5
+  I: 1
+}
+
+roman = :n:out(
+  (@symbols).sort:a:b(symbols.b < symbols.a).each:symbol(
+    (n >= symbols.symbol).redo(
+      out ~= symbol
+      n -= symbols.symbol
+    )
+
+    out = out.split(last + symbol * 4).join(symbol + ante)  // Replace LXXXX with XC, e.g.
+    out = out.split(symbol * 4).join(symbol + last)         // Replace IIII with IV, e.g.
+
+    ante = last
+    last = symbol
+  )
+
+  out
+)
+
+arabic = :r:out(
+  r.each:c:i(
+    (symbols.c < symbols.(r.(i + 1))).then(
+      out -= symbols.c
+    ).else(
+      out += symbols.c
+    )
+  )
+
+  out
+)
+
+[
+  '1666.roman'
+  '1990.roman'
+  '2008.roman'
+  '2016.roman'
+  '2018.roman'
+  '2020.roman'
+  '"MDCLXVI".arabic'
+  '"MCMXC".arabic'
+  '"MMVIII".arabic'
+  '"MMXVI".arabic'
+  '"MMXVIII".arabic'
+  '"MMXX".arabic'
+].map:i(
+  i.fmt('%-15s') ~ " \t// " ~ i.eval
+).join("\n")

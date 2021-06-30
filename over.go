@@ -19,6 +19,8 @@ func Over(a interface{}, b interface{}) Boolean {
             return Over(x, y.Value())
         case String:
             return Boolean(string(x) >= string(y))
+        case Null:
+            return Boolean(string(x) >= "")
         default:
             return Over(x, String(fmt.Sprintf("%v", y)))
         }

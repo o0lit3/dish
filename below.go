@@ -19,6 +19,8 @@ func Below(a interface{}, b interface{}) Boolean {
             return Below(x, y.blk.Value(y))
         case String:
             return Boolean(string(x) < string(y))
+        case Null:
+            return Boolean(string(x) < "")
         default:
             return Below(x, String(fmt.Sprintf("%v", y)))
         }

@@ -32,7 +32,7 @@ func Or(a interface{}, b interface{}) interface{} {
         return Or(Boolean(false), b)
     case Boolean:
         if x {
-            return Boolean(true)
+            return x
         }
 
         switch y := b.(type) {

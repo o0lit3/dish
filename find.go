@@ -126,9 +126,18 @@ func (a Number) Round(b Number) Number {
     if pow, ok := Power(NewNumber(10), b).(Number); ok {
         o := new(big.Rat).Mul(a.val, pow.val)
         i := new(big.Int).Quo(o.Num(), o.Denom())
+        j := new(big.Rat).SetInt(i)
+        d := new(big.Rat).Sub(o, j)
 
-        o = o.SetInt(i)
-        return Number{ val: o.Quo(o, pow.val) }
+        if d.Cmp(big.NewRat(1, 2)) >= 0 {
+            j = j.Add(j, big.NewRat(1, 1))
+        }
+
+        if d.Cmp(big.NewRat(-1, 2)) <= 0 {
+            j = j.Sub(j, big.NewRat(1, 1))
+        }
+
+        return Number{ val: j.Quo(j, pow.val) }
     }
 
     return NewNumber(0)

@@ -6,19 +6,19 @@ Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand rep
 | **Boolean** | `x`                   | `1`, `0`    | `"true"`, `"false"` | `[x]`      | `{~x: x}` |
 | **Number**  | `x != 0`              | `x`         | `~x`                | `[x]`      | `{~x: x}` |
 | **String**  | `x != ""`             | `+x`        | `x`                 | `[x]`      | `{~x: x}` |
-| **Array**   | `#x != 0`             | `#x`        | `x.join('')`        | `x`        | `x.hash`  |
-| **Hash**    | `#x != 0`             | `#x`        | `x.values.join('')` | `x.values` | `x`       |
+| **Array**   | `#x != 0`             | `#x`        | `x.join`            | `x`        | `x.hash`  |
+| **Hash**    | `#x != 0`             | `#x`        | `x.vals.join`       | `x.vals`   | `x`       |
 
 With the exception of special [assignment operators](#assignment-operators) and [comparison operators](#comparison-operators) that use the `=` symbol as its second character, all symbolic operators in **dish** consist of either a single symbolic character or a doubled, symbolic character; `|`, `||`, and `|=` are a valid symbolic operators, `?:`, `=~`, and `>>=` are not.
 
 For the purposes of the tables below, "Scalar" refers to a Boolean or Number in numeric context; "List" refers to an Array or Hash in array context.
 
 ## Logical Operators
-Logical operators in **dish**, like many languages, short circuit the right-hand argument if the left-hand argument does not suffice to determine the value of the expression. As such, the right-hand argument of logical operators are implicit Blocks that are only evaluated if needed (or in the case of the `switch` operator, an array of implicit Blocks for both operands).
+Logical operators in **dish**, like many languages, short circuit the right-hand argument if the left-hand argument does not suffice to determine the value of the expression. As such, the right-hand argument of logical operators are implicit Blocks that are only evaluated if needed (or in the case of the `switch` operator, an implicit Array of Blocks for both operands).
 
 Logical operators and methods in **dish** serve as the control structures for the language. **Note bene**: Be careful with logical chains such as `(condition).then(0).else(1)`--falsy values like 0 force the `else` block into execution regardless of the condition's truthiness. Therefore, to avoid any traps of falsy values, the ternary `[condition].switch[0, 1]` is preferred.
 
-Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary `[cond1, cond2].switch[0, 1, 2]`. The conditions Array is executed in sequence until it finds a truthy value (with all subsequent conditions being short-cictuited), and only the implicit Logic block from the right-hand Array corresponding to the same truthy index will be executed (or the last index if no truthy conditions were found).
+Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary `[cond1, cond2].switch[0, 1, 2]`. The conditions Array is executed in sequence until it finds a truthy value (with all subsequent conditions being short-cictuited), and only the implicit Logic block from the right-hand Array corresponding to the same truthy index will be executed and returned. When no truthy condition is found, if the right-hand logic Array has more elements than the left-hand conditions Array, then the last index of the logic Array is executed and returned; otherwise `null` is returned.
 
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
@@ -30,15 +30,16 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary
 |          |                             |                   | `[] \|\| 0`                | `0`                   |
 |          |                             |                   | `0 \|\| 2`                 | `2`                   |
 |          |                             |                   |                            |                       |
-| `^^`     | Implicit Boolean `^^` Any   | `a.xor(b)`        | `3 ^^ 2`                   | `false`               |
-|          |                             |                   | `3 ^^ 0`                   | `3`                   |
+| `^^`     | Implicit Boolean `^^` Any   | `a.xor(b)`        | `3 ^^ 0`                   | `3`                   |
 |          |                             |                   | `[] ^^ 2`                  | `2`                   |
+|          |                             |                   | `3 ^^ 2`                   | `null`                |
 |          |                             |                   |                            |                       |
 | `?`      | Boolean Array `?` Any Array | `a.switch[b]`     | `[1 > 0] ? [3, 4]`         | `3`                   |
 |          |                             |                   | `[1 < 0] ? [3, 4]`         | `4`                   |
+|          |                             |                   | `[1 < 0] ? [3]`            | `null`                |
 |          |                             |                   |                            |                       |
 | `??`     | Implicit Boolean `??` Any   | `a.redo(b)`       | `(a < 9) ?? (++a)`         | `9`                   |
-|          |                             |                   | `(1 < 0) ?? (++a)`         | `false`               |
+|          |                             |                   | `(1 < 0) ?? (++a)`         | `null`                |
 
 ## Comparison Operators
 | Operator | Operands                    | Method Name       | Example                    | Result                |

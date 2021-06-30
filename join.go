@@ -17,6 +17,8 @@ func Join(a interface{}, b interface{}) interface{} {
             return Join(x, y.Value())
         case String:
             return x.Join(string(y))
+        case Null:
+            return x.Join("")
         default:
             return x.Join(fmt.Sprintf("%v", y))
         }
@@ -28,6 +30,8 @@ func Join(a interface{}, b interface{}) interface{} {
             return Join(x, y.Value())
         case String:
             return String(string(x) + string(y))
+        case Null:
+            return String(string(x))
         default:
             return String(string(x) + fmt.Sprintf("%v", y))
         }
@@ -41,6 +45,8 @@ func Join(a interface{}, b interface{}) interface{} {
             return Join(x, y.Value())
         case String:
             return String(fmt.Sprintf("%v", x) + string(y))
+        case Null:
+            return String(fmt.Sprintf("%v", x))
         default:
             return String(fmt.Sprintf("%v", x) + fmt.Sprintf("%v", y))
         }

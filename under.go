@@ -17,6 +17,8 @@ func Under(a interface{}, b interface{}) Boolean {
             return Under(x, y.Run())
         case String:
             return Boolean(string(x) <= string(y))
+        case Null:
+            return Boolean(string(x) < "")
         default:
             return Under(x, String(fmt.Sprintf("%v", y)))
         }
