@@ -1,0 +1,22 @@
+// https://rosettacode.org/wiki/Runge-Kutta_method
+
+[t, y, d] = [0, 1, 0.1]
+
+rk = :t:y:f(
+  a: d * [t, y].f
+  b: d * [t + d / 2, y + a / 2].f
+  c: d * [t + d / 2, y + b / 2].f
+  d: d * [t + d, y + c].f
+
+  (a + 2 * (b + c) + d) / 6
+)
+
+(t <= 10).redo(
+  (t.ratio.1 == 1).then(
+    out << "y($(t.fmt('%2d'))): $(y.fmt('%10.6f')) ± $((y - (t ** 2 + 4) ** 2 / 16).abs.fmt('%10.8f'))"
+  )
+
+  [t, y] = [t + d, y + [t, y, :t:y(t * y.sqrt)].rk]
+)
+
+out.join("\n")

@@ -26,7 +26,7 @@ This behavior allows you to pipe the output of one dish executable into another 
 
 `dish -e "[1, 2, 3]" | dish -e "stdin.sum"`
 
-## Data Types and Operators
+## [Data Types and Operators](tests/README.md)
 For a detailed decription of operators, precedence, and implicit operator context, [read the operator documentation at tests/README.md](tests/README.md).
 
 Like JSON itself, **dish** has 6 data types (Hash, Array, String, Number, Boolean, and Null), all of which are objects with their own object methods. Traditional, symbolic operators (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods.
