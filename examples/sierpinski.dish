@@ -1,0 +1,14 @@
+// https://rosettacode.org/wiki/Sierpinski_triangle
+
+sierpinski = :n(
+  out: ['*']
+
+  n.times:i(
+    gap: ' ' * 2 ** i
+    out = out.map:x(gap ~ x ~ gap) + out.map:x(x ~ ' ' ~ x)
+  )
+
+  out.join("\n")
+)
+
+4.sierpinski

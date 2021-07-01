@@ -80,7 +80,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                return Multiply(Range(NewNumber(1), x), y)
+                return Multiply(Range(NewNumber(0), Subtract(x, NewNumber(1))), y)
             }
 
             return Multiply(x, y.Run())
