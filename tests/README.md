@@ -52,21 +52,21 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary
 |          | String `!=` Implicit String | `a.isnt(b)`       | `'2.0' != 2`               | `true`                |
 |          | List `!=` Implicit List     | `a.isnt(b)`       | `[1, 2, 3] != [1, 2, 3]`   | `false`               |
 |          |                             |                   |                            |                       |
-| `>`      | Scalar `>` Implicit Number  | `a.above(b)`      | `3 > '10'`                 | `false`               |
-|          | String `>` Implicit String  | `a.above(b)`      | `'3' > 10`                 | `true`                |
-|          | List `>` Implicit Number    | `a.above(b)`      | `[1, 1, 1] > [2, 2]`       | `true`                |
+| `>`      | Scalar `>` Implicit Number  | `a.gt(b)`         | `3 > '10'`                 | `false`               |
+|          | String `>` Implicit String  | `a.gt(b)`         | `'3' > 10`                 | `true`                |
+|          | List `>` Implicit Number    | `a.gt(b)`         | `[1, 1, 1] > [2, 2]`       | `true`                |
 |          |                             |                   |                            |                       |
-| `<`      | Scalar `<` Implicit Number  | `a.below(b)`      | `3 < '10'`                 | `true`                |
-|          | String `<` Implicit String  | `a.below(b)`      | `'3' < 10`                 | `false`               |
-|          | List `<` Implicit Number    | `a.below(b)`      | `[1, 1, 1] < [2, 2]`       | `false`               |
+| `<`      | Scalar `<` Implicit Number  | `a.lt(b)`         | `3 < '10'`                 | `true`                |
+|          | String `<` Implicit String  | `a.lt(b)`         | `'3' < 10`                 | `false`               |
+|          | List `<` Implicit Number    | `a.lt(b)`         | `[1, 1, 1] < [2, 2]`       | `false`               |
 |          |                             |                   |                            |                       |
-| `>=`     | Scalar `>=` Implicit Number | `a.over(b)`       | `3 >= '10'`                | `false`               |
-|          | String `>=` Implicit String | `a.over(b)`       | `'3' >= 10`                | `true`                |
-|          | List `>=` Implicit Number   | `a.over(b)`       | `[1, 1] >= [2, 2]`         | `true`                |
+| `>=`     | Scalar `>=` Implicit Number | `a.gte(b)`        | `3 >= '10'`                | `false`               |
+|          | String `>=` Implicit String | `a.gte(b)`        | `'3' >= 10`                | `true`                |
+|          | List `>=` Implicit Number   | `a.gte(b)`        | `[1, 1] >= [2, 2]`         | `true`                |
 |          |                             |                   |                            |                       |
-| `<=`     | Scalar `<=` Implicit Number | `a.under(b)`      | `3 <= '10'`                | `true`                |
-|          | String `<=` Implicit String | `a.under(b)`      | `'3' <= 10`                | `false`               |
-|          | List `<=` Implicit Number   | `a.under(b)`      | `[1, 1] <= [2, 2]`         | `true`                |
+| `<=`     | Scalar `<=` Implicit Number | `a.lte(b)`        | `3 <= '10'`                | `true`                |
+|          | String `<=` Implicit String | `a.lte(b)`        | `'3' <= 10`                | `false`               |
+|          | List `<=` Implicit Number   | `a.lte(b)`        | `[1, 1] <= [2, 2]`         | `true`                |
 |          |                             |                   |                            |                       |
 | `?=`     | Scalar `?=` Implicit Number | `a.compare(b)`    | `3 ?= '10'`                | `-1`                  |
 |          | String `?=` Implicit String | `a.compare(b)`    | `'3' ?= 10`                | `1`                   |
