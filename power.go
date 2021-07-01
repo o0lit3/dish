@@ -156,7 +156,7 @@ func (b *Block) Sort(a Array) Array {
             return bool(b)
         }
 
-        return bool(Below(a[i], a[j]))
+        return bool(Lt(a[i], a[j]))
     })
 
     return a

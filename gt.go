@@ -1,44 +1,44 @@
 package main
 import("fmt")
 
-func Over(a interface{}, b interface{}) Boolean {
+func Gt(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
-        return Over(x.Run(), b)
+        return Gt(x.Run(), b)
     case *Variable:
-        return Over(x.Value(), b)
+        return Gt(x.Value(), b)
     case Hash:
-        return Over(NewNumber(len(x)), b)
+        return Gt(NewNumber(len(x)), b)
     case Array:
-        return Over(NewNumber(len(x)), b)
+        return Gt(NewNumber(len(x)), b)
     case String:
         switch y := b.(type) {
         case *Block:
-            return Over(x, y.Run())
+            return Gt(x, y.Run())
         case *Variable:
-            return Over(x, y.Value())
+            return Gt(x, y.Value())
         case String:
-            return Boolean(string(x) >= string(y))
+            return Boolean(string(x) > string(y))
         case Null:
-            return Boolean(string(x) >= "")
+            return Boolean(string(x) > "")
         default:
-            return Over(x, String(fmt.Sprintf("%v", y)))
+            return Gt(x, String(fmt.Sprintf("%v", y)))
         }
     case Number:
         switch y := b.(type) {
         case *Block:
-            return Over(x, y.Run())
+            return Gt(x, y.Run())
         case *Variable:
-            return Over(x, y.Value())
+            return Gt(x, y.Value())
         case Hash:
-            return Over(x, NewNumber(len(y)))
+            return Gt(x, NewNumber(len(y)))
         case Array:
-            return Over(x, NewNumber(len(y)))
+            return Gt(x, NewNumber(len(y)))
         case String:
-            return Over(x, y.Number())
+            return Gt(x, y.Number())
         case Number:
             if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
-                return Boolean(true)
+                return Boolean(false)
             }
 
             if x.inf == -INF || y.inf == INF {
@@ -49,16 +49,16 @@ func Over(a interface{}, b interface{}) Boolean {
                 return Boolean(true)
             }
 
-            return Boolean(x.val.Cmp(y.val) >= 0)
+            return Boolean(x.val.Cmp(y.val) > 0)
         case Boolean:
-            return Over(x, y.Number())
+            return Gt(x, y.Number())
         case Null:
-            return Over(x, NewNumber(0))
+            return Gt(x, NewNumber(0))
         }
     case Boolean:
-        return Over(x.Number(), b)
+        return Gt(x.Number(), b)
     case Null:
-        return Over(NewNumber(0), b)
+        return Gt(NewNumber(0), b)
     }
 
     return Boolean(false)

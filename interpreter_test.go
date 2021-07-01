@@ -152,20 +152,20 @@ func TestUnion(t *testing.T) {
     test(t, "tests/union.dish")
 }
 
-func TestBelow(t *testing.T) {
-    test(t, "tests/below.dish")
+func TestLt(t *testing.T) {
+    test(t, "tests/lt.dish")
 }
 
-func TestUnder(t *testing.T) {
-    test(t, "tests/under.dish")
+func TestLte(t *testing.T) {
+    test(t, "tests/lte.dish")
 }
 
-func TestAbove(t *testing.T) {
-    test(t, "tests/above.dish")
+func TestGt(t *testing.T) {
+    test(t, "tests/gt.dish")
 }
 
 func TestOver(t *testing.T) {
-    test(t, "tests/over.dish")
+    test(t, "tests/gte.dish")
 }
 
 func TestDirection(t *testing.T) {

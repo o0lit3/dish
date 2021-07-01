@@ -165,9 +165,9 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 ## Binary Operators
 | Operator | Operands                    | Method Name       | Example                    | Result                |
 | -------- | --------------------------- | ----------------- | -------------------------- | --------------------- |
-| `~`      | Scalar `+` Implicit String  | `a.concat(b)`     | `10 ~ 20`                  | `"1020"`              |
-|          | String `+` Implicit String  | `a.concat(b)`     | `'bin' ~ 'ary'`            | `"binary"`            |
-|          | List `+` Implicit String    | `a.join(b)`       | `[1, 2, 3] ~ ' '`          | `"1 2 3"`             |
+| `~`      | Scalar `~` Implicit String  | `a.concat(b)`     | `10 ~ 20`                  | `"1020"`              |
+|          | String `~` Implicit String  | `a.concat(b)`     | `'bin' ~ 'ary'`            | `"binary"`            |
+|          | List `~` Implicit String    | `a.join(b)`       | `[1, 2, 3] ~ ' '`          | `"1 2 3"`             |
 |          |                             |                   |                            |                       |
 | `+`      | Scalar `+` Implicit Number  | `a.add(b)`        | `10 + 20`                  | `30`                  |
 |          | String `+` String           | `a.add(b)`        | `'bin' + 'ary'`            | `"binary"`            |

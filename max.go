@@ -44,7 +44,7 @@ func (a Array) Max() interface{} {
     for _, val := range a {
         if out == nil {
             out = val
-        } else if Above(val, out) {
+        } else if Gt(val, out) {
             out = val
         }
     }

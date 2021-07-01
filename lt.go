@@ -1,41 +1,41 @@
 package main
 import("fmt")
 
-func Below(a interface{}, b interface{}) Boolean {
+func Lt(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
-        return Below(x.Run(), b)
+        return Lt(x.Run(), b)
     case *Variable:
-        return Below(x.blk.Value(x), b)
+        return Lt(x.blk.Value(x), b)
     case Hash:
-        return Below(NewNumber(len(x)), b)
+        return Lt(NewNumber(len(x)), b)
     case Array:
-        return Below(NewNumber(len(x)), b)
+        return Lt(NewNumber(len(x)), b)
     case String:
         switch y := b.(type) {
         case *Block:
-            return Below(x, y.Run())
+            return Lt(x, y.Run())
         case *Variable:
-            return Below(x, y.blk.Value(y))
+            return Lt(x, y.blk.Value(y))
         case String:
             return Boolean(string(x) < string(y))
         case Null:
             return Boolean(string(x) < "")
         default:
-            return Below(x, String(fmt.Sprintf("%v", y)))
+            return Lt(x, String(fmt.Sprintf("%v", y)))
         }
     case Number:
         switch y := b.(type) {
         case *Block:
-            return Below(x, y.Run())
+            return Lt(x, y.Run())
         case *Variable:
-            return Below(x, y.blk.Value(y))
+            return Lt(x, y.blk.Value(y))
         case Hash:
-            return Below(x, NewNumber(len(y)))
+            return Lt(x, NewNumber(len(y)))
         case Array:
-            return Below(x, NewNumber(len(y)))
+            return Lt(x, NewNumber(len(y)))
         case String:
-            return Below(x, y.Number())
+            return Lt(x, y.Number())
         case Number:
             if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
                 return Boolean(false)
@@ -51,14 +51,14 @@ func Below(a interface{}, b interface{}) Boolean {
 
             return Boolean(x.val.Cmp(y.val) < 0)
         case Boolean:
-            return Below(x, y.Number())
+            return Lt(x, y.Number())
         case Null:
-            return Below(x, NewNumber(0))
+            return Lt(x, NewNumber(0))
         }
     case Boolean:
-        return Below(x.Number(), b)
+        return Lt(x.Number(), b)
     case Null:
-        return Below(NewNumber(0), b)
+        return Lt(NewNumber(0), b)
     }
 
     return Boolean(false)

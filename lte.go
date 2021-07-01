@@ -1,39 +1,39 @@
 package main
 import("fmt")
 
-func Under(a interface{}, b interface{}) Boolean {
+func Lte(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
     case *Block:
-        return Under(x.Run(), b)
+        return Lte(x.Run(), b)
     case *Variable:
-        return Under(x.Value(), b)
+        return Lte(x.Value(), b)
     case Hash:
-        return Under(NewNumber(len(x)), b)
+        return Lte(NewNumber(len(x)), b)
     case Array:
-        return Under(NewNumber(len(x)), b)
+        return Lte(NewNumber(len(x)), b)
     case String:
         switch y := b.(type) {
         case *Block:
-            return Under(x, y.Run())
+            return Lte(x, y.Run())
         case String:
             return Boolean(string(x) <= string(y))
         case Null:
-            return Boolean(string(x) < "")
+            return Boolean(string(x) <= "")
         default:
-            return Under(x, String(fmt.Sprintf("%v", y)))
+            return Lte(x, String(fmt.Sprintf("%v", y)))
         }
     case Number:
         switch y := b.(type) {
         case *Block:
-            return Under(x, y.Run())
+            return Lte(x, y.Run())
         case *Variable:
-            return Under(x, y.Value())
+            return Lte(x, y.Value())
         case Hash:
-            return Under(x, NewNumber(len(y)))
+            return Lte(x, NewNumber(len(y)))
         case Array:
-            return Under(x, NewNumber(len(y)))
+            return Lte(x, NewNumber(len(y)))
         case String:
-            return Under(x, y.Number())
+            return Lte(x, y.Number())
         case Number:
             if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
                 return Boolean(true)
@@ -49,14 +49,14 @@ func Under(a interface{}, b interface{}) Boolean {
 
             return Boolean(x.val.Cmp(y.val) <= 0)
         case Boolean:
-            return Under(x, y.Number())
+            return Lte(x, y.Number())
         case Null:
-            return Under(x, NewNumber(0))
+            return Lte(x, NewNumber(0))
         }
     case Boolean:
-        return Under(x.Number(), b)
+        return Lte(x.Number(), b)
     case Null:
-        return Under(NewNumber(0), b)
+        return Lte(NewNumber(0), b)
     }
 
     return Boolean(false)

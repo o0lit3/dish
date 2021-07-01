@@ -28,7 +28,7 @@ func Sort(a interface{}) interface{} {
 
 func (a Array) Sort() Array {
     sort.Slice(a, func(i, j int) bool {
-        return bool(Below(a[i], a[j]))
+        return bool(Lt(a[i], a[j]))
     })
 
     return a

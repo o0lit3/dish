@@ -521,19 +521,19 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Exclude(a, b))
         case "|", "union":
             blk.Register(Union(a, b))
-        case "<", "below":
-            blk.Register(Below(a, b))
-        case "<=", "under":
-            blk.Register(Under(a, b))
-        case ">", "above":
-            blk.Register(Above(a, b))
-        case ">=", "over":
-            blk.Register(Over(a, b))
+        case "<", "lt":
+            blk.Register(Lt(a, b))
+        case "<=", "lte":
+            blk.Register(Lte(a, b))
+        case ">", "gt":
+            blk.Register(Gt(a, b))
+        case ">=", "gte":
+            blk.Register(Gte(a, b))
         case "?=", "compare", "comp", "direction", "dir":
             blk.Register(Direction(a, b))
-        case "==", "equals", "is":
+        case "==", "equals", "eq", "is":
             blk.Register(Equals(a, b))
-        case "!=", "isnt":
+        case "!=", "isnt", "ne":
             blk.Register(Not(Equals(a, b)))
         case "&&", "and", "then":
             blk.Register(And(a, b))
