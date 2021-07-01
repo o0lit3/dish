@@ -1,0 +1,15 @@
+// https://rosettacode.org/wiki/Semiprime
+
+semiprime = :n(
+  divs = n.divisors
+  (#divs == 2 && divs.1.prime) || (#divs == 3 && divs.1.prime && divs.2.prime)
+)
+
+[
+  1..50
+  51..100
+  1675..1681
+  [2,4,99,100,1679,5030,32768,1234567,9876543,900660121]
+].map:set(
+  set.grep:n(n.semiprime)
+).join("\n")
