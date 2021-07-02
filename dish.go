@@ -38,7 +38,7 @@ func main() {
 
     if debug {
         for _, term := range parser.blk.toks {
-            fmt.Printf("%v\n", term)
+            fmt.Fprintf(os.Stderr, "%v\n", term)
         }
 
         return

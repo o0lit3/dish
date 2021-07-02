@@ -1,5 +1,4 @@
 package main
-import("fmt")
 
 func Add(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -15,12 +14,8 @@ func Add(a interface{}, b interface{}) interface{} {
             return Add(x, y.Value())
         case Hash:
             return x.Add(y)
-        case Array:
-            return x.Add(y.Hash())
-        case String:
-            return x.Add(Hash { string(y): y })
         default:
-            return x.Add(Hash { fmt.Sprintf("%v", y): y})
+            return x.Add(Hashify(b))
         }
     case Array:
         switch y := b.(type) {

@@ -1,5 +1,4 @@
 package main
-import("fmt")
 
 func Union(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -15,12 +14,8 @@ func Union(a interface{}, b interface{}) interface{} {
             return Union(x, y.Value())
         case Hash:
             return x.Union(y)
-        case Array:
-            return x.Union(y.Hash())
-        case String:
-            return x.Union(Hash { string(y): y })
         default:
-            return x.Union(Hash { fmt.Sprintf("%v", y): y })
+            return x.Union(Hashify(b))
         }
     case Array:
         switch y := b.(type) {

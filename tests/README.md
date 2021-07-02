@@ -1,13 +1,13 @@
 # Operators
-Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods. The tables below outline which shorthand, symbolic operands correspond to which method names. Some binary operators change behavior depending on the data types of their operands; in these cases, the left-hand operand forces the right-hand operand into an implicit context with the following conversion rules:
+Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods. The tables below outline which shorthand, symbolic operands correspond to which method names. Some binary operators change behavior depending on the data types of their operands; in these cases, the left-hand operand coerces the right-hand operand into an implied data-type with the following conversion rules:
 
-|             | Boolean               | Number      | String              | Array      | Hash      |
-| ----------- | --------------------- | ----------- | ------------------- | ---------- | --------- |
-| **Boolean** | `x`                   | `1`, `0`    | `"true"`, `"false"` | `[x]`      | `{~x: x}` |
-| **Number**  | `x != 0`              | `x`         | `~x`                | `[x]`      | `{~x: x}` |
-| **String**  | `x != ""`             | `+x`        | `x`                 | `[x]`      | `{~x: x}` |
-| **Array**   | `#x != 0`             | `#x`        | `x.join`            | `x`        | `x.hash`  |
-| **Hash**    | `#x != 0`             | `#x`        | `x.vals.join`       | `x.vals`   | `x`       |
+|             | Boolean               | Number      | String              | Array      | Hash         |
+| ----------- | --------------------- | ----------- | ------------------- | ---------- | ------------ |
+| **Boolean** | `x`                   | `1`, `0`    | `"true"`, `"false"` | `[x]`      | `{~x: true}` |
+| **Number**  | `x != 0`              | `x`         | `~x`                | `[x]`      | `{~x: true}` |
+| **String**  | `x != ""`             | `+x`        | `x`                 | `[x]`      | `{~x: true}` |
+| **Array**   | `#x != 0`             | `#x`        | `x.join`            | `x`        | `x.hash`     |
+| **Hash**    | `#x != 0`             | `#x`        | `x.vals.join`       | `x.vals`   | `x`          |
 
 With the exception of special [assignment operators](#assignment-operators) and [comparison operators](#comparison-operators) that use the `=` symbol as its second character, all symbolic operators in **dish** consist of either a single symbolic character or a doubled, symbolic character; `|`, `||`, and `|=` are a valid symbolic operators, `?:`, `=~`, and `>>=` are not.
 

@@ -1,10 +1,5 @@
 package main
 
-import(
-    "fmt"
-    "strings"
-)
-
 func Push(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
@@ -19,12 +14,8 @@ func Push(a interface{}, b interface{}) interface{} {
             return Push(x, y.Value())
         case Hash:
             return x.Push(y)
-        case Array:
-            return x.Push(y.Hash())
-        case String:
-            return x.Push(Hash { string(y): y })
         default:
-            return x.Push(Hash { fmt.Sprintf("%v", y): y})
+            return x.Push(Hashify(b))
         }
     case Array:
         switch y := b.(type) {
@@ -52,7 +43,7 @@ func Push(a interface{}, b interface{}) interface{} {
         case String:
             return Push(x, y.Number())
         case Number:
-            return String(string(x) + strings.Repeat(" ", y.Int()))
+            return Join(x, Multiply(String(" "), y))
         case Boolean:
             return Push(x, y.Number())
         case Null:

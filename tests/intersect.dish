@@ -1,7 +1,7 @@
 [
     {foo: 1} & {bar: 2}     // {}
     {foo: 1} & {foo: 2}     // {"foo": 2}
-    {foo: 1} & ["foo"]      // {"foo": "foo"}
+    {foo: 1} & ["foo"]      // {"foo": true}
     [1, 2, 3] & [3, 4, 5]   // [3]
     [1, 2, 3] & [4, 3, 2]   // [2, 3]
     'codfish' & 'airshed'   // "dish"

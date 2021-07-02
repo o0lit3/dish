@@ -1,5 +1,4 @@
 package main
-import("fmt")
 
 func Exclude(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -15,12 +14,8 @@ func Exclude(a interface{}, b interface{}) interface{} {
             return Exclude(x, y.Value())
         case Hash:
             return x.Exclude(y)
-        case Array:
-            return x.Exclude(y.Hash())
-        case String:
-            return x.Exclude(Hash { string(y): y })
         default:
-            return x.Exclude(Hash { fmt.Sprintf("%v", y): y })
+            return x.Exclude(Hashify(b))
         }
     case Array:
         switch y := b.(type) {

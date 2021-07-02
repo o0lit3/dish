@@ -12,8 +12,8 @@ func Hashify(a interface{}) Hash {
     case Array:
         return x.Hash()
     case String:
-        return Hash{ string(x): x }
+        return Hash{ string(x): Boolean(true) }
     default:
-        return Hash{ fmt.Sprintf("%v", x): x }
+        return Hash{ fmt.Sprintf("%v", x): Boolean(true) }
     }
 }

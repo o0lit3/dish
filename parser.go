@@ -323,13 +323,7 @@ func (b *Block) Interpolate(s string) String {
 }
 
 func (b *Block) String() string {
-    out := ""
-
-    for _, tok := range b.toks {
-        out += tok.lit
-    }
-
-    return out
+    return fmt.Sprintf("%v", b.Run())
 }
 
 func (b *Block) FindVar(name string) interface{} {

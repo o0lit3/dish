@@ -1,10 +1,5 @@
 package main
 
-import(
-    "fmt"
-    "strings"
-)
-
 func Unshift(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
@@ -19,12 +14,8 @@ func Unshift(a interface{}, b interface{}) interface{} {
             return Unshift(x, y.Value())
         case Hash:
             return x.Unshift(y)
-        case Array:
-            return x.Unshift(y.Hash())
-        case String:
-            return x.Unshift(Hash { string(y): y })
         default:
-            return x.Unshift(Hash { fmt.Sprintf("%v", y): y })
+            return x.Unshift(Hashify(b))
         }
     case Array:
         switch y := b.(type) {
@@ -52,7 +43,7 @@ func Unshift(a interface{}, b interface{}) interface{} {
         case String:
             return Unshift(x, y.Number())
         case Number:
-            return String(strings.Repeat(" ", y.Int()) + string(x))
+            return Join(Multiply(String(" "), y), x)
         case Boolean:
             return Unshift(x, y.Number())
         case Null:

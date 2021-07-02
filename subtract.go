@@ -19,12 +19,8 @@ func Subtract(a interface{}, b interface{}) interface{} {
             return Subtract(x, y.Value())
         case Hash:
             return x.Subtract(y)
-        case Array:
-            return x.Subtract(y.Hash())
-        case String:
-            return x.Subtract(Hash { string(y): y })
         default:
-            return x.Subtract(Hash { fmt.Sprintf("%v", y): y})
+            return x.Subtract(Hashify(b))
         }
     case Array:
         switch y := b.(type) {

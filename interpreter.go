@@ -163,9 +163,9 @@ func (s Array) Hash() Hash {
     for _, val := range s {
         switch x := val.(type) {
         case String:
-            out[string(x)] = x
+            out[string(x)] = Boolean(true)
         default:
-            out[fmt.Sprintf("%v", x)] = x
+            out[fmt.Sprintf("%v", x)] = Boolean(true)
         }
     }
 

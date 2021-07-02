@@ -1,5 +1,4 @@
 package main
-import("fmt")
 
 func Intersect(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -15,12 +14,8 @@ func Intersect(a interface{}, b interface{}) interface{} {
             return Intersect(x, y.Value())
         case Hash:
             return x.Intersect(y)
-        case Array:
-            return x.Intersect(y.Hash())
-        case String:
-            return x.Intersect(Hash { string(y): y })
         default:
-            return x.Intersect(Hash { fmt.Sprintf("%v", y): y })
+            return x.Intersect(Hashify(b))
         }
     case Array:
         switch y := b.(type) {

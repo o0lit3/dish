@@ -1,8 +1,8 @@
 [
     %{foo: 1}   // {"foo": 1}
-    %[1, 2, 3]  // {"1": 1, "2": 2, "3": 3}
-    %"foobar"   // {"foobar": "foobar"}
-    %3.14       // {"3.14": 3.14}
-    %5          // {"5": 5}
-    %false      // {"false": false}
+    %[1, 2, 3]  // {"1": true, "2": true, "3": true}
+    %"foobar"   // {"foobar": true}
+    %3.14       // {"3.14": true}
+    %5          // {"5": true}
+    %false      // {"false": true}
 ]
