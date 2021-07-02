@@ -45,7 +45,7 @@ func Multiply(a interface{}, b interface{}) interface{} {
         case Array:
             return x.DotProduct(y)
         case String:
-            return x.Repeat(y.Number())
+            return Join(x, y)
         case Number:
             return x.Repeat(y)
         case Boolean:

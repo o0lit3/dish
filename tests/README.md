@@ -187,12 +187,13 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | String `*` Implicit Number  | `a.repeat(b)`     | `'a' * 5`                  | `"aaaaa"`             |
 |          | List `*` :(Block)           | `a.map:i(...)`    | `[1, 2, 3] * :i(i * 2)`    | `[1, 4, 6]`           |
 |          | List `*` List               | `a.dot(b)`        | `[1, 2, 3] * [1, 2, 3]`    | `[1, 4, 9]`           |
+|          | List `*` String             | `a.join(b)`       | `[1, 2, 3] * ' '`          | `"1 2 3"`             |
 |          | List `*` Implicit Number    | `a.repeat(b)`     | `[1, 2, 3] * 2`            | `[1, 2, 3, 1, 2, 3]`  |
 |          |                             |                   |                            |                       |
 | `/`      | Scalar `/` Implicit Number  | `a.divide(b)`     | `10 / 20`                  | `0.5`                 |
 |          | String `/` :(Block)         | `a.split:i(...)`  | `'binary' / :i(i.vowel)`   | `["b", "n", "ry"]`    |
 |          | String `/` String           | `a.split(b)`      | `'binary' / 'in'`          | `["b", "ary"]`        |
-|          | String `/` Implicit Number  | `a.split(b)`      | `'binary' / 2`             | ` ["bi", "na", "ry"]` |
+|          | String `/` Implicit Number  | `a.split(b)`      | `'binary' / 2`             | `["bi", "na", "ry"]`  |
 |          | List `/` :(Block)           | `a.split:i(...)`  | `[2, 2, 3, 4] / :i(i % 2)` | `[[2, 2], [4]]`       |
 |          | List `/` Implicit Number    | `a.split(b)`      | `[2, 2, 3, 4] / 2`         | `[[2, 2], [3, 4]]`    |
 |          |                             |                   |                            |                       |
@@ -230,7 +231,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | String `..` String          | `a.to(b)`         | `'a' .. 'c'`               | `["a", "b", "c"]`     |
 |          | String `..` Implicit Number | `a.to(b)`         | `'a' .. 99`                | `["a", "b", "c"]`     |
 
-**Note bene**: the `..` range/to operator supports positve as well as negative ranges (as forced integers for numbers). In cases where a range is used short-circuit a traditional for loop, you may need to first check that the right-hand operand is greater than the left-hand operand. Compare the following:
+**Note bene**: the `..` range/to operator supports positve as well as negative ranges (as forced integers for numbers). In cases where a range is used to short-circuit a traditional for loop, you may need to first check that the right-hand operand is greater than the left-hand operand. Compare the following:
 
 `dish -e 'a = 1; (0..3).map:i((1..i).map:j(a *= j)); a'` outputs `0`
 
@@ -248,7 +249,7 @@ The member assignment operator (`:=`) is a special assignment operator that allo
 |          | `-`List                     | `a.negsum`        | `-[1, 2, 3]`               | `-6`                  |
 |          |                             |                   |                            |                       |
 | `+`      | `+`Scalar                   | `a.num`           | `+5`                       | `5`                   |
-|          | `+`String                   | `a.num`           | `+"5"                      | `5`                   |
+|          | `+`String                   | `a.num`           | `+"5"`                     | `5`                   |
 |          | `+`List                     | `a.sum`           | `+[1, 2, 3]`               | `6`                   |
 |          |                             |                   |                            |                       |
 | `~`      | `~`Scalar                   | `a.str`           | `~5`                       | `"5"`                 |

@@ -377,7 +377,7 @@ func (blk *Block) Interpret() interface{} {
             blk.Register(Not(a))
         case "?", "boolean", "bool":
             blk.Register(Boolify(a))
-        case "^", "invert":
+        case "^", "invert", "flip":
             blk.Register(Invert(a))
         case "%", "hashify", "hash":
             blk.Register(Hashify(a))
@@ -465,7 +465,14 @@ func (blk *Block) Interpret() interface{} {
             switch op := blk.FindVar(t.lit).(type) {
             case Null:
             default:
-                blk.Register(Member(Array { blk.Value(a), blk.Value(b) }, op))
+                params := Array { blk.Value(a) }
+
+                for _, param := range blk.Blockify(b) {
+                    params = append(params, param)
+                }
+
+                blk.Register(Member(params, op))
+
                 return blk.Interpret()
             }
         }
@@ -530,7 +537,7 @@ func (blk *Block) Interpret() interface{} {
         case ">=", "gte":
             blk.Register(Gte(a, b))
         case "?=", "compare", "comp", "direction", "dir":
-            blk.Register(Direction(a, b))
+            blk.Register(Compare(a, b))
         case "==", "equals", "eq", "is":
             blk.Register(Equals(a, b))
         case "!=", "isnt", "ne":
