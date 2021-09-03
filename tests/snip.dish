@@ -1,0 +1,12 @@
+[
+    'apple'.digit       ## false
+    '0123'.digit        ## true
+    'apple'.letter      ## true
+    '0123'.letter       ## false
+    'apple'.consonant   ## false
+    'banana'.consonant  ## true
+    'apple'.upper       ## false
+    'Apple'.upper       ## true
+    'apple'.lower       ## true
+    ' '.space           ## true
+]

@@ -1,0 +1,10 @@
+## https://rosettacode.org/wiki/Sorting_algorithms/Quicksort
+
+qsort = :a(
+  (#a <= 1).switch[
+    a
+    (pivot = <<a, a.grep:i(i < pivot).qsort + [pivot] + a.without:i(i < pivot).qsort)
+  ]
+)
+
+[4, 65, 2, -31, 0, 99, 2, 83, 782, 1].qsort

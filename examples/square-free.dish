@@ -1,0 +1,12 @@
+## https://rosettacode.org/wiki/Square-free_integers
+
+squareless = :n(
+  (divs = /n).none:d(#(divs @ d) > 1)
+)
+
+[
+  (1..145).grep:n(n.squareless)
+  [100, 1000, 10000].map:n(
+    "From 1 to $n: " + *#((1..n).grep:n(n.squareless))
+  ).join("\n")
+].join("\n\n")

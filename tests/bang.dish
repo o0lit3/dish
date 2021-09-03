@@ -1,0 +1,31 @@
+[
+    1 > 0 ! 5                           ## null
+    0 > 1 ! 5                           ## 5
+    [1, 2, 3].swap[1, 2, 3]             ## null
+    [0, 0].swap[1, 2, 3]                ## 1
+    [0, 1, 0].swap[1, 2, 3]             ## 1
+    [0, ++a, ++b]![0, [a, b]]           ## 0
+    ([++d, ++c]![++c, ++d], [c, d])     ## [1, 1]
+    ([e, ++f]![++e, ++f], [e, f])       ## [1, null]
+    true.swap[4, 5]                     ## 5
+    false.swap[4, 5]                    ## 4
+    1.swap[4, 5]                        ## 5
+    0.swap[4, 5]                        ## 4
+    (0.swap[4, (n = 3, 5)], n)          ## null
+    (m = 3, m.until:(--m))              ## null
+    (a = 1, n = 0, n ! :(a += ++n))     ## 2
+    (a = null, a ! :(a << [1]))         ## [1]
+    (a = 8, (a <= 2).until:(a /= 2))    ## 2
+    !{}                                 ## true
+    !{foo: 1, bar: 2}                   ## false
+    ![]                                 ## true
+    ![1, 2, 3]                          ## false
+    !''                                 ## true
+    !'foobar'                           ## false
+    !0.0                                ## true
+    !3.14                               ## false
+    !0                                  ## true
+    !5                                  ## false
+    !false                              ## true
+    !true                               ## false
+]

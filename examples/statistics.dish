@@ -1,0 +1,29 @@
+## https://rosettacode.org/wiki/Statistics/Basic
+
+stats = :n(
+  sum1: sum2: 0
+  hist: [0]*10
+
+  n.times:(
+    r: 1.rand
+    sum1 += r
+    sum2 += r ^ 2
+    ++hist.(10 * r)
+  )
+
+  mean: (sum1 / n) @ 8
+  stdev: (((sum2 / n) - mean ^ 2).sqrt) @ 8
+
+  [
+    "size: $n"
+    "mean: $mean"
+    "stdev: $stdev"
+    ""
+  ] + hist.map:x:i(
+    (0.1 * i).fmt("%.1f") + ": " + '=' * (70 * x / hist.max)
+  )
+)
+
+[10, 100, 1000, 10000].map:n(
+  n.stats.join("\n")
+).join("\n\n")

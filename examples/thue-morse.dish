@@ -1,0 +1,7 @@
+## https://rosettacode.org/wiki/Thue-Morse
+
+(
+  [s = '0'] + 6.times:(
+    s += (//s).map:c(+!+c).join
+  )
+).join("\n")

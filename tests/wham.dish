@@ -1,0 +1,42 @@
+[
+    {} || false             ## false
+    {foo: 0} || false       ## {"foo": 0}
+    [] || false             ## false
+    [0, 0] || false         ## [0, 0]
+    "0" || false            ## "0"
+    "foo" || false          ## "foo"
+    "" || false             ## false
+    3.14 || false           ## 3.14
+    0 || false              ## false
+    true || false           ## true
+    [false || ++a, a]       ## [1, 1]
+    [true || ++b, b]        ## [true, null]
+    [true || ++c || ++c, c] ## [true, null]
+    [1 || 0 && ++d, d]      ## [1, null]
+    [1 || 1 && ++e, e]      ## [1, null]
+    {foo: 1} | {foo: 2}     ## {"foo": 2}
+    [1, 2, 3] | [3, 4, 5]   ## [1, 2, 3, 4, 5]
+    [1, 2, 3] | [4, 2, 1]   ## [1, 2, 3, 4]
+    [1, 2, 3] | :x(x % 2)   ## true
+    [2, 4, 6] | :x(x % 2)   ## false
+    'didi' | 'sihi'         ## "dish"
+    'binary' | :c(c.vowel)  ## true
+    'rsvp' | :c(c.vowel)    ## false
+    150 | 105               ## 255
+    '150' | '105'           ## "150"
+    4 | 2                   ## 6
+    '3' | '2'               ## "32"
+    3.14 | 2.5              ## 3
+    3 | true                ## 3
+    |[1, 2, 2, 3, 4, 4]     ## [1, 2, 3, 4]
+    |"bookkeeper"           ## "bokepr"
+    |3033                   ## 3033
+    3033.str.uniq.num       ## 30
+    +|*3033                 ## 30
+    |-3.14                  ## 3.14
+    |3.14                   ## 3.14
+    |-2                     ## 2
+    |2                      ## 2
+    |true                   ## 1
+    |null                   ## 0
+]

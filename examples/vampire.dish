@@ -1,0 +1,26 @@
+## https://rosettacode.org/wiki/Vampire_number
+## ~15s run time on 2.8 GHz
+
+pairs = :n:out(
+  factors: **n
+  <<factors
+  factors.redo:(out << [[<<factors, >>factors]])
+)
+
+fangs = :n(
+  (#*n%2).switch[[], (
+    (n.pairs ?? []).grep:f(
+      #*f.0 == #*n/2 && #*f.1 == #*n/2 && #([f.0, f.1].grep:n(n % 10 == 0)) != 2 && (
+        (//(*f.0 + *f.1)).sort == (//*n).sort
+      )
+    )
+  )]
+)
+
+(#vamps < 25).redo:(
+  (#(f = (++i).fangs)).then(
+    vamps << ["$i:\t$f"]
+  )
+).join("\n") + "\n" + [16758243290880, 24959017348650, 14593825548650].map:n(
+  "$n: $(n.fangs)"
+).join("\n")

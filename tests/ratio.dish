@@ -1,0 +1,9 @@
+[
+    %{foo: 1}       ## {"foo": 1}
+    %[1, 2]         ## {"1": true, "2": true}
+    %"foobar"       ## {"foobar": true}
+    %3.14           ## {"denom": 50, "num": 157}
+    %5              ## {"denom": 1, "num": 5}
+    %false          ## {"denom": 1, "num": 0}
+    %-4             ## {"denom": 1, "num": -4}
+]

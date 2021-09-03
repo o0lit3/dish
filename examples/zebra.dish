@@ -1,0 +1,61 @@
+## https://rosettacode.org/wiki/Zebra_puzzle
+
+perms = {
+  nations: **['English', 'Swedish', 'Danish', 'Norwegian', 'German']
+  colors: **['Red', 'Green', 'White', 'Blue', 'Yellow']
+  pets: **['Dog', 'Bird', 'Cat', 'Horse', 'Zebra']
+  drinks: **['Tea', 'Coffee', 'Milk', 'Beer', 'Water']
+  smokes: **['PallMall', 'Dunhill', 'BlueMaster', 'Prince', 'Blend']
+}
+
+adjacent = :n:i:g:e(
+  (0..3).any:x((n.x == i && g.(x + 1) == e) || (n.(x + 1) == i && g.x == e))
+)
+
+left = :n:i:g:e(
+  (0..3).any:x(n.x == i && g.(x + 1) == e)
+)
+
+right = :n:i:g:e(
+  (0..3).any:x(n.(x + 1) == 1 && g.x == e)
+)
+
+coincident = :n:i:g:e(
+  n.any:x:j(n.j == i && g.j == e)
+)
+
+(perms.'nations').each:n(
+  n.first == 'Norwegian' && (
+    (perms.'pets').each:p(
+      [n, 'Swedish', p, 'Dog'].coincident && (
+        (perms.'colors').each:c(
+          [c, 'Green', c, 'White'].left &&
+          [n, 'English', c, 'Red'].coincident &&
+          [n, 'Norwegian', c, 'Blue'].adjacent && (
+            (perms.'drinks').each:d(
+              d.2 == 'Milk' &&
+              [n, 'Danish', d, 'Tea'].coincident &&
+              [c, 'Green', d, 'Coffee'].coincident && (
+                (perms.'smokes').each:s(
+                  [s, 'PallMall', p, 'Bird'].coincident &&
+                  [s, 'Dunhill', c, 'Yellow'].coincident &&
+                  [s, 'BlueMaster', d, 'Beer'].coincident &&
+                  [s, 'Prince', n, 'German'].coincident &&
+                  [s, 'Blend', p, 'Cat'].adjacent &&
+                  [s, 'Blend', d, 'Water'].adjacent &&
+                  [s, 'Dunhill', p, 'Horse'].adjacent && (
+                    out = {nations: n, pets: p, colors: c, drinks: d, smokes: s}
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+"The Zebra is owned by the man who is $((out.'nations').(out.'pets' @ 'Zebra').0)" + "\n\n" + (0..4).map:i(
+  "House $(i + 1): " + ['nations', 'colors', 'pets', 'drinks', 'smokes'].map:a((out.a).i).join(', ')
+).join("\n")

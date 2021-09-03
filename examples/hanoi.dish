@@ -1,0 +1,15 @@
+## http://rosettacode.org/wiki/Towers_of_Hanoi
+
+move = :disks:start:target:using(
+  (disks == 1).then(
+    history << [towers.target @= towers.target << [>>towers.start]]
+  ).else(
+    (disks - 1).move[start, using, target]
+    1.move[start, target, using]
+    (disks - 1).move[using, target, start]
+  )
+)
+
+towers = [5..1, [], []]
+5.move[0, 1, 2]
+history.join("\n")

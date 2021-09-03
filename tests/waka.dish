@@ -1,0 +1,45 @@
+[
+    [1, 2, 3] > [3, 4]              ## true
+    3 > 10.5                        ## false
+    "foo" > "bing"                  ## true
+    2.5 > 3.14                      ## false
+    2.5 > true                      ## true
+    1 > false                       ## true
+    0 > true                        ## false
+    false > false                   ## false
+    [1, 2] >= [3, 4]                ## true
+    3 >= 10.5                       ## false
+    "foo" >= "foo"                  ## true
+    2.5 >= 3.14                     ## false
+    2.5 >= true                     ## true
+    0 >= true                       ## false
+    false >= false                  ## true
+    (a = {}, a >> {foo: 1})         ## {"foo": 1}
+    (a = [1, 2, 3], a >> 2)         ## [null, null, 1, 2, 3]
+    (a = [1, 2, 3], a >> -2)        ## [3]
+    (a = [1, 2], a >> [3, 4])       ## [3, 4, 1, 2]
+    48 >> 4                         ## 3
+    2 >> 1                          ## 1
+    2.5 >> 1                        ## 1
+    "foo" >> 2                      ## "  foo"
+    2 >> true                       ## 1
+    2 >> false                      ## 2
+    >{foo: 1, bar: 2}               ## 2
+    >[3, 4.5, 1.1, 9]               ## 9
+    >[4, 2, 5.5]                    ## 5.5
+    >["bar", "bing", "foo"]         ## "foo"
+    >"foobar"                       ## "FOOBAR"
+    >//"foobar"                     ## "r"
+    [1, 2, 3].max                   ## 3
+    >3.14                           ## 4
+    3.14.ceil                       ## 4
+    >2                              ## 2
+    >true                           ## 1
+    (a = [1, 2, 3], [>>a, a])       ## [3, [1, 2]]
+    (a = "foobar", [>>a, a])        ## ["r", "fooba"]
+    (a = 12, [>>a, a])              ## [0, 6]
+    (a = ["f", 1], [>>a, a])        ## [1, ["f"]]
+    (a = [], [>>a, a])              ## [null, []]
+    (a = [1, 2, 3], [a.pop, a])     ## [3, [1, 2]]
+    (a = [1, 2, 3], [a.last, a])    ## [3, [1, 2, 3]]
+]

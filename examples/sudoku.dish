@@ -1,0 +1,62 @@
+## https://rosettacode.org/wiki/Sudoku
+
+data = [
+  [3 9 4 0 0 2 6 7 0]
+  [0 0 0 3 0 0 4 0 0]
+  [5 0 0 6 9 0 0 2 0]
+  [0 4 5 0 0 0 9 0 0]
+  [6 0 0 0 0 0 0 0 7]
+  [0 0 7 0 0 0 5 8 0]
+  [0 1 0 0 6 7 0 0 8]
+  [0 0 9 0 0 8 0 0 0]
+  [0 2 6 4 0 0 7 3 5]
+]
+
+row = :data:i(
+  data.i ~ [0]
+)
+
+column = :data:j(
+  data.(0..8).map:r(r.j) ~ [0]
+)
+
+square = :data:i:j(
+  //data.(4*<(i/3)..3*<(i/3)+2).map:r(r.(3*<(j/3)..3*<(j/3)+2)) ~ [0]
+)
+
+options = :data(
+  data.reduce:out:r:i(
+    out << r.map:c:j(
+      !c ? [[i, j, (1..9) ~ (data.row(i) | data.column(j) | data.square[i, j])]]
+    ).compact
+  ).sort:a:b(#a.-1 < #b.-1)
+)
+
+solve = :data(
+  data.options.then(
+    [i, j, vals] = (data.options.first)
+    
+    [#vals == 0, #vals == 1].switch[
+      []
+      (data.i.j @= vals.0).solve
+      (o: 0, out: [], (o < #opts && !out).redo:(
+        out = ((/data).i.j @= vals.o).solve
+        ++o
+      ), out)
+    ]
+  ).else(
+    data
+  )
+)
+
+border = ' +-------+-------+-------+'
+
+print = :data(
+  data.map:r:i(
+    (i % 3 == 0).then("$border\n") + r.map:c:j(
+      (j % 3).switch[' ', ' | '] + c.switch[*c, '-']
+    ).join + ' |'
+  ).join("\n") + "\n$border"
+)
+
+data.print + "\n\n" + data.solve.print

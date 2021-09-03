@@ -1,0 +1,21 @@
+## https://rosettacode.org/wiki/Taxicab_numbers
+
+taxis = (1..75).reduce:out:a(
+  out << (a..75).map:b(
+    [a, b] 
+  )
+).group:x(x.0^3 + x.1^3).grep:v:k(
+  #v > 1
+)
+
+taxis.keys.map:k(+k).sort.map:k(
+  (++i).fmt('%2d') + ': ' + [
+    k.fmt('%6d')
+    '='
+    (*taxis.k.0.0 + "^3").fmt('%4s')
+    (*taxis.k.0.1 + "^3").fmt('%4s')
+    '='
+    (*taxis.k.1.0 + "^3").fmt('%4s')
+    (*taxis.k.0.1 + "^3").fmt('%4s')
+  ].join(' ')
+).join("\n")
