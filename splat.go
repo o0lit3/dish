@@ -259,7 +259,7 @@ func (t *Token) TopSplat(a interface{}) interface{} {
 
         switch t.lit {
         case "join":
-            return t.JoinArray(x, String(""))
+            return t.JoinArray(x, String("\n"))
         case "product", "prod":
             return t.MultiplyArray(x)
         default:
@@ -273,7 +273,7 @@ func (t *Token) TopSplat(a interface{}) interface{} {
 
                 switch x[0].(type) {
                 case String:
-                    return t.JoinArray(x, String(""))
+                    return t.JoinArray(x, String("\n"))
                 case Number:
                     return t.MultiplyArray(x)
                 case Boolean:
