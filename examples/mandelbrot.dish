@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Mandelbrot_set
+## https://rosettacode.org/wiki/Mandelbrot_set
 
 (-16..16).map:y(
   (-5..85).map:x(
@@ -8,7 +8,7 @@
       j = (r * r - i * i - 2 + x / 25).round(9)
       i = (2 * r * i + y / 10).round(9)
       j * j + i * i < 9 && ++k < 96
-    ).redo(r = j)
+    ).redo:(r = j)
 
     " .:-;!/>)|&IH%*#".(k & 15)
   ).join

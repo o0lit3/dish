@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Amicable_pairs
+## https://rosettacode.org/wiki/Amicable_pairs
 
 sums = (0..20000).map:i(
   i.divisors.sum
@@ -7,5 +7,5 @@ sums = (0..20000).map:i(
 sums.grep:s:i(
   sums.s == i && i < s
 ).map:s(
-  [sums.s, s].join(' ')
+  "$(sums.s) $s"
 ).join("\n")

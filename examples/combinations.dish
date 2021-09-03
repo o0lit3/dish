@@ -1,13 +1,14 @@
-// https://rosettacode.org/wiki/Combinations
+## https://rosettacode.org/wiki/Combinations
 
+## If there wasn't a built-in:
 comb = :n:m(
-  (1..2**#n-1).map:i(
-    n.(i.fmt("%0$(#n)b").find(1))
+  (1..2^#n-1).map:i(
+    n.(i.fmt("%0$(#n)b").find(*1))
   ).grep:bits(
     #bits == m
   )
 )
 
-('a'..'e').comb(3).map:list(
+(('a'..'e') ** 3).map:list(
   list.join(' ')
 ).sort.join("\n")

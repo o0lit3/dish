@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Trigonometric_functions
+## https://rosettacode.org/wiki/Trigonometric_functions
 
 pi = 3.14159265359
 
@@ -7,11 +7,11 @@ pi = 3.14159265359
   {radians: '(pi / 4).cos', degrees: '(45 * pi / 180).cos'}
   {radians: '(pi / 4).tan', degrees: '(45 * pi / 180).tan'}
 ].map:obj(
-  "[$(obj.radians), $(obj.degrees)]" ~ " \t// " ~ [obj.radians.eval.round(9), obj.degrees.eval.round(9)]
-).join("\n") ~ "\n\n" ~ [
+  "[$(obj.radians), $(obj.degrees)] \t## [$(obj.radians.eval.round(9)), $(obj.degrees.eval.round(9))]"
+).join("\n") + "\n\n" + [
   {radians: 'r = (0.707106781).asin', degrees: 'r * 180 / pi'}
   {radians: 'r = (0.707106781).acos', degrees: 'r * 180 / pi'}
   {radians: 'r = (1.000000000).atan', degrees: 'r * 180 / pi'}
 ].map:obj(
-  "[$(obj.radians), $(obj.degrees)]" ~ "\t// " ~ [obj.radians.eval.round(9), +obj.degrees.eval.fmt('%0.2f')]
+  "[$(obj.radians), $(obj.degrees)] \t## [$(obj.radians.eval.round(9)), $(+obj.degrees.eval.fmt('%0.2f'))]"
 ).join("\n")

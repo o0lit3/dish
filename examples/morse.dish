@@ -1,4 +1,4 @@
-// https://www.rosettacode.org/wiki/Morse_code
+## https://www.rosettacode.org/wiki/Morse_code
 
 morse = {
   A: '.-',    B: '-...',  C: '-.-.',  D: '-..',   E: '.'
@@ -13,7 +13,7 @@ morse = {
 
 [
   (0..9).join,
-  'Hello World'
+  'Hello World!'
 ].map:message(
-  message.map:c(morse.(c.uc)).join(' ')
+  message.map:c(morse.(c.uc)||c).join(' ')
 ).join("\n")

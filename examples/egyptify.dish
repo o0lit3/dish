@@ -1,31 +1,34 @@
-// https://rosettacode.org/wiki/Egyptian_fractions
+## https://rosettacode.org/wiki/Egyptian_fractions
 
 egyptify = :f(
   out: []
 
   (f >= 1).then(
-    (f.ratio.1 == 1).then(
-      out << f
+    (r.'denom' == 1).then(
+      out << [f]
       f = 1
     ).else(
-      out << f.int
+      out << [f.int]
       f = f - f.int
     )
   )
 
-  (f.ratio.0 > 1).redo(
-    out << 1 / (1 / f).ceil
-    f = ((-f.ratio.1 % f.ratio.0 + f.ratio.0) % f.ratio.0) / (f.ratio.1 * (1 / f).ceil)
+  r: f.ratio
+
+  (r.'num' > 1).redo:(
+    out << [1 / (1 / f).ceil]
+    f = (-r.'denom' % r.'num') / (r.'denom' * (1 / f).ceil)
+    r = f.ratio
   )
 
-  (out << f).map:r((r.ratio.1 == 1).then(r).else(r.ratio.join('/')))
+  (out << [f]).map:f((f.ratio.'denom' == 1).switch[f, f.ratio.vals.join('/')])
 )
 
-(2..99).each:a(
-  (2..99).each:b(
+(2..99).each:b(
+  (2..b).each:a(
     e: (a / b).egyptify
     (#e > tmax).then(tmax = #e, term = a / b)
-    (#e.(-1) - 2 > dmax).then(dmax = #e.(-1) - 2, denom = a / b)
+    (#e.-1 - 2 > dmax).then(dmax = #e.-1 - 2, denom = a / b)
   )
 )
 
@@ -34,8 +37,8 @@ egyptify = :f(
   5/121
   2014/59
 ].map:f(
-  "$(f.ratio.join('/')) = $(f.egyptify.join(' + '))"
-).join("\n") ~ "\n\n" ~ [
-  "Fraction with the highest number of terms ($(tmax) terms): $(term.ratio.join('/'))"
-  "Fraction with the largest denominator ($(dmax) digits): $(denom.ratio.join('/'))"
+  "$(f.ratio.vals.join('/')) = $(f.egyptify.join(' + '))"
+).join("\n") + "\n\n" + [
+  "Fraction with the highest number of terms ($tmax terms): $(term.ratio.vals.join('/'))"
+  "Fraction with the largest denominator ($dmax digits): $(denom.ratio.vals.join('/'))"
 ].join("\n")

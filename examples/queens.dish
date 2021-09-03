@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/N-queens_problem
+## https://rosettacode.org/wiki/N-queens_problem
 
 queens = :n(
   nums: (2..n).grep:i(i % 2 == 0)
@@ -16,7 +16,7 @@ queens = :n(
   )
 
   nums.map:i(
-    ('.' * n).(i - 1) := 'Q'
+    ('.' * n).(i - 1) @= 'Q'
   ).join("\n")
 )
 

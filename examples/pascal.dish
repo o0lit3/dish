@@ -1,11 +1,9 @@
-// https://rosettacode.org/wiki/Pascal%27s_triangle
+## https://rosettacode.org/wiki/Pascal%27s_triangle
 
 pascal = :n(
-  [out = [1]] + (
-    (1..n).each:(
-      out = (out >> 0).map:m:i(
-        m + out.(i + 1)
-      )
+  [out = [1]] + (1..n).map:(
+    out = (out >> [0]).map:m:i(
+      m + out.(i + 1)
     )
   )
 )

@@ -1,15 +1,15 @@
-// https://rosettacode.org/wiki/Roots_of_a_function
+## https://rosettacode.org/wiki/Roots_of_a_function
 
 roots = :f:range:step:out(
   sign: range.0 ?= 0
   x: range.0
 
-  (x <= range.-1).redo(
+  (x <= range.-1).redo:(
     val: x.f
 
     [val == 0, val ?= 0 == -sign].switch[
-        out << "Root found at $(x)"
-        out << "Root found between $(x - step) and $(x)"
+        out << ["Root found at $x"]
+        out << ["Root found between $(x - step) and $x"]
     ]
 
     sign = val ?= 0
@@ -19,4 +19,4 @@ roots = :f:range:step:out(
   out.join("\n")
 )
 
-[:x(x ** 3 - 3 * x ** 2 + 2 * x), -1..3, 0.1].roots
+[:x(x^3 - 3 * x^2 + 2 * x), -1..3, 0.1].roots

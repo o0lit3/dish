@@ -1,8 +1,8 @@
-// http://rosettacode.org/wiki/99_bottles_of_beer
+## http://rosettacode.org/wiki/99_bottles_of_beer
 
 (99..1).map:n(
   [
-    "$(n) bottle$('s'*(n != 1)) of beer on the wall, $(n) bottle$('s'*(n != 1)) of beer."
+    "$n bottle$('s'*(n != 1)) of beer on the wall, $n bottle$('s'*(n != 1)) of beer."
     "Take one down and pass it around, $(--n||'no more') bottle$('s'*(n != 1)) of beer on the wall."
   ].join("\n")
 ).join("\n\n")

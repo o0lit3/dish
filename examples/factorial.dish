@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Factorial
+## https://rosettacode.org/wiki/Factorial
 
 (0..28).map:n(
   *(1..n)

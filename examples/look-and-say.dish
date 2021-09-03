@@ -1,20 +1,13 @@
-// https://rosettacode.org/wiki/Look-and-say_sequence
+## https://rosettacode.org/wiki/Look-and-say_sequence
 
 look = :s(
-  [out, digit, count]: ["", s.0, 1]
+  [out, digit, count]: ['', s.0, 1]
 
-  (<< s).redo(
-    (s.0 == digit).then(++count).else(out ~= "$(count)$(digit)", digit = s.0, count = 1)
+  (<< s).redo:(
+    (s.0 == digit).then(++count).else(out += "$count$digit", digit = s.0, count = 1)
   )
   
   out
 )
 
-
-(
-  [s = 1] + (
-    (0..13).map:(
-      s = s.look
-    )
-  )
-).join("\n")
+([s = 1] + (0..13).map:(s = s.look)).join("\n")

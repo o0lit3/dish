@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Infinity
+## https://rosettacode.org/wiki/Infinity
 
 [
   'i = inf'
@@ -12,7 +12,6 @@
   'inf + 2'
   'inf / 2'
   '2 / inf'
-  '1 / 0'
 ].map:i(
-  i.fmt('%-8s') ~ " \t// " ~ i.eval
+  "$(i.fmt('%-8s')) \t## $(*i.eval)"
 ).join("\n")

@@ -1,30 +1,29 @@
-// https://rosettacode.org/wiki/Proper_divisors
+## https://rosettacode.org/wiki/Proper_divisors
 
-// If there wasn't a built-in:
+## If there wasn't a built-in:
 divs = :i(
   out: [1]
   i: i.abs
 
   (1..i.sqrt).map:j(
     (i % j == 0 && j > 1).then(
-      out << j
-      (j != i / j).then(out << i / j)
+      out << [j]
+      (j != i / j).then(out << [i / j])
     )
   )
 
   i > 1 ? [out, []]
 )
 
-// Only check multiples of 2, 3, 5, and 7 since highly composite numbers above 840 all contain the first 4 primes
-((i += 210) < 20000).redo(
-  divs: i.divisors
+## Only check multiples of 2, 3, 5, and 7 since highly composite numbers above 840 all contain the first 4 primes
+((i += 210) < 20000).redo:(
+  divs: /i
   (#divs > max).then(max = #divs, n = [])
-  (#divs == max).then(n << i)
+  (#divs == max).then(n << [i])
 )
 
 (
   (1..10).map:i(
-    "$(i): $(i.divisors)"
-  ) + "" + n.map:n("$(n) has $(max) proper divisors")
+    "$i: $(/i)"
+  ) + n.map:n("$(n) has $(max) proper divisors")
 ).join("\n")
-

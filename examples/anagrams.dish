@@ -1,11 +1,11 @@
-// https://rosettacode.org/wiki/Anagrams
-// curl -s "http://wiki.puzzlers.org/pub/wordlists/unixdict.txt" | dish examples/anagrams.dish
+## https://rosettacode.org/wiki/Anagrams
+## curl -s "http://wiki.puzzlers.org/pub/wordlists/unixdict.txt" | dish examples/anagrams.dish
 
 stdin.map:word(
-  sorted: word.sort
-  anagram.sorted << word
-  (#anagram.sorted > max).then(max = #anagram.sorted)
+  anagram.(word.sort) << [word]
 )
+
+max = anagram.map:set(#set).max
 
 anagram.values.filter:set(
   #set == max

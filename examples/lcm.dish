@@ -1,11 +1,11 @@
-// https://rosettacode.org/wiki/Least_common_multiple
+## https://rosettacode.org/wiki/Least_common_multiple
 
 gcd = :n:m(
-  << (m.redo([n, m] = [m, n % m]))
+  << (m.redo:([n, m] = [m, n % m]))
 )
 
 lcm = :n:m(
-  (n && m).then((n / n.gcd(m) * m).abs).else(0)
+  (n && m).switch[(n / n.gcd(m) * m).abs, 0]
 )
 
 [
@@ -16,5 +16,5 @@ lcm = :n:m(
   '1001.lcm(221)'
   '1764.lcm(3920)'
 ].map:i(
-  i ~ " \t// " ~ i.eval
+  "$i \t## $(i.eval)"
 ).join("\n")

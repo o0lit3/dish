@@ -1,9 +1,9 @@
-// https://rosettacode.org/wiki/Hofstadter_Q_sequence
+## https://rosettacode.org/wiki/Hofstadter_Q_sequence
 
 Q = [0, 1, 1]
 
 (0..998)*:(
-  Q << Q.(-Q.-1) + Q.(-Q.-2)
+  Q << [Q.(-Q.-1) + Q.(-Q.-2)]
 )
 
 [

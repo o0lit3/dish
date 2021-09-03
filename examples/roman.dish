@@ -1,5 +1,5 @@
-// https://www.rosettacode.org/wiki/Roman_numerals/Encode
-// https://www.rosettacode.org/wiki/Roman_numerals/Decode
+## https://www.rosettacode.org/wiki/Roman_numerals/Encode
+## https://www.rosettacode.org/wiki/Roman_numerals/Decode
 
 symbols = {
   M: 1000
@@ -13,13 +13,13 @@ symbols = {
 
 roman = :n:out(
   (@symbols).sort:a:b(symbols.b < symbols.a).each:symbol(
-    (n >= symbols.symbol).redo(
-      out ~= symbol
+    (n >= symbols.symbol).redo:(
+      out += symbol
       n -= symbols.symbol
     )
 
-    out = out.split(last + symbol * 4).join(symbol + ante)  // Replace LXXXX with XC, e.g.
-    out = out.split(symbol * 4).join(symbol + last)         // Replace IIII with IV, e.g.
+    out = out.split(last + symbol * 4).join(symbol + ante)  ## Replace LXXXX with XC, e.g.
+    out = out.split(symbol * 4).join(symbol + last)         ## Replace IIII with IV, e.g.
 
     ante = last
     last = symbol
@@ -30,11 +30,10 @@ roman = :n:out(
 
 arabic = :r:out(
   r.each:c:i(
-    (symbols.c < symbols.(r.(i + 1))).then(
+    (i + 1 < #r && symbols.c < symbols.(r.(i + 1))).switch[
       out -= symbols.c
-    ).else(
       out += symbols.c
-    )
+    ]
   )
 
   out
@@ -54,5 +53,5 @@ arabic = :r:out(
   '"MMXVIII".arabic'
   '"MMXX".arabic'
 ].map:i(
-  i.fmt('%-15s') ~ " \t// " ~ i.eval
+  "$(i.fmt('%-15s')) \t## $(i.eval)"
 ).join("\n")

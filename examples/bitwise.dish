@@ -1,14 +1,14 @@
-// https://rosettacode.org/wiki/Bitwise_operations
+## https://rosettacode.org/wiki/Bitwise_operations
 
 [
   'a = 14'
   'b = 3'
   'a & b'
   'a | b'
-  'a ^ b'
-  '^a'
+  'a ~ b'
+  '~a'
   'a << b'
   'a >> b'
 ].map:i(
-  i ~ " \t// " ~ i.eval
+  "$i \t## $(i.eval)"
 ).join("\n")

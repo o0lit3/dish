@@ -1,11 +1,11 @@
-// https://rosettacode.org/wiki/Sierpinski_triangle
+## https://rosettacode.org/wiki/Sierpinski_triangle
 
 sierpinski = :n(
   out: ['*']
 
   n.times:i(
-    gap: ' ' * 2 ** i
-    out = out.map:x(gap ~ x ~ gap) + out.map:x(x ~ ' ' ~ x)
+    gap: ' ' * 2 ^ i
+    out = out.map:x(gap + x + gap) + out.map:x("$x $x")
   )
 
   out.join("\n")

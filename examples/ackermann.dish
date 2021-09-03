@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Ackermann_function
+## https://rosettacode.org/wiki/Ackermann_function
 
 ack = :m:n(
   [m == 0, n == 0].switch[

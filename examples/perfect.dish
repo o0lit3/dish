@@ -1,5 +1,5 @@
-// https://rosettacode.org/wiki/Perfect_numbers
+## https://rosettacode.org/wiki/Perfect_numbers
 
 (1..10000).grep:n(
-  +n.divisors == n
+  +**n == n
 ).join("\n")

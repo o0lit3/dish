@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Galton_box_animation
+## https://rosettacode.org/wiki/Galton_box_animation
 
 width = 41
 height = 37
@@ -16,31 +16,31 @@ chars = {
 }
 
 init = :box(
-  box.0 = chars.corner
-  box.0.(width - 1) = chars.corner
-  (1..width - 2).each:i(box.0.i = chars.'floor')                                                    // floor
-  (0..width - 1).each:i(box.(height - 1).i = box.0.i)                                               // ceiling
-  (1..height - 2).each:i(box.i.0 = chars.wall, box.i.(width - 1) = chars.wall)                      // walls
-  (1..height - 2).each:i((1..width - 2).each:j(box.i.j = chars.empty))                              // field
-  (1..bpins).each:i((0..i - 1).each:j(box.(height - 2 - i).(center + 1 - i + j * 2) = chars.pin))   // pins
+  box.0.0 = chars.'corner'
+  box.0.(width - 1) = chars.'corner'
+  (1..width - 2).each:i(box.0.i = chars.'floor')                                                    ## floor
+  (0..width - 1).each:i(box.(height - 1).i = box.0.i)                                               ## ceiling
+  (1..height - 2).each:i(box.i.0 = chars.'wall', box.i.(width - 1) = chars.'wall')                  ## walls
+  (1..height - 2).each:i((1..width - 2).each:j(box.i.j = chars.'empty'))                            ## field
+  (1..bpins).each:i((0..i - 1).each:j(box.(height - 2 - i).(center + 1 - i + j * 2) = chars.'pin')) ## pins
   box
 )
 
 draw = :box(
-  (height - 1..0).map:i((0..width - 1).map:j(box.i.j).join).join("\n")
+  (height - 1..0).map:i((0..width - 1).map:j(box.i.j).join('')).join("\n")
 )
 
 fall = :b(
   [
-    box.(--b.y).(b.x - 1) == chars.empty && box.(b.y).(b.x + 1) == chars.empty
-    box.(b.y).(b.x - 1) == chars.empty
+    box.(--b.y).(b.x - 1) == chars.'empty' && box.(b.y).(b.x + 1) == chars.'empty'
+    box.(b.y).(b.x - 1) == chars.'empty'
   ].switch[
-    b.x += 2.rand.floor * 2 - 1                                                                     // 1 or -1
-    ++b.x                                                                                           // fall left
-    --b.x                                                                                           // fall right
+    b.x += 2.rand.floor * 2 - 1                                                                     ## 1 or -1
+    ++b.x                                                                                           ## fall left
+    --b.x                                                                                           ## fall right
   ]
 
-  box.(b.y).(b.x) = chars.ball
+  box.(b.y).(b.x) = chars.'ball'
   b
 )
 
@@ -48,9 +48,9 @@ step = :b(
   (b.y > 0).then(
     cell: box.(b.y - 1).(b.x)
 
-    [cell == chars.empty, cell == chars.pin].switch[
-      (box.(b.y).(b.x) = chars.empty, box.(--b.y).(b.x) = chars.ball)
-      (box.(b.y).(b.x) = chars.empty, b = b.fall)
+    [cell == chars.'empty', cell == chars.'pin'].switch[
+      (box.(b.y).(b.x) = chars.'empty', box.(--b.y).(b.x) = chars.'ball')
+      (box.(b.y).(b.x) = chars.'empty', b = b.fall)
       0
     ]
   )
@@ -60,11 +60,11 @@ step = :b(
 box = ([[] * width] * height).init
 
 (0..drops + height - 1).each:i(
-  (i < drops).then(balls << {x: center, y: height - 2}, box.(height - 2).center = chars.'ball')
-  steps << box.draw
+  (i < drops).then(balls << [{x: center, y: height - 2}], box.(height - 2).center = chars.'ball')
+  steps << [box.draw]
   balls = balls.map:b(b.step)
 )
 
 [45, 91].each:s(
-  "Step $(s):\n$(steps.s)"
+  "Step $s:\n$(steps.s)"
 ).join("\n\n")

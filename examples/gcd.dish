@@ -1,7 +1,13 @@
-// https://rosettacode.org/wiki/Greatest_common_divisor
+## https://rosettacode.org/wiki/Greatest_common_divisor
 
+## Option 1 (Using recursive modulo)
+gcd1 = :n:m(
+  << (m.redo:([n, m] = [m, n % m]))
+)
+
+## Option 2 (Using intersection of divisors)
 gcd = :n:m(
-  << (m.redo([n, m] = [m, n % m]))
+  >> (**n & **m)
 )
 
 [
@@ -12,5 +18,5 @@ gcd = :n:m(
   '1071.gcd(1029)'
   '3528.gcd(3780)'
 ].map:i(
-  i ~ " \t// " ~ i.eval
+  "$i \t## $(i.eval)"
 ).join("\n")

@@ -7,6 +7,7 @@ import (
     "strings"
 	"testing"
     "math/big"
+    "io/ioutil"
     "encoding/json"
 )
 
@@ -57,29 +58,21 @@ func stdin() interface{} {
     stat, _ := os.Stdin.Stat()
 
     if (stat.Mode() & os.ModeCharDevice) != 0 {
-        return Null { }
+        return Null{ }
     }
 
-    out := Array { }
-    stdin := []byte{ }
-    scanner := bufio.NewScanner(os.Stdin)
+    var data interface{}
 
-    for scanner.Scan() {
-        bytes := scanner.Bytes()
-        line := ""
+    input, _ := ioutil.ReadAll(os.Stdin)
 
-        for _, b := range bytes {
-            line += string(b)
-            stdin = append(stdin, b)
-        }
-
-        out = append(out, String(line))
+    if err := json.Unmarshal(input, &data); err == nil {
+        return parse(data)
     }
 
-    var j interface{}
+    out := Array{ }
 
-    if err := json.Unmarshal(stdin, &j); err == nil {
-        return parse(j)
+    for _, val := range strings.Split(strings.TrimSuffix(string(input), "\n"), "\n") {
+        out = append(out, String(val))
     }
 
     switch len(out) {
@@ -101,7 +94,7 @@ func parse(j interface{}) interface{} {
 
         return out
     case []interface{}:
-        out := Array { }
+        out := Array{ }
 
         for _, val := range x {
             out = append(out, parse(val))
@@ -115,10 +108,10 @@ func parse(j interface{}) interface{} {
     case bool:
         return Boolean(x)
     case nil:
-        return Null { }
+        return Null{ }
     }
 
-    return Null { }
+    return Null{ }
 }
 
 func open(source string) *bufio.Reader {
@@ -143,7 +136,7 @@ func process(rdr *bufio.Reader, blk *Block) *Parser {
     }
 
     if len(lexer.toks) > 0 && lexer.toks[len(lexer.toks) - 1].tok != FIN {
-        lexer.toks = append(lexer.toks, &Token { tok: FIN, lit: "" })
+        lexer.toks = append(lexer.toks, &Token { pos: lexer.pos, tok: FIN, lit: "" })
     }
 
     parser := &Parser {
@@ -152,7 +145,7 @@ func process(rdr *bufio.Reader, blk *Block) *Parser {
     }
 
     for len(parser.lexr.toks) > 0 {
-        parser.Parse()
+        parser.Churn()
     }
 
     return parser

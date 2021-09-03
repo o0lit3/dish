@@ -1,7 +1,7 @@
-// https://rosettacode.org/wiki/Dragon_curve
+## https://rosettacode.org/wiki/Dragon_curve
 
 dragon = :n(
-  a: [" "*(8 << n/2)] * (8 << n/2)
+  a: [' '*(8 << n/2)] * (8 << n/2)
   x:y: 4 << n/2
   p:q: 1 + x
   r: 3
@@ -20,7 +20,7 @@ dragon = :n(
     r += (i / (i & -i))
   )
 
-  a.grep:e(e != " "*(8 << n/2)).map:e(e.(p..q)).join("\n")
+  a.grep:e(e != ' '*(8 << n/2)).map:e(e.(p..q)).join("\n")
 )
 
 10.dragon

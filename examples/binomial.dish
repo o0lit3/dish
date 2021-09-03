@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Evaluate_binomial_coefficients
+## https://rosettacode.org/wiki/Evaluate_binomial_coefficients
 
 choose = :n:k(
   *((k + 1)..n) / *(1..(n - k))
@@ -13,5 +13,5 @@ choose = :n:k(
   '100.choose(2)'
   '100.choose(50)'
 ].map:i(
-  i ~ " \t// " ~ i.eval
+  "$i \t## $(i.eval)"
 ).join("\n")

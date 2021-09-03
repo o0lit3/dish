@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Leonardo_numbers
+## https://rosettacode.org/wiki/Leonardo_numbers
 
 leonardo = :a:b:add:limit(
   [a] + ((1..limit).map:(<< ([a, b] = [b, a + b + add])))

@@ -46,23 +46,34 @@ Logic blocks are represented by a colonized list of arguments followed by a Scal
 
 If a Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the Logic block contains multiple arguments and has been invoked on a Hash or an Array, then each Hash or Array item are passed as the arguments.
 
-Comments in **dish** start with a double slash `//` and end with a newline. There are no multi- or in-line comments in **dish**.
+Comments in **dish** start with a double pound `##` and end with a newline. There are no multi- or in-line comments in **dish**.
 
 <sub>*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
 
 ## Variables and Member Access
-Variables in **dish** must start with either a letter or a `$` character, and may only contain letters, numbers, underscores (`_`), and dollar signs (`$`).
+Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores.
 
-Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Because **dish** variables can not begin with numbers, array index members such as `a = [1, 2, 3]; a.0` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted to avoid already-defined variable names. Compare the following:
+Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the least significant bit at index 0. Note that to retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
+
+`dish -e '12.1'` outputs the floating point number: `12.1`
+
+`dish -e '12.(1)' outputs the 0th-indexed 2nd most-significant bit of the integer 12: `1`
+
+`dish -e 'a = 12; a.1'` outputs the 0th-indexed 2nd most-significant bit (disambiguated by the variable name `a`): `1`
+
+Because **dish** variables can not begin with numbers, numeric index members such as `[1, 2, 3].1` or `'foobar'.3` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted to avoid already-defined variable names. Compare the following:
 
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a."foo"'` outputs `1`
 
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a.foo'` outputs `2`
 
-The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ** b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in `"dish".:s(s.uc)` or `squared = :n(n ** 2); 3.squared`.
+The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ^ b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in:
 
-In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ** b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed from a Scalar block following the member expression. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ** 2 + b * x + c); 2.quad[2, 3, 4]`, where additional arguments are passed from an Array block following the member expression. Note, however, that `2.quad(2, 3, 4)` would only pass `4` as a second argument since `(2, 3, 4)` is a Scalar block that only returns the last expression.
+`dish -e 'squared = :n(n ^ 2); 3.squared'`
+
+`dish -e 'title = :s(s.words.map:w(w.0 @= w.0.uc).join(" ")); "my title".title'`
+
+In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed from a Scalar block following the member expression. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad[2, 3, 4]`, where additional arguments are passed from an Array block following the member expression. Note, however, that `2.quad(2, 3, 4)` would only pass `4` as a second argument since `(2, 3, 4)` is a Scalar block that only returns the last expression.
 
 ## String Interpolation
 **dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string (`"$(...)"`), for example: `dish -e '(0..9).map:i("i: $(i)").join("\n")'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
-

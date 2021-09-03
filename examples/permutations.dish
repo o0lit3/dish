@@ -1,13 +1,24 @@
-// https://rosettacode.org/wiki/Permutations
+## https://rosettacode.org/wiki/Permutations
 
-perm = :n:m(
-  (n).then(
-    (0..#n-1).map:i(
-      (n - n.i).perm(m + n.i)
-    ).flat / #n
-  ).else(m)
+## If there wasn't a built-in (invoked via ('a'..'d').perms(4)):
+perms = :x:n:out(
+  (n == 1).then(
+    out << [/x]
+  ).else(
+    (0..n - 1).each:i(
+      out = x.perms[n - 1, out]
+
+      (n % 2 == 1).then(
+        x.[i, n - 1] = x.[n - 1, i]
+      ).else(
+        x.[0, n - 1] = x.[n - 1, 0]
+      )
+    )
+  )
+
+  out
 )
 
-('a'..'d').perm([]).map:list(
+**('a'..'d').map:list(
   list.join(' ')
 ).join("\n")

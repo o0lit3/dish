@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Quaternion_type
+## https://rosettacode.org/wiki/Quaternion_type
 
 norm = :q(
   (sum: 0, >> q.each:e(sum += e ** 2)).sqrt.round(9)
@@ -48,5 +48,5 @@ mult = :q:r(
   'q2.mult(q1)'
   'q1.mult(q2) != q2.mult(q1)'
 ].map:i(
-  i.fmt('%-25s') ~ " \t// " ~ i.eval
+  "$(i.fmt('%-25s')) \t## $(i.eval)"
 ).join("\n")

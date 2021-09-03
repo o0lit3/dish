@@ -1,26 +1,25 @@
-// https://rosettacode.org/wiki/De_Bruijn_sequences
+## https://rosettacode.org/wiki/De_Bruijn_sequences
+## ~15s run time on 2.8 GHz
 
-(0..99).each:a(
-  a: a.fmt('%02d')
+('00'..'99').each:a(
   (a.1 >= a.0).then(
-    seq ~= [a.1 > a.0, a.1 == a.0].switch[a, a.0, ""]
-    (a+1..99).each:b(
-      b: b.fmt('%02d')
-      (b.1 > a.0).then(seq ~= a ~ b)
+    seq << [a.1 > a.0, a.1 == a.0].switch[[a.0, a.1], [a.0]]
+    (a + 1..'99').each:b(
+      (b.1 > a.0).then(seq << [a.0, a.1, b.0, b.1])
     )
   )
 )
 
 check = :seq(
   hash: {}
-  (0..#seq-1).each:i(++hash.(seq.(i..i+3)))
+  (0..#seq - 1).each:i(++hash.(seq.(i..i + 3)*''))
   (0..9999).grep:pin(!hash.(pin.fmt('%04d')))
 )
 
 [
-  "Sequence Length: $(#(seq ~= '000'))"
-  "First 130 characters:\n$(seq.(0..129))"
-  "Last 130 characters:\n$(seq.(-130..-1))"
+  "Sequence Length: $(#(seq << [0, 0, 0]))"
+  "First 130 characters:\n$(seq.(0..129)*'')"
+  "Last 130 characters:\n$(seq.(-130..-1)*'')"
   "Missing 4 digit PINs: $(seq.check)"
   "Missing 4 digit PINs in reversed string: $(seq.reverse.check)"
   "Missing 4 digit PINs in revised string: $((seq.4444 = '.', seq).check)"

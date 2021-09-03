@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Gaussian_elimination
+## https://rosettacode.org/wiki/Gaussian_elimination
 
 gauss = :a:b(
   (0..#a - 1).each:k(

@@ -1,7 +1,7 @@
-// https://rosettacode.org/wiki/Death_Star
+## https://rosettacode.org/wiki/Death_Star
 
 normalize = :x:y:z(
-  len: (x ** 2 + y ** 2 + z ** 2) ** 0.5
+  len: (^x + ^y + ^z).sqrt
   [(x / len).round(9), (y / len).round(9), (z / len).round(9)]
 )
 
@@ -10,22 +10,22 @@ dot = :a:b(
 )
 
 diffuse = :a:b(
-  [a, b].dot ** 3 // diffuse constant: 3
+  [a, b].dot ^ 3 ## diffuse constant: 3
 )
 
 specular = :a:b(
   r: 2 * [a, b].dot
   r: [a.0 - r * b.0, a.1 - r * b.1, a.2 - r * b.2].normalize
-  [r, [0, 0, -1]].dot ** 10 // specular constant: 3
+  [r, [0, 0, -1]].dot ^ 10 ## specular constant: 3
 )
 
 hit = :sph:x:y(
   x: x - sph.'cx'
   y: y - sph.'cy'
-  z: sph.'r' ** 2 - (x ** 2 + y ** 2)
+  z: ^sph.'r' - (^x + ^y)
   
   (z >= 0).then(
-    [sph.'cz' - (z = z ** 0.5), sph.'cz' + z]
+    [sph.'cz' - (z = z.sqrt), sph.'cz' + z]
   ) 
 )
 

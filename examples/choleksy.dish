@@ -1,24 +1,25 @@
-// https://en.wikipedia.org/wiki/Cholesky_decomposition
+## https://en.wikipedia.org/wiki/Cholesky_decomposition
 
 cholesky = :a(
   out: [[0] * #a] * #a
 
-  (0..#a-1).each:i(
-    (0..i).each:j(
-      sum: (j > 0).then((0..j-1).map:k(out.i.k * out.j.k).sum).else(0)
-
-      out.i.j = (i == j).then(
-        ((a.i.i - sum)**0.5)
-      ).else(
-        (1 / out.j.j * (a.i.j - sum))
+  (0..#a - 1).each:row(
+    (0..row).each:col(
+      x: (0..col).reduce:x:k(
+        (x ?= a.row.col) - out.row.k * out.col.k
       )
+
+      out.row.col = (row == col).switch[
+        x.sqrt
+        x / out.col.col
+      ]
     )
   )
 
   out.map:row(
     row.map:col(
       col.fmt("%8.5f")
-    ).join(" ")
+    ).join(' ')
   ).join("\n")
 )
 

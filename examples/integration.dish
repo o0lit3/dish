@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Numerical_integration
+## https://rosettacode.org/wiki/Numerical_integration
 
 integrate = :obj:func(
   delta: 1 * (obj.b - obj.a) / obj.steps
@@ -8,20 +8,20 @@ integrate = :obj:func(
 )
 
 [
-  {name: "x ** 2", func: :x(x ** 2), a: 0, b: 3.14, steps: 10}
-  {name: "x ** 3", func: :x(x ** 3), a: 0, b: 1, steps: 100}
-  {name: "1 / x", func: :x(1 / x), a: 1, b: 100, steps: 1000}
-  {name: "x.sin", func: :x(x.sin), a: 0, b: 3.14, steps: 10}
+  {name: 'x ^ 2', func: :x(x ^ 2), a: 0, b: 3.14, steps: 10}
+  {name: 'x ^ 3', func: :x(x ^ 3), a: 0, b: 1, steps: 100}
+  {name: '1 / x', func: :x(1 / x), a: 1, b: 100, steps: 1000}
+  {name: 'x.sin', func: :x(x.sin), a: 0, b: 3.14, steps: 10}
 ].map:obj(
   func: obj.func
 
-  obj.name ~ " (a = $(obj.a), b = $(obj.b), steps = $(obj.steps)):\n" ~ {
+  "$(obj.name) (a = $(obj.a), b = $(obj.b), steps = $(obj.steps)):\n" + {
     left: :x:y(x.func)
     mid: :x:y(((x + y) / 2).func)
     right: :x:y(y.func)
     trap: :x:y((x.func + y.func) / 2)
     simpson: :x:y((x.func + 4 * ((x + y) / 2).func + y.func) / 6)
   }.each:func:key(
-    key ~ ': ' ~ obj.integrate(func)
+    "$key: $(obj.integrate(func))"
   ).arr().join("\n")
 ).join("\n\n")

@@ -1,20 +1,20 @@
-// https://rosettacode.org/wiki/Sieve_of_Eratosthenes
+## https://rosettacode.org/wiki/Sieve_of_Eratosthenes
 
 eratosthenes = :n(
   nums: [null, null] + (2..n)
 
   (2..n.sqrt).each:i(
-    j: i ** 2
+    j: ^i
 
     (nums.i).then(
-      (j <= n).redo(
+      (j <= n).redo:(
         nums.j = null
         j += i 
       )
     )
   )
 
-  nums.compact
+  &nums
 )
 
 100.eratosthenes

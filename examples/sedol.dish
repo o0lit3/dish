@@ -1,11 +1,11 @@
-// https://rosettacode.org/wiki/SEDOLs
+## https://rosettacode.org/wiki/SEDOLs
 
 chars = (0..9) + ('A'..'Z').grep:c(c.consonant)
 weights = [1, 3, 1, 7, 3, 9]
 
 checksum = :s:sum(
   s.each:c:i(
-    sum += (c~~36) * weights.i
+    sum += (c#36) * weights.i
   )
 
   (10 - (sum % 10)) % 10
@@ -24,5 +24,5 @@ checksum = :s:sum(
   'B0YBKT'
   'B00030'
 ].map:s(
-  "$(s) \t $(s ~ s.checksum)"
+  "$s \t $(s + *s.checksum)"
 ).join("\n")

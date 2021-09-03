@@ -1,10 +1,8 @@
-// https://rosettacode.org/wiki/Bernoulli_numbers
+## https://rosettacode.org/wiki/Bernoulli_numbers
 
-bernoulli = :n(
-  out: []
-
+bernoulli = :n:out(
   (0..n).each:m(
-    out << 1 / (m + 1)
+    out << [1 / (m + 1)]
 
     (m > 0).then(
       (m..1).each:j(
@@ -13,15 +11,13 @@ bernoulli = :n(
     )
   )
 
-  out.0
+  out.first
 )
 
 (0..60).map:n(
   b: n.bernoulli.ratio
-  (#~b.0 > max).then(max = #~b.0)
+  (#*b.'num' > max).then(max = #*b.'num')
   b
-).map:n:i(
-  (n.0 != 0).then(
-    "B($(i)) = " ~ ' '*(max - #~n.0) ~ n.join('/')
-  )
-).compact.join("\n")
+).grep:n(n.'num' != 0).map:n:i(
+  "B($(i.fmt('%2d'))) = $(' '*(max - #*n.'num'))" + n.vals.join('/')
+).join("\n")

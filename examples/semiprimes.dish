@@ -1,4 +1,4 @@
-// https://rosettacode.org/wiki/Semiprime
+## https://rosettacode.org/wiki/Semiprime
 
 semiprime = :n(
   divs = n.divisors
