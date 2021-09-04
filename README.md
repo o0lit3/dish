@@ -52,11 +52,11 @@ Logic blocks are represented by a colonized list of arguments followed by any ot
 
 If a user-defined Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the user-defined Logic block contains multiple arguments and has been invoked on a Hash or an Array, then each Hash or Array item is passed as an individual argument.
 
-In cases where naming method arguments is overkill, **dish** also supports default variables in regards to logic blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block. `$0` is the entire parameter Array and `$_` is the object on which the Logic block is invoked.
+In cases where naming arguments is overkill, **dish** also supports default variables in regards to Logic Blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block, `$0` is the entire argument Array, and `$_` is the object on which the Logic block is invoked.
 
-`dish -e '[1, 2, 3].map:($1+$_.($2 + 1))'` outputs `[3, 5, 3]`, which is the sum of each item plus the next item, where the last item, 3, gets summed with the nonexistent 4th item (null).
+For example, `dish -e 'a=[1, 2, 3]; a.map:n:i(n+a.(i+1))'` can be rewritten as `dish -e '[1, 2, 3].map:($1+$_.++$2)'`, outputting `[3, 5, 3]`, which is the sum of each item (`n` or `$1`) plus the next item (`a.(i+1)` or `$_.++$2`), where the last array item gets summed with the nonexistent 4th item (null).
 
-Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$_` is an alias for STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments.
+Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$_` is an alias for STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments of `argv`.
 
 Comments in **dish** start with a double pound `##` and end with a newline. There are no multi- or in-line comments in **dish**.
 
@@ -69,7 +69,7 @@ Member access in **dish** is indicated by the special `.` operator which precede
 
 `dish -e '12.1'` outputs the floating point number: `12.1`
 
-`dish -e '12.(1)' outputs the 0th-indexed 2nd most-significant bit of the integer 12: `1`
+`dish -e '12.(1)'` outputs the 0th-indexed 2nd most-significant bit of the integer 12: `1`
 
 `dish -e 'a = 12; a.1'` outputs the 0th-indexed 2nd most-significant bit (disambiguated by the variable name `a`): `1`
 
@@ -85,7 +85,7 @@ The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b +
 
 `dish -e 'title = :s(s.words.map:w(w.0 @= w.0.uc).join(" ")); "my title".title'`
 
-In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed from a Scalar block following the member expression. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad[2, 3, 4]`, where additional arguments are passed from an Array block following the member expression. Note, however, that `2.quad(2, 3, 4)` would only pass `4` as a second argument since `(2, 3, 4)` is a Scalar block that only returns the last expression.
+In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed via a Scalar block following the member expression. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad[2, 3, 4]`, where additional arguments are passed via an Array block following the member expression. Note, however, that `2.quad(2, 3, 4)` would only pass `4` as a second argument since `(2, 3, 4)` is a Scalar block that only returns the last expression.
 
 ## String Interpolation
 **dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string `"$(...)"`, for example: `dish -e '(0..9).map:i("i^2: $(i^2)").join'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
