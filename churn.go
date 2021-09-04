@@ -35,8 +35,8 @@ type Block struct {
 
 func NewBlock() *Block {
     stdin := stdin()
-    args := []string{ "null", "true", "false", "inf", "stdin", "$_", "argv", "$0" }
-    def := []interface{}{ Null{ }, Boolean(true), Boolean(false), Number{ inf: INF }, stdin, stdin, argv, argv }
+    args := []string{ "true", "false", "null", "inf", "stdin", "$_", "argv", "$0" }
+    def := []interface{}{ Boolean(true), Boolean(false), Null{ }, Number{ inf: INF }, stdin, stdin, argv, argv }
 
     for i, arg := range argv {
         args = append(args, "$" + strconv.Itoa(i + 1))

@@ -346,6 +346,8 @@ func (b *Block) Run(args ...interface{}) interface{} {
             b.cur.hash["$_"] = b.obj
         }
 
+        a := Array{ }
+
         for i, val := range args {
             b.cur.vars["$" + strconv.Itoa(i + 1)] = val
             b.cur.hash["$" + strconv.Itoa(i + 1)] = val
@@ -354,6 +356,13 @@ func (b *Block) Run(args ...interface{}) interface{} {
                 b.cur.vars[b.args[i]] = val
                 b.cur.hash[b.args[i]] = val
             }
+
+            a = append(a, val)
+        }
+
+        if _, ok := b.cur.vars["null"]; !ok {
+            b.cur.vars["$0"] = a
+            b.cur.hash["$0"] = a
         }
     }
 
