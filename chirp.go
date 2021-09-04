@@ -181,9 +181,16 @@ func (h Hash) String() string {
 
 func (h Hash) Array() Array {
     out := Array{ }
+    keys := []string{ }
 
-    for _, val := range h {
-        out = append(out, val)
+    for key := range h {
+        keys = append(keys, key)
+    }
+
+    sort.Strings(keys)
+
+    for _, key := range keys {
+        out = append(out, h[key])
     }
 
     return out
@@ -624,15 +631,6 @@ func (blk *Block) Chirp() interface{} {
     case FIN:
         if len(blk.cur.stck) > 0 {
             blk.cur.stck[len(blk.cur.stck) - 1] = blk.Eval(blk.cur.stck[len(blk.cur.stck) - 1])
-        }
-
-        if blk.dim == MAP && len(blk.cur.hash) < len(blk.cur.stck) {
-            switch x := blk.cur.stck[len(blk.cur.stck) - 1].(type) {
-            case String:
-                blk.cur.hash[string(x)] = Boolean(true)
-            default:
-                blk.cur.hash[fmt.Sprintf("%v", x)] = Boolean(true)
-            }
         }
 
         if blk.cur.idx == len(blk.toks) {

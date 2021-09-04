@@ -12,10 +12,12 @@ import (
 )
 
 var program *Block
+var argv Array
 
 func main() {
     var reader *bufio.Reader
 
+    index := 0
     source := os.Args[1]
     debug := false
 
@@ -24,9 +26,11 @@ func main() {
         case "-debug":
             debug = true
             source = os.Args[i + 1]
+            index = i + 1
         case "-e":
             source = ""
             reader = bufio.NewReader(strings.NewReader(os.Args[i + 1]))
+            index = i + 1
         }
     }
 
@@ -34,7 +38,13 @@ func main() {
         reader = open(source)
     }
 
+    for index + 1 < len(os.Args) {
+        index += 1
+        argv = append(argv, String(os.Args[index])) 
+    }
+
     program = NewBlock()
+
     parser := process(reader, program)
 
     if debug {

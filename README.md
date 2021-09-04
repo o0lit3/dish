@@ -13,15 +13,15 @@
 **dish** is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '"Hello World!"'`
 
 ## Input
-By default, **dish** places STDIN into a variable called `stdin`. If the data from STDIN is JSON, `stdin` is a data type representing that JSON data ([see Data Types](#data-types-and-operators)), otherwise `stdin` is an Array of STDIN lines.
+By default, **dish** places STDIN into a variable called `stdin`, and it places command line arguments into a variable called `argv`. If the data from STDIN is JSON, `stdin` is a data type representing that JSON data ([see Data Types](#data-types-and-operators)), otherwise `stdin` is an Array of STDIN lines. `argv` is always an Array of Strings.
 
 As an example, the following curl/**dish** command will output a list of the last 5 github commits to the **dish** codebase:
 
-```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=5" | dish -e 'stdin.map:data("$(data.commit.message):\n$(data.parents.0.html_url)").join("\n\n")'```
+```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=5" | dish -e 'stdin.map:data(data.commit.url).join'```
 
-...and the following curl/**dish** command will output a list of unique github contributors in the last 100 commits of the **react** codebase:
+...and the following curl/**dish** command will output a list of unique github contributors in the last 100 commits to the **react** codebase:
 
-```curl -s "https://api.github.com/repos/facebook/react/commits?per_page=100" | dish -e 'stdin.map:data(data.commit.author.name).uniq.join("\n")'```
+```curl -s "https://api.github.com/repos/facebook/react/commits?per_page=100" | dish -e 'stdin.map:data(data.commit.author.name).uniq.join'```
 
 ## Output
 By default, **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
@@ -39,25 +39,27 @@ As such, all binary operators apply the right-hand operand as a parameter to a m
 
 Similarly, traditional unary operators (which are always prefix operators when represented in shorthand notation<sup>*</sup>) correspond to methods with no parameters that are invoked on the single operand as an object. In the expression `!ready`, `ready` is the Boolean object on which the `not` method is invoked, e.g. `ready.not`.
 
-<sub>*Postfix `++` and `--` are not legal in **dish**</sub>
+<sub>\*Postfix `++` and `--` are not legal in **dish**</sub>
 
 ## Syntax
 **dish** has 4 types of syntax blocks, Scalar Blocks `(...)`, Array blocks `[...]`, Hash blocks `{...}`, and Logic blocks. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup>, by a comma, or by a semicolon (unless the newline, comma, or semicolon is encapsulated in a string literal).
 
-Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit Scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire array or hash, where Hash blocks contain all locally-scoped variables when returned--allowing additional logic to exist in Hash block intitialization without changing its structure.
+Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit Scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire array or hash, where Hash blocks contain only locally-scoped variables when returned--allowing additional logic to exist in Hash block intitialization without changing its structure:
+
+`dish -e '{a: 2, a *= 2, b: a}'` outputs `{"a": 2, "b": 4}`
 
 Logic blocks are represented by a colonized list of arguments followed by a Scalar block, as in `:x(...)` or `:x:y(...)`, returning a data type corresponding to the last expression. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
 
-If a Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the Logic block contains multiple arguments and has been invoked on a Hash or an Array, then each Hash or Array item are passed as the arguments.
+If a uer-defined Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the user-defined Logic block contains multiple arguments and has been invoked on a Hash or an Array, then each Hash or Array item is passed as an individual argument.
 
 Comments in **dish** start with a double pound `##` and end with a newline. There are no multi- or in-line comments in **dish**.
 
-<sub>*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
+<sub>\*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
 
 ## Variables and Member Access
 Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores.
 
-Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the least significant bit at index 0. Note that to retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
+Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the most significant bit at index 0. Note that to retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
 
 `dish -e '12.1'` outputs the floating point number: `12.1`
 
@@ -80,4 +82,6 @@ The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b +
 In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed from a Scalar block following the member expression. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad[2, 3, 4]`, where additional arguments are passed from an Array block following the member expression. Note, however, that `2.quad(2, 3, 4)` would only pass `4` as a second argument since `(2, 3, 4)` is a Scalar block that only returns the last expression.
 
 ## String Interpolation
-**dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string (`"$(...)"`), for example: `dish -e '(0..9).map:i("i: $(i)").join("\n")'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
+**dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string `"$(...)"`, for example: `dish -e '(0..9).map:i("i^2: $(i^2)").join'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
+
+When the expression is a single variable, the encapsulating parentheses can be removed: `dish -e '(0..9).map:i("i: $i").join'`
