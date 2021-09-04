@@ -52,7 +52,7 @@ Logic blocks are represented by a colonized list of arguments followed by any ot
 
 If a user-defined Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the user-defined Logic block contains multiple arguments and has been invoked on a Hash or an Array, then each Hash or Array item is passed as an individual argument.
 
-In cases where naming arguments is overkill, **dish** also supports default variables in regards to Logic Blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block. `$0` is the entire argument Array and `$_` is the object on which the Logic block is invoked.
+In cases where naming arguments is overkill, **dish** also supports default variables in regards to Logic Blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block, `$0` is the entire argument Array, and `$_` is the object on which the Logic block is invoked.
 
 `dish -e 'a=[1, 2, 3]; a.map:n:i(n+a.(i+1))'` can be rewritten as:
 
