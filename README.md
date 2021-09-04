@@ -28,7 +28,7 @@ By default, **dish** outputs the last evaluated statement to STDOUT. If the last
 
 This behavior allows you to pipe the output of one dish executable into another and use it as JSON input via `stdin` downstream:
 
-`dish -e "[1, 2, 3]" | dish -e "stdin.sum"`
+`dish -e '[1, 2, 3]' | dish -e 'stdin.sum'`
 
 ## [Data Types and Operators](tests/README.md)
 For a detailed decription of operators, precedence, and implicit operator context, [read the operator documentation at tests/README.md](tests/README.md).
