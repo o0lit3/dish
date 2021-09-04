@@ -46,9 +46,9 @@ Similarly, traditional unary operators (which are always prefix operators when r
 
 Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit Scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire array or hash, where Hash blocks contain only locally-scoped variables when returned--allowing additional logic to exist in Hash block intitialization without changing its structure:
 
-`dish -e '{a: 2, a *= 2, b: a}'` outputs `{"a": 2, "b": 4}`
+`dish -e '{a: 2, a *= 2, b: a}'` outputs the Hash `{"a": 2, "b": 4}`
 
-Logic blocks are represented by a colonized list of arguments followed by a Scalar block, as in `:x(...)` or `:x:y(...)`, returning a data type corresponding to the last expression. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
+Logic blocks are represented by a colonized list of arguments followed by any other Block type, as in `:x[...]` or `:x:y(...)`, returning a data type corresponding to the encapsulatng Block type. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
 
 If a user-defined Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the user-defined Logic block contains multiple arguments and has been invoked on a Hash or an Array, then each Hash or Array item is passed as an individual argument.
 
