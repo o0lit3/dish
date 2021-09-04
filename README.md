@@ -54,7 +54,7 @@ If a user-defined Logic block conatins only a single argument and has been invok
 
 In cases where naming arguments is overkill, **dish** also supports default variables in regards to logic blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block. `$0` is the entire parameter Array and `$_` is the object on which the Logic block is invoked.
 
-`dish -e 'a=[1, 2, 3].map:n:i(n+a.(i+1))` can be rewritten as:
+`dish -e 'a=[1, 2, 3].map:n:i(n+a.(i+1))'` can be rewritten as:
 
 `dish -e '[1, 2, 3].map:($1+$_.++$2)'` outputs `[3, 5, 3]`, which is the sum of each item (`$1`) plus the next item (accessed by incrementing the current index `$2`), where the last item, 3, gets summed with the nonexistent 4th item (null).
 
