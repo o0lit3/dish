@@ -54,9 +54,11 @@ If a user-defined Logic block conatins only a single argument and has been invok
 
 In cases where naming method arguments is overkill, **dish** also supports default variables in regards to logic blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block. `$0` is the entire parameter Array and `$_` is the object on which the Logic block is invoked.
 
-`dish -e '[1, 2, 3].map:($1+$_.($2 + 1))'` outputs `[3, 5, 3]`, which is the sum of each item plus the next item, where the last item, 3, gets summed with the nonexistent 4th item (null).
+`dish -e 'a=[1, 2, 3].map:n:i(n+a.(i+1))` can be rewritten as:
 
-Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$_` is an alias for STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments.
+`dish -e '[1, 2, 3].map:($1+$_.++$2)'` outputs `[3, 5, 3]`, which is the sum of each item (`$1`) plus the next item (accessed by incrementing the current index `$2`), where the last item, 3, gets summed with the nonexistent 4th item (null).
+
+Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$_` is an alias for STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments of `argv`.
 
 Comments in **dish** start with a double pound `##` and end with a newline. There are no multi- or in-line comments in **dish**.
 
