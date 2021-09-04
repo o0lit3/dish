@@ -56,7 +56,7 @@ In cases where naming arguments is overkill, **dish** also supports default vari
 
 `dish -e 'a=[1, 2, 3]; a.map:n:i(n+a.(i+1))'` can be rewritten as:
 
-`dish -e '[1, 2, 3].map:($1+$_.++$2)'` outputs `[3, 5, 3]`, which is the sum of each item (`$1`) plus the next item (accessed by incrementing the current index `$2`), where the last item, 3, gets summed with the nonexistent 4th item (null).
+`dish -e '[1, 2, 3].map:($1+$_.++$2)'`, outputting `[3, 5, 3]`, which is the sum of each item (`$1`) plus the next item (accessed by incrementing the current index `$2`), where the last item, 3, gets summed with the nonexistent 4th item (null).
 
 Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$_` is an alias for STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments of `argv`.
 
