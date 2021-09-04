@@ -28,7 +28,7 @@
     10 ** 2                         ## 45
     *{foo: 1, bar: 2}               ## 2
     *[1, 2, 3]                      ## 6
-    *['foo', 'bar']                 ## "foobar"
+    *['foo', 'bar']                 ## "foo\nbar"
     *'foobar'                       ## "foobar"
     *7                              ## "7"
     *3.14                           ## "3.14"

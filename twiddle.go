@@ -14,13 +14,7 @@ func (t *Token) Twiddle(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                for key, val := range(x) {
-                    if Boolify(y.Run(val, String(key))) {
-                        return Boolean(false)
-                    }
-                }
-
-                return Boolean(true)
+                return t.NoHashItems(x, y)
             }
 
             return t.Twiddle(x, y.Run())
@@ -41,13 +35,7 @@ func (t *Token) Twiddle(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                for i, val := range(x) {
-                    if Boolify(y.Run(val, NewNumber(i))) {
-                        return Boolean(false)
-                    }
-                }
-
-                return Boolean(true)
+                return t.NoArrayItems(x, y)
             }
 
             return t.Twiddle(x, y.Run())
@@ -229,6 +217,26 @@ func (t *Token) BnotNumber(x Number) Number {
     }
 
     return NewNumber(^x.Int())
+}
+
+func (t *Token) NoHashItems(x Hash, y *Block) Boolean {
+    for key, val := range(x) {
+        if Boolify(y.Run(val, String(key))) {
+            return Boolean(false)
+        }
+    }
+
+    return Boolean(true)
+}
+
+func (t *Token) NoArrayItems(x Array, y *Block) Boolean {
+    for i, val := range(x) {
+        if Boolify(y.Run(val, NewNumber(i))) {
+            return Boolean(false)
+        }
+    }
+
+    return Boolean(true)
 }
 
 func (t *Token) ExclusionHash(x Hash, y Hash) Hash {

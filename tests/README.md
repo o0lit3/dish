@@ -339,13 +339,15 @@ All characters that are outside the above mentioned character ranges are ignored
 |          |                         |               |                          |                                |
 | `+`      | `+`Number               | `a.num`       | `+5`                     | `5`                            |
 |          | `+`String               | `a.num`       | `+"5"`                   | `5`                            |
-|          | `+`Array                | `a.sum`       | `+[1, 2, 3]`             | `6`                            |
-|          | `+`Hash                 | `a.sum`       | `+{x: 1, y: 2}`          | `3`                            |
+|          | `+`Numeric Array        | `a.sum`       | `+[1, 2, 3]`             | `6`                            |
+|          | `+`Array                | `a.concat`    | `+['Hello', 'World!']`   | `"HelloWorld!"`                |
+|          | `+`Numeric Hash         | `a.sum`       | `+{x: 1, y: 2}`          | `3`                            |
+|          | `+`Hash                 | `a.concat`    | `+{x: 'Hi', y: 'World']` | `"HiWorld"`                    |
 |          |                         |               |                          |                                |
 | `++`     | [See Assignment Ops](#assignment-operators)                    | | |                                |
 |          |                         |               |                          |                                |
 | `-`      | `-`Number               | `a.negate`    | `-5`                     | `-5`                           |
-|          | `-`String               | `a.negate`    | `-"5"`                   | `-5`                           |
+|          | `-`String               | `a.separate`  | `-"bin"`                 | `["b", "i", "n"]`              |
 |          | `-`Array                | `a.negsum`    | `-[1, 2, 3]`             | `-6`                           |
 |          | `-`Hash                 | `a.negsum`    | `-{x: 1, y: 2}`          | `-3`                           |
 |          |                         |               |                          |                                |
@@ -355,8 +357,10 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `*`Boolean              | `a.str`       | `*true`                  | `"true"`                       |
 |          | `*`Number               | `a.str`       | `*7`                     | `"7"`                          |
 |          | `*`String               | `a.str`       | `*'binary'`              | `"binary"`                     |
-|          | `*`Array                | `a.prod`      | `*[1, 2, 3, 4]`          | `24`                           |
-|          | `*`Hash                 | `a.prod`      | `*{x: 2, y: 4}`          | `8`                            |
+|          | `*`Numeric Array        | `a.prod`      | `*[1, 2, 3, 4]`          | `24`                           |
+|          | `*`Array                | `a.join`      | `*['Hello', 'World!']`   | `"Hello\n"World!"`             |
+|          | `*`Numeric Hash         | `a.prod`      | `*{x: 2, y: 4}`          | `8`                            |
+|          | `*`Hash                 | `a.join`      | `*{x: 'Hi', y: 'World'}` | `"Hi\nWorld"`                  |
 |          |                         |               |                          |                                |
 | `**`     | `**`Number              | `a.divisors`  | `**12`                   | `[1, 2, 3, 4, 6]`              |
 |          | `**`String              | `a.perms`     | `**'ab'`                 | `["ab", "ba"]`                 |
@@ -364,7 +368,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `**`Hash                | `a.perms`     | `**{x: 1, y: 2}`         | `[{x: 1, y: 2}, {x: 2, y: 1}]` |
 |          |                         |               |                          |                                |
 | `/`      | `/`Number               | `a.factors`   | `/12`                    | `[2, 2, 3]`                    |
-|          | `/`String               | `a.split`     | `/'Hello World!'`        | `["Hello,", "World!"]`         |
+|          | `/`String               | `a.split`     | `/'Hello World!'`        | `["Hello", "World!"]`          |
 |          | `/`Array                | `a.array`     | `/[1, 2, 3]`             | `[1, 2, 3]`                    |
 |          | `/`Hash                 | `a.vals`      | `/{x: 1, y: 2}`          | `[1, 2]`                       |
 |          |                         |               |                          |                                |

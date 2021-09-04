@@ -14,13 +14,7 @@ func (t *Token) Boom(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                for key, val := range(x) {
-                    if !Boolify(y.Run(val, String(key))) {
-                        return Boolean(false)
-                    }
-                }
-
-                return Boolean(true)
+                return t.AllHashItems(x, y)
             }
 
             return t.Boom(x, y.Run())
@@ -41,13 +35,7 @@ func (t *Token) Boom(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                for i, val := range(x) {
-                    if !Boolify(y.Run(val, NewNumber(i))) {
-                        return Boolean(false)
-                    }
-                }
-
-                return Boolean(true)
+                return t.AllArrayItems(x, y)
             }
 
             return t.Boom(x, y.Run())
@@ -214,6 +202,26 @@ func (t *Token) CompactArray(x Array) Array {
     }
 
     return out
+}
+
+func (t *Token) AllHashItems(x Hash, y *Block) Boolean {
+    for key, val := range(x) {
+        if !Boolify(y.Run(val, String(key))) {
+            return Boolean(false)
+        }
+    }
+
+    return Boolean(true)
+}
+
+func (t *Token) AllArrayItems(x Array, y *Block) Boolean {
+    for i, val := range(x) {
+        if !Boolify(y.Run(val, NewNumber(i))) {
+            return Boolean(false)
+        }
+    }
+
+    return Boolean(true)
 }
 
 func (t *Token) IntersectHash(x Hash, y Hash) Hash {

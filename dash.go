@@ -156,11 +156,11 @@ func (t *Token) TopDash(a interface{}) interface{} {
 
         return t.TopDash(t.SumArray(x))
     case String:
-        if t.lit != "-" && t.lit != "negate" && t.lit != "neg" {
+        if t.lit != "-" && t.lit != "separate" {
             t.TypeMismatch(a, nil)
         }
 
-        return t.NegateNumber(x.Number())
+        return x.Array()
     case Number:
         if t.lit != "-" && t.lit != "negate" && t.lit != "neg" {
             t.TypeMismatch(a, nil)

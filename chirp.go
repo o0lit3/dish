@@ -137,10 +137,31 @@ func (s String) Array() Array {
     return out
 }
 
-func (s Array) String() string {
+func (a Array) Numeric() bool {
+    for _, val := range a {
+        switch x := val.(type) {
+        case *Block:
+            val = x.Run()
+        case *Variable:
+            val = x.Value()
+        case Boolean:
+            val = x.Number()
+        case Null:
+            val = NewNumber(0)
+        }
+
+        if _, ok := val.(Number); !ok {
+            return false
+        }
+    }
+
+    return true
+}
+
+func (a Array) String() string {
     var out []string
 
-    for _, val := range s {
+    for _, val := range a {
         out = append(out, fmt.Sprintf("%v", val))
     }
 
@@ -418,9 +439,9 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.TopSplit(a))
         case "//", "bits", "chars", "flatten", "flat":
             blk.Register(t.TopDoubleSplit(a))
-        case "+", "sum", "number", "num":
+        case "+", "sum", "number", "num", "concat":
             blk.Register(t.TopCross(a))
-        case "-", "negsum", "negate", "neg":
+        case "-", "negsum", "negate", "neg", "separate":
             blk.Register(t.TopDash(a))
         case ">>", "pop", "lsb", "last":
             val, obj := t.TopWakaWaka(a)

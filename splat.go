@@ -263,27 +263,11 @@ func (t *Token) TopSplat(a interface{}) interface{} {
         case "product", "prod":
             return t.MultiplyArray(x)
         default:
-            if len(x) > 0 {
-                switch x[0].(type) {
-                case *Block:
-                    x[0] = x[0].(*Block).Run()
-                case *Variable:
-                    x[0] = x[0].(*Variable).Value()
-                }
-
-                switch x[0].(type) {
-                case String:
-                    return t.JoinArray(x, String("\n"))
-                case Number:
-                    return t.MultiplyArray(x)
-                case Boolean:
-                    return t.MultiplyArray(x)
-                default:
-                    t.TypeMismatch(x, nil)
-                }
+            if x.Numeric() {
+                return t.MultiplyArray(x)
             }
 
-            return Null{ }
+            return t.JoinArray(x, String("\n"))
         }
     case String:
         if t.lit != "*" && t.lit != "*=" && t.lit != "string" && t.lit != "str" {
@@ -677,6 +661,8 @@ func (t *Token) MultiplyArray(x Array) interface{} {
             out = t.MultiplyNumber(out, val).(Number)
         case Boolean:
             out = t.MultiplyNumber(out, val.Number()).(Number)
+        case Null:
+            out = NewNumber(0)
         default:
             t.TypeMismatch(out, val)
         }

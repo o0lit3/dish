@@ -14,13 +14,7 @@ func (t *Token) Wham(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                for key, val := range(x) {
-                    if Boolify(y.Run(val, String(key))) {
-                        return Boolean(true)
-                    }
-                }
-
-                return Boolean(false)
+                return t.AnyHashItem(x, y)
             }
 
             return t.Wham(x, y.Run())
@@ -41,13 +35,7 @@ func (t *Token) Wham(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                for i, val := range(x) {
-                    if Boolify(y.Run(val, NewNumber(i))) {
-                        return Boolean(true)
-                    }
-                }
-
-                return Boolean(false)
+                return t.AnyArrayItem(x, y)
             }
 
             return t.Wham(x, y.Run())
@@ -232,6 +220,26 @@ func (t *Token) AbsNumber(x Number) Number {
     }
 
     return Number{ val: NewNumber(0).val.Abs(x.val) }
+}
+
+func (t *Token) AnyHashItem(x Hash, y *Block) Boolean {
+    for key, val := range(x) {
+        if Boolify(y.Run(val, String(key))) {
+            return Boolean(true)
+        }
+    }
+
+    return Boolean(false)
+}
+
+func (t *Token) AnyArrayItem(x Array, y *Block) Boolean {
+    for i, val := range(x) {
+        if Boolify(y.Run(val, NewNumber(i))) {
+            return Boolean(true)
+        }
+    }
+
+    return Boolean(false)
 }
 
 func (t *Token) UnionHash(x Hash, y Hash) Hash {

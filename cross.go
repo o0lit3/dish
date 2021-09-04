@@ -176,7 +176,18 @@ func (t *Token) TopCross(a interface{}) interface{} {
             t.TypeMismatch(x, nil)
         }
 
-        return t.SumArray(x)
+        switch t.lit {
+        case "concat":
+            return t.JoinArray(x, String(""))
+        case "sum":
+            return t.SumArray(x)
+        default:
+            if x.Numeric() {
+                return t.SumArray(x)
+            }
+
+            return t.JoinArray(x, String(""))
+        }
     case String:
         return t.TopCross(x.Number())
     case Number:
@@ -395,6 +406,8 @@ func (t *Token) SumArray(x Array) interface{} {
         switch val := val.(type) {
         case Number:
             out = t.AddNumber(out, val).(Number)
+        case Boolean:
+            out = t.AddNumber(out, val.Number()).(Number)
         case Null:
             out = out
         default:
