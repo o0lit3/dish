@@ -1,7 +1,7 @@
 # Operators
 Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods. The tables in this document outline which shorthand, symbolic operands correspond to which method names based on the data types of each operand.
 
-**Dish** is a (mostly) strongly-typed language. However, all data types in **dish** have inherit truthiness in Boolean contexts where the default values for each data type (Null, Numeric value `0`, empty String `""`, empty Array `()`, or empty Hash `{}`) evaluate to `false`, and all other values evaluate to `true`.
+**dish** is a (mostly) strongly-typed language. However, all data types in **dish** have inherit truthiness in Boolean contexts where the default values for each data type (`null`, Boolean `false`, Numeric `0`, String `""`, Array `()`, and Hash `{}`) evaluate to `false`, and all other values evaluate to `true`.
 
 In addition, the Booleans `true` and `false` are treated as `1` and `0` in Numeric context, and `null` is treated as `0` in Numeric context. In the documentation below, the word "Number" can be replaced by a Boolean or Null coerced to a Number in this fashion. Any other type pairings that do not exist explicitly in this documentation will result in a runtime error (e.g. comparing a string to a number, `'3' > 2`).
 
@@ -12,7 +12,7 @@ Logical operators in **dish**, like many languages, short circuit the right-hand
 
 Logical operators and methods in **dish** serve as control structures for the language. **Nota bene**: Be careful with logical chains such as `(condition).then(0).else(1)`--falsy return values like 0 force the `else` block into execution regardless of the condition's truthiness. Therefore, to avoid any traps of falsy values, the ternary `(condition).switch[0, 1]` is preferred.
 
-Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary `[cond1, cond2].switch[0, 1, 2]`. The conditions Array is executed in sequence until it finds a truthy value (with all subsequent conditions being short-cictuited), and only the implicit Logic block from the right-hand Array corresponding to the same truthy index will be executed and returned. When no truthy condition is found, if the right-hand logic Array has more elements than the left-hand conditions Array, then the last index of the logic Array is executed and returned; otherwise `null` is returned.
+Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary `[cond1, cond2].switch[0, 1, 2]`. The conditions Array is executed in sequence until it finds a truthy value (with all subsequent conditions being short-circuited), and only the implicit Logic block from the right-hand Array corresponding to the same truthy index will be executed and returned. When no truthy condition is found, if the right-hand logic Array has more elements than the left-hand conditions Array, then the last index of the logic Array is executed and returned; otherwise `null` is returned.
 
 | Operator | Operands              | Method Name         | Example                     | Result                |
 | -------- | --------------------- | ------------------- | --------------------------- | --------------------- |
@@ -102,7 +102,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `\|=`    | [See Binary Ops](#binary-operators)              | | `a = 5, a \|= 3`        | `7`                   |
 | `?=`     | [See Logical ?? Op](#logical-operatos)           | | `a ?= 3`                | `3`                   |
 |          |                               |                  |                           |                       |
-| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.2 @= 0`        | `8`                   |
+| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.1 @= 0`        | `8`                   |
 |          | String.x `@=` String          | `a.x.replace(b)` | `a = 'bing', a.1 @= 'a'`  | `"bang"`              |
 |          | Array.x `@=` Any              | `a.x.replace(b)` | `a = [1, 2, 3], a.0 @= 4` | `[4, 2, 3]`           |
 |          | Hash.x `@=` Any               | `a.x.replace(b)` | `a = {x: 1}, a.x @= 4`    | `{"x": 4}`            |

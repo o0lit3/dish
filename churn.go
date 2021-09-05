@@ -145,14 +145,14 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
         v.obj = obj.Value()
         return v.Assign(blk, b, local)
     case Hash:
-        if v.arr != nil {
-            switch y := b.(type) {
-            case *Block:
-                b = y.Run()
-            case *Variable:
-                b = y.Value()
-            }
+        switch y := b.(type) {
+        case *Block:
+            b = y.Run()
+        case *Variable:
+            b = y.Value()
+        }
 
+        if v.arr != nil {
             for idx, mem := range v.arr {
                 mem.obj = v.obj
                 v.obj = v.obj.(Hash).Array().Assign(blk, mem, idx, b, local).(Hash)
@@ -166,14 +166,14 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
             }
         }
     case Array:
-        if v.arr != nil {
-            switch y := b.(type) {
-            case *Block:
-                b = y.Run()
-            case *Variable:
-                b = y.Value()
-            }
+        switch y := b.(type) {
+        case *Block:
+            b = y.Run()
+        case *Variable:
+            b = y.Value()
+        }
 
+        if v.arr != nil {
             for idx, mem := range v.arr {
                 mem.obj = v.obj
                 v.obj = v.obj.(Array).Assign(blk, mem, idx, b, local).(Array)
@@ -199,14 +199,14 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
             }
         }
     case String:
-        if v.arr != nil {
-            switch y := b.(type) {
-            case *Block:
-                b = y.Run()
-            case *Variable:
-                b = y.Value()
-            }
+        switch y := b.(type) {
+        case *Block:
+            b = y.Run()
+        case *Variable:
+            b = y.Value()
+        }
 
+        if v.arr != nil {
             for idx, mem := range v.arr {
                 mem.obj = v.obj
                 v.obj = v.obj.(String).Array().Assign(blk, mem, idx, b, local).(String)
@@ -225,6 +225,7 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
             }
 
             y := ""
+
             switch b.(type) {
             case String:
                 y = string(b.(String))
@@ -245,6 +246,13 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
             }
         }
     case Number:
+        switch y := b.(type) {
+        case *Block:
+            b = y.Run()
+        case *Variable:
+            b = y.Value()
+        }
+
         if v.arr != nil {
             for idx, mem := range v.arr {
                 mem.obj = v.obj
