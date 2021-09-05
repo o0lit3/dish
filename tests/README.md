@@ -105,7 +105,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.1 @= 0`        | `8`                   |
 |          | String.x `@=` String          | `a.x.replace(b)` | `a = 'bing', a.1 @= 'a'`  | `"bang"`              |
 |          | Array.x `@=` Any              | `a.x.replace(b)` | `a = [1, 2, 3], a.0 @= 4` | `[4, 2, 3]`           |
-|          | Hash.x `@=` Any               | `a.x.replace(b)` | `a = {x: 1}, a.x @= 4`    | `{"x": 4}`            |
+|          | Hash.x `@=` Any               | `a.x.replace(b)` | `a = {x: 1}, a.'x' @= 4`  | `{"x": 4}`            |
 |          |                               |                  |                           |                       |
 | `++`     | `++`Number                    | `a.increment`    | `a = 8, ++a`              | `9`                   |
 | (Unary)  | `++`String                    | `a.increment`    | `a = 'binary', ++a`       | `"binarz"`            |
@@ -118,7 +118,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `<<`     | Null `<<` String              | `a.append(b)`    | `a << 'dish'`             | `"dish"`              |
 |          | Null `<<` Array               | `a.push(b)`      | `a << [1, 2]`             | `[1, 2]`              |
 |          | Null `<<` Hash                | `a.extend(b)`    | `a << {x: 1, y: 2}`       | `{"x": 1, "y": 2}`    |
-|          | String `<<` Number            | `a.rpad(b)`      | `a = 'bin', a << 3`       | `"bin   "`            |
+|          | String `<<` Number            | `a.rpad(b)`      | `a = 'bin', a << 3`       | `"bin\ \ \  "`            |
 |          | String `<<` `-`Number         | `a.rtrunc(b)`    | `a = 'binary', a << -3`   | `"bin"`               |
 |          | String `<<` String            | `a.append(b)`    | `a = 'bin', a << 'ary'`   | `"binary"`            |
 |          | Array `<<` Number             | `a.rpad(b)`      | `a = [1, 2], a << 2`      | `[1, 2, null, null]`  |
