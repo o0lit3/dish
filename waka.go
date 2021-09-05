@@ -418,6 +418,10 @@ func (t *Token) RshiftNumber(x Number, y Number) Number {
         return x
     }
 
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.LshiftNumber(x, t.NegateNumber(y))
+    }
+
     return NewNumber(x.Int() >> uint(y.Int()))
 }
 
