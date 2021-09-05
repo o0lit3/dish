@@ -118,7 +118,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `<<`     | Null `<<` String              | `a.append(b)`    | `a << 'dish'`             | `"dish"`              |
 |          | Null `<<` Array               | `a.push(b)`      | `a << [1, 2]`             | `[1, 2]`              |
 |          | Null `<<` Hash                | `a.extend(b)`    | `a << {x: 1, y: 2}`       | `{"x": 1, "y": 2}`    |
-|          | String `<<` Number            | `a.rpad(b)`      | `a = 'bin', a << 2`       | `"bin&nbsp;&nbsp;"`   |
+|          | String `<<` Number            | `a.rpad(b)`      | `a = 'bin', a << 3`       | `"bin___"`            |
 |          | String `<<` `-`Number         | `a.rtrunc(b)`    | `a = 'binary', a << -3`   | `"bin"`               |
 |          | String `<<` String            | `a.append(b)`    | `a = 'bin', a << 'ary'`   | `"binary"`            |
 |          | Array `<<` Number             | `a.rpad(b)`      | `a = [1, 2], a << 2`      | `[1, 2, null, null]`  |
