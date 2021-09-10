@@ -160,6 +160,10 @@ func (t *Token) Term() bool {
 }
 
 func (t *Token) MemberAccessible() bool {
+    if t.BlockClose() {
+        return true
+    }
+
     switch t.tok {
     case STR, NUM, VAR:
         return true
