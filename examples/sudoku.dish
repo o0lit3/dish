@@ -13,21 +13,21 @@ data = [
 ]
 
 row = :data:i(
-  //data.i
+  data.i ~ [0]
 )
 
 column = :data:j(
-  //data.(0..8).map:r(r.j)
+  data.(0..8).map:r(r.j) ~ [0]
 )
 
 square = :data:i:j(
-  //data.(4*<(i/3)..3*<(i/3)+2).map:r(r.(3*<(j/3)..3*<(j/3)+2))
+  data.(3*<(i/3)..3*<(i/3)+2).map:r(r.(3*<(j/3)..3*<(j/3)+2)).flat ~ [0]
 )
 
 options = :data(
   data.reduce:out:r:i(
     out << r.map:c:j(
-      !c ? [[i, j, (1..9) ~ (data.row(i) | data.column(j) | data.square[i, j]) - [0]]]
+      !c ? [[i, j, (1..9) ~ (data.row(i) | data.column(j) | data.square[i, j])]]
     ).compact
   ).sort:a:b(#a.-1 < #b.-1)
 )
