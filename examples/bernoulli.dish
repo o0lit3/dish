@@ -19,5 +19,5 @@ bernoulli = :n:out(
   (#*b.'num' > max).then(max = #*b.'num')
   b
 ).grep:n(n.'num' != 0).map:n:i(
-  "B($(i.fmt('%2d'))) = $(' '*(max - #*n.'num'))" + n.vals.join('/')
-).join("\n")
+  "B($(i.fmt('%2d'))) = $(' '*(max - #*n.'num'))" + (@n.vals).join('/')
+).join

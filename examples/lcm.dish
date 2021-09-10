@@ -17,4 +17,4 @@ lcm = :n:m(
   '1764.lcm(3920)'
 ].map:i(
   "$i \t## $(i.eval)"
-).join("\n")
+).join

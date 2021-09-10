@@ -9,9 +9,9 @@ perms = :x:n:out(
       out = x.perms[n - 1, out]
 
       (n % 2 == 1).then(
-        x.[i, n - 1] = x.[n - 1, i]
+        x[i, n - 1] = x[n - 1, i]
       ).else(
-        x.[0, n - 1] = x.[n - 1, 0]
+        x[0, n - 1] = x[n - 1, 0]
       )
     )
   )
@@ -21,4 +21,4 @@ perms = :x:n:out(
 
 **('a'..'d').map:list(
   list.join(' ')
-).join("\n")
+).join

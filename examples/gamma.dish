@@ -39,4 +39,4 @@ gamma = :x(
 
 (1..10).each:i(
   (i / 3).gamma.fmt('%.20f')
-).join("\n")
+).join

@@ -11,4 +11,4 @@
   'a >> b'
 ].map:i(
   "$i \t## $(i.eval)"
-).join("\n")
+).join

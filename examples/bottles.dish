@@ -4,5 +4,5 @@
   [
     "$n bottle$('s'*(n != 1)) of beer on the wall, $n bottle$('s'*(n != 1)) of beer."
     "Take one down and pass it around, $(--n||'no more') bottle$('s'*(n != 1)) of beer on the wall."
-  ].join("\n")
+  ].join
 ).join("\n\n")

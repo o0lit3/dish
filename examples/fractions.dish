@@ -12,4 +12,4 @@ estimate = :a:b:n(
   ['pi', :n(n ? [6, 3]), :n((2 * n + 1)^2)]
 ].map:frac(
   "$(<< frac) = $(frac.estimate.round(9))"
-).join("\n")
+).join

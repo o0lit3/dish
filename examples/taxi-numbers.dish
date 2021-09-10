@@ -18,4 +18,4 @@ taxis.keys.map:k(+k).sort.map:k(
     (*taxis.k.1.0 + "^3").fmt('%4s')
     (*taxis.k.0.1 + "^3").fmt('%4s')
   ].join(' ')
-).join("\n")
+).join

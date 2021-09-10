@@ -21,4 +21,4 @@ n = 2
   "Between 100 and 150: " + set_x.join(' ')
   "Count between 7700 and 8000: $(#set_y)"
   "Prime 10000: $(primes.last)"
-].join("\n")
+].join

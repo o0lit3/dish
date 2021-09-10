@@ -23,5 +23,5 @@ integrate = :obj:func(
     simpson: :x:y((x.func + 4 * ((x + y) / 2).func + y.func) / 6)
   }.each:func:key(
     "$key: $(obj.integrate(func))"
-  ).arr().join("\n")
+  ).arr().join
 ).join("\n\n")

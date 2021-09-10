@@ -30,4 +30,4 @@ primorials = [1] + primes.map:n(
   "Digits of p(10 ^ 2): $(#*primorials.(10 ^ 2))"
   "Digits of p(10 ^ 3): $(#*primorials.(10 ^ 3))"
   "Digits of p(10 ^ 4): $(#*primorials.(10 ^ 4))"
-].join("\n")
+].join

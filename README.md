@@ -63,7 +63,9 @@ Comments in **dish** start with a double pound `##` and end with a newline. Ther
 <sub>\*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
 
 ## Variables and Member Access
-Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores.
+Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores. Values can be assigned to dynamic variables by assigning to a dynamically created string:
+
+`dish -e '(1..9).each:i("sqr$i" = i^2); sqr9'` outputs `81`
 
 Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the most significant bit at index 0. Note that to retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
 
@@ -78,6 +80,8 @@ Because **dish** variables can not begin with numbers, numeric index members suc
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a."foo"'` outputs `1`
 
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a.foo'` outputs `2`
+
+**dish** also supports traditional array and hash member access with bracket `[]` syntax. `[1, 2, 3].1` and `[1, 2, 3][1]` are equivalent in **dish**.
 
 The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ^ b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in:
 

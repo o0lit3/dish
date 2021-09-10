@@ -14,4 +14,4 @@ pi = 3.14159265359
   {radians: 'r = (1.000000000).atan', degrees: 'r * 180 / pi'}
 ].map:obj(
   "[$(obj.radians), $(obj.degrees)] \t## [$(obj.radians.eval.round(9)), $(+obj.degrees.eval.fmt('%0.2f'))]"
-).join("\n")
+).join

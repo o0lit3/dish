@@ -6,7 +6,7 @@ normalize = :x:y:z(
 )
 
 dot = :a:b(
-  ((d = +(a * b)) < 0).then(-d).else(0)
+  ((d = +(a * b)) < 0).switch[-d, 0]
 )
 
 diffuse = :a:b(
@@ -56,4 +56,4 @@ char = :x:y:z(
       [neg.'cx' - x, neg.'cy' - y, neg.'cz' - superlaser.1].char
     ]
   ).join('')
-).join("\n")
+).join

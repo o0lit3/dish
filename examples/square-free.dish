@@ -8,5 +8,5 @@ squareless = :n(
   (1..145).grep:n(n.squareless)
   [100, 1000, 10000].map:n(
     "From 1 to $n: " + *#((1..n).grep:n(n.squareless))
-  ).join("\n")
+  ).join
 ].join("\n\n")

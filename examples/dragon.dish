@@ -20,7 +20,7 @@ dragon = :n(
     r += (i / (i & -i))
   )
 
-  a.grep:e(e != ' '*(8 << n/2)).map:e(e.(p..q)).join("\n")
+  a.grep:e(e != ' '*(8 << n/2)).map:e(e.(p..q)).join
 )
 
 10.dragon

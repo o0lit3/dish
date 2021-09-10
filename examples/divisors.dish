@@ -17,13 +17,13 @@ divs = :i(
 
 ## Only check multiples of 2, 3, 5, and 7 since highly composite numbers above 840 all contain the first 4 primes
 ((i += 210) < 20000).redo:(
-  divs: /i
+  divs: **i
   (#divs > max).then(max = #divs, n = [])
   (#divs == max).then(n << [i])
 )
 
 (
   (1..10).map:i(
-    "$i: $(/i)"
-  ) + n.map:n("$(n) has $(max) proper divisors")
-).join("\n")
+    "$i: $(**i)"
+  ) + n.map:n("$n has $max proper divisors")
+).join

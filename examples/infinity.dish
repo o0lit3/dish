@@ -14,4 +14,4 @@
   '2 / inf'
 ].map:i(
   "$(i.fmt('%-8s')) \t## $(*i.eval)"
-).join("\n")
+).join

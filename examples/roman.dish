@@ -54,4 +54,4 @@ arabic = :r:out(
   '"MMXX".arabic'
 ].map:i(
   "$(i.fmt('%-15s')) \t## $(i.eval)"
-).join("\n")
+).join

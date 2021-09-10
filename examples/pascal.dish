@@ -3,11 +3,9 @@
 pascal = :n(
   [out = [1]] + (1..n).map:(
     out = (out >> [0]).map:m:i(
-      m + out.(i + 1)
+      m + out[i + 1]
     )
   )
 )
 
-9.pascal.map:r(
-  r.join(' ')
-).join("\n")
+9.pascal.map:r(r.join(' ')).join

@@ -19,4 +19,4 @@ rk = :t:y:f(
   [t, y] = [t + d, y + [t, y, :t:y(t * y.sqrt)].rk]
 )
 
-out.join("\n")
+out.join

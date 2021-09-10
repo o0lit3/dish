@@ -7,4 +7,4 @@
     'Fizz'
     n
   ]
-).join("\n")
+).join

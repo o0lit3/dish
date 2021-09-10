@@ -8,5 +8,5 @@
 ## {"a": 1, "b": 2}
 
 ## For a more complex quine, consider the following where the the value 0 is replaced with the parent array:
-q=[113, 61, 0, 10, 42, 40, 113, 42, 58, 105, 40, 105, 63, 91, 105, 46, 99, 104, 114, 44, 32, 113, 93, 41, 41]
-*(q*:i(i?[i.chr, q]))
+q=[113, 61, 0, 10, 40, 113, 42, 58, 105, 40, 105, 63, 91, 105, 46, 99, 104, 114, 44, 32, 113, 93, 41, 41, 42, 39, 39]
+(q*:i(i?[i.chr, q]))*''

@@ -26,6 +26,10 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
 
                 x.blk.cur.vars[x.nom] = Array { }
 
+                if len(y) == 1 {
+                    return t.Dot(x, y[0])
+                }
+
                 return &Variable{ par: x, obj: x.blk.cur.vars[x.nom], arr: t.ArrayMembers(Array{ }, y).arr }
             case String:
                 if t.lit == "items" || t.lit == "subset" || t.lit == "call" {
@@ -123,6 +127,10 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
         case Array:
             if t.lit == "at" || t.lit == "item" || t.lit == "call" {
                 t.TypeMismatch(x, y)
+            }
+
+            if len(y) == 1 {
+                return t.Dot(x, y[0])
             }
 
             return t.ArrayMembers(x, y)

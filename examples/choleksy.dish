@@ -20,7 +20,7 @@ cholesky = :a(
     row.map:col(
       col.fmt("%8.5f")
     ).join(' ')
-  ).join("\n")
+  ).join
 )
 
 [

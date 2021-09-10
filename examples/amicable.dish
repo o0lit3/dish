@@ -5,7 +5,7 @@ sums = (0..20000).map:i(
 )
 
 sums.grep:s:i(
-  sums.s == i && i < s
+  sums[s] == i && i < s
 ).map:s(
-  "$(sums.s) $s"
-).join("\n")
+  "$(sums[s]) $s"
+).join

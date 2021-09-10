@@ -15,5 +15,5 @@ morse = {
   (0..9).join,
   'Hello World!'
 ].map:message(
-  message.map:c(morse.(c.uc)||c).join(' ')
-).join("\n")
+  message.map:c(morse.(c.uc) || c).join(' ')
+).join

@@ -16,7 +16,7 @@ roots = :f:range:step:out(
     x += step
   )
 
-  out.join("\n")
+  out.join
 )
 
 [:x(x^3 - 3 * x^2 + 2 * x), -1..3, 0.1].roots

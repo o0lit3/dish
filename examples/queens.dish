@@ -17,7 +17,7 @@ queens = :n(
 
   nums.map:i(
     ('.' * n).(i - 1) @= 'Q'
-  ).join("\n")
+  ).join
 )
 
 8.queens

@@ -11,4 +11,4 @@ comb = :n:m(
 
 (('a'..'e') ** 3).map:list(
   list.join(' ')
-).sort.join("\n")
+).sort.join

@@ -25,5 +25,5 @@ stats = :n(
 )
 
 [10, 100, 1000, 10000].map:n(
-  n.stats.join("\n")
+  n.stats.join
 ).join("\n\n")

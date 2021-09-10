@@ -39,4 +39,4 @@ choice = :plays(
   )
 
   scores
-).join("\n")
+).join

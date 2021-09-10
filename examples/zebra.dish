@@ -56,6 +56,6 @@ coincident = :n:i:g:e(
   )
 )
 
-"The Zebra is owned by the man who is $((out.'nations').(out.'pets' @ 'Zebra').0)" + "\n\n" + (0..4).map:i(
+"The Zebra is owned by the man who is $((out.'nations').(out.'pets' @ 'Zebra'))" + "\n\n" + (0..4).map:i(
   "House $(i + 1): " + ['nations', 'colors', 'pets', 'drinks', 'smokes'].map:a((out.a).i).join(', ')
-).join("\n")
+).join

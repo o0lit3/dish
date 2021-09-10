@@ -12,7 +12,7 @@ spiral = :n:start(
     n.times:x(
       [n, x, y, start].cell.prime.switch['*', ' ']
     ).join(" ")
-  ).join("\n")
+  ).join
 )
 
 36.spiral(1)

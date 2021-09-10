@@ -8,7 +8,7 @@ sierpinski = :n(
     out = out.map:x(gap + x + gap) + out.map:x("$x $x")
   )
 
-  out.join("\n")
+  out.join
 )
 
 4.sierpinski

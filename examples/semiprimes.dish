@@ -12,4 +12,4 @@ semiprime = :n(
   [2,4,99,100,1679,5030,32768,1234567,9876543,900660121]
 ].map:set(
   set.grep:n(n.semiprime)
-).join("\n")
+).join

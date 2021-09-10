@@ -6,9 +6,9 @@ eratosthenes = :n(
   (2..n.sqrt).each:i(
     j: ^i
 
-    (nums.i).then(
+    (nums[i]).then(
       (j <= n).redo:(
-        nums.j = null
+        nums[j] = null
         j += i 
       )
     )

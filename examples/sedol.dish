@@ -25,4 +25,4 @@ checksum = :s:sum(
   'B00030'
 ].map:s(
   "$s \t $(s + *s.checksum)"
-).join("\n")
+).join

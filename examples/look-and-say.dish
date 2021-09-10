@@ -10,4 +10,4 @@ look = :s(
   out
 )
 
-([s = 1] + (0..13).map:(s = s.look)).join("\n")
+([s = 1] + (0..13).map:(s = s.look)).join

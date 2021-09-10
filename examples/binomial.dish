@@ -14,4 +14,4 @@ choose = :n:k(
   '100.choose(50)'
 ].map:i(
   "$i \t## $(i.eval)"
-).join("\n")
+).join

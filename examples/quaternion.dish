@@ -49,4 +49,4 @@ mult = :q:r(
   'q1.mult(q2) != q2.mult(q1)'
 ].map:i(
   "$(i.fmt('%-25s')) \t## $(i.eval)"
-).join("\n")
+).join

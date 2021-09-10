@@ -11,4 +11,4 @@ anagram.values.filter:set(
   #set == max
 ).map:set(
   set.join(', ')
-).sort.join("\n")
+).sort.join

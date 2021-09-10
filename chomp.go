@@ -159,6 +159,15 @@ func (t *Token) Term() bool {
     }
 }
 
+func (t *Token) MemberAccessible() bool {
+    switch t.tok {
+    case STR, NUM, VAR:
+        return true
+    default:
+        return false
+    }
+}
+
 func (t *Token) Precedence() int {
     if t.tok == OP1 || t.tok == MEM {
         return 15
@@ -435,6 +444,10 @@ func (l *Lexer) Lexify() *Token {
 
             return l.Tokenize(l.pos, OP1, string(r))
         case '{', '[', '(':
+            if len(l.toks) > 0 && l.toks[len(l.toks) - 1].MemberAccessible() && r == '[' {
+                l.Tokenize(l.pos, OPX, "")
+            }
+
             return l.Tokenize(l.pos, BLK, string(r))
         case '}', ']', ')':
             if len(l.toks) > 0 && l.toks[len(l.toks) - 1].tok == FIN {

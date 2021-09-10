@@ -99,33 +99,25 @@ func (blk *Block) Assign(a interface{}, b interface{}, local bool) interface{} {
     case *Variable:
         x.Assign(blk, b, local)
     default:
-        if local && blk.dim == MAP {
-            key := ""
+        key := ""
 
-            if _, ok := x.(String); ok {
-                key = string(x.(String))
-            } else {
-                key = fmt.Sprintf("%v", x)
-            }
-
-            switch y := b.(type) {
-            case *Block:
-                blk.cur.vars[key] = y.Run()
-            case *Variable:
-                blk.cur.vars[key] = y.Value()
-            default:
-                blk.cur.vars[key] = y
-            }
-
-            blk.cur.hash[key] = blk.cur.vars[key]
+        if _, ok := x.(String); ok {
+            key = string(x.(String))
         } else {
-            tok := blk.toks[len(blk.toks) - 1]
+            key = fmt.Sprintf("%v", x)
+        }
 
-            if blk.cur != nil && blk.cur.idx - 1 < len(blk.toks) {
-                tok = blk.toks[blk.cur.idx - 1]
-            }
+        switch y := b.(type) {
+        case *Block:
+            blk.cur.vars[key] = y.Run()
+        case *Variable:
+            blk.cur.vars[key] = y.Value()
+        default:
+            blk.cur.vars[key] = y
+        }
 
-            panic(fmt.Sprintf("Assignment operator \"%s\" requires variable left-hand operand at %s", tok.lit, tok.pos))
+        if local {
+            blk.cur.hash[key] = blk.cur.vars[key]
         }
     }
 
@@ -370,8 +362,6 @@ func (b *Block) Interpolate(s string) String {
             toks = append(toks, tok)
             break Interpolate
         case r == '\\':
-            tok += string(r)
-
             if n := lexer.Chomp(); n != 0 {
                 tok += string(n)
             }
@@ -483,6 +473,10 @@ func (b *Block) Context(x interface{}) *Block {
 func (b *Block) Variate() []*Variable {
     var reg *Variable = nil
     out := []*Variable{}
+
+    if (b.dim == VAL) {
+        return append(out, &Variable{ blk: b, nom: string(Stringify(b.Run())) })
+    }
 
     for _, t := range b.toks {
         switch t.tok {

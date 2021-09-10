@@ -18,4 +18,4 @@ data.each:n(
 
 out.map:data:i(
   i.fmt('%2d') + " | $((data ?? []).sort.join(' '))"
-).join("\n")
+).join

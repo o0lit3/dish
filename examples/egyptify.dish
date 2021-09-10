@@ -38,7 +38,7 @@ egyptify = :f(
   2014/59
 ].map:f(
   "$(f.ratio.vals.join('/')) = $(f.egyptify.join(' + '))"
-).join("\n") + "\n\n" + [
+).join + "\n\n" + [
   "Fraction with the highest number of terms ($tmax terms): $(term.ratio.vals.join('/'))"
   "Fraction with the largest denominator ($dmax digits): $(denom.ratio.vals.join('/'))"
-].join("\n")
+].join
