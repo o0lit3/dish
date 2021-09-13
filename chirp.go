@@ -513,18 +513,41 @@ func (blk *Block) Chirp() interface{} {
             switch op := blk.FindVar(t.lit).(type) {
             case Null:
             default:
+                args := []string{ }
                 params := Array{ blk.Value(a) }
+                invocant := params[0]
+                members := Array{ }
+
+                if y, ok := op.(*Block); ok {
+                    args = y.args
+                }
 
                 for _, param := range blk.Blockify(b) {
+                    var val interface{}
+
                     switch y := param.(type) {
                     case *Block:
-                        params = append(params, y.Run())
+                        val = y.Run()
                     default:
-                        params = append(params, y)
+                        val = y
+                    }
+
+                    if len(params) < len(args) {
+                        params = append(params, val)
+                    } else {
+                        members = append(members, val)
                     }
                 }
 
-                blk.Register(t.Dot(params, op))
+                if len(params) > 1 {
+                    invocant = params
+                }
+
+                if len(members) > 0 {
+                    blk.Register(t.Dot(t.Dot(invocant, op), members))
+                } else {
+                    blk.Register(t.Dot(invocant, op))
+                }
 
                 return blk.Chirp()
             }

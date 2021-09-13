@@ -17,11 +17,11 @@ By default, **dish** places STDIN into a variable called `stdin`, and it places 
 
 As an example, the following curl/**dish** command will output a list of the last 5 github commits to the **dish** codebase:
 
-```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=5" | dish -e 'stdin.map:data(data.commit.url).join'```
+```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=5" | dish -p -e 'stdin.map:data(data.commit.url)'```
 
 ...and the following curl/**dish** command will output a list of unique github contributors in the last 100 commits to the **react** codebase:
 
-```curl -s "https://api.github.com/repos/facebook/react/commits?per_page=100" | dish -e 'stdin.map:data(data.commit.author.name).uniq.join'```
+```curl -s "https://api.github.com/repos/facebook/react/commits?per_page=100" | dish -p -e 'stdin.map:data(data.commit.author.name).uniq'```
 
 ## Output
 By default, **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
@@ -29,6 +29,8 @@ By default, **dish** outputs the last evaluated statement to STDOUT. If the last
 This behavior allows you to pipe the output of one dish executable into another and use it as JSON input via `stdin` downstream:
 
 `dish -e '[1, 2, 3]' | dish -e 'stdin.sum'`
+
+**dish** supports the following command line options for output styling: 1) `-f` (or `-format`) to auto-indent JSON output and 2) `-p` (or `-pretty`) to auto-indent and colorize JSON output. Note, however, that because "pretty" output uses [ANSI escape sequences](https://en.wikipedia.org/wiki/ANSI_escape_code) to colorize output, the output is no longer valid JSON.
 
 ## [Data Types and Operators](tests/README.md)
 For a detailed decription of operators, precedence, and implicit operator context, [read the operator documentation at tests/README.md](tests/README.md).
@@ -63,11 +65,11 @@ Comments in **dish** start with a double pound `##` and end with a newline. Ther
 <sub>\*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
 
 ## Variables and Member Access
-Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores. Values can be assigned to dynamic variables by assigning to a dynamically created string:
+Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores. Values can be assigned to dynamic variables by using interpolated string assignment:
 
 `dish -e '(1..9).each:i("sqr$i" = i^2); sqr9'` outputs `81`
 
-Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the most significant bit at index 0. Note that to retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
+Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the most significant bit at index 0. To retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
 
 `dish -e '12.1'` outputs the floating point number: `12.1`
 
@@ -81,7 +83,7 @@ Because **dish** variables can not begin with numbers, numeric index members suc
 
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a.foo'` outputs `2`
 
-**dish** also supports traditional array and hash member access with bracket `[]` syntax. `[1, 2, 3].1` and `[1, 2, 3][1]` are equivalent in **dish**.
+**dish** also supports "traditional syntax" array and hash member access with bracket `[]` syntax. `[1, 2, 3].1` and `[1, 2, 3][1]` are equivalent in **dish**.
 
 The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ^ b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in:
 
@@ -89,7 +91,7 @@ The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b +
 
 `dish -e 'title = :s(s.words.map:w(w.0 @= w.0.uc).join(" ")); "my title".title'`
 
-In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed via a Scalar block following the member expression. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad[2, 3, 4]`, where additional arguments are passed via an Array block following the member expression. Note, however, that `2.quad(2, 3, 4)` would only pass `4` as a second argument since `(2, 3, 4)` is a Scalar block that only returns the last expression.
+In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed via parentheses. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad(2, 3, 4)`. Note that the parenthesized parameters in this "traditional syntax alternative" do not represent a **dish** Scalar Block.
 
 ## String Interpolation
 **dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string `"$(...)"`, for example: `dish -e '(0..9).map:i("i^2: $(i^2)").join'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.

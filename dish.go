@@ -19,15 +19,25 @@ func main() {
 
     index := 0
     source := os.Args[1]
+    pretty := false
+    format := false
     debug := false
 
     for i, flag := range os.Args {
         switch flag {
-        case "-debug":
+        case "-d", "-debug":
             debug = true
             source = os.Args[i + 1]
             index = i + 1
-        case "-e":
+        case "-p", "-pretty":
+            pretty = true
+            source = os.Args[i + 1]
+            index = i + 1
+        case "-f", "-format":
+            format = true
+            source = os.Args[i + 1]
+            index = i + 1
+        case "-e", "-exec":
             source = ""
             reader = bufio.NewReader(strings.NewReader(os.Args[i + 1]))
             index = i + 1
@@ -55,12 +65,131 @@ func main() {
         return
     }
 
-    switch x := parser.blk.Run(parser.blk.def...).(type) {
-    case Null:
+    if format || pretty {
+        print(parser.blk.Run(parser.blk.def...), pretty, 0, true, true)
+    } else {
+        switch x := parser.blk.Run(parser.blk.def...).(type) {
+            case Null:
+        case String:
+            fmt.Printf("%v\n", string(x))
+        default:
+            fmt.Printf("%v\n", x)
+        }
+    }
+}
+
+func print(v interface{}, pretty bool, depth int, line bool, indent bool) {
+    if indent {
+        fmt.Print(strings.Repeat("  ", depth))
+    }
+
+    switch x := v.(type) {
+    case *Block:
+        print(x.Run(), pretty, depth, line, indent)
+    case *Variable:
+        print(x.Value(), pretty, depth, line, indent)
+    case Hash:
+        i := 0
+
+        if pretty {
+            fmt.Print("\033[0m\033[37;1m{\n")
+        } else {
+            fmt.Print("{\n")
+        }
+
+        for key, val := range x {
+            if pretty {
+                fmt.Print("\033[0m\033[34;1m" + strings.Repeat("  ", depth + 1) + "\"" + key + "\"")
+                fmt.Print("\033[0m\033[37;1m" + ": ")
+            } else {
+                fmt.Print(strings.Repeat("  ", depth + 1) + "\"" + key + "\"")
+                fmt.Print(": ")
+            }
+
+            if i < len(x) - 1 {
+                print(val, pretty, depth + 1, false, false)
+
+                if pretty {
+                    fmt.Print("\033[0m\033[37;1m,\n")
+                } else {
+                    fmt.Print(",\n")
+                }
+            } else {
+                print(val, pretty, depth + 1, true, false)
+            }
+
+            i++
+        }
+
+        if pretty {
+            fmt.Print("\033[0m\033[37;1m" + strings.Repeat("  ", depth) + "}")
+        } else {
+            fmt.Print(strings.Repeat("  ", depth) + "}")
+        }
+    case Array:
+        if pretty {
+            fmt.Print("\033[0m\033[37;1m[\n")
+        } else {
+            fmt.Print("[\n")
+        }
+
+        for i, val := range x {
+            if i < len(x) - 1 {
+                print(val, pretty, depth + 1, false, true)
+
+                if pretty {
+                    fmt.Print("\033[0m\033[37;1m,\n")
+                } else {
+                    fmt.Print(",\n")
+                }
+            } else {
+                print(val, pretty, depth + 1, true, true)
+            }
+       }
+
+        if pretty {
+            fmt.Print("\033[0m\033[37;1m" + strings.Repeat("  ", depth) + "]")
+        } else {
+            fmt.Print(strings.Repeat("  ", depth) + "]")
+        }
     case String:
-        fmt.Printf("%v\n", string(x))
-    default:
-        fmt.Printf("%v\n", x)
+        if (depth > 0) {
+            if pretty {
+                fmt.Printf("\033[0m\033[32m%v", x)
+            } else {
+                fmt.Printf("%v", x)
+            }
+        } else {
+            if pretty {
+                fmt.Printf("\033[0m\033[32m%v", string(x))
+            } else {
+                fmt.Printf("%v", string(x))
+            }
+        }
+    case Number:
+        if pretty {
+            fmt.Printf("\033[0m\033[30m%v", x)
+        } else {
+            fmt.Printf("%v", x)
+        }
+    case Boolean:
+        if pretty {
+            fmt.Printf("\033[0m\033[33m%v", x)
+        } else {
+            fmt.Printf("%v", x)
+        }
+    case Null:
+        if (depth > 0) {
+            if pretty {
+                fmt.Printf("\033[0m\033[31m%v", x)
+            } else {
+                fmt.Printf("%v", x)
+            }
+        }
+    }
+
+    if line {
+        fmt.Print("\n")
     }
 }
 

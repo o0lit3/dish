@@ -89,6 +89,10 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
+            if len(y) == 1 {
+                return t.Dot(x, y[0])
+            }
+
             return t.HashMembers(x, y)
         case String:
             if t.lit == "items" || t.lit == "subset" || t.lit == "call" {

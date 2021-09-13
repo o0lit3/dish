@@ -533,9 +533,7 @@ func (b *Block) Blockify(a interface{}) Array {
     switch x := a.(type) {
     case *Block:
         switch x.dim {
-        case VAL:
-            return Array { x }
-        case LST:
+        case VAL, LST:
             blk := b.Branch(VAL)
             out := Array { }
             i := 0

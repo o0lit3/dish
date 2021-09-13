@@ -325,7 +325,7 @@ func (l *Lexer) Reset() Position {
 }
 
 func (l *Lexer) Tokenize(pos Position, tok Lexeme, lit string) *Token {
-    token := &Token { pos: pos, tok: tok, opx: tok == OPX, mem: tok == MEM, lit: lit }
+    token := &Token { pos: pos, tok: tok, opx: tok == OPX || tok == MEM, mem: tok == MEM, lit: lit }
     l.toks = append(l.toks, token)
     return token
 }
