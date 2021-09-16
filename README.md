@@ -75,7 +75,7 @@ Member access in **dish** is indicated by the special `.` operator which precede
 
 `dish -e '12.1'` outputs the floating point number: `12.1`
 
-`dish -e '12.(1)'` outputs the 0th-indexed 2nd most-significant bit of the integer 12: `1`
+`dish -e '12.(1)'` or `dish -e '12[1]'` outputs the 0th-indexed 2nd most-significant bit of the integer 12: `1`
 
 `dish -e 'a = 12; a.1'` outputs the 0th-indexed 2nd most-significant bit (disambiguated by the variable name `a`): `1`
 
