@@ -50,7 +50,7 @@ func main() {
 
     for index + 1 < len(os.Args) {
         index += 1
-        argv = append(argv, String(os.Args[index])) 
+        argv = append(argv, String(os.Args[index]))
     }
 
     program = NewBlock()

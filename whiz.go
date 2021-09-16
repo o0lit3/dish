@@ -13,7 +13,7 @@ func (t *Token) Whiz(a Array, b Array) interface{} {
 
     if len(b) > 0 && i < len(b) {
         if blk, ok := b[i].(*Block); ok {
-            if len(blk.args) > 0 {
+            if len(blk.args) > 0 || t.lit == "redo" || t.lit == "while" {
                 if t.lit != "?" && t.lit != "redo" && t.lit != "while" {
                     t.TypeMismatch(a, b)
                 }
@@ -21,14 +21,14 @@ func (t *Token) Whiz(a Array, b Array) interface{} {
                 return t.Redo(a, blk)
             }
 
-            if t.lit != "?" && t.lit != "switch" && t.lit != "and" {
+            if t.lit != "?" && t.lit != "switch" && t.lit != "then" {
                 return t.TypeMismatch(a, b)
             }
 
             return blk.Run()
         }
 
-        if t.lit != "?" && t.lit != "switch" && t.lit != "and" {
+        if t.lit != "?" && t.lit != "switch" && t.lit != "then" {
             return t.TypeMismatch(a, b)
         }
 

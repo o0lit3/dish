@@ -532,6 +532,10 @@ func (b *Block) Variate() []*Variable {
 func (b *Block) Blockify(a interface{}) Array {
     switch x := a.(type) {
     case *Block:
+        if len(x.args) > 0 {
+            return Array{ x }
+        }
+
         switch x.dim {
         case VAL, LST:
             blk := b.Branch(VAL)

@@ -227,7 +227,7 @@ func (a *Token) Higher(b *Token) bool {
 
 func (t *Token) ShortCircuit() bool {
     switch t.lit {
-    case "&&", "||", "then", "else":
+    case "&&", "||", "and", "or":
         return true
     default:
         return false

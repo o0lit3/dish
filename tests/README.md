@@ -16,11 +16,11 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary
 
 | Operator | Operands              | Method Name         | Example                     | Result                |
 | -------- | --------------------- | ------------------- | --------------------------- | --------------------- |
-| `&&`     | Any `&&` Any          | `a.then(b)`         | `3 && 2`                    | `2`                   |
+| `&&`     | Any `&&` Any          | `a.and(b)`          | `3 && 2`                    | `2`                   |
 |          |                       |                     | `3 && 0`                    | `0`                   |
 |          |                       |                     | `[] && 2`                   | `[]`                  |
 |          |                       |                     |                             |                       |
-| `\|\|`   | Any `\|\|` Any        | `a.else(b)`         | `3 \|\| 2`                  | `3`                   |
+| `\|\|`   | Any `\|\|` Any        | `a.or(b)`           | `3 \|\| 2`                  | `3`                   |
 |          |                       |                     | `[] \|\| 0`                 | `0`                   |
 |          |                       |                     | `0 \|\| 2`                  | `2`                   |
 |          |                       |                     |                             |                       |
@@ -31,13 +31,13 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary
 | `??`     | Any `??` Any          | `a.coalesce(b)`     | `a ?? 2`                    | `2`                   |
 |          |                       |                     | `a = 1; a ?? 2`             | `1`                   | 
 |          |                       |                     |                             |                       |
-| `?`      | Any `?` Number        | `a.and(b)`          | `(1 > 0) ? 2`               | `2`                   |
-|          | Any `?` String        | `a.and(b)`          | `(0 > 1) ? 'binary'`        | `null`                |
+| `?`      | Any `?` Number        | `a.then(b)`         | `(1 > 0) ? 2`               | `2`                   |
+|          | Any `?` String        | `a.then(b)`         | `(0 > 1) ? 'binary'`        | `null`                |
 |          | Any `?` Array         | `a.switch[b]`       | `[0, 1] ? [a += 1, a += 2]` | `2`                   |
 |          | Any `?` :(Block)      | `a.redo:(...)`      | `(a < 9) ? :(++a)`          | `9`                   |
 |          |                       |                     |                             |                       |
-| `!`      | Any `!` Number        | `a.or(b)`           | `(1 > 0) ! 2`               | `null`                |
-|          | Any `!` String        | `a.or(b)`           | `(0 > 1) ! 'binary'`        | `"binary"`            |
+| `!`      | Any `!` Number        | `a.else(b)`         | `(1 > 0) ! 2`               | `null`                |
+|          | Any `!` String        | `a.else(b)`         | `(0 > 1) ! 'binary'`        | `"binary"`            |
 |          | Any `!` Array         | `a.swap[b]`         | `[0, 1] ! [a += 1, a += 2]` | `1`                   |
 |          | Any `!` :(Block)      | `a.until:(...)`     | `(a > 9) ! :(++a)`          | `10`                  |
 

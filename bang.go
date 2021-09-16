@@ -13,7 +13,7 @@ func (t *Token) Bang(a Array, b Array) interface{} {
 
     if len(b) > 0 && i < len(b) {
         if blk, ok := b[i].(*Block); ok {
-            if len(blk.args) > 0 {
+            if len(blk.args) > 0 || t.lit == "until" {
                 if t.lit != "!" && t.lit != "until" {
                     t.TypeMismatch(a, b)
                 }
@@ -21,14 +21,14 @@ func (t *Token) Bang(a Array, b Array) interface{} {
                 return t.Until(a, blk)
             }
 
-            if t.lit != "!" && t.lit != "swap" && t.lit != "or" {
+            if t.lit != "!" && t.lit != "swap" && t.lit != "else" {
                 return t.TypeMismatch(a, b)
             }
 
             return blk.Run()
         }
 
-        if t.lit != "!" && t.lit != "swap" && t.lit != "or" {
+        if t.lit != "!" && t.lit != "swap" && t.lit != "else" {
             return t.TypeMismatch(a, b)
         }
 

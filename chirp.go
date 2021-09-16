@@ -554,11 +554,11 @@ func (blk *Block) Chirp() interface{} {
         }
 
         switch t.lit {
-        case "?", "and", "switch", "redo", "while":
+        case "?", "then", "switch", "redo", "while":
             blk.Register(t.Whiz(blk.Blockify(a), blk.Blockify(b)))
         case "??", "coallesce":
             blk.Register(t.DoubleWhiz(a, b))
-        case "!", "or", "swap", "until":
+        case "!", "else", "swap", "until":
             blk.Register(t.Bang(blk.Blockify(a), blk.Blockify(b)))
         case "@", "round", "find", "search", "indices":
             blk.Register(t.Thump(a, b))
@@ -630,11 +630,11 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(Equals(a, b))
         case "!=", "isnt", "ne":
             blk.Register(Boolean(!Equals(a, b)))
-        case "&&", "then":
+        case "&&", "and":
             blk.Register(t.DoubleBoom(a, b))
         case "~~", "xor":
             blk.Register(t.TwiddleDee(a, b))
-        case "||", "else":
+        case "||", "or":
             blk.Register(t.DoubleWham(a, b))
         case "..", "range", "to":
             blk.Register(t.DoubleDot(a, b))
