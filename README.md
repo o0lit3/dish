@@ -65,9 +65,11 @@ Comments in **dish** start with a double pound `##` and end with a newline. Ther
 <sub>\*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
 
 ## Variables and Member Access
-Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores. Values can be assigned to dynamic variables by using interpolated string assignment:
+Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores. Values can be assigned to dynamic variables by using interpolated string assignment or `$(...)` syntax outside of an interpolated string:
 
 `dish -e '(1..9).each:i("sqr$i" = i^2); sqr9'` outputs `81`
+
+`dish -p -e '{"apples": [1, 2, 3], "oranges": [4, 5, 6]}.reduce:out:set:fruit(out << {$(fruit): set.sum})'` outputs `{"apples": 6, "oranges": 15}`
 
 Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the most significant bit at index 0. To retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
 
