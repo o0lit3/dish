@@ -152,7 +152,7 @@ func (t *Token) Splat(a interface{}, b interface{}) interface{} {
         case Array:
             return Array{ }
         case String:
-            return y
+            return String("")
         case Number:
             return NewNumber(0)
         case Boolean:

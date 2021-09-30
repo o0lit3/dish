@@ -116,7 +116,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 |          | `--`Array                     | `a.decrement`    | `a = [1, 2, 3], --a`      | `[1, 2]`              |
 |          |                               |                  |                           |                       |
 | `<<`     | Null `<<` Any                 | `a.push(b)`      | `a << 'dish'`             | `["dish"]`            |
-|          | String `<<` Any               | `a.append(b)`    | `'dish' << ' ' << 1.0`    | `"dish 1.0"`          |
+|          | String `<<` Any               | `a.append(b)`    | `'dish.' << 1.5`          | `"dish.1.5"`          |
 |          | Array `<<` Any                | `a.push(b)`      | `[1, 2] << 3`             | `[1, 2, 3]`           |
 |          | Hash `<<` Any                 | `a.extend(b)`    | `{x: 1} << {y: 2}`        | `{"x": 1, "y": 2}`    |
 |          | [Also See Bitwise Ops](#bitwise-operators)       |                           |                       |
@@ -124,7 +124,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `>>`     | Null `>>` Any                 | `a.unshift(b)`   | `a >> 'dish'`             | `["dish"]`            |
 |          | String `>>` Any               | `a.prepend(b)`   | `'ary' >> 'bin'`          | `"binary"`            |
 |          | Array `>>` Any                | `a.unshift(b)`   | `[1, 2] >> 3`             | `[3, 2, 1]`           |
-|          | Hash `>>` Any                 | `a.extend(b)`    | `{x: 1} << {y: 2}`        | `{"x": 1, "y": 2}`    |
+|          | Hash `>>` Any                 | `a.extend(b)`    | `{x: 1} >> {y: 2}`        | `{"x": 1, "y": 2}`    |
 |          | [Also See Bitwise Ops](#bitwise-operators)       |                           |                       |
 |          |                               |                  |                           |                       |
 | `<<`     | `<<`Number                    | `a.shift`        | `a = 12, [<<a, a]`        | `[1, 4]`              |
@@ -169,7 +169,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 |          | Hash `~` :(Block)        | `a.none(...)`       | `{x: 1, y: 2} ~ :(x % 2)`   | `false`                |
 |          |                          |                     |                             |                        |
 | `~`      | `~`Number                | `a.bnot`            | `~5`                        | `-6`                   |
-| (Unary)  | `~`String                | `a.flip`            | `~'bInArY'`                 | `"BiNaRy"`             |
+| (Unary)  | `~`String                | `a.caseflip`        | `~'bInArY'`                 | `"BiNaRy"`             |
 |          | `~`Array                 | `a.transpose`       | `~[1, 2, 3]`                | `[[1], [2], [3]]`      |
 |          | `~`Hash                  | `a.invert`          | `~{x: 1, y: 2}`             | `{"1": "x", "2": "y"}` |
 |          |                          |                     |                             |                        |
@@ -182,10 +182,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 ## Binary Operators
 | Operator | Operands             | Method Name         | Example                        | Result                     |
 | -------- | -------------------- | ------------------- | ------------------------------ | -------------------------- |
-| `+`      | Null `+` String      | `a.concat(b)`       | `a + 'dish'`                   | `"dish"`                   |
-|          | Null `+` Array       | `a.concat(b)`       | `a + [1, 2]`                   | `[1, 2]`                   |
-|          | Null `+` Hash        | `a.concat(b)`       | `a + {x: 1, y: 2}`             | `{"x": 1, "y": 2}`         |
-|          | Number `+` Number    | `a.add(b)`          | `10 + 20`                      | `30`                       |
+| `+`      | Number `+` Number    | `a.add(b)`          | `10 + 20`                      | `30`                       |
 |          | Number `+` String    | `b.increase(a)`     | `2 + 'binary'`                 | `"binasa"`                 |
 |          | Number `+` Array     | `b.lpad(a)`         | `2 + [1, 2, 3]`                | `[null, null, 1, 2, 3]`    |
 |          | `-`Number `+` Array  | `b.ltrunc(a)`       | `-2 + [1, 2, 3]`               | `[3]`                      |
