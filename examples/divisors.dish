@@ -8,7 +8,7 @@ divs = :i(
   (1..i.sqrt).map:j(
     (i % j == 0 && j > 1).then(
       out << [j]
-      (j != i / j).then(out << [i / j])
+      (j != i / j).then(out << i / j)
     )
   )
 
@@ -19,7 +19,7 @@ divs = :i(
 ((i += 210) < 20000).redo:(
   divs: **i
   (#divs > max).then(max = #divs, n = [])
-  (#divs == max).then(n << [i])
+  (#divs == max).then(n << i)
 )
 
 (

@@ -155,6 +155,8 @@ func (t *Token) WikiWiki(a interface{}, b interface{}) interface{} {
             return t.ExtendHash(x, y)
         case Null:
             return t.WikiWiki(x, Hash{ })
+        default:
+            return t.WikiWiki(x, Hashify(y))
         }
     case Array:
         switch y := b.(type) {
@@ -162,32 +164,20 @@ func (t *Token) WikiWiki(a interface{}, b interface{}) interface{} {
             return t.WikiWiki(x, y.Run())
         case *Variable:
             return t.WikiWiki(x, y.Value())
-        case Hash:
-            return t.WikiWiki(x, y.Array())
         case Array:
             if t.lit != "<<" && t.lit != "push" && t.lit != "append" {
                 t.TypeMismatch(x, y)
             }
 
-            return t.PushArray(x, y)
-        case Number:
-            if t.lit != "<<" && t.lit != "rpad" && t.lit != "rtrunc" {
-                t.TypeMismatch(x, y)
-            }
-
-            if t.lit == "rtrunc" {
-                return t.RtruncArray(x, y)
-            } else if y.val.Cmp(NewNumber(0).val) < 0 {
-                return t.RtruncArray(x, t.NegateNumber(y))
-            }
-
-            return t.RpadArray(x, y)
+            return t.PushArray(x, t.FlattenArray(y))
         case Null:
-            if t.lit != "<<" && t.lit != "append" && t.lit != "rpad" && t.lit != "rtrunc" {
+            if t.lit != "<<" && t.lit != "push" && t.lit != "append" {
                 t.TypeMismatch(x, y)
             }
 
             return x
+        default:
+            return t.WikiWiki(x, Array{ y })
         }
     case String:
         switch y := b.(type) {
@@ -201,24 +191,14 @@ func (t *Token) WikiWiki(a interface{}, b interface{}) interface{} {
             }
 
             return t.AppendString(x, y)
-        case Number:
-            if t.lit != "<<" && t.lit != "rpad" && t.lit != "rtrunc" {
-                t.TypeMismatch(x, y)
-            }
-
-            if t.lit == "rtrunc" {
-                return t.RtruncString(x, y)
-            } else if y.val.Cmp(NewNumber(0).val) < 0 {
-                return t.RtruncString(x, t.NegateNumber(y))
-            }
-
-            return t.RpadString(x, y)
         case Null:
-            if t.lit != "<<" && t.lit != "append" && t.lit != "rpad" && t.lit != "rtrunc" {
+            if t.lit != "<<" && t.lit != "append" {
                 t.TypeMismatch(x, y)
             }
 
             return x
+        default:
+            return t.WikiWiki(x, Stringify(y))
         }
     case Number:
         switch y := b.(type) {
@@ -240,20 +220,7 @@ func (t *Token) WikiWiki(a interface{}, b interface{}) interface{} {
     case Boolean:
         return t.WikiWiki(x.Number(), b)
     case Null:
-        switch y := b.(type) {
-        case *Block:
-            return t.WikiWiki(x, y.Run())
-        case *Variable:
-            return t.WikiWiki(x, y.Value())
-        case Hash:
-            return t.WikiWiki(Hash{ }, y)
-        case Array:
-            return t.WikiWiki(Array{ }, y)
-        case String:
-            return t.WikiWiki(String(""), y)
-        default:
-            return t.WikiWiki(NewNumber(0), y)
-        }
+        return t.WikiWiki(Array{ }, b)
     }
 
     return t.TypeMismatch(a, b)
@@ -353,70 +320,6 @@ func (t *Token) PushArray(x Array, y Array) Array {
     }
 
     return out
-}
-
-func (t *Token) RpadArray(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.RtruncArray(x, t.NegateNumber(y))
-    }
-
-    out := x
-    i := 0
-
-    for i < y.Int() {
-        out = append(out, Null { })
-        i++
-    }
-
-    return out
-}
-
-func (t *Token) RpadString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.RtruncString(x, t.NegateNumber(y))
-    }
-
-    out := string(x)
-    i := 0
-
-    for i < y.Int() {
-        out += " "
-        i++
-    }
-
-    return String(out)
-}
-
-func (t *Token) RtruncArray(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.RpadArray(x, t.NegateNumber(y))
-    }
-
-    out := x
-    i := y.Int()
-
-    for i > 0 {
-        out = out[:len(out) - 1]
-        i--
-    }
-
-    return out
-}
-
-func (t *Token) RtruncString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.RpadString(x, t.NegateNumber(y))
-    }
-
-    out := x
-    i := y.Int()
-
-    for i > 0 {
-        out = out[:len(out) - 1]
-        i--
-    }
-
-    return String(out)
 }
 
 func (t *Token) AppendString(x String, y String) String {

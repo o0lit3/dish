@@ -13,7 +13,7 @@ rk = :t:y:f(
 
 (t <= 10).redo:(
   (t.ratio.'denom' == 1).then(
-    out << ["y($(t.fmt('%2d'))): $(y.fmt('%10.6f')) ± $((y - (t ^ 2 + 4) ^ 2 / 16).abs.fmt('%10.8f'))"]
+    out << "y($(t.fmt('%2d'))): $(y.fmt('%10.6f')) ± $((y - (t ^ 2 + 4) ^ 2 / 16).abs.fmt('%10.8f'))"
   )
 
   [t, y] = [t + d, y + [t, y, :t:y(t * y.sqrt)].rk]

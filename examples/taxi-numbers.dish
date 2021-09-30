@@ -1,7 +1,7 @@
 ## https://rosettacode.org/wiki/Taxicab_numbers
 
 taxis = (1..75).reduce:out:a(
-  out << (a..75).map:b(
+  out += (a..75).map:b(
     [a, b] 
   )
 ).group:x(x.0^3 + x.1^3).grep:v:k(

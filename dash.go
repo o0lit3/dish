@@ -15,7 +15,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.AggregateHash(x, y)
+                return t.ReduceHash(x, y)
             }
 
             return t.Dash(x, y.Run())
@@ -38,7 +38,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.AggregateArray(x, y)
+                return t.ReduceArray(x, y)
             }
 
             return t.Dash(x, y.Run())
@@ -51,7 +51,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
 
             return t.RemoveFromArray(x, y)
         case Number:
-            if t.lit != "-" && t.lit != "-=" && t.lit != "trunc" {
+            if t.lit != "-" && t.lit != "-=" {
                 t.TypeMismatch(x, y)
             }
 
@@ -61,7 +61,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
 
             return t.RtruncArray(x, y)
         case Null:
-            if t.lit != "-" && t.lit != "-=" && t.lit != "remove" && t.lit != "delete" && t.lit != "del" && t.lit != "trunc" {
+            if t.lit != "-" && t.lit != "-=" && t.lit != "remove" && t.lit != "delete" && t.lit != "del" {
                 t.TypeMismatch(x, y)
             }
 
@@ -75,7 +75,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.AggregateString(x, y)
+                return t.ReduceString(x, y)
             }
 
             return t.Dash(x, y.Run())
@@ -90,6 +90,10 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
         case Number:
             if t.lit != "-" && t.lit != "-=" && t.lit != "decrease" {
                 t.TypeMismatch(x, y)
+            }
+
+            if y.val.Cmp(NewNumber(0).val) < 0 {
+                return t.IncreaseString(x, t.NegateNumber(y))
             }
 
             return t.DecreaseString(x, y)
@@ -108,6 +112,26 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
             return t.Dash(x, y.Run())
         case *Variable:
             return t.Dash(x, y.Value())
+        case Array:
+            if t.lit != "-" && t.lit != "-=" {
+                t.TypeMismatch(x, y)
+            }
+
+            if x.val.Cmp(NewNumber(0).val) < 0 {
+                return t.LpadArray(y, t.NegateNumber(x))
+            }
+
+            return t.LtruncArray(y, x)
+        case String:
+            if t.lit != "-" && t.lit != "-=" {
+                t.TypeMismatch(x, y)
+            }
+
+            if x.val.Cmp(NewNumber(0).val) < 0 {
+                return t.IncreaseString(y, t.NegateNumber(x))
+            }
+
+            return t.DecreaseString(y, x)
         case Number:
             if t.lit != "-" && t.lit != "-=" && t.lit != "subtract" && t.lit != "sub" {
                 t.TypeMismatch(x, y)
@@ -197,6 +221,36 @@ func (t *Token) TopDoubleDash(a interface{}) interface{} {
     return t.TypeMismatch(a, nil)
 }
 
+func (t *Token) ReduceHash(x Hash, y *Block) interface{} {
+    var out interface{} = Null{ }
+
+    for key, val := range x {
+        out = y.Context(x).Run(out, val, String(key))
+    }
+
+    return out
+}
+
+func (t *Token) ReduceArray(x Array, y *Block) interface{} {
+    var out interface{} = Null{ }
+
+    for i, val := range x {
+        out = y.Context(x).Run(out, val, NewNumber(i))
+    }
+
+    return out
+}
+
+func (t *Token) ReduceString(x String, y *Block) interface{} {
+    var out interface{} = Null{ }
+
+    for i, c := range x {
+        out = y.Context(x).Run(out, String(string(c)), NewNumber(i))
+    }
+
+    return out
+}
+
 func (t *Token) RemoveFromHash(x Hash, y Hash) Hash {
     out := Hash { }
 
@@ -240,10 +294,6 @@ func (t *Token) RemoveFromString(x String, y String) String {
 }
 
 func (t *Token) DecreaseString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.IncreaseString(x, t.NegateNumber(y))
-    }
-
     i := 0
     out := ""
     carry := y.Int()

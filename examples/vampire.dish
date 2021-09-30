@@ -4,7 +4,7 @@
 pairs = :n:out(
   factors: **n
   <<factors
-  factors.redo:(out << [[<<factors, >>factors]])
+  factors.redo:(out += [[<<factors, >>factors]])
 )
 
 fangs = :n(
@@ -19,7 +19,7 @@ fangs = :n(
 
 (#vamps < 25).redo:(
   (#(f = (++i).fangs)).then(
-    vamps << ["$i:\t$f"]
+    vamps << "$i:\t$f"
   )
 ).join + "\n" + [16758243290880, 24959017348650, 14593825548650].map:n(
   "$n: $(n.fangs)"

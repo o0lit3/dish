@@ -2,7 +2,7 @@
 
 pascal = :n(
   [out = [1]] + (1..n).map:(
-    out = (out >> [0]).map:m:i(
+    out = (out >> 0).map:m:i(
       m + out[i + 1]
     )
   )

@@ -109,6 +109,10 @@ func (t *Token) DoubleWham(a interface{}, b interface{}) interface{} {
         return t.DoubleWham(x.Value(), b)
     case Boolean:
         if x {
+            if t.lit == "else" {
+                return Null{ }
+            }
+
             return x
         }
 

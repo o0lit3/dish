@@ -26,7 +26,7 @@ square = :data:i:j(
 
 options = :data(
   data.reduce:out:r:i(
-    out << r.map:c:j(
+    out += r.map:c:j(
       !c ? [[i, j, (1..9) ~ (data.row(i) | data.column(j) | data.square[i, j])]]
     ).compact
   ).sort:a:b(#a.-1 < #b.-1)

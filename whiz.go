@@ -13,14 +13,6 @@ func (t *Token) Whiz(a Array, b Array) interface{} {
 
     if len(b) > 0 && i < len(b) {
         if blk, ok := b[i].(*Block); ok {
-            if len(blk.args) > 0 || t.lit == "redo" || t.lit == "while" {
-                if t.lit != "?" && t.lit != "redo" && t.lit != "while" {
-                    t.TypeMismatch(a, b)
-                }
-
-                return t.Redo(a, blk)
-            }
-
             if t.lit != "?" && t.lit != "switch" && t.lit != "then" {
                 return t.TypeMismatch(a, b)
             }
@@ -67,11 +59,11 @@ func (t *Token) Which(a Array) int {
     return -1
 }
 
-func (t *Token) Redo(x Array, y *Block) interface{} {
+func (t *Token) Redo(a interface{}, y *Block) interface{} {
+    var val interface{} = Null { }
     i := 0
-    val := y.Run(NewNumber(i))
 
-    for t.Which(x) != -1 {
+    for Boolify(a) {
         val = y.Run(NewNumber(i))
         i = i + 1
     }

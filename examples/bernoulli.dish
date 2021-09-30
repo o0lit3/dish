@@ -2,7 +2,7 @@
 
 bernoulli = :n:out(
   (0..n).each:m(
-    out << [1 / (m + 1)]
+    out << 1 / (m + 1)
 
     (m > 0).then(
       (m..1).each:j(

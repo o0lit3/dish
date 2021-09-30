@@ -1,14 +1,12 @@
 ## https://rosettacode.org/wiki/Egyptian_fractions
 
-egyptify = :f(
-  out: []
-
+egyptify = :f:out(
   (f >= 1).then(
     (r.'denom' == 1).then(
-      out << [f]
+      out << f
       f = 1
     ).else(
-      out << [f.int]
+      out << f.int
       f = f - f.int
     )
   )
@@ -16,12 +14,12 @@ egyptify = :f(
   r: f.ratio
 
   (r.'num' > 1).redo:(
-    out << [1 / (1 / f).ceil]
+    out << 1 / (1 / f).ceil
     f = (-r.'denom' % r.'num') / (r.'denom' * (1 / f).ceil)
     r = f.ratio
   )
 
-  (out << [f]).map:f((f.ratio.'denom' == 1).switch[f, f.ratio.vals.join('/')])
+  (out << f).map:f((f.ratio.'denom' == 1).switch[f, f.ratio.vals.join('/')])
 )
 
 (2..99).each:b(

@@ -183,11 +183,11 @@ func Itemize (a interface{}) Array {
     case Array:
         return x
     case String:
-        return x.Array()
+        return Array{ x }
     case Number:
-        return x.Array()
+        return Array{ x }
     case Boolean:
-        return x.Number().Array()
+        return Array{ x }
     default:
         return Array { }
     }

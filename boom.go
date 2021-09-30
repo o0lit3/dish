@@ -109,6 +109,10 @@ func (t *Token) DoubleBoom(a interface{}, b interface{}) interface{} {
         return t.DoubleBoom(x.Value(), b)
     case Boolean:
         if !x {
+            if t.lit == "then" {
+                return Null{ }
+            }
+
             return x
         }
 

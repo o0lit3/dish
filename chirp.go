@@ -427,7 +427,7 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.TopWhiz(a))
         case "%", "ratio", "hash":
             blk.Register(t.TopGrep(a))
-        case "~", "invert", "flip", "bnot":
+        case "~", "invert", "flip", "caseflip", "bnot":
             blk.Register(t.TopTwiddle(a))
         case "@", "keys", "reverse", "round":
             blk.Register(t.TopThump(a))
@@ -554,12 +554,28 @@ func (blk *Block) Chirp() interface{} {
         }
 
         switch t.lit {
-        case "?", "then", "switch", "redo", "while":
-            blk.Register(t.Whiz(blk.Blockify(a), blk.Blockify(b)))
+        case "?", "switch", "redo", "while":
+            if y, ok := b.(*Block); ok && len(y.args) > 0 {
+                if t.lit != "?" && t.lit != "redo" && t.lit != "while" {
+                    t.TypeMismatch(a, b)
+                }
+
+                blk.Register(t.Redo(a, y))
+            } else {
+                blk.Register(t.Whiz(blk.Blockify(a), blk.Blockify(b)))
+            }
         case "??", "coallesce":
             blk.Register(t.DoubleWhiz(a, b))
-        case "!", "else", "swap", "until":
-            blk.Register(t.Bang(blk.Blockify(a), blk.Blockify(b)))
+        case "!", "swap", "until":
+            if y, ok := b.(*Block); ok && len(y.args) > 0 {
+                if t.lit != "!" && t.lit != "until" {
+                    t.TypeMismatch(a, b)
+                }
+
+                blk.Register(t.Until(a, y))
+            } else {
+                blk.Register(t.Bang(blk.Blockify(a), blk.Blockify(b)))
+            }
         case "@", "round", "find", "search", "indices":
             blk.Register(t.Thump(a, b))
         case "^", "power", "pow", "rotate", "rot", "sort", "zip":
@@ -576,13 +592,13 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.Grep(a, b))
         case "%%", "imod", "xevery", "without":
             blk.Register(t.DoubleGrep(a, b))
-        case "+", "add", "concat", "increase", "pad", "aggregate":
+        case "+", "add", "concat", "increase", "lpad", "rpad", "ltrunc", "rtrunc", "accumulate":
             blk.Register(t.Cross(a, b))
-        case "-", "subtract", "sub", "remove", "delete", "del", "decrease", "trunc", "reduce":
+        case "-", "subtract", "sub", "remove", "delete", "del", "decrease", "reduce":
             blk.Register(t.Dash(a, b))
         case "#", "base", "unbase", "format", "fmt":
             blk.Register(t.Sharp(a, b))
-        case "<<", "push", "append", "rpad", "rtrunc", "lshift", "extend":
+        case "<<", "push", "append", "lshift", "extend":
             val := t.WikiWiki(a, b)
 
             if _, ok := a.(*Variable); ok && t.lit != "lshift" {
@@ -597,7 +613,7 @@ func (blk *Block) Chirp() interface{} {
             }
 
             blk.Register(val)
-        case ">>", "unshift", "prepend", "lpad", "ltrunc", "rshift":
+        case ">>", "unshift", "prepend", "rshift":
             val := t.WakaWaka(a, b)
 
             if _, ok := a.(*Variable); ok && t.lit != "rshift" {
@@ -630,11 +646,11 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(Equals(a, b))
         case "!=", "isnt", "ne":
             blk.Register(Boolean(!Equals(a, b)))
-        case "&&", "and":
+        case "&&", "and", "then":
             blk.Register(t.DoubleBoom(a, b))
         case "~~", "xor":
             blk.Register(t.TwiddleDee(a, b))
-        case "||", "or":
+        case "||", "or", "else":
             blk.Register(t.DoubleWham(a, b))
         case "..", "range", "to":
             blk.Register(t.DoubleDot(a, b))

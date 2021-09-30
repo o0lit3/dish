@@ -2,7 +2,7 @@
 ## curl -s "http://wiki.puzzlers.org/pub/wordlists/unixdict.txt" | dish examples/anagrams.dish
 
 stdin.map:word(
-  anagram.(word.sort) << [word]
+  anagram.(word.sort) << word
 )
 
 max = anagram.map:set(#set).max

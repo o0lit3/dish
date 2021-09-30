@@ -146,7 +146,7 @@ func (t *Token) TopTwiddle(a interface{}) interface{} {
 
         return t.TransposeArray(x)
     case String:
-        if t.lit != "~" && t.lit != "flip" {
+        if t.lit != "~" && t.lit != "caseflip" {
             t.TypeMismatch(x, nil)
         }
 

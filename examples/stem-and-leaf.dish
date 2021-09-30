@@ -13,7 +13,7 @@ data = [
 ]
 
 data.each:n(
-  out.(n / 10) << [n % 10]
+  out.(n / 10) << n % 10
 )
 
 out.map:data:i(

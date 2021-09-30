@@ -11,11 +11,11 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "+" && t.lit != "+=" && t.lit != "aggregate" {
+                if t.lit != "+" && t.lit != "+=" && t.lit != "accumulate" {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.AggregateHash(x, y)
+                return t.AccumulateHash(x, y)
             }
 
             return t.Cross(x, y.Run())
@@ -34,11 +34,11 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "+" && t.lit != "+=" && t.lit != "aggregate" {
+                if t.lit != "+" && t.lit != "+=" && t.lit != "accumulate" {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.AggregateArray(x, y)
+                return t.AccumulateArray(x, y)
             }
 
             return t.Cross(x, y.Run())
@@ -51,11 +51,15 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
 
             return t.ConcatArray(x, y)
         case Number:
-            if t.lit != "+" && t.lit != "+=" && t.lit != "pad" {
+            if t.lit != "+" && t.lit != "+=" && t.lit != "rpad" && t.lit != "rtrunc" {
                 t.TypeMismatch(x, y)
             }
 
             if y.val.Cmp(NewNumber(0).val) < 0 {
+                if t.lit == "rtrunc" {
+                    return t.RpadArray(x, t.NegateNumber(y))
+                }
+
                 return t.RtruncArray(x, t.NegateNumber(y))
             }
 
@@ -63,7 +67,7 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
         case Boolean:
             return t.Cross(x, y.Number())
         case Null:
-            if t.lit != "+" && t.lit != "+=" && t.lit != "concat" && t.lit != "pad" && t.lit != "trunc" {
+            if t.lit != "+" && t.lit != "+=" && t.lit != "concat" && t.lit != "rpad" && t.lit != "rtrunc" {
                 t.TypeMismatch(x, y)
             }
 
@@ -73,11 +77,11 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "+" && t.lit != "+=" && t.lit != "aggregate" {
+                if t.lit != "+" && t.lit != "+=" && t.lit != "accumulate" {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.AggregateString(x, y)
+                return t.AccumulateString(x, y)
             }
 
             return t.Cross(x, y.Run())
@@ -90,8 +94,28 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
 
             return t.ConcatString(x, y)
         case Number:
-            if t.lit != "+" && t.lit != "+=" && t.lit != "increase" {
+            if t.lit != "+" && t.lit != "+=" && t.lit != "increase" && t.lit != "rpad" && t.lit != "rtrunc" {
                 t.TypeMismatch(x, y)
+            }
+
+            if y.val.Cmp(NewNumber(0).val) < 0 {
+                if t.lit == "rpad" {
+                    return t.RtruncString(x, t.NegateNumber(y))
+                }
+
+                if t.lit == "rtrunc" {
+                    return t.RpadString(x, t.NegateNumber(y))
+                }
+
+                return t.DecreaseString(x, t.NegateNumber(y))
+            }
+
+            if t.lit == "rpad" {
+                return t.RpadString(x, y)
+            }
+
+            if t.lit == "rtrunc" {
+                return t.RtruncString(x, y)
             }
 
             return t.IncreaseString(x, y)
@@ -111,18 +135,34 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
         case *Variable:
             return t.Cross(x, y.Value())
         case Array:
-            if t.lit != "+" && t.lit != "+=" && t.lit != "pad" {
+            if t.lit != "+" && t.lit != "+=" && t.lit != "lpad" && t.lit != "ltrunc" {
                 t.TypeMismatch(x, y)
             }
 
             if x.val.Cmp(NewNumber(0).val) < 0 {
-                return t.RtruncArray(y, t.NegateNumber(x))
+                if t.lit == "ltrunc" {
+                    return t.LpadArray(y, t.NegateNumber(x))
+                }
+
+                return t.LtruncArray(y, t.NegateNumber(x))
             }
 
-            return t.RpadArray(y, x)
+            return t.LpadArray(y, x)
         case String:
-            if t.lit != "+" && t.lit != "+=" && t.lit != "increase" {
+            if t.lit != "+" && t.lit != "+=" && t.lit != "increase" && t.lit != "lpad" && t.lit != "ltrunc" {
                 t.TypeMismatch(x, y)
+            }
+
+            if x.val.Cmp(NewNumber(0).val) < 0 {
+                if t.lit == "lpad" {
+                    return t.LtruncString(y, t.NegateNumber(x))
+                }
+
+                if t.lit == "ltrunc" {
+                    return t.LpadString(y, t.NegateNumber(x))
+                }
+
+                return t.DecreaseString(y, t.NegateNumber(x))
             }
 
             return t.IncreaseString(y, x)
@@ -226,31 +266,37 @@ func (t *Token) TopDoubleCross(a interface{}) interface{} {
     return t.TypeMismatch(a, nil)
 }
 
-func (t *Token) AggregateHash(x Hash, y *Block) interface{} {
-    var out interface{} = Null{ }
+func (t *Token) AccumulateHash(x Hash, y *Block) Array {
+    var red interface{} = Null{ }
+    var out Array = Array{ }
 
     for key, val := range x {
-        out = y.Context(x).Run(out, val, String(key))
+        red = y.Context(x).Run(red, val, String(key))
+        out = append(out, red)
     }
 
     return out
 }
 
-func (t *Token) AggregateArray(x Array, y *Block) interface{} {
-    var out interface{} = Null{ }
+func (t *Token) AccumulateArray(x Array, y *Block) Array {
+    var red interface{} = Null{ }
+    var out Array = Array{ }
 
     for i, val := range x {
-        out = y.Context(x).Run(out, val, NewNumber(i))
+        red = y.Context(x).Run(red, val, NewNumber(i))
+        out = append(out, red)
     }
 
     return out
 }
 
-func (t *Token) AggregateString(x String, y *Block) interface{} {
-    var out interface{} = Null{ }
+func (t *Token) AccumulateString(x String, y *Block) Array {
+    var red interface{} = Null{ }
+    var out Array = Array{ }
 
     for i, c := range x {
-        out = y.Context(x).Run(out, String(string(c)), NewNumber(i))
+        red = y.Context(x).Run(red, String(string(c)), NewNumber(i))
+        out = append(out, red)
     }
 
     return out
@@ -289,10 +335,6 @@ func (t *Token) ConcatString(x String, y String) String {
 }
 
 func (t *Token) IncreaseString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.DecreaseString(x, t.NegateNumber(y))
-    }
-
     i := 0
     out := ""
     carry := y.Int()
@@ -368,6 +410,134 @@ func (t *Token) IncreaseString(x String, y Number) String {
     }
 
     return String(out)
+}
+
+func (t *Token) RpadArray(x Array, y Number) Array {
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.RtruncArray(x, t.NegateNumber(y))
+    }
+
+    out := x
+    i := 0
+
+    for i < y.Int() {
+        out = append(out, Null { })
+        i++
+    }
+
+    return out
+}
+
+func (t *Token) LpadArray(x Array, y Number) Array {
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.LtruncArray(x, t.NegateNumber(y))
+    }
+
+    out := x
+    i := 0
+
+    for i < y.Int() {
+        out = append([]interface{}{ Null{ } }, out...)
+        i++
+    }
+
+    return out
+}
+
+func (t *Token) RtruncArray(x Array, y Number) Array {
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.RpadArray(x, t.NegateNumber(y))
+    }
+
+    out := x
+    i := y.Int()
+
+    for i > 0 {
+        out = out[:len(out) - 1]
+        i--
+    }
+
+    return out
+}
+
+func (t *Token) LtruncArray(x Array, y Number) Array {
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.LpadArray(x, t.NegateNumber(y))
+    }
+
+    out := x
+    i := y.Int()
+
+    for i > 0 {
+        out = out[1:]
+        i--
+    }
+
+    return out
+}
+
+func (t *Token) RpadString(x String, y Number) String {
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.RtruncString(x, t.NegateNumber(y))
+    }
+
+    out := string(x)
+    i := 0
+
+    for i < y.Int() {
+        out += " "
+        i++
+    }
+
+    return String(out)
+}
+
+func (t *Token) LpadString(x String, y Number) String {
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.LtruncString(x, t.NegateNumber(y))
+    }
+
+    out := string(x)
+    i := 0
+
+    for i < y.Int() {
+        out = " " + out
+        i++
+    }
+
+    return String(out)
+}
+
+func (t *Token) RtruncString(x String, y Number) String {
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.RpadString(x, t.NegateNumber(y))
+    }
+
+    out := x
+    i := y.Int()
+
+    for i > 0 {
+        out = out[:len(out) - 1]
+        i--
+    }
+
+    return String(out)
+}
+
+func (t *Token) LtruncString(x String, y Number) String {
+    if y.val.Cmp(NewNumber(0).val) < 0 {
+        return t.LpadString(x, t.NegateNumber(y))
+    }
+
+    out := x
+    i := y.Int()
+
+    for i > 0 {
+        out = out[1:]
+        i--
+    }
+
+    return out
 }
 
 func (t *Token) AddNumber(x Number, b interface{}) interface{} {

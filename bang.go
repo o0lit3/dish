@@ -13,22 +13,14 @@ func (t *Token) Bang(a Array, b Array) interface{} {
 
     if len(b) > 0 && i < len(b) {
         if blk, ok := b[i].(*Block); ok {
-            if len(blk.args) > 0 || t.lit == "until" {
-                if t.lit != "!" && t.lit != "until" {
-                    t.TypeMismatch(a, b)
-                }
-
-                return t.Until(a, blk)
-            }
-
-            if t.lit != "!" && t.lit != "swap" && t.lit != "else" {
+            if t.lit != "!" && t.lit != "swap" {
                 return t.TypeMismatch(a, b)
             }
 
             return blk.Run()
         }
 
-        if t.lit != "!" && t.lit != "swap" && t.lit != "else" {
+        if t.lit != "!" && t.lit != "swap" {
             return t.TypeMismatch(a, b)
         }
 
@@ -54,11 +46,11 @@ func (t *Token) WhichNot(a Array) int {
     return -1
 }
 
-func (t *Token) Until(x Array, y *Block) interface{} {
+func (t *Token) Until(a interface{}, y *Block) interface{} {
+    var val interface{} = Null{ }
     i := 0
-    val := y.Run(NewNumber(i))
 
-    for t.WhichNot(x) != -1 {
+    for !Boolify(a) {
         val = y.Run(NewNumber(i))
         i = i + 1
     }

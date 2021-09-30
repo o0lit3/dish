@@ -60,8 +60,8 @@ step = :b(
 box = ([[] * width] * height).init
 
 (0..drops + height - 1).each:i(
-  (i < drops).then(balls << [{x: center, y: height - 2}], box.(height - 2).center = chars.'ball')
-  steps << [box.draw]
+  (i < drops).then(balls << {x: center, y: height - 2}, box.(height - 2).center = chars.'ball')
+  steps << box.draw
   balls = balls.map:b(b.step)
 )
 

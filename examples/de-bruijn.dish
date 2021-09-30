@@ -2,17 +2,17 @@
 ## ~15s run time on 2.8 GHz
 
 ('00'..'99').each:a(
-  (a.1 >= a.0).then(
-    seq << [a.1 > a.0, a.1 == a.0].switch[[a.0, a.1], [a.0]]
-    (a + 1..'99').each:b(
-      (b.1 > a.0).then(seq << [a.0, a.1, b.0, b.1])
+  (a[1] >= a[0]).then(
+    seq << [a[1] > a[0], a[1] == a[0]].switch[//a, a.first]
+    ((a + 1)..'99').each:b(
+      (b[1] > a[0]).then(seq << [//a, //b])
     )
   )
 )
 
-check = :seq(
+check = :q(
   hash: {}
-  (0..#seq - 1).each:i(++hash.(seq.(i..i + 3)*''))
+  (0..#q - 1).each:i(++hash.(q.(i..i + 3)*''))
   (0..9999).grep:pin(!hash.(pin.fmt('%04d')))
 )
 

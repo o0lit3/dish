@@ -34,7 +34,7 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary
 | `?`      | Any `?` Number        | `a.then(b)`         | `(1 > 0) ? 2`               | `2`                   |
 |          | Any `?` String        | `a.then(b)`         | `(0 > 1) ? 'binary'`        | `null`                |
 |          | Any `?` Array         | `a.switch[b]`       | `[0, 1] ? [a += 1, a += 2]` | `2`                   |
-|          | Any `?` :(Block)      | `a.redo:(...)`      | `(a < 9) ? :(++a)`          | `9`                   |
+|          | Any `?` :(Block)      | `a.while:(...)`     | `(a < 9) ? :(++a)`          | `9`                   |
 |          |                       |                     |                             |                       |
 | `!`      | Any `!` Number        | `a.else(b)`         | `(1 > 0) ! 2`               | `null`                |
 |          | Any `!` String        | `a.else(b)`         | `(0 > 1) ! 'binary'`        | `"binary"`            |
@@ -115,30 +115,16 @@ The member assignment operator `@=` is a special assignment operator that allows
 | (Unary)  | `--`String                    | `a.decrement`    | `a = 'binary', --a`       | `"binarx"`            |
 |          | `--`Array                     | `a.decrement`    | `a = [1, 2, 3], --a`      | `[1, 2]`              |
 |          |                               |                  |                           |                       |
-| `<<`     | Null `<<` String              | `a.append(b)`    | `a << 'dish'`             | `"dish"`              |
-|          | Null `<<` Array               | `a.push(b)`      | `a << [1, 2]`             | `[1, 2]`              |
-|          | Null `<<` Hash                | `a.extend(b)`    | `a << {x: 1, y: 2}`       | `{"x": 1, "y": 2}`    |
-|          | String `<<` Number            | `a.rpad(b)`      | `a = 'binary', a << 3`    | `"binary   "`            |
-|          | String `<<` `-`Number         | `a.rtrunc(b)`    | `a = 'binary', a << -3`   | `"bin"`               |
-|          | String `<<` String            | `a.append(b)`    | `a = 'bin', a << 'ary'`   | `"binary"`            |
-|          | Array `<<` Number             | `a.rpad(b)`      | `a = [1, 2], a << 2`      | `[1, 2, null, null]`  |
-|          | Array `<<` `-`Number          | `a.rtrunc(b)`    | `a = [1, 2, 3], a << -2`  | `[1]`                 |
-|          | Array `<<` Array              | `a.push(b)`      | `a = [1, 2], a << [3, 4]` | `[1, 2, 3, 4]`        |
-|          | Array `<<` Hash               | `a.push(b)`      | `a = [1, 2], a << {x: 1}` | `[1, 2, 1]`           |
-|          | Hash `<<` Hash                | `a.extend(b)`    | `a = {x: 1}, a << {y: 2}` | `{"x": 1, "y": 2}`    |
+| `<<`     | Null `<<` Any                 | `a.push(b)`      | `a << 'dish'`             | `["dish"]`            |
+|          | String `<<` Any               | `a.append(b)`    | `'dish' << ' ' << 1.0`    | `"dish 1.0"`          |
+|          | Array `<<` Any                | `a.push(b)`      | `[1, 2] << 3`             | `[1, 2, 3]`           |
+|          | Hash `<<` Any                 | `a.extend(b)`    | `{x: 1} << {y: 2}`        | `{"x": 1, "y": 2}`    |
 |          | [Also See Bitwise Ops](#bitwise-operators)       |                           |                       |
 |          |                               |                  |                           |                       |
-| `>>`     | Null `>>` String              | `a.prepend(b)`   | `a >> 'dish'`             | `"dish"`              |
-|          | Null `>>` Array               | `a.unshift(b)`   | `a >> [1, 2]`             | `[1, 2]`              |
-|          | Null `>>` Hash                | `a.extend(b)`    | `a >> {x: 1, y: 2}`       | `{"x": 1, "y": 2}`    |
-|          | String `>>` Number            | `a.lpad(b)`      | `a = 'binary', a >> 3`    | `"   binary"`         |
-|          | String `>>` `-`Number         | `a.ltrunc(b)`    | `a = 'binary', a >> -3`   | `"ary"`               |
-|          | String `>>` String            | `a.prepend(b)`   | `a = 'ary', a >> 'bin'`   | `"binary"`            |
-|          | Array `>>` Number             | `a.lpad(b)`      | `a = [1, 2], a >> 2`      | `[null, null, 1, 2]`  |
-|          | Array `>>` `-`Number          | `a.ltrunc(b)`    | `a = [1, 2, 3], a >> -2`  | `[3]`                 |
-|          | Array `>>` Array              | `a.unshift(b)`   | `a = [1, 2], a >> [3, 4]` | `[3, 4, 1, 2]`        |
-|          | Array `>>` Hash               | `a.unshift(b)`   | `a = [1, 2], a >> {x: 1}` | `[1, 1, 2]`           |
-|          | Hash `>>` Hash                | `a.extend(b)`    | `a = {x: 1}, a >> {y: 2}` | `{"x": 1, "y": 2}`    |
+| `>>`     | Null `>>` Any                 | `a.unshift(b)`   | `a >> 'dish'`             | `["dish"]`            |
+|          | String `>>` Any               | `a.prepend(b)`   | `'ary' >> 'bin'`          | `"binary"`            |
+|          | Array `>>` Any                | `a.unshift(b)`   | `[1, 2] >> 3`             | `[3, 2, 1]`           |
+|          | Hash `>>` Any                 | `a.extend(b)`    | `{x: 1} << {y: 2}`        | `{"x": 1, "y": 2}`    |
 |          | [Also See Bitwise Ops](#bitwise-operators)       |                           |                       |
 |          |                               |                  |                           |                       |
 | `<<`     | `<<`Number                    | `a.shift`        | `a = 12, [<<a, a]`        | `[1, 4]`              |
@@ -201,21 +187,22 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 |          | Null `+` Hash        | `a.concat(b)`       | `a + {x: 1, y: 2}`             | `{"x": 1, "y": 2}`         |
 |          | Number `+` Number    | `a.add(b)`          | `10 + 20`                      | `30`                       |
 |          | Number `+` String    | `b.increase(a)`     | `2 + 'binary'`                 | `"binasa"`                 |
-|          | Number `+` Array     | `b.pad(a)`          | `2 + [1, 2, 3]`                | `[1, 2, 3, null, null]`    |
+|          | Number `+` Array     | `b.lpad(a)`         | `2 + [1, 2, 3]`                | `[null, null, 1, 2, 3]`    |
+|          | `-`Number `+` Array  | `b.ltrunc(a)`       | `-2 + [1, 2, 3]`               | `[3]`                      |
 |          | String `+` Number    | `a.increase(b)`     | `'binary' + 2`                 | `"binasa"`                 |
 |          | String `+` String    | `a.concat(b)`       | `'bin' + 'ary'`                | `"binary"`                 |
-|          | String `+` :(Block)  | `a.aggregate:(...)` | `'binary' + :x:y(x + y.ord)`   | `645`                      |
-|          | Array `+` Number     | `a.pad(b)`          | `[1, 2, 3] + 2`                | `[1, 2, 3, null, null]`    |
+|          | String `+` :(Block)  | `a.accumulate:(..)` | `'bin' + :x:y(x + y.ord)`      | `[98, 203, 313]`           |
+|          | Array `+` Number     | `a.rpad(b)`         | `[1, 2, 3] + 2`                | `[1, 2, 3, null, null]`    |
+|          | Array `+` `-`Number  | `a.rtrunc(b)`       | `[1, 2, 3] + -2`               | `[1]`                      |
 |          | Array `+` Array      | `a.concat(b)`       | `[1, 2] + [2]`                 | `[1, 2, 2]`                |
-|          | Array `+` :(Block)   | `a.aggregate:(...)` | `[2, 3] + :x:y((x ?? 1) * y)`  | `6`                        |
+|          | Array `+` :(Block)   | `a.accumulate:(..)` | `[2, 3] + :x:y((x ?? 1) * y)`  | `[2, 6]`                   |
 |          | Hash `+` Hash        | `a.concat(b)`       | `{x: 1} + {y: 2}`              | `{"x": 1, "y": 2}`         |
-|          | Hash `+` :(Block)    | `a.aggregate:(...)` | `{x: 1, y: 2} + :x:y(x + y)`   | `3`                        |
+|          | Hash `+` :(Block)    | `a.accumulate:(..)` | `{x: 2, y: 3} + :x:y(x + y)`   | `[2, 5]`                   |
 |          |                      |                     |                                |                            |
 | `-`      | Number `-` Number    | `a.subtract(b)`     | `10 - 20`                      | `-10`                      |
 |          | String `-` Number    | `a.decrease(b)`     | `'binary' - 2`                 | `"binarw"`                 |
 |          | String `-` String    | `a.remove(b)`       | `'binary' - 'ary'`             | `"bin"`                    |
-|          | String `-` :(Block)  | `a.reduce:(...)`    | `'binary' - :x:y(x + &y)`      | `645`                      |
-|          | Array `-` Number     | `a.trunc(b)`        | `[1, 2, 3, null] - 2`          | `[1, 2]`                   |
+|          | String `-` :(Block)  | `a.reduce:(...)`    | `'bin' - :x:y(x + y.ord)`      | `313`                      |
 |          | Array `-` Array      | `a.remove(b)`       | `[1, 2, 2, 3, 4] - [2, 3]`     | `[1, 2, 4]`                |
 |          | Array `-` :(Block)   | `a.reduce:v(b)`     | `[2, 3] - :x:y((x ?? 1) * y)`  | `6`                        |
 |          | Hash `-` Hash        | `a.remove(b)`       | `{x: 1, y: 2} - {'x'}`         | `{"y": 2}`                 |

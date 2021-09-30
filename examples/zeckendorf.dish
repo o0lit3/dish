@@ -1,7 +1,7 @@
 ## https://rosettacode.org/wiki/Zeckendorf_number_representation
 
 (#out < 21).redo:(
-  ((++i - 1 # 2) @ '11') || (out << [i - 1 # 2])
+  ((++i - 1 # 2) @ '11') || (out << (i - 1 # 2))
 ).map:n:i(
   [i, n] # '%2s: %6s'
 ).join

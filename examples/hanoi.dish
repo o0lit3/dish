@@ -2,7 +2,7 @@
 
 move = :disks:start:target:using(
   (disks == 1).then(
-    history << [towers.target @= towers.target << [>>towers.start]]
+    history += [towers.target @= towers.target << >>towers.start]
   ).else(
     (disks - 1).move[start, using, target]
     1.move[start, target, using]

@@ -1,7 +1,7 @@
 ## https://rosettacode.org/wiki/Primorial_numbers
 
 eratosthenes = :n(
-  nums: [null, null] + (2..n)
+  nums: 2 + (2..n)
 
   (2..n.sqrt).each:i(
     j: ^i

@@ -494,8 +494,6 @@ func (t *Token) FlattenArray (a interface{}) Array {
         return t.FlattenArray(x.Run())
     case *Variable:
         return t.FlattenArray(x.Value())
-    case Hash:
-        return t.FlattenArray(x.Array())
     case Array:
         for _, item := range x {
             for _, val := range t.FlattenArray(item) {

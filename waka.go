@@ -148,13 +148,15 @@ func (t *Token) WakaWaka(a interface{}, b interface{}) interface{} {
         case *Variable:
             return t.WakaWaka(x, y.Value())
         case Hash:
-            if t.lit != ">>" {
+            if t.lit != ">>" && t.lit != "extend" {
                 t.TypeMismatch(x, y)
             }
 
             return t.ExtendHash(x, y)
         case Null:
             return t.WakaWaka(x, Hash{ })
+        default:
+            return t.WakaWaka(x, Hashify(y))
         }
     case Array:
         switch y := b.(type) {
@@ -162,32 +164,20 @@ func (t *Token) WakaWaka(a interface{}, b interface{}) interface{} {
             return t.WakaWaka(x, y.Run())
         case *Variable:
             return t.WakaWaka(x, y.Value())
-        case Hash:
-            return t.WakaWaka(x, y.Array())
         case Array:
             if t.lit != ">>" && t.lit != "unshift" && t.lit != "prepend" {
                 t.TypeMismatch(x, y)
             }
 
-            return t.UnshiftArray(x, y)
-        case Number:
-            if t.lit != ">>" && t.lit != "lpad" && t.lit != "ltrunc" {
-                t.TypeMismatch(x, y)
-            }
-
-            if t.lit == "ltrunc" {
-                return t.LtruncArray(x, y)
-            } else if y.val.Cmp(NewNumber(0).val) < 0 {
-                return t.LtruncArray(x, t.NegateNumber(y))
-            }
-
-            return t.LpadArray(x, y)
+            return t.UnshiftArray(x, t.FlattenArray(y))
         case Null:
-            if t.lit != ">>" && t.lit != "prepend" && t.lit != "lpad" && t.lit != "ltrunc" {
+            if t.lit != ">>" && t.lit != "unshift" && t.lit != "prepend" {
                 t.TypeMismatch(x, y)
             }
 
             return x
+        default:
+            return t.WakaWaka(x, Array{ y })
         }
     case String:
         switch y := b.(type) {
@@ -201,24 +191,14 @@ func (t *Token) WakaWaka(a interface{}, b interface{}) interface{} {
             }
 
             return t.PrependString(x, y)
-        case Number:
-            if t.lit != ">>" && t.lit != "lpad" && t.lit != "ltrunc" {
-                t.TypeMismatch(x, y)
-            }
-
-            if t.lit == "ltrunc" {
-                return t.LtruncString(x, y)
-            } else if y.val.Cmp(NewNumber(0).val) < 0 {
-                return t.LtruncString(x, t.NegateNumber(y))
-            }
-
-            return t.LpadString(x, y)
         case Null:
-            if t.lit != ">>" && t.lit != "prepend" && t.lit != "lpad" && t.lit != "ltrunc" {
+            if t.lit != ">>" && t.lit != "prepend" {
                 t.TypeMismatch(x, y)
             }
 
             return x
+        default:
+            return t.WakaWaka(x, Stringify(y))
         }
     case Number:
         switch y := b.(type) {
@@ -240,20 +220,7 @@ func (t *Token) WakaWaka(a interface{}, b interface{}) interface{} {
     case Boolean:
         return t.WakaWaka(x.Number(), b)
     case Null:
-        switch y := b.(type) {
-        case *Block:
-            return t.WakaWaka(x, y.Run())
-        case *Variable:
-            return t.WakaWaka(x, y.Value())
-        case Hash:
-            return t.WakaWaka(Hash{ }, y)
-        case Array:
-            return t.WakaWaka(Array{ }, y)
-        case String:
-            return t.WakaWaka(String(""), y)
-        default:
-            return t.WakaWaka(NewNumber(0), y)
-        }
+        return t.WakaWaka(Array{ }, b)
     }
 
     return t.TypeMismatch(a, b)
@@ -336,70 +303,6 @@ func (t *Token) UnshiftArray(x Array, y Array) Array {
 
     for _, val := range x {
         out = append(out, val)
-    }
-
-    return out
-}
-
-func (t *Token) LpadArray(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.LtruncArray(x, t.NegateNumber(y))
-    }
-
-    out := x
-    i := 0
-
-    for i < y.Int() {
-        out = append([]interface{}{ Null{ } }, out...)
-        i++
-    }
-
-    return out
-}
-
-func (t *Token) LpadString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.LtruncString(x, t.NegateNumber(y))
-    }
-
-    out := string(x)
-    i := 0
-
-    for i < y.Int() {
-        out = " " + out
-        i++
-    }
-
-    return String(out)
-}
-
-func (t *Token) LtruncArray(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.LpadArray(x, t.NegateNumber(y))
-    }
-
-    out := x
-    i := y.Int()
-
-    for i > 0 {
-        out = out[1:]
-        i--
-    }
-
-    return out
-}
-
-func (t *Token) LtruncString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
-        return t.LpadString(x, t.NegateNumber(y))
-    }
-
-    out := x
-    i := y.Int()
-
-    for i > 0 {
-        out = out[1:]
-        i--
     }
 
     return out

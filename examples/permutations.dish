@@ -3,7 +3,7 @@
 ## If there wasn't a built-in (invoked via ('a'..'d').perms(4)):
 perms = :x:n:out(
   (n == 1).then(
-    out << [/x]
+    out += [/x]
   ).else(
     (0..n - 1).each:i(
       out = x.perms[n - 1, out]

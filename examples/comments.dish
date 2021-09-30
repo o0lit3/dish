@@ -1,7 +1,7 @@
 ## https://rosettacode.org/wiki/Comments
 
 ## This is a comment
-a = "Hello"             ## This is an in-line comment.
+a = "Hello"             ## This is an end-line comment.
 b = "World!"            ## There are no multi- or in-line comments in dish.
 
 '''
