@@ -102,7 +102,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `\|=`    | [See Binary Ops](#binary-operators)              | | `a = 5, a \|= 3`        | `7`                   |
 | `?=`     | [See Logical ?? Op](#logical-operatos)           | | `a ?= 3`                | `3`                   |
 |          |                               |                  |                           |                       |
-| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.1 @= 0`        | `8`                   |
+| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.1 @= 0`        | `14`                  |
 |          | String.x `@=` String          | `a.x.replace(b)` | `a = 'bing', a.1 @= 'a'`  | `"bang"`              |
 |          | Array.x `@=` Any              | `a.x.replace(b)` | `a = [1, 2, 3], a.0 @= 4` | `[4, 2, 3]`           |
 |          | Hash.x `@=` Any               | `a.x.replace(b)` | `a = {x: 1}, a.'x' @= 4`  | `{"x": 4}`            |
@@ -202,7 +202,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 |          | String `-` :(Block)  | `a.reduce:(...)`    | `'bin' - :x:y(x + y.ord)`      | `313`                      |
 |          | Array `-` Array      | `a.remove(b)`       | `[1, 2, 2, 3, 4] - [2, 3]`     | `[1, 2, 4]`                |
 |          | Array `-` :(Block)   | `a.reduce:v(b)`     | `[2, 3] - :x:y((x ?? 1) * y)`  | `6`                        |
-|          | Hash `-` Hash        | `a.remove(b)`       | `{x: 1, y: 2} - {'x'}`         | `{"y": 2}`                 |
+|          | Hash `-` Hash        | `a.remove(b)`       | `{x: 1, y: 2} - {x}`           | `{"y": 2}`                 |
 |          | Hash `-` :(Block)    | `a.reduce:(b)`      | `{x: 2, y: 3} - :x:y(x + y)`   | `5`                        |
 |          |                      |                     |                                |                            |
 | `*`      | Number `*` Number    | `a.multiply(b)`     | `10 * 20`                      | `200`                      |

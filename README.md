@@ -71,13 +71,13 @@ Variables in **dish** must start with a dollar sign or a letter, followed by any
 
 `dish -p -e '{"apples": [1, 2, 3], "oranges": [4, 5, 6]}.reduce:out:set:fruit(out << {$(fruit): set.sum})'` outputs `{"apples": 6, "oranges": 15}`
 
-Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the most significant bit at index 0. To retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
+Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the least significant bit at index 0. To retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
 
 `dish -e '12.1'` outputs the floating point number: `12.1`
 
-`dish -e '12.(1)'` or `dish -e '12[1]'` outputs the 0th-indexed 2nd most-significant bit of the integer 12: `1`
+`dish -e '12.(1)'` or `dish -e '12[1]'` outputs the 0th-indexed 2nd least-significant bit of the integer 12: `0`
 
-`dish -e 'a = 12; a.1'` outputs the 0th-indexed 2nd most-significant bit (disambiguated by the variable name `a`): `1`
+`dish -e 'a = 12; a.1'` outputs the 0th-indexed 2nd least-significant bit (disambiguated by the variable name `a`): `0`
 
 Because **dish** variables can not begin with numbers, numeric index members such as `[1, 2, 3].1` or `'foobar'.3` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted to avoid already-defined variable names. Compare the following:
 

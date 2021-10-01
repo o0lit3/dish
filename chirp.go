@@ -84,7 +84,7 @@ func (n Number) Array() Array {
     out := Array{ }
 
     for _, c := range strconv.FormatInt(int64(n.Int()), 2) {
-        out = append(out, String(string(c)).Number())
+        out = append(Array{ String(string(c)).Number() }, out...)
     }
 
     return out
@@ -295,7 +295,7 @@ func (b *Block) Value(a interface{}) interface{} {
 
                 for _, mem := range x.arr {
                     if mem.idx < len(bin) {
-                        out += string(bin[mem.idx])
+                        out = string(bin[len(bin) - mem.idx - 1]) + out
                     }
                 }
 
@@ -305,7 +305,7 @@ func (b *Block) Value(a interface{}) interface{} {
             }
 
             if x.idx < len(bin) {
-                return Boolean(bin[x.idx] == '1').Number()
+                return Boolean(bin[len(bin) - x.idx - 1] == '1').Number()
             }
 
             return Null{ }
