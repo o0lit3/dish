@@ -356,8 +356,8 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `/`Array                | `a.array`     | `/[1, 2, 3]`             | `[1, 2, 3]`                    |
 |          | `/`Hash                 | `a.vals`      | `/{x: 1, y: 2}`          | `[1, 2]`                       |
 |          |                         |               |                          |                                |
-| `//`     | `//`Number              | `a.bits`      | `//12`                   | `[1, 1, 0, 0]`                 |
-|          | `//`String              | `a.chars`     | `//'bin'`                | `["b", "i", "n"]`              | 
+| `//`     | `//`Number              | `a.bits`      | `//12`                   | `[0, 0, 1, 1]`                 |
+|          | `//`String              | `a.chars`     | `//'bin'`                | `["b", "i", "n"]`              |
 |          | `//`Array               | `a.flat`      | `//[1, [2, 3], 4]`       | `[1, 2, 3, 4]`                 |
 |          | `//`Hash                | `a.flat`      | `//{x: 1, y: 2}`         | `["x", 1, "y", 2]`             |
 |          |                         |               |                          |                                |
