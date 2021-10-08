@@ -522,7 +522,7 @@ func (b *Block) Variate() []*Variable {
                 reg = nil
             }
         default:
-            panic(fmt.Sprintf("Assigment block may only contain variables near %s at %s", t.lit, t.pos))
+            panic(fmt.Sprintf("Assignment block may only contain variables near %s at %s", t.lit, t.pos))
         }
     }
 

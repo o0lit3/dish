@@ -135,7 +135,7 @@ func (t *Token) Assignment() bool {
     }
 
     switch t.lit {
-    case "=", ":", "~=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "++", "--", "<<", ">>":
+    case "=", ":", "~=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "++", "--":
         return true
     }
 
@@ -524,6 +524,8 @@ func (l *Lexer) LexNum(idx bool) string {
                 l.Backup()
                 return lit
             }
+        case r == 'e':
+            lit = lit + string(r)
         case unicode.IsDigit(r):
             lit = lit + string(r)
         default:
