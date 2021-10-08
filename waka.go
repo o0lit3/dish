@@ -206,6 +206,12 @@ func (t *Token) WakaWaka(a interface{}, b interface{}) interface{} {
             return t.WakaWaka(x, y.Run())
         case *Variable:
             return t.WakaWaka(x, y.Value())
+        case Hash:
+            return t.ExtendHash(y, Hashify(x))
+        case Array:
+            return t.PushArray(y, Array{ x })
+        case String:
+            return t.AppendString(y, Stringify(x))
         case Number:
             if t.lit != ">>" && t.lit != "rshift" {
                 t.TypeMismatch(x, y)

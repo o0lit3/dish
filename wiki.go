@@ -206,6 +206,12 @@ func (t *Token) WikiWiki(a interface{}, b interface{}) interface{} {
             return t.WikiWiki(x, y.Run())
         case *Variable:
             return t.WikiWiki(x, y.Value())
+        case Hash:
+            return t.ExtendHash(Hashify(x), y)
+        case Array:
+            return t.PushArray(Array{ x }, y)
+        case String:
+            return t.AppendString(Stringify(x), y)
         case Number:
             if t.lit != "<<" && t.lit != "lshift" {
                 t.TypeMismatch(x, y)

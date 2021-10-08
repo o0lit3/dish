@@ -88,7 +88,7 @@ func (t *Token) Splat(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            return t.ConcatString(x, y)
+            return t.JoinString(x, y)
         case Number:
             if t.lit != "*" && t.lit != "*=" && t.lit != "repeat" {
                 t.TypeMismatch(x, y)
@@ -483,6 +483,20 @@ func (t *Token) JoinArray(x Array, y String) String {
         }
 
         out = out + string(Stringify(val))
+    }
+
+    return String(out)
+}
+
+func (t *Token) JoinString(x String, y String) String {
+    out := ""
+
+    for i, c := range x {
+        if i > 0 {
+            out = out + string(y)
+        }
+
+        out = out + string(c)
     }
 
     return String(out)

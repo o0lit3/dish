@@ -210,7 +210,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 |          | Number `*` Array     | `b.repeat(a)`       | `2 * [1, 2, 3]`                | `[1, 2, 3, 1, 2, 3]`       |
 |          | Number `*` :(Block)  | `a.times(b)`        | `4 * :(++a)`                   | `[1, 2, 3, 4]`             |
 |          | String `*` Number    | `a.repeat(b)`       | `'a' * 5`                      | `"aaaaa"`                  |
-|          | String `*` String    | `a.join(b)`         | `'bin' * 'ary'`                | `"binary"`                 |
+|          | String `*` String    | `a.join(b)`         | `'bin' * 'ary'`                | `"baryiaryn"`              |
 |          | String `*` Array     | `b.join(a)`         | `' ' * [1, 2, 3]`              | `"1 2 3"`                  |
 |          | String `*` :(Block)  | `a.map:(...)`       | `'binary' * :c(++c)`           | `"cjobsz"`                 |
 |          | Array `*` Number     | `a.repeat(b)`       | `[1, 2, 3] * 2`                | `[1, 2, 3, 1, 2, 3]`       |
