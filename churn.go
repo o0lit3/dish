@@ -253,6 +253,10 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
         } else {
             bin := []rune(strconv.FormatInt(int64(obj.Int()), 2))
 
+            for i, j := 0, len(bin) - 1; i < j; i, j = i + 1, j - 1 {
+                bin[i], bin[j] = bin[j], bin[i]
+            }
+
             if v.idx < 0 {
                 if len(bin) == 0 {
                     bin = append(bin, '0')
@@ -271,6 +275,10 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
                 bin[v.idx] = '1'
             } else {
                 bin[v.idx] = '0'
+            }
+
+            for i, j := 0, len(bin) - 1; i < j; i, j = i + 1, j - 1 {
+                bin[i], bin[j] = bin[j], bin[i]
             }
 
             val, _ := strconv.ParseInt(string(bin), 2, 64)

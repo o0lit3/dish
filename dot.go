@@ -1,5 +1,5 @@
 package main
-import("strings"; "strconv")
+import("strings")
 
 func (t *Token) Dot(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -352,7 +352,7 @@ func (t *Token) StringMembers(x String, y Array) *Variable {
 
 func (t *Token) NumberMember(x Number, y Number) *Variable {
     b := y.Int()
-    bin := strconv.FormatInt(int64(x.Int()), 2)
+    bin := x.Array()
 
     if b < 0 && len(bin) > 0 && len(bin) + b < len(bin) {
         return &Variable{ obj: x, idx: len(bin) + b }

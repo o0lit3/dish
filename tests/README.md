@@ -102,7 +102,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `\|=`    | [See Binary Ops](#binary-operators)              | | `a = 5, a \|= 3`        | `7`                   |
 | `?=`     | [See Logical ?? Op](#logical-operatos)           | | `a ?= 3`                | `3`                   |
 |          |                               |                  |                           |                       |
-| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.1 @= 0`        | `14`                  |
+| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.2 @= 0`        | `8`                   |
 |          | String.x `@=` String          | `a.x.replace(b)` | `a = 'bing', a.1 @= 'a'`  | `"bang"`              |
 |          | Array.x `@=` Any              | `a.x.replace(b)` | `a = [1, 2, 3], a.0 @= 4` | `[4, 2, 3]`           |
 |          | Hash.x `@=` Any               | `a.x.replace(b)` | `a = {x: 1}, a.'x' @= 4`  | `{"x": 4}`            |
