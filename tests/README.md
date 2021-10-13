@@ -339,8 +339,8 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `*`Boolean              | `a.str`       | `*true`                  | `"true"`                       |
 |          | `*`Number               | `a.str`       | `*7`                     | `"7"`                          |
 |          | `*`String               | `a.str`       | `*'binary'`              | `"binary"`                     |
-|          | `*`Array                | `a.join`      | `*['Hello', 'World!']`   | `"Hello\nWorld!"`              |
-|          | `*`Hash                 | `a.join`      | `*{x: 'Hi', y: 'World'}` | `"Hi\nWorld"`                  |
+|          | `*`Array                | `a.prod`      | `*[1, 2, 3]`             | `6`                            |
+|          | `*`Hash                 | `a.prod`      | `*{x: 2, y: 3}`          | `6`                            |
 |          |                         |               |                          |                                |
 | `**`     | `**`Number              | `a.divisors`  | `**12`                   | `[1, 2, 3, 4, 6]`              |
 |          | `**`String              | `a.perms`     | `**'ab'`                 | `["ab", "ba"]`                 |
