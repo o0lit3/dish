@@ -323,9 +323,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          |                         |               |                          |                                |
 | `+`      | `+`Number               | `a.num`       | `+5`                     | `5`                            |
 |          | `+`String               | `a.num`       | `+"5"`                   | `5`                            |
-|          | `+`Numeric Array        | `a.sum`       | `+[1, 2, 3]`             | `6`                            |
 |          | `+`Array                | `a.concat`    | `+['Hello', 'World!']`   | `"HelloWorld!"`                |
-|          | `+`Numeric Hash         | `a.sum`       | `+{x: 1, y: 2}`          | `3`                            |
 |          | `+`Hash                 | `a.concat`    | `+{x: 'Hi', y: 'World']` | `"HiWorld"`                    |
 |          |                         |               |                          |                                |
 | `++`     | [See Assignment Ops](#assignment-operators)                    | | |                                |
@@ -341,9 +339,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `*`Boolean              | `a.str`       | `*true`                  | `"true"`                       |
 |          | `*`Number               | `a.str`       | `*7`                     | `"7"`                          |
 |          | `*`String               | `a.str`       | `*'binary'`              | `"binary"`                     |
-|          | `*`Numeric Array        | `a.prod`      | `*[1, 2, 3, 4]`          | `24`                           |
 |          | `*`Array                | `a.join`      | `*['Hello', 'World!']`   | `"Hello\n"World!"`             |
-|          | `*`Numeric Hash         | `a.prod`      | `*{x: 2, y: 4}`          | `8`                            |
 |          | `*`Hash                 | `a.join`      | `*{x: 'Hi', y: 'World'}` | `"Hi\nWorld"`                  |
 |          |                         |               |                          |                                |
 | `**`     | `**`Number              | `a.divisors`  | `**12`                   | `[1, 2, 3, 4, 6]`              |
