@@ -323,15 +323,15 @@ All characters that are outside the above mentioned character ranges are ignored
 |          |                         |               |                          |                                |
 | `+`      | `+`Number               | `a.num`       | `+5`                     | `5`                            |
 |          | `+`String               | `a.num`       | `+"5"`                   | `5`                            |
-|          | `+`Array                | `a.concat`    | `+['Hello', 'World!']`   | `"HelloWorld!"`                |
-|          | `+`Hash                 | `a.concat`    | `+{x: 'Hi', y: 'World']` | `"HiWorld"`                    |
+|          | `+`Array                | `a.sum`       | `+[1, 2, 3]`             | `6`                            |
+|          | `+`Hash                 | `a.sum`       | `+{x: 2, y: 3}`          | `5`                            |
 |          |                         |               |                          |                                |
 | `++`     | [See Assignment Ops](#assignment-operators)                    | | |                                |
 |          |                         |               |                          |                                |
 | `-`      | `-`Number               | `a.negate`    | `-5`                     | `-5`                           |
 |          | `-`String               | `a.separate`  | `-"bin"`                 | `["b", "i", "n"]`              |
 |          | `-`Array                | `a.negsum`    | `-[1, 2, 3]`             | `-6`                           |
-|          | `-`Hash                 | `a.negsum`    | `-{x: 1, y: 2}`          | `-3`                           |
+|          | `-`Hash                 | `a.negsum`    | `-{x: 2, y: 3}`          | `-5`                           |
 |          |                         |               |                          |                                |
 | `--`     | [See Assignment Ops](#assignment-operators)                    | | |                                |
 |          |                         |               |                          |                                |
@@ -339,7 +339,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `*`Boolean              | `a.str`       | `*true`                  | `"true"`                       |
 |          | `*`Number               | `a.str`       | `*7`                     | `"7"`                          |
 |          | `*`String               | `a.str`       | `*'binary'`              | `"binary"`                     |
-|          | `*`Array                | `a.join`      | `*['Hello', 'World!']`   | `"Hello\n"World!"`             |
+|          | `*`Array                | `a.join`      | `*['Hello', 'World!']`   | `"Hello\nWorld!"`              |
 |          | `*`Hash                 | `a.join`      | `*{x: 'Hi', y: 'World'}` | `"Hi\nWorld"`                  |
 |          |                         |               |                          |                                |
 | `**`     | `**`Number              | `a.divisors`  | `**12`                   | `[1, 2, 3, 4, 6]`              |
