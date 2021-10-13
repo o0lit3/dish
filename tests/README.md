@@ -337,7 +337,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          |                         |               |                          |                                |
 | `--`     | [See Assignment Ops](#assignment-operators)                    | | |                                |
 |          |                         |               |                          |                                |
-| `\*`     | `\*`Null`               | `a.str`       | `*a`                     | `"null"`                       |
+| `*`      | `*`Null                 | `a.str`       | `*a`                     | `"null"`                       |
 |          | `*`Boolean              | `a.str`       | `*true`                  | `"true"`                       |
 |          | `*`Number               | `a.str`       | `*7`                     | `"7"`                          |
 |          | `*`String               | `a.str`       | `*'binary'`              | `"binary"`                     |
