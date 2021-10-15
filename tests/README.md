@@ -269,7 +269,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 |          |                      |                     |                                |                            |
 | `.`      | Number`.`(Number)    | `a.at(b)`           | `12.(2)`                       | `1`                        |
 |          | Number`.`Array       | `a.subset(b)`       | `12.[0, 1, 2]`                 | `4`                        |
-|          | Number`.`:(Block)    | `a.call:(...)`      | `12.:n(+@n)`                   | `2`                        |
+|          | Number`.`:(Block)    | `a.call:(...)`      | `12.:n(n^2)`                   | `144`                      |
 |          | String`.`Number      | `a.at(b)`           | `'binary'.1`                   | `"i"`                      |
 |          | String`.`Array       | `a.subset(b)`       | `'binary'.[0, 3, 4]`           | `"bar"`                    |
 |          | String`.`:(Block)    | `a.call:(...)`      | `'binary'.:s(s.uc)`            | `"BINARY`                  |
@@ -306,7 +306,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 
 `dish -e 'a = 1; (0..3).map:i((i > 1).then((1..i).map:j(a *= j))); a'` outputs `12`
 
-The `..` range/to operator can also operate on strings, applying the string increment or decrement operation on the left-hand operand until the right-hand operand has been reached, or until the length of the right-hand operand has been exhausted (be careful with memory consumption when writing such operations). The String increment and decrement operators work on three mutally exclusive ranges ('0'..'9'`, `'A'..'Z'`, and `'a'..'z'`), using "carry over" addition/subtraction on the preceding character when the current character range has been eclipsed. For example:
+The `..` range/to operator can also operate on strings, applying the string increment or decrement operation on the left-hand operand until the right-hand operand has been reached, or until the length of the right-hand operand has been exhausted (be careful with memory consumption when writing such operations). The String increment and decrement operators work on three mutally exclusive ranges (`'0'..'9'`, `'A'..'Z'`, and `'a'..'z'`), using "carry over" addition/subtraction on the preceding character when the current character range has been eclipsed. For example:
 
 `dish -e '["z" + 1, "z" - 1, "z" + 27]'` outputs `["aa", "y", "ba"]`
 
@@ -407,7 +407,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          |                         |               |                          |                                |
 | `~`      | [See Bitwise Ops](#bitwise-operators) | |                          |                                |
 |          |                         |               |                          |                                |
-| `&`      | `&`Number               | `a.popcount   | `&12`                    | `2`                            |
+| `&`      | `&`Number               | `a.popcount`  | `&12`                    | `2`                            |
 |          | `&`String               | `a.compact`   | `&'Hello World'`         | `"HelloWorld`                  |
 |          | `&`Array                | `a.compact`   | `&[null, 1, 2]`          | `[1, 2]`                       |
 |          | `&`Hash                 | `a.compact`   | `&{a: 0, b: 1, c: null}` | `{"b": 1}`                     |
