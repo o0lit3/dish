@@ -91,6 +91,12 @@ func (t *Token) Wham(a interface{}, b interface{}) interface{} {
             return t.Wham(x, y.Number())
         case Null:
             return t.Wham(x, NewNumber(0))
+        default:
+            if x.val.Cmp(NewNumber(0).val) == 0 {
+                return y
+            }
+
+            return x
         }
     case Boolean:
         return t.Wham(x.Number(), b)

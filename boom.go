@@ -91,6 +91,12 @@ func (t *Token) Boom(a interface{}, b interface{}) interface{} {
             return t.Boom(x, y.Number())
         case Null:
             return t.Boom(x, NewNumber(0))
+        default:
+            if x.val.Cmp(NewNumber(0).val) == 0 {
+                return x
+            }
+
+            return y
         }
     case Boolean:
         return t.Boom(x.Number(), b)
