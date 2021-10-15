@@ -100,7 +100,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `&=`     | [See Binary Ops](#binary-operators)              | | `a = 5, a &= 3`         | `1`                   |
 | `~=`     | [See Binary Ops](#binary-operators)              | | `a = 5, a ~= 3`         | `6`                   |
 | `\|=`    | [See Binary Ops](#binary-operators)              | | `a = 5, a \|= 3`        | `7`                   |
-| `?=`     | [See Logical ?? Op](#logical-operatos)           | | `a ?= 3`                | `3`                   |
+| `?=`     | [See Logical ?? Op](#logical-operators)          | | `a ?= 3`                | `3`                   |
 |          |                               |                  |                           |                       |
 | `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.2 @= 0`        | `8`                   |
 |          | String.x `@=` String          | `a.x.replace(b)` | `a = 'bing', a.1 @= 'a'`  | `"bang"`              |
