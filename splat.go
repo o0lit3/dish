@@ -27,6 +27,12 @@ func (t *Token) Splat(a interface{}, b interface{}) interface{} {
             }
 
             return t.DotHash(x, y)
+        case String:
+            if t.lit != "*" && t.lit != "*=" && t.lit != "join" {
+                t.TypeMismatch(x, y)
+            }
+
+            return t.JoinArray(x.Array(), y)
         }
     case Array:
         switch y := b.(type) {
@@ -83,6 +89,18 @@ func (t *Token) Splat(a interface{}, b interface{}) interface{} {
             return t.Splat(x, y.Run())
         case *Variable:
             return t.Splat(x, y.Value())
+        case Hash:
+            if t.lit != "*" && t.lit != "*=" && t.lit != "join" {
+                t.TypeMismatch(x, y)
+            }
+
+            return t.JoinArray(y.Array(), x)
+        case Array:
+            if t.lit != "*" && t.lit != "*=" && t.lit != "join" {
+                t.TypeMismatch(x, y)
+            }
+
+            return t.JoinArray(y, x)
         case String:
             if t.lit != "*" && t.lit != "*=" && t.lit != "join" {
                 t.TypeMismatch(x, y)

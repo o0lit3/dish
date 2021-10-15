@@ -97,9 +97,9 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `/=`     | [See Binary Ops](#binary-operators)              | | `a = 6, a /= 2`         | `3`                   |
 | `%=`     | [See Binary Ops](#binary-operators)              | | `a = 5, a %= 4`         | `1`                   |
 | `^=`     | [See Binary Ops](#binary-operators)              | | `a = 5, a ^= 3`         | `125`                 |
-| `&=`     | [See Binary Ops](#binary-operators)              | | `a = 5, a &= 3`         | `1`                   |
-| `~=`     | [See Binary Ops](#binary-operators)              | | `a = 5, a ~= 3`         | `6`                   |
-| `\|=`    | [See Binary Ops](#binary-operators)              | | `a = 5, a \|= 3`        | `7`                   |
+| `&=`     | [See Bitwise Ops](#bitwise-operators)            | | `a = 5, a &= 3`         | `1`                   |
+| `~=`     | [See Bitwise Ops](#bitwise-operators)            | | `a = 5, a ~= 3`         | `6`                   |
+| `\|=`    | [See Bitwise Ops](#bitwise-operators)            | | `a = 5, a \|= 3`        | `7`                   |
 | `?=`     | [See Logical ?? Op](#logical-operators)          | | `a ?= 3`                | `3`                   |
 |          |                               |                  |                           |                       |
 | `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.2 @= 0`        | `8`                   |
@@ -212,11 +212,13 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 |          | String `*` Number    | `a.repeat(b)`       | `'a' * 5`                      | `"aaaaa"`                  |
 |          | String `*` String    | `a.join(b)`         | `'bin' * 'ary'`                | `"baryiaryn"`              |
 |          | String `*` Array     | `b.join(a)`         | `' ' * [1, 2, 3]`              | `"1 2 3"`                  |
+|          | String `*` Hash      | `b.join(a)`         | `' ' * {x: 1, y: 2}`           | `"1 2"`                    |
 |          | String `*` :(Block)  | `a.map:(...)`       | `'binary' * :c(++c)`           | `"cjobsz"`                 |
 |          | Array `*` Number     | `a.repeat(b)`       | `[1, 2, 3] * 2`                | `[1, 2, 3, 1, 2, 3]`       |
 |          | Array `*` String     | `a.join(b)`         | `[1, 2, 3] * ' '`              | `"1 2 3"`                  |
 |          | Array `*` Array      | `a.dot(b)`          | `[1, 2, 3] * [1, 2, 3]`        | `[1, 4, 9]`                |
 |          | Array `*` :(Block)   | `a.map:(...)`       | `[1, 2, 3] * :x(x * 2)`        | `[1, 4, 6]`                |
+|          | Hash `*` String      | `a.join(b)`         | `{x: 1, y: 2} * ' '`           | `"1 2"`                    |
 |          | Hash `*` Hash        | `a.dot(b)`          | `{x: 1, y: 2} * {y: 4}`        | `{"y": 8}`                 |
 |          | Hash `*` :(Block)    | `a.map:(...)`       | `{x: 1, y: 2} * :x(x * 2)`     | `{"x": 2, "y": 4}`         |
 |          |                      |                     |                                |                            |
