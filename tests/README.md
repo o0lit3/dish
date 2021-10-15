@@ -63,10 +63,10 @@ The `==` and `!=` equality operators in **dish** evaluate to `false` and `true` 
 |          | Array `>` Array             | `a.gt(b)`         | `[4, 5] > [1, 2, 3]`           | `false`           |
 |          | Hash `>` Hash               | `a.gt(b)`         | `{a: 1} > {b: 2, a: 1}`        | `false`           |
 |          |                             |                   |                                |                   |
-| `<`      | Number `<` Number           | `a.lt(b)`         | `10 <= 3.0`                    | `false`           |
-|          | String `<` String           | `a.lt(b)`         | `'bin' <= 'ary'`               | `false`           |
-|          | Array `<` Array             | `a.lt(b)`         | `[4, 5] <= [1, 2, 3]`          | `true`            |
-|          | Hash `<` Hash               | `a.lt(b)`         | `{a: 1} <= {b: 2, a: 1}`       | `true`            |
+| `<`      | Number `<` Number           | `a.lt(b)`         | `10 < 3.0`                     | `false`           |
+|          | String `<` String           | `a.lt(b)`         | `'bin' < 'ary'`                | `false`           |
+|          | Array `<` Array             | `a.lt(b)`         | `[4, 5] < [1, 2, 3]`           | `true`            |
+|          | Hash `<` Hash               | `a.lt(b)`         | `{a: 1} < {b: 2, a: 1}`        | `true`            |
 |          |                             |                   |                                |                   |
 | `>=`     | Number `>=` Number          | `a.ge(b)`         | `10 >= 3.0`                    | `true`            |
 |          | String `>=` String          | `a.ge(b)`         | `'bin' >= 'ary'`               | `true`            |
