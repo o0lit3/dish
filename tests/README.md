@@ -364,7 +364,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `//`Array               | `a.flat`      | `//[1, [2, 3], 4]`       | `[1, 2, 3, 4]`                 |
 |          | `//`Hash                | `a.flat`      | `//{x: 1, y: 2}`         | `["x", 1, "y", 2]`             |
 |          |                         |               |                          |                                |
-| `%`      | `%`Number               | `a.ratio`     | `%5`                     | `{"num": 157, "denom": 50}`    |
+| `%`      | `%`Number               | `a.ratio`     | `%3.14`                  | `{"num": 157, "denom": 50}`    |
 |          | `%`String               | `a.hash`      | `%'x'`                   | `{"x": true}`                  |
 |          | `%`Array                | `a.hash`      | `%[2]`                   | `{"2": true}`                  |
 |          | `%`Hash                 | `a.hash`      | `%{x: 1, y: 2}`          | `{"x": 1, "y": 2}`             |
