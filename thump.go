@@ -43,6 +43,14 @@ func (t *Token) Thump(a interface{}, b interface{}) interface{} {
             return t.Thump(x, y.Run())
         case *Variable:
             return t.Thump(x, y.Value())
+        case Hash:
+            return t.Thump(x, y.Array())
+        case Array:
+            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+                t.TypeMismatch(x, y)
+            }
+
+            return t.SearchInArray(x, y)
         default:
             if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
                 t.TypeMismatch(x, y)
@@ -64,6 +72,14 @@ func (t *Token) Thump(a interface{}, b interface{}) interface{} {
             return t.Thump(x, y.Run())
         case *Variable:
             return t.Thump(x, y.Value())
+        case Hash:
+            return t.Thump(x, y.Array())
+        case Array:
+            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+                t.TypeMismatch(x, y)
+            }
+
+            return t.SearchInString(x, y)
         case String:
             if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
                 t.TypeMismatch(x, y)
@@ -189,6 +205,16 @@ func (t *Token) SearchHash(x Hash, y interface{}) Array {
     return out
 }
 
+func (t *Token) SearchInArray(x Array, y Array) Array {
+    out := Array { }
+
+    for _, val := range y {
+        out = append(out, t.SearchArray(x, val)...)
+    }
+
+    return out
+}
+
 func (t *Token) SearchArray(x Array, y interface{}) Array {
     out := Array { }
 
@@ -196,6 +222,16 @@ func (t *Token) SearchArray(x Array, y interface{}) Array {
         if Equals(x[i], y) {
             out = append(out, NewNumber(i))
         }
+    }
+
+    return out
+}
+
+func (t *Token) SearchInString(x String, y Array) Array {
+    out := Array { }
+
+    for _, val := range y {
+        out = append(out, t.SearchString(x, Stringify(val))...)
     }
 
     return out

@@ -244,14 +244,17 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 | `%`      | Number `%` Number    | `a.mod(b)`          | `3.5 % 2`                      | `1.5`                      |
 |          | String `%` Number    | `a.every(b)`        | `'binary' % 2`                 | `"bnr"`                    |
 |          | String `%` String    | `a.filter(b)`       | `'badabing' % 'b'`             | `"bb"`                     |
+|          | String `%` Array     | `a.filter(b)`       | `'badabing' % ['b', 'a']`      | `"baab"`                   |
 |          | String `%` :(Block)  | `a.filter:(...)`    | `'binary' % :c(c.vowel)`       | `"ia"`                     |
 |          | Array `%` Number     | `a.every(b)`        | `[1, 2, 3, 4, 5, 6, 7] % 3`    | `[1, 4, 7]`                |
+|          | Array `%` Array      | `a.filter(b)`       | `[1, 1, 2, 3] % [1, 2]`        | `[1, 1, 2]`                |
 |          | Array `%` :(Block)   | `a.filter:(...)`    | `[1, 1, 2, 3] % :x(x % 2)`     | `[1, 1, 3]`                |
 |          | Hash `%` :(Block)    | `a.filter:(...)`    | `{x: 1, y: 2} % :x(x % 2)`     | `{x: 1}`                   |
 |          |                      |                     |                                |                            |
 | `%%`     | Number `%%` Number   | `a.imod(b)`         | `3.5 %% 2`                     | `1`                        |
 |          | String `%%` Number   | `a.xevery(b)`       | `'binary' %% 2`                | `"iay"`                    |
 |          | String `%%` String   | `a.without(b)`      | `'badabing' %% 'b'`            | `"adaing"`                 |
+|          | String `%%` Array    | `a.without(b)`      | `'badabing' %% ['b', 'a']`     | `"ding"`                   |
 |          | String `%%` :(Block) | `a.without:(...)`   | `'binary' %% :c(c.vowel)`      | `"bnry"`                   |
 |          | Array `%%` Number    | `a.xevery(b)`       | `[1, 2, 3, 4, 5, 6, 7] %% 3`   | `[2, 3, 5, 6]`             |
 |          | Array `%%` Array     | `a.without(b)`      | `[1, 2, 2, 3, 4] %% [2, 3]`    | `[1, 4]`                   |
@@ -282,8 +285,10 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a
 |          |                      |                     |                                |                            |
 | `@`      | Number `@` Number    | `a.round(b)`        | `3.1415 @ 3`                   | `3.142`                    |
 |          | String `@` String    | `a.find(b)`         | `'binary' @ 'ary'`             | `[3]`                      |
+|          | String `@` Array     | `a.search(b)`       | `'binary' @ ['b', 'a']`        | `[0, 3]`                   |
 |          | String `@` :(Block)  | `a.search:(...)`    | `'binary' @ :c(c.vowel)`       | `[1, 3]`                   |
 |          | Array `@` Any        | `a.find(b)`         | `[1, 3, 2, 3] @ 3`             | `[1, 3]`                   |
+|          | Array `@` Array      | `a.search(b)`       | `[1, 3, 2, 3] @ [1, 3]`        | `[0, 1, 3]`                |
 |          | Array `@` :(Block)   | `a.search:(...)`    | `[1, 2, 3] @ :n(n % 2)`        | `[0, 2]`                   |
 |          | Hash `@` Any         | `a.find(b)`         | `{a: 1, b: 2, c: 2} @ 2`       | `["b", "c"]`               |
 |          | Hash `@` :(Block)    | `a.search:(...)`    | `{f: 1, b: 2} @ :n(n % 2)`     | `["f"]`                    |

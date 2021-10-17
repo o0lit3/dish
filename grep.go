@@ -34,6 +34,14 @@ func (t *Token) Grep(a interface{}, b interface{}) interface{} {
             }
 
             return t.Grep(x, y.Run())
+        case Hash:
+            return t.Grep(x, y.Array())
+        case Array:
+            if t.lit != "%" && t.lit != "%=" && t.lit != "filter" && t.lit != "select" && t.lit != "grep" {
+                t.TypeMismatch(x, y)
+            }
+
+            return t.GrepArray(x, y)
         case *Variable:
             return t.Grep(x, y.Value())
         case Number:
@@ -61,6 +69,14 @@ func (t *Token) Grep(a interface{}, b interface{}) interface{} {
             return t.Grep(x, y.Run())
         case *Variable:
             return t.Grep(x, y.Value())
+        case Hash:
+            return t.Grep(x, y.Array())
+        case Array:
+            if t.lit != "%" && t.lit != "%=" && t.lit != "filter" && t.lit != "select" && t.lit != "grep" {
+                t.TypeMismatch(x, y)
+            }
+
+            return t.GrepString(x, y)
         case String:
             if t.lit != "%" && t.lit != "%=" && t.lit != "filter" && t.lit != "select" && t.lit != "grep" {
                 t.TypeMismatch(x, y)
@@ -136,8 +152,30 @@ func (t *Token) FilterArray(x Array, y *Block) Array {
     return out
 }
 
+func (t *Token) GrepArray(x Array, y Array) Array {
+    indices := t.SortArray(t.SearchInArray(x, y), nil)
+    out := Array{ }
+
+    for _, i := range indices {
+        out = append(out, x[i.(Number).Int()])
+    }
+
+    return out
+}
+
 func (t *Token) FilterString(x String, y *Block) String {
     return t.JoinArray(t.FilterArray(x.Array(), y), String(""))
+}
+
+func (t *Token) GrepString(x String, y Array) String {
+    indices := t.SortArray(t.SearchInString(x, y), nil)
+    out := []rune{ }
+
+    for _, i := range indices {
+        out = append(out, x[i.(Number).Int()])
+    }
+
+    return String(out)
 }
 
 func (t *Token) SelectString(x String, y String) String {
@@ -235,6 +273,8 @@ func (t *Token) DoubleGrep(a interface{}, b interface{}) interface{} {
             return t.DoubleGrep(x, y.Run())
         case *Variable:
             return t.DoubleGrep(x, y.Value())
+        case Hash:
+            return t.DoubleGrep(x, y.Array())
         case Array:
             if t.lit != "%%" && t.lit != "without" {
                 t.TypeMismatch(x, y)
@@ -266,6 +306,14 @@ func (t *Token) DoubleGrep(a interface{}, b interface{}) interface{} {
             return t.DoubleGrep(x, y.Run())
         case *Variable:
             return t.DoubleGrep(x, y.Value())
+        case Hash:
+            return t.DoubleGrep(x, y.Array())
+        case Array:
+            if t.lit != "%%" && t.lit != "without" {
+                t.TypeMismatch(x, y)
+            }
+
+            return t.ExcludeFromString(x, y)
         case String:
             if t.lit != "%%" && t.lit != "without" {
                 t.TypeMismatch(x, y)
@@ -419,6 +467,27 @@ func (t *Token) ExcludeArray(x Array, y Array) Array {
     }
 
     return out
+}
+
+func (t *Token) ExcludeFromString(x String, y Array) String {
+    out := []rune{ }
+
+    for _, c := range x {
+        found := false
+
+        for _, b := range y {
+            if Equals(String([]rune{ c }), Stringify(b)) {
+                found = true
+                break
+            }
+        }
+
+        if !found {
+            out = append(out, c)
+        }
+    }
+
+    return String(out)
 }
 
 func (t *Token) ExcludeString(x String, y String) String {
