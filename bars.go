@@ -21,6 +21,8 @@ func (t *Token) TopBars(a interface{}) interface{} {
         }
 
         return t.EvalString(x)
+    case Number:
+        return x
     case Boolean:
         return t.TopBars(x.Number())
     case Null:
