@@ -41,6 +41,29 @@ func main() {
             source = ""
             reader = bufio.NewReader(strings.NewReader(os.Args[i + 1]))
             index = i + 1
+        default:
+            if flag[0:1] == "-" {
+                source = os.Args[i + 1]
+                index = i + 1
+
+                if strings.Contains(flag, "d") {
+                    debug = true
+                }
+
+                if strings.Contains(flag, "p") {
+                    pretty = true
+                }
+
+                if strings.Contains(flag, "f") {
+                    format = true
+                }
+
+                if flag[len(flag) - 1:] == "e" {
+                    source = ""
+                    reader = bufio.NewReader(strings.NewReader(os.Args[i + 1]))
+                    index = i + 1
+                }
+            }
         }
     }
 
