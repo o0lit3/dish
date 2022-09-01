@@ -1,7 +1,7 @@
 # dish
 **dish** is a dynamically-typed programming language designed with the following goals:
 
-* Allow quick and easy processing of input data (partiularly when the input is JSON data) with traditional programming operators (as opposed to the query-based operators of [jq](https://github.com/stedolan/jq#readme))
+* Allow quick and easy processing of input data (particularly when the input is JSON data) with traditional programming operators (as opposed to the query-based operators of [jq](https://github.com/stedolan/jq#readme))
 
 * Provide flexibility in language syntax so that developers can tackle tasks based on individual conceptualization (while still allowing peers to easily follow logical flow--that is, while avoiding the "write-only" criticsms of [perl](https://github.com/Perl/perl5#readme))
 
