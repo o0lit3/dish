@@ -89,7 +89,7 @@ The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b +
 
 `dish -e 'squared = :n(n ^ 2); 3.squared'`
 
-`dish -e 'ucwords = :s(s.words.map:w(w.0 @= w.0.uc).join(" ")); "my title".ucwords'`
+`dish -e 'ucwords = :s(s.words.map:w(w[0] @= w[0].uc).join(" ")); "my title".ucwords'`
 
 In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed via parentheses. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad(2, 3, 4)`. Note that the parenthesized parameters in this "traditional syntax alternative" do not represent a **dish** Scalar Block.
 
