@@ -5,7 +5,7 @@ Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand rep
 
 In addition, the Booleans `true` and `false` are treated as `1` and `0` in Numeric context, and `null` is treated as `0` in Numeric context. In the documentation below, the word "Number" can be replaced by a Boolean or Null coerced to a Number in this fashion. Any other type pairings that do not exist explicitly in this documentation will result in a runtime error (e.g. comparing a string to a number, `'3' > 2`).
 
-With the exception of special [assignment operators](#assignment-operators) and [comparison operators](#comparison-operators) that use the `=` symbol as its second character, all symbolic operators in **dish** consist of either a single symbolic character or a doubled, symbolic character; `|`, `||`, and `|=` are a valid symbolic operators, `?:`, `=~`, and `>>=` are not.
+With the exception of special [assignment operators](#assignment-operators) and [comparison operators](#comparison-operators) that use the `=` symbol as its second character, all symbolic operators in **dish** consist of either a single symbolic character or a doubled, symbolic character; `|`, `||`, and `|=` are all valid symbolic operators; `?:`, `=~`, and `>>=` are not.
 
 ## Logical Operators
 Logical operators in **dish**, like many languages, short circuit the right-hand operand if the left-hand operand does not suffice to determine the value of the expression. As such, the right-hand operands of logical operators are implicit Blocks that are only evaluated if needed (or in the case of the `switch` and `swap` operators, an implicit Array of Blocks for both operands). Left-hand operands for logical operators are treated as implicit Booleans to determine truthiness, but are evaluated as the object itself when returned.
@@ -102,10 +102,10 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `\|=`    | [See Bitwise Ops](#bitwise-operators)            | | `a = 5, a \|= 3`        | `7`                   |
 | `?=`     | [See Logical ?? Op](#logical-operators)          | | `a ?= 3`                | `3`                   |
 |          |                               |                  |                           |                       |
-| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a.2 @= 0`        | `8`                   |
-|          | String.x `@=` String          | `a.x.replace(b)` | `a = 'bing', a.1 @= 'a'`  | `"bang"`              |
+| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a[2] @= 0`       | `8`                   |
+|          | String.x `@=` String          | `a.x.replace(b)` | `a = 'bing', a[1] @= 'a'` | `"bang"`              |
 |          | Array.x `@=` Any              | `a.x.replace(b)` | `a = [1, 2, 3], a.0 @= 4` | `[4, 2, 3]`           |
-|          | Hash.x `@=` Any               | `a.x.replace(b)` | `a = {x: 1}, a.'x' @= 4`  | `{"x": 4}`            |
+|          | Hash.x `@=` Any               | `a.x.replace(b)` | `a = {x: 1}, a['x'] @= 4` | `{"x": 4}`            |
 |          |                               |                  |                           |                       |
 | `++`     | `++`Number                    | `a.increment`    | `a = 8, ++a`              | `9`                   |
 | (Unary)  | `++`String                    | `a.increment`    | `a = 'binary', ++a`       | `"binarz"`            |
@@ -139,7 +139,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 
 **Dish** also supports parallel assignment when the left-hand operand is an Array of variables, as in `[a, b, c] = [1, 2, 3]`. Parallel assigment is useful for swapping the values held in two variables without the need of a temporary holding variable: `[a, b] = [b, a]` is equivalent to `t = a, a = b, b = t`.
 
-This technique also works for member subsets, as in `a = [1, 2, 3]; a.[1, 2] = a.[2, 1]; a` or `a = [1, 2, 3]; a.[1, 2] @= a.[2, 1]`.
+This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[2, 1]; a` or `a = [1, 2, 3]; a[1, 2] @= a[2, 1]`.
 
 ## Bitwise Operators
 | Operator | Operands                 | Method Name         | Example                     | Result                 |

@@ -1,7 +1,7 @@
 # dish
 **dish** is a dynamically-typed programming language designed with the following goals:
 
-* Allow quick and easy processing of input data (partiularly when the input is JSON data) with traditional programming operators (as opposed to the query-based operators of [jq](https://github.com/stedolan/jq#readme))
+* Allow quick and easy processing of input data (particularly when the input is JSON data) with traditional programming operators (as opposed to the query-based operators of [jq](https://github.com/stedolan/jq#readme))
 
 * Provide flexibility in language syntax so that developers can tackle tasks based on individual conceptualization (while still allowing peers to easily follow logical flow--that is, while avoiding the "write-only" criticsms of [perl](https://github.com/Perl/perl5#readme))
 
@@ -52,8 +52,6 @@ Scalar blocks `(...)` return the last expression or statement in the block. A fu
 
 Logic blocks are represented by a colonized list of arguments followed by any other Block type, as in `:x[...]` or `:x:y(...)`, returning a data type corresponding to the encapsulatng Block type. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
 
-If a user-defined Logic block conatins only a single argument and has been invoked on a Hash or an Array, then the entire Hash or Array is passed as that argument; when the user-defined Logic block contains multiple arguments and has been invoked on a Hash or an Array, then each Hash or Array item is passed as an individual argument.
-
 In cases where naming arguments is overkill, **dish** also supports default variables in regards to Logic Blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block, `$0` is the entire argument Array, and `$_` is the object on which the Logic block is invoked.
 
 For example, `dish -e 'a=[1, 2, 3]; a.map:n:i(n+a.(i+1))'` can be rewritten as `dish -e '[1, 2, 3].map:($1+$_.++$2)'`, outputting `[3, 5, 3]`, which is the sum of each item (`n` or `$1`) plus the next item (`a.(i+1)` or `$_.++$2`), where the last array item gets summed with the nonexistent 4th item (null).
@@ -91,7 +89,7 @@ The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b +
 
 `dish -e 'squared = :n(n ^ 2); 3.squared'`
 
-`dish -e 'title = :s(s.words.map:w(w.0 @= w.0.uc).join(" ")); "my title".title'`
+`dish -e 'ucwords = :s(s.words.map:w(w[0] @= w[0].uc).join(" ")); "my title".ucwords'`
 
 In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed via parentheses. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad(2, 3, 4)`. Note that the parenthesized parameters in this "traditional syntax alternative" do not represent a **dish** Scalar Block.
 
