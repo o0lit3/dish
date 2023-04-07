@@ -73,7 +73,7 @@ func main() {
 
     for index + 1 < len(os.Args) {
         index += 1
-        argv = append(argv, String(os.Args[index]))
+        argv = append(argv, bind([]byte(os.Args[index])))
     }
 
     program = NewBlock()
@@ -223,9 +223,13 @@ func stdin() interface{} {
         return Null{ }
     }
 
-    var data interface{}
-
     input, _ := ioutil.ReadAll(os.Stdin)
+
+    return bind(input)
+}
+
+func bind(input []byte) interface{} {
+    var data interface{}
 
     if err := json.Unmarshal(input, &data); err == nil {
         return parse(data)
