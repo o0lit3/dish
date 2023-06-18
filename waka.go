@@ -169,7 +169,7 @@ func (t *Token) WakaWaka(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            return t.UnshiftArray(x, t.FlattenArray(y))
+            return t.UnshiftArray(x, y)
         case Null:
             if t.lit != ">>" && t.lit != "unshift" && t.lit != "prepend" {
                 t.TypeMismatch(x, y)

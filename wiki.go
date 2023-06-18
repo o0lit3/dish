@@ -169,7 +169,7 @@ func (t *Token) WikiWiki(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            return t.PushArray(x, t.FlattenArray(y))
+            return t.PushArray(x, y)
         case Null:
             if t.lit != "<<" && t.lit != "push" && t.lit != "append" {
                 t.TypeMismatch(x, y)
