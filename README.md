@@ -13,7 +13,7 @@
 **dish** is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '"Hello World!"'`
 
 ## Input
-By default, **dish** places STDIN into a variable called `stdin`, and it places command line arguments into a variable called `argv`. If the data from STDIN is JSON, `stdin` is a data type representing that JSON data ([see Data Types](#data-types-and-operators)), otherwise `stdin` is an Array of STDIN lines. `argv` is always an Array of Strings.
+By default, **dish** places STDIN into a variable called `stdin`, and it places command line arguments into a variable called `argv`. If the data from STDIN and the command line arguments are JSON, `stdin` and/or `argv` are data types representing that JSON data ([see Data Types](#data-types-and-operators)), otherwise `stdin` and/or `argv` are an Array of Strings.
 
 As an example, the following curl/**dish** command will output a list of the last 5 github commits to the **dish** codebase:
 
