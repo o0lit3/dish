@@ -509,9 +509,17 @@ func (blk *Block) Chirp() interface{} {
             y.args = t.args
         }
 
-        if len(t.lit) > 0 && t.opx && (unicode.IsLetter(rune(t.lit[0])) || t.lit[0] == '$') {
+        if len(t.lit) > 0 && t.opx && (unicode.IsLetter(rune(t.lit[0])) || unicode.IsDigit(rune(t.lit[0])) || t.lit[0] == '$') {
             switch op := blk.FindVar(t.lit).(type) {
             case Null:
+                switch {
+                    case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):
+                        blk.Register(t.Dot(t.Dot(a, String(t.lit).Number()), b))
+                    default:
+                        blk.Register(t.Dot(t.Dot(a, String(t.lit)), b))
+                }
+
+                return blk.Chirp()
             default:
                 args := []string{ }
                 params := Array{ blk.Value(a) }

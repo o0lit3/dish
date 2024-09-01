@@ -5,7 +5,7 @@ import (
     "fmt"
     "bufio"
     "strings"
-	"testing"
+    "testing"
     "math/big"
     "io/ioutil"
     "encoding/json"
@@ -334,9 +334,9 @@ func test(test *testing.T, source string) {
                 c++
             }
         }
-	} else {
-		test.Errorf("%s is a malformed test file", source)
-	}
+	  } else {
+		    test.Errorf("%s is a malformed test file", source)
+	  }
 
     fmt.Printf("%s passed %d of %d tests\n", source, c, c + f)
 }
