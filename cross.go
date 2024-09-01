@@ -349,7 +349,7 @@ func (t *Token) IncreaseString(x String, y Number) String {
                     if (int(c) + carry - int('Z')) % 26 == 0 {
                         out = "Z" + out
                     } else {
-                        out = string(int('A') - 1 + ((int(c) + carry - int('Z')) % 26)) + out
+                        out = string(rune(int('A') - 1 + ((int(c) + carry - int('Z')) % 26))) + out
                     }
 
                     carry = (int(c) + carry - int('A')) / 26
@@ -359,7 +359,7 @@ func (t *Token) IncreaseString(x String, y Number) String {
                         carry--
                     }
                 } else {
-                    out = string(int(c) + carry) + out
+                    out = string(rune(int(c) + carry)) + out
                     carry = 0
                 }
             case unicode.IsLetter(c) && unicode.IsLower(c):
@@ -367,7 +367,7 @@ func (t *Token) IncreaseString(x String, y Number) String {
                     if (int(c) + carry - int('z')) % 26 == 0 {
                         out = "z" + out
                     } else {
-                        out = string(int('a') - 1 + ((int(c) + carry - int('z')) % 26)) + out
+                        out = string(rune(int('a') - 1 + ((int(c) + carry - int('z')) % 26))) + out
                     }
 
                     carry = (int(c) + carry - int('a')) / 26
@@ -378,7 +378,7 @@ func (t *Token) IncreaseString(x String, y Number) String {
                     }
 
                 } else {
-                    out = string(int(c) + carry) + out
+                    out = string(rune(int(c) + carry)) + out
                     carry = 0
                 }
             case unicode.IsDigit(c):
@@ -386,7 +386,7 @@ func (t *Token) IncreaseString(x String, y Number) String {
                     if (int(c) + carry - int('9') - 1) % 10 == 0 {
                         out = "0" + out
                     } else {
-                        out = string(int('0') + (int(c) + carry - int('9') - 1) % 10) + out
+                        out = string(rune(int('0') + (int(c) + carry - int('9') - 1) % 10)) + out
                     }
 
                     carry = (int(c) + carry - int('0')) / 10
@@ -395,7 +395,7 @@ func (t *Token) IncreaseString(x String, y Number) String {
                         x = append([]rune{'0'}, x...)
                     }
                 } else {
-                    out = string(int(c) + carry) + out
+                    out = string(rune(int(c) + carry)) + out
                     carry = 0
                 }
             default:

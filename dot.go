@@ -217,7 +217,7 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
         return t.Dot(NewNumber(0), b)
     }
 
-    return t.TypeMismatch(a, b)
+    return Null { }
 }
 
 func (t *Token) DoubleDot(a interface{}, b interface{}) Array {

@@ -308,12 +308,12 @@ func (t *Token) DecreaseString(x String, y Number) String {
                     if (int('A') - int(c) + carry) % 26 == 0 {
                         out = "A" + out
                     } else {
-                        out = string(int('Z') + 1 - ((int('A') - int(c) + carry) % 26)) + out
+                        out = string(rune(int('Z') + 1 - ((int('A') - int(c) + carry) % 26))) + out
                     }
 
                     carry = (int('Z') - int(c) + carry) / 26
                 } else {
-                    out = string(int(c) - carry) + out
+                    out = string(rune(int(c) - carry)) + out
                     carry = 0
                 }
             case unicode.IsLetter(c) && unicode.IsLower(c):
@@ -321,12 +321,12 @@ func (t *Token) DecreaseString(x String, y Number) String {
                     if (int('a') - int(c) + carry) % 26 == 0 {
                         out = "a" + out
                     } else {
-                        out = string(int('z') + 1 - ((int('a') - int(c) + carry) % 26)) + out
+                        out = string(rune(int('z') + 1 - ((int('a') - int(c) + carry) % 26))) + out
                     }
 
                     carry = (int('z') - int(c) + carry) / 26
                 } else {
-                    out = string(int(c) - carry) + out
+                    out = string(rune(int(c) - carry)) + out
                     carry = 0
                 }
             case unicode.IsDigit(c):
@@ -334,12 +334,12 @@ func (t *Token) DecreaseString(x String, y Number) String {
                     if (int('0') - int(c) + carry) % 10 == 0 {
                         out = "0" + out
                     } else {
-                        out = string(int('9') + 1 - (int('0') - int(c) + carry) % 10) + out
+                        out = string(rune(int('9') + 1 - (int('0') - int(c) + carry) % 10)) + out
                     }
 
                     carry = (int('9') - int(c) + carry) / 10
                 } else {
-                    out = string(int(c) - carry) + out
+                    out = string(rune(int(c) - carry)) + out
                     carry = 0
                 }
             default:
