@@ -352,7 +352,7 @@ All characters that are outside the above mentioned character ranges are ignored
 | `**`     | `**`Number              | `a.divisors`  | `**12`                   | `[1, 2, 3, 4, 6]`              |
 |          | `**`String              | `a.perms`     | `**'ab'`                 | `["ab", "ba"]`                 |
 |          | `**`Array               | `a.perms`     | `**[1, 2]`               | `[[1, 2], [2, 1]]`             |
-|          | `**`Hash                | `a.perms`     | `**{x: 1, y: 2}`         | `[{x: 1, y: 2}, {x: 2, y: 1}]` |
+|          | `**`Hash                | `a.perms`     | `**{x: 1, y: 2}`         | `[[1, 2], [2, 1]]`             |
 |          |                         |               |                          |                                |
 | `/`      | `/`Number               | `a.factors`   | `/12`                    | `[2, 2, 3]`                    |
 |          | `/`String               | `a.split`     | `/'Hello World!'`        | `["Hello", "World!"]`          |
