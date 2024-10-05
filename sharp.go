@@ -93,25 +93,25 @@ func (t *Token) TopSharp(a interface{}) interface{} {
     case *Variable:
         return t.TopSharp(x.Value())
     case Hash:
-        if t.lit != "#" && t.lit != "length" && t.lit != "len" {
+        if t.lit != "#" && t.lit != "length" && t.lit != "len" && t.lit != "count" {
             t.TypeMismatch(a, nil)
         }
 
         return t.LengthHash(x)
     case Array:
-        if t.lit != "#" && t.lit != "length" && t.lit != "len" {
+        if t.lit != "#" && t.lit != "length" && t.lit != "len" && t.lit != "count" {
             t.TypeMismatch(a, nil)
         }
 
         return t.LengthArray(x)
     case String:
-        if t.lit != "#" && t.lit != "length" && t.lit != "len" {
+        if t.lit != "#" && t.lit != "length" && t.lit != "len" && t.lit != "count" {
             t.TypeMismatch(a, nil)
         }
 
         return t.LengthString(x)
     case Number:
-        if t.lit != "#" && t.lit != "bitcount" {
+        if t.lit != "#" && t.lit != "bitcount" && t.lit != "count" {
             t.TypeMismatch(a, nil)
         }
 
