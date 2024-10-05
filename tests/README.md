@@ -263,7 +263,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          |                      |                     |                                |                            |
 | `^`      | Number `^` Number    | `a.pow(b)`          | `2 ^ 3`                        | `8`                        |
 |          | String `^` Number    | `a.rotate(b)`       | `'binary' ^ 2`                 | `"rybina"`                 |
-|          | String `^` String    | `a.zip(b)`          | `'ds' ^ 'ih`                   | `"dish"`                   |
+|          | String `^` String    | `a.zip(b)`          | `'ds' ^ 'ih'`                   | `"dish"`                  |
 |          | String `^` :(Block)  | `a.sort:(...)`      | `'binary' ^ :x:y(y < x)`       | `"yrniba"`                 |
 |          | Array `^` Number     | `a.rotate(b)`       | `[7, 9, 4] ^ 1`                | `[4, 7, 9]`                |
 |          | Array `^` Array      | `a.zip(b)`          | `[1, 2, 3] ^ [4, 5]`           | `[[1, 4], [2, 5], [3]]`    |
