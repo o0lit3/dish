@@ -471,7 +471,7 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.TopBoom(a))
         case "|", "unique", "uniq", "abs":
             blk.Register(t.TopWham(a))
-        case "#", "length", "len", "bitcount":
+        case "#", "length", "count", "len", "bitcount":
             blk.Register(t.TopSharp(a))
         case "++", "increment", "incr":
             val := t.TopDoubleCross(a)
