@@ -263,7 +263,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          |                      |                     |                                |                            |
 | `^`      | Number `^` Number    | `a.pow(b)`          | `2 ^ 3`                        | `8`                        |
 |          | String `^` Number    | `a.rotate(b)`       | `'binary' ^ 2`                 | `"rybina"`                 |
-|          | String `^` String    | `a.zip(b)`          | `'ds' ^ 'ih`                   | `"dish"`                   |
+|          | String `^` String    | `a.zip(b)`          | `'ds' ^ 'ih'`                   | `"dish"`                  |
 |          | String `^` :(Block)  | `a.sort:(...)`      | `'binary' ^ :x:y(y < x)`       | `"yrniba"`                 |
 |          | Array `^` Number     | `a.rotate(b)`       | `[7, 9, 4] ^ 1`                | `[4, 7, 9]`                |
 |          | Array `^` Array      | `a.zip(b)`          | `[1, 2, 3] ^ [4, 5]`           | `[[1, 4], [2, 5], [3]]`    |
@@ -352,7 +352,7 @@ All characters that are outside the above mentioned character ranges are ignored
 | `**`     | `**`Number              | `a.divisors`  | `**12`                   | `[1, 2, 3, 4, 6]`              |
 |          | `**`String              | `a.perms`     | `**'ab'`                 | `["ab", "ba"]`                 |
 |          | `**`Array               | `a.perms`     | `**[1, 2]`               | `[[1, 2], [2, 1]]`             |
-|          | `**`Hash                | `a.perms`     | `**{x: 1, y: 2}`         | `[{x: 1, y: 2}, {x: 2, y: 1}]` |
+|          | `**`Hash                | `a.perms`     | `**{x: 1, y: 2}`         | `[[1, 2], [2, 1]]`             |
 |          |                         |               |                          |                                |
 | `/`      | `/`Number               | `a.factors`   | `/12`                    | `[2, 2, 3]`                    |
 |          | `/`String               | `a.split`     | `/'Hello World!'`        | `["Hello", "World!"]`          |
