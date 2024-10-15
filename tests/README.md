@@ -288,9 +288,11 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | String `@` Array     | `a.search(b)`       | `'binary' @ ['b', 'a']`        | `[0, 3]`                   |
 |          | String `@` :(Block)  | `a.search:(...)`    | `'binary' @ :c(c.vowel)`       | `[1, 3]`                   |
 |          | Array `@` Any        | `a.find(b)`         | `[1, 3, 2, 3] @ 3`             | `[1, 3]`                   |
+|          |                      | `a.contains(b)`     | `[1, 3, 2, 3] @ 3`             | `true`                     |
 |          | Array `@` Array      | `a.search(b)`       | `[1, 3, 2, 3] @ [1, 3]`        | `[0, 1, 3]`                |
 |          | Array `@` :(Block)   | `a.search:(...)`    | `[1, 2, 3] @ :n(n % 2)`        | `[0, 2]`                   |
 |          | Hash `@` Any         | `a.find(b)`         | `{a: 1, b: 2, c: 2} @ 2`       | `["b", "c"]`               |
+|          |                      | `a.contains(b)`     | `{a: 1, b: 2, c: 2} @ 2`       | `true`                     |
 |          | Hash `@` :(Block)    | `a.search:(...)`    | `{f: 1, b: 2} @ :n(n % 2)`     | `["f"]`                    |
 |          |                      |                     |                                |                            |
 | `#`      | Null `#` String      | `a.fmt(b)`          | `a # 'a: %s'`                  | `"a: null"`                |
