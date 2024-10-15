@@ -11,33 +11,51 @@ func (t *Token) Thump(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+                if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" && t.lit != "has" && t.lit != "contains" && t.lit != "includes" {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.FindInHash(x, y)
+                out := t.FindInHash(x, y)
+
+                if t.lit == "has" || t.lit == "contains" || t.lit == "includes" {
+                    return t.Waka(t.LengthArray(out), NewNumber(0))
+                }
+
+                return out
             }
 
             return t.Thump(x, y.Run())
         case *Variable:
             return t.Thump(x, y.Value())
         default:
-            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" && t.lit != "has" && t.lit != "contains" && t.lit != "includes" {
                 t.TypeMismatch(x, y)
             }
 
-            return t.SearchHash(x, y)
+            out := t.SearchHash(x, y)
+
+            if t.lit == "has" || t.lit == "contains" || t.lit == "includes" {
+                return t.Waka(t.LengthArray(out), NewNumber(0))
+            }
+
+            return out
         }
 
     case Array:
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+                if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" && t.lit != "has" && t.lit != "contains" && t.lit != "includes" {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.FindInArray(x, y)
+                out := t.FindInArray(x, y)
+
+                if t.lit == "has" || t.lit == "contains" || t.lit == "includes" {
+                    return t.Waka(t.LengthArray(out), NewNumber(0))
+                }
+
+                return out
             }
 
             return t.Thump(x, y.Run())
@@ -46,27 +64,45 @@ func (t *Token) Thump(a interface{}, b interface{}) interface{} {
         case Hash:
             return t.Thump(x, y.Array())
         case Array:
-            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" && t.lit != "has" && t.lit != "contains" && t.lit != "includes" {
                 t.TypeMismatch(x, y)
             }
 
-            return t.SearchInArray(x, y)
+            out := t.SearchInArray(x, y)
+
+            if t.lit == "has" || t.lit == "contains" || t.lit == "includes" {
+                return t.Waka(t.LengthArray(out), NewNumber(0))
+            }
+
+            return out
         default:
-            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" && t.lit != "has" && t.lit != "contains" && t.lit != "includes" {
                 t.TypeMismatch(x, y)
             }
 
-            return t.SearchArray(x, y)
+            out := t.SearchArray(x, y)
+
+            if t.lit == "has" || t.lit == "contains" || t.lit == "includes" {
+                return t.Waka(t.LengthArray(out), NewNumber(0))
+            }
+
+            return out
         }
     case String:
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+                if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" && t.lit != "has" && t.lit != "contains" && t.lit != "includes" {
                     t.TypeMismatch(x, y)
                 }
 
-                return t.FindInString(x, y)
+                out := t.FindInString(x, y)
+
+                if t.lit == "has" || t.lit == "contains" || t.lit == "includes" {
+                    return t.Waka(t.LengthArray(out), NewNumber(0))
+                }
+
+                return out
             }
 
             return t.Thump(x, y.Run())
@@ -75,17 +111,29 @@ func (t *Token) Thump(a interface{}, b interface{}) interface{} {
         case Hash:
             return t.Thump(x, y.Array())
         case Array:
-            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" && t.lit != "has" && t.lit != "contains" && t.lit != "includes" {
                 t.TypeMismatch(x, y)
             }
 
-            return t.SearchInString(x, y)
+            out := t.SearchInString(x, y)
+
+            if t.lit == "has" || t.lit == "contains" || t.lit == "includes" {
+                return t.Waka(t.LengthArray(out), NewNumber(0))
+            }
+
+            return out
         case String:
-            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" {
+            if t.lit != "@" && t.lit != "find" && t.lit != "search" && t.lit != "indices" && t.lit != "has" && t.lit != "contains" && t.lit != "includes" {
                 t.TypeMismatch(x, y)
             }
 
-            return t.SearchString(x, y)
+            out := t.SearchString(x, y)
+
+            if t.lit == "has" || t.lit == "contains" || t.lit == "includes" {
+                return t.Waka(t.LengthArray(out), NewNumber(0))
+            }
+
+            return out
         }
     case Number:
         switch y := b.(type) {

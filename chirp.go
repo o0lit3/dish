@@ -576,7 +576,7 @@ func (blk *Block) Chirp() interface{} {
             } else {
                 blk.Register(t.Bang(blk.Blockify(a), blk.Blockify(b)))
             }
-        case "@", "round", "find", "search", "indices":
+        case "@", "round", "find", "search", "indices", "has", "contains", "includes":
             blk.Register(t.Thump(a, b))
         case "^", "power", "pow", "rotate", "rot", "sort", "zip":
             blk.Register(t.Pow(a, b))
