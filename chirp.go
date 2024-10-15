@@ -433,7 +433,7 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.TopThump(a))
         case "*", "string", "str", "product", "prod", "join":
             blk.Register(t.TopSplat(a))
-        case "**", "divisors", "perms":
+        case "**", "divisors", "divs", "permutations", "perms":
             blk.Register(t.TopDoubleSplat(a))
         case "/", "array", "arr", "factors", "split", "words", "values", "vals":
             blk.Register(t.TopSplit(a))

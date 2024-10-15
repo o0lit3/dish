@@ -311,25 +311,25 @@ func (t *Token) TopDoubleSplat(a interface{}) interface{} {
     case *Variable:
         return t.TopDoubleSplat(x.Value())
     case Hash:
-        if t.lit != "**" && t.lit != "perms" {
+        if t.lit != "**" && t.lit != "perms" && t.lit != "permutations" {
             t.TypeMismatch(x, nil)
         }
 
         return t.PermsArray(x.Array())
     case Array:
-        if t.lit != "**" && t.lit != "perms" {
+        if t.lit != "**" && t.lit != "perms" && t.lit != "permutations" {
             t.TypeMismatch(x, nil)
         }
 
         return t.PermsArray(x)
     case String:
-        if t.lit != "**" && t.lit != "perms" {
+        if t.lit != "**" && t.lit != "perms" && t.lit != "permutations" {
             t.TypeMismatch(x, nil)
         }
 
         return t.PermsString(x)
     case Number:
-        if t.lit != "**" && t.lit != "divisors" {
+        if t.lit != "**" && t.lit != "divisors" && t.lit != "divs" {
             t.TypeMismatch(x, nil)
         }
 
