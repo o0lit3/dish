@@ -28,7 +28,7 @@ go test -run TestDot ./...   # one test file
 go test -v ./...             # shows the "tests/x.dish passed N of M tests" lines
 ```
 
-`go vet ./...` exits 1 on three pre-existing findings (`cross.go:582` self-assignment, `chomp.go:86` and `splat.go:304` unreachable code). These do not block `go test`, which runs only a subset of vet's checks. Do not "fix" them reflexively while working on something else.
+`go vet ./...` is clean and worth keeping that way, since it is only useful as a gate while it exits 0. Run it separately from `go test`, which applies just a subset of vet's checks.
 
 The `go 1.16` directive in `go.mod` reflects the oldest toolchain that can build this — the code uses no newer language or stdlib features.
 
