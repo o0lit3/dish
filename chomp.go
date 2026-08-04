@@ -568,6 +568,8 @@ func (l *Lexer) LexStr(quote rune) string {
                     lit = lit + "\f"
                 case 'v':
                     lit = lit + "\v"
+                case '\\':
+                    lit = lit + "\\\\"
                 case '$':
                     lit = lit + "\\$"
                 default:

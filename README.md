@@ -97,3 +97,8 @@ In cases where a Logic block contains exactly two arguments, you can use the fol
 **dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string `"$(...)"`, for example: `dish -e '(0..9).map:i("i^2: $(i^2)").join'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
 
 When the expression is a single variable, the encapsulating parentheses can be removed: `dish -e '(0..9).map:i("i: $i").join'`
+
+## String Escapes
+Double-quoted strings in **dish** process escape sequences: `\n`, `\r`, `\t`, `\b`, `\f`, and `\v` produce their corresponding control characters, while `\\`, `\"`, and `\$` produce a literal backslash, double quote, and dollar sign respectively (where `\$` suppresses interpolation). Any other escaped character is passed through as the bare character, so `dish -e '"C:\dir"'` outputs `C:dir`--the same behavior as [perl](https://github.com/Perl/perl5#readme), [ruby](https://github.com/ruby/ruby#readme), and javascript.
+
+Single-quoted strings are literal: no escape sequences are processed and no interpolation occurs, so `dish -e "'C:\dir'"` outputs `C:\dir` and `dish -e "'a\$b'"` outputs `a$b`. Use single quotes when a string should survive verbatim.
