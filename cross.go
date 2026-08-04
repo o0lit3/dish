@@ -579,7 +579,6 @@ func (t *Token) SumArray(x Array) interface{} {
         case Boolean:
             out = t.AddNumber(out, val.Number()).(Number)
         case Null:
-            out = out
         default:
             t.TypeMismatch(out, val)
         }

@@ -300,8 +300,6 @@ func (t *Token) TopSplat(a interface{}) interface{} {
 
         return Stringify(x)
     }
-
-    return t.TypeMismatch(a, nil)
 }
 
 func (t *Token) TopDoubleSplat(a interface{}) interface{} {

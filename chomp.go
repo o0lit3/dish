@@ -82,8 +82,6 @@ func (t *Token) TypeMismatch(a interface{}, b interface{}) Boolean {
     } else {
         panic(fmt.Sprintf("Type mismatch on binary operator \"%s\" near %s on types %T and %T", t.lit, t.pos, a, b))
     }
-
-    return Boolean(false)
 }
 
 func (t *Token) String() string {
