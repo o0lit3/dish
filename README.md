@@ -10,7 +10,7 @@
 * Allow for contextual parsing of variables and statements without requiring end-of-statement identifiers (while avoiding the "where does this block end?" criticisms of [python](https://github.com/python/cpython#readme))
 
 ## Installation
-**dish** is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go mod init dish` followed by `go build -o /usr/local/bin/dish` from the project root. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '"Hello World!"'`
+**dish** is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root, or install it directly with `go install github.com/o0lit3/dish@latest`. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '"Hello World!"'`
 
 ## Input
 By default, **dish** places STDIN into a variable called `stdin`, and it places command line arguments into a variable called `argv`. If the data from STDIN is JSON, `stdin` gets mapped to the data type representing that JSON data ([see Data Types](#data-types-and-operators)), otherwise `stdin` is an Array of Strings. `argv` is always an Array of Strings.
@@ -97,3 +97,8 @@ In cases where a Logic block contains exactly two arguments, you can use the fol
 **dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string `"$(...)"`, for example: `dish -e '(0..9).map:i("i^2: $(i^2)").join'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
 
 When the expression is a single variable, the encapsulating parentheses can be removed: `dish -e '(0..9).map:i("i: $i").join'`
+
+## String Escapes
+Double-quoted strings in **dish** process escape sequences: `\n`, `\r`, `\t`, `\b`, `\f`, and `\v` produce their corresponding control characters, while `\\`, `\"`, and `\$` produce a literal backslash, double quote, and dollar sign respectively (where `\$` suppresses interpolation). Any other escaped character is passed through as the bare character, so `dish -e '"C:\dir"'` outputs `C:dir`--the same behavior as [perl](https://github.com/Perl/perl5#readme), [ruby](https://github.com/ruby/ruby#readme), and javascript.
+
+Single-quoted strings are literal: no escape sequences are processed and no interpolation occurs, so `dish -e "'C:\dir'"` outputs `C:\dir` and `dish -e "'a\$b'"` outputs `a$b`. Use single quotes when a string should survive verbatim.

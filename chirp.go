@@ -165,7 +165,7 @@ func (a Array) String() string {
         out = append(out, fmt.Sprintf("%v", val))
     }
 
-    return fmt.Sprintf("[" + strings.Join(out, ", ") + "]")
+    return "[" + strings.Join(out, ", ") + "]"
 }
 
 func (a Array) Hash() Hash {
@@ -197,7 +197,7 @@ func (h Hash) String() string {
         out = append(out, fmt.Sprintf("%s: %v", String(key), h[key]))
     }
 
-    return fmt.Sprintf("{" + strings.Join(out, ", ") + "}")
+    return "{" + strings.Join(out, ", ") + "}"
 }
 
 func (h Hash) Array() Array {
