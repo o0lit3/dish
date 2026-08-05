@@ -26,7 +26,7 @@ func (t *Token) Split(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.inf == 0 && y.val.Cmp(NewNumber(0).val) == 0 {
+            if y.inf == 0 && y.Cmp(NewNumber(0)) == 0 {
                 t.DivideByZero()
             }
 
@@ -61,7 +61,7 @@ func (t *Token) Split(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.inf == 0 && y.val.Cmp(NewNumber(0).val) == 0 {
+            if y.inf == 0 && y.Cmp(NewNumber(0)) == 0 {
                 t.DivideByZero()
             }
 
@@ -82,7 +82,7 @@ func (t *Token) Split(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.inf == 0 && y.val.Cmp(NewNumber(0).val) == 0 {
+            if y.inf == 0 && y.Cmp(NewNumber(0)) == 0 {
                 t.DivideByZero()
             }
 
@@ -126,7 +126,7 @@ func (t *Token) DoubleSplit(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.inf == 0 && y.val.Cmp(NewNumber(0).val) == 0 {
+            if y.inf == 0 && y.Cmp(NewNumber(0)) == 0 {
                 t.DivideByZero()
             }
 
@@ -363,17 +363,17 @@ func (t *Token) DivideNumber(x Number, y Number) interface{} {
     }
 
     if x.inf == INF || x.inf == -INF {
-        if y.val.Cmp(NewNumber(0).val) == -1 {
+        if y.Cmp(NewNumber(0)) == -1 {
             return Number{ inf: -x.inf }
         }
 
         return Number { inf: x.inf }
     }
 
-    if y.val.Cmp(NewNumber(0).val) != 0 {
-        return Number{ val: new(big.Rat).Quo(x.val, y.val) }
+    if y.Cmp(NewNumber(0)) != 0 {
+        return Number{ val: new(big.Rat).Quo(x.Rat(), y.Rat()) }
     } else {
-        switch x.val.Cmp(NewNumber(0).val) {
+        switch x.Cmp(NewNumber(0)) {
         case -1:
             return Number{ inf: -INF }
         case 1:
@@ -509,11 +509,11 @@ func (t *Token) FlattenArray (a interface{}) Array {
 
 func (t *Token) FactorsForNumber(x Number) interface{} {
     out := Array{ }
-    n := new(big.Int).Quo(x.val.Num(), x.val.Denom())
+    n := new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom())
     mod, div := new(big.Int), new(big.Int)
     i := big.NewInt(2)
 
-    if x.val.Cmp(NewNumber(0).val) < 0 {
+    if x.Cmp(NewNumber(0)) < 0 {
         out = append(out, NewNumber(-1))
         n = n.Neg(n)
     }
@@ -534,7 +534,7 @@ func (t *Token) FactorsForNumber(x Number) interface{} {
 }
 
 func (t *Token) DivisorsForNumber(x Number) interface{} {
-    i := new(big.Int).Quo(x.val.Num(), x.val.Denom())
+    i := new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom())
     j := big.NewInt(1)
 
     if i.Cmp(big.NewInt(0)) < 0 {

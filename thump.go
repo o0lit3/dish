@@ -307,7 +307,7 @@ func (t *Token) RoundNumber(x Number, y Number) Number {
     }
 
     if pow, ok := t.PowerNumber(NewNumber(10), y).(Number); ok {
-        o := new(big.Rat).Mul(x.val, pow.val)
+        o := new(big.Rat).Mul(x.Rat(), pow.Rat())
         i := new(big.Int).Quo(o.Num(), o.Denom())
         j := new(big.Rat).SetInt(i)
         d := new(big.Rat).Sub(o, j)
@@ -320,7 +320,7 @@ func (t *Token) RoundNumber(x Number, y Number) Number {
             j = j.Sub(j, big.NewRat(1, 1))
         }
 
-        return Number{ val: j.Quo(j, pow.val) }
+        return Number{ val: j.Quo(j, pow.Rat()) }
     }
 
     return NewNumber(0)

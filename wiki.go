@@ -53,7 +53,7 @@ func (t *Token) Wiki(a interface{}, b interface{}) interface{} {
                 return Boolean(true)
             }
 
-            return Boolean(x.val.Cmp(y.val) < 0)
+            return Boolean(x.Cmp(y) < 0)
         case Boolean:
             return t.Wiki(x, y.Number())
         case Null:
@@ -120,7 +120,7 @@ func (t *Token) WikiBars(a interface{}, b interface{}) interface{} {
                 return Boolean(true)
             }
 
-            return Boolean(x.val.Cmp(y.val) <= 0)
+            return Boolean(x.Cmp(y) <= 0)
         case Boolean:
             return t.WikiBars(x, y.Number())
         case Null:
@@ -341,7 +341,7 @@ func (t *Token) LshiftNumber(x Number, y Number) Number {
         return x
     }
 
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.RshiftNumber(x, t.NegateNumber(y))
     }
 
@@ -398,13 +398,13 @@ func (t *Token) LowerString(x String) String {
 }
 
 func (t *Token) FloorNumber(x Number) Number {
-    if x.inf == INF || x.inf == -INF || x.val.IsInt() {
+    if x.inf == INF || x.inf == -INF || x.Rat().IsInt() {
         return x
     }
 
-    if x.val.Cmp(NewNumber(0).val) < -1 {
+    if x.Cmp(NewNumber(0)) < -1 {
         return t.NegateNumber(t.CeilNumber(t.NegateNumber(x)))
     }
 
-    return Number{ val: new(big.Rat).SetInt(new(big.Int).Quo(x.val.Num(), x.val.Denom())) }
+    return Number{ val: new(big.Rat).SetInt(new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom())) }
 }

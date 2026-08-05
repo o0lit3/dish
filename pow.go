@@ -270,7 +270,7 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
     }
 
     if x.inf == INF || x.inf == -INF {
-        switch y.val.Cmp(NewNumber(0).val) {
+        switch y.Cmp(NewNumber(0)) {
         case -1:
             return NewNumber(0)
         case 0:
@@ -282,9 +282,9 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
         return Null { }
     }
 
-    if y.val.Cmp(NewNumber(0).val) == -1 || !y.val.IsInt() {
-        x, _ := x.val.Float64()
-        y, _ := y.val.Float64()
+    if y.Cmp(NewNumber(0)) == -1 || !y.Rat().IsInt() {
+        x, _ := x.Rat().Float64()
+        y, _ := y.Rat().Float64()
 
         return Number{ val: new(big.Rat).SetFloat64(math.Pow(x, y)) }
     }
@@ -292,9 +292,9 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
     out := NewNumber(1)
     idx := NewNumber(0)
 
-    for idx.val.Cmp(y.val) == -1 {
-        out = Number{ val: out.val.Mul(out.val, x.val) }
-        idx = Number{ val: idx.val.Add(idx.val, NewNumber(1).val) }
+    for idx.Cmp(y) == -1 {
+        out = Number{ val: out.Rat().Mul(out.Rat(), x.Rat()) }
+        idx = Number{ val: idx.Rat().Add(idx.Rat(), NewNumber(1).Rat()) }
     }
 
     return out

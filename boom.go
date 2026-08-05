@@ -92,7 +92,7 @@ func (t *Token) Boom(a interface{}, b interface{}) interface{} {
         case Null:
             return t.Boom(x, NewNumber(0))
         default:
-            if x.val.Cmp(NewNumber(0).val) == 0 {
+            if x.Cmp(NewNumber(0)) == 0 {
                 return x
             }
 

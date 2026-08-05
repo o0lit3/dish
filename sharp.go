@@ -119,7 +119,7 @@ func (t *Token) TopSharp(a interface{}) interface{} {
             return Number{ inf: INF }
         }
 
-        if x.val.Cmp(NewNumber(0).val) == 0 {
+        if x.Cmp(NewNumber(0)) == 0 {
             return NewNumber(0)
         }
 
@@ -172,13 +172,13 @@ func (t *Token) FormatNumber(x Number, y String) String {
         }
 
         if n, err := strconv.Atoi(dec); err == nil {
-            out = x.val.FloatString(n)
+            out = x.Rat().FloatString(n)
         }
 
         return String(fmt.Sprintf(parts[0] + "s", out))
     }
 
-    if val, ok := x.val.Float64(); ok {
+    if val, ok := x.Rat().Float64(); ok {
         if strings.Contains(parts[0], "f") {
             return String(fmt.Sprintf(parts[0], val))
         }
@@ -186,11 +186,11 @@ func (t *Token) FormatNumber(x Number, y String) String {
         return String(fmt.Sprintf(parts[0], int(val)))
     }
 
-    return String(x.val.FloatString(0))
+    return String(x.Rat().FloatString(0))
 }
 
 func (t *Token) BaseString(x String, y Number) Number {
-    if y.val.Cmp(NewNumber(2).val) == -1 || y.val.Cmp(NewNumber(36).val) == 1 {
+    if y.Cmp(NewNumber(2)) == -1 || y.Cmp(NewNumber(36)) == 1 {
         panic(fmt.Sprintf("Invalid base \"%s\" used near \"%s\" at %s", y, t.lit, t.pos))
     }
 
@@ -212,7 +212,7 @@ func (t *Token) BaseNumber(x Number, y Number) String {
         return String(x.String())
     }
 
-    if y.val.Cmp(NewNumber(2).val) == -1 || y.val.Cmp(NewNumber(36).val) == 1 {
+    if y.Cmp(NewNumber(2)) == -1 || y.Cmp(NewNumber(36)) == 1 {
         panic(fmt.Sprintf("Invalid base \"%s\" used near \"%s\" at %s", y, t.lit, t.pos))
     }
 

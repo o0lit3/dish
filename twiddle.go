@@ -92,7 +92,7 @@ func (t *Token) Twiddle(a interface{}, b interface{}) interface{} {
         case Null:
             return t.Twiddle(x, NewNumber(0))
         default:
-            if x.val.Cmp(NewNumber(0).val) == 0 {
+            if x.Cmp(NewNumber(0)) == 0 {
                 return y
             }
 

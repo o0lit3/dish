@@ -29,6 +29,7 @@ type String []rune
 
 type Number struct {
     val *big.Rat
+    num int64
     inf int
 }
 
@@ -49,11 +50,45 @@ func (b Boolean) Number() Number {
 }
 
 func NewNumber(num int) Number {
-    return Number{ val: big.NewRat(int64(num), 1) }
+    return Number{ num: int64(num) }
+}
+
+// A Number holds its value in num when val is nil and inf is 0; Rat materializes
+// the big.Rat on demand. Hot paths compare and combine the int64 form directly so
+// exact-rational storage is only paid for when a value needs it.
+func (n Number) Fits() bool {
+    return n.val == nil && n.inf == 0
+}
+
+func (n Number) Rat() *big.Rat {
+    if n.val == nil {
+        return big.NewRat(n.num, 1)
+    }
+
+    return n.val
+}
+
+func (n Number) Cmp(m Number) int {
+    if n.Fits() && m.Fits() {
+        switch {
+        case n.num < m.num:
+            return -1
+        case n.num > m.num:
+            return 1
+        }
+
+        return 0
+    }
+
+    return n.Rat().Cmp(m.Rat())
 }
 
 func (n Number) Int() int {
-    return int(new(big.Int).Quo(n.val.Num(), n.val.Denom()).Int64())
+    if n.Fits() {
+        return int(n.num)
+    }
+
+    return int(new(big.Int).Quo(n.Rat().Num(), n.Rat().Denom()).Int64())
 }
 
 func (n Number) String() string {
@@ -65,16 +100,20 @@ func (n Number) String() string {
         return "-inf"
     }
 
-    if n.val.IsInt() {
-        return n.val.RatString()
+    if n.Fits() {
+        return strconv.FormatInt(n.num, 10)
+    }
+
+    if n.Rat().IsInt() {
+        return n.Rat().RatString()
     }
 
     prec := 100
-    val := n.val.FloatString(prec)
+    val := n.Rat().FloatString(prec)
 
     for !strings.HasSuffix(val, "0000000000") && prec < 1000 {
         prec += 100
-        val = n.val.FloatString(prec)
+        val = n.Rat().FloatString(prec)
     }
 
     return strings.TrimRight(val, "0")
@@ -120,7 +159,7 @@ func (s String) String() string {
 func (s String) Number() Number {
     out := NewNumber(0)
 
-    if val, ok := out.val.SetString(string(s)); ok {
+    if val, ok := out.Rat().SetString(string(s)); ok {
         return Number{ val: val }
     }
 

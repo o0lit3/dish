@@ -105,7 +105,7 @@ func (t *Token) Grep(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.inf == 0 && y.val.Cmp(NewNumber(0).val) == 0 {
+            if y.inf == 0 && y.Cmp(NewNumber(0)) == 0 {
                 t.DivideByZero()
             }
 
@@ -183,7 +183,7 @@ func (t *Token) SelectString(x String, y String) String {
 }
 
 func (t *Token) EveryNthItem(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) == 0 {
+    if y.Cmp(NewNumber(0)) == 0 {
         return Array{ }
     }
 
@@ -201,7 +201,7 @@ func (t *Token) EveryNthItem(x Array, y Number) Array {
 }
 
 func (t *Token) EveryNthChar(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) == 0 {
+    if y.Cmp(NewNumber(0)) == 0 {
         return String("")
     }
 
@@ -227,11 +227,11 @@ func (t *Token) ModNumber(x Number, y Number) interface{} {
         return x
     }
 
-    div := new(big.Rat).Quo(x.val, y.val)
+    div := new(big.Rat).Quo(x.Rat(), y.Rat())
     flr := new(big.Rat).SetInt(new(big.Int).Quo(div.Num(), div.Denom()))
-    out := Number{ val: new(big.Rat).Sub(x.val, new(big.Rat).Mul(y.val, flr)) }
+    out := Number{ val: new(big.Rat).Sub(x.Rat(), new(big.Rat).Mul(y.Rat(), flr)) }
 
-    if out.val.Cmp(NewNumber(0).val) < 0 && x.val.Cmp(NewNumber(0).val) + y.val.Cmp(NewNumber(0).val) >= 0 {
+    if out.Cmp(NewNumber(0)) < 0 && x.Cmp(NewNumber(0)) + y.Cmp(NewNumber(0)) >= 0 {
         out = t.ModNumber(t.AddNumber(out, y).(Number), y).(Number)
     }
 
@@ -413,7 +413,7 @@ func (t *Token) WithoutString(x String, y *Block) String {
 }
 
 func (t *Token) ExcludingEveryNthItem(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) == 0 {
+    if y.Cmp(NewNumber(0)) == 0 {
         return x
     }
 
@@ -431,7 +431,7 @@ func (t *Token) ExcludingEveryNthItem(x Array, y Number) Array {
 }
 
 func (t *Token) ExcludingEveryNthChar(x String, y Number) String {
-   if y.val.Cmp(NewNumber(0).val) == 0 {
+   if y.Cmp(NewNumber(0)) == 0 {
        return x
    }
 
@@ -503,7 +503,7 @@ func (t *Token) RatioNumber(x Number) Hash {
     }
 
     return Hash{
-        "num": Number{ val: new(big.Rat).SetInt(x.val.Num()) },
-        "denom": Number{ val: new(big.Rat).SetInt(x.val.Denom()) },
+        "num": Number{ val: new(big.Rat).SetInt(x.Rat().Num()) },
+        "denom": Number{ val: new(big.Rat).SetInt(x.Rat().Denom()) },
     }
 }

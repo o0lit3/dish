@@ -55,7 +55,7 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.val.Cmp(NewNumber(0).val) < 0 {
+            if y.Cmp(NewNumber(0)) < 0 {
                 if t.lit == "rtrunc" {
                     return t.RpadArray(x, t.NegateNumber(y))
                 }
@@ -98,7 +98,7 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.val.Cmp(NewNumber(0).val) < 0 {
+            if y.Cmp(NewNumber(0)) < 0 {
                 if t.lit == "rpad" {
                     return t.RtruncString(x, t.NegateNumber(y))
                 }
@@ -139,7 +139,7 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if x.val.Cmp(NewNumber(0).val) < 0 {
+            if x.Cmp(NewNumber(0)) < 0 {
                 if t.lit == "ltrunc" {
                     return t.LpadArray(y, t.NegateNumber(x))
                 }
@@ -153,7 +153,7 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if x.val.Cmp(NewNumber(0).val) < 0 {
+            if x.Cmp(NewNumber(0)) < 0 {
                 if t.lit == "lpad" {
                     return t.LtruncString(y, t.NegateNumber(x))
                 }
@@ -438,7 +438,7 @@ func (t *Token) IncreaseString(x String, y Number) String {
 }
 
 func (t *Token) RpadArray(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.RtruncArray(x, t.NegateNumber(y))
     }
 
@@ -454,7 +454,7 @@ func (t *Token) RpadArray(x Array, y Number) Array {
 }
 
 func (t *Token) LpadArray(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.LtruncArray(x, t.NegateNumber(y))
     }
 
@@ -470,7 +470,7 @@ func (t *Token) LpadArray(x Array, y Number) Array {
 }
 
 func (t *Token) RtruncArray(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.RpadArray(x, t.NegateNumber(y))
     }
 
@@ -486,7 +486,7 @@ func (t *Token) RtruncArray(x Array, y Number) Array {
 }
 
 func (t *Token) LtruncArray(x Array, y Number) Array {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.LpadArray(x, t.NegateNumber(y))
     }
 
@@ -502,7 +502,7 @@ func (t *Token) LtruncArray(x Array, y Number) Array {
 }
 
 func (t *Token) RpadString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.RtruncString(x, t.NegateNumber(y))
     }
 
@@ -518,7 +518,7 @@ func (t *Token) RpadString(x String, y Number) String {
 }
 
 func (t *Token) LpadString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.LtruncString(x, t.NegateNumber(y))
     }
 
@@ -534,7 +534,7 @@ func (t *Token) LpadString(x String, y Number) String {
 }
 
 func (t *Token) RtruncString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.RpadString(x, t.NegateNumber(y))
     }
 
@@ -550,7 +550,7 @@ func (t *Token) RtruncString(x String, y Number) String {
 }
 
 func (t *Token) LtruncString(x String, y Number) String {
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.LpadString(x, t.NegateNumber(y))
     }
 
@@ -584,7 +584,13 @@ func (t *Token) AddNumber(x Number, b interface{}) interface{} {
             return Number{ inf: -INF }
         }
 
-        return Number{ val: new(big.Rat).Add(x.val, y.val) }
+        if x.Fits() && y.Fits() {
+            if sum := x.num + y.num; (sum > x.num) == (y.num > 0) {
+                return Number{ num: sum }
+            }
+        }
+
+        return Number{ val: new(big.Rat).Add(x.Rat(), y.Rat()) }
     case Boolean:
         return t.AddNumber(x, y.Number())
     case Null:

@@ -14,7 +14,7 @@ func (t *Token) Numbers(a interface{}) interface{} {
     case *Variable:
         return t.Numbers(x.Value())
     case Number:
-        val, _ := x.val.Float64()
+        val, _ := x.Rat().Float64()
 
         switch t.lit {
         case "rand":
@@ -25,7 +25,7 @@ func (t *Token) Numbers(a interface{}) interface{} {
                 return Boolean(false)
             }
 
-            return Boolean(new(big.Int).Quo(x.val.Num(), x.val.Denom()).ProbablyPrime(0))
+            return Boolean(new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom()).ProbablyPrime(0))
         case "sqrt":
             return Number{ val: new(big.Rat).SetFloat64(math.Sqrt(val)) }
         case "log":

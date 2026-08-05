@@ -451,8 +451,8 @@ func (t *Token) RepeatArray(x Array, y Number) Array {
         }
     }
 
-    if !y.val.IsInt() {
-        val, _ := y.val.Float64()
+    if !y.Rat().IsInt() {
+        val, _ := y.Rat().Float64()
         rem := int(float64(len(x)) * (val - float64(y.Int())))
 
         for _, val := range x {
@@ -474,8 +474,8 @@ func (t *Token) RepeatString(x String, y Number) String {
         out += string(x)
     }
 
-    if !y.val.IsInt() {
-        val, _ := y.val.Float64()
+    if !y.Rat().IsInt() {
+        val, _ := y.Rat().Float64()
         rem := int(float64(len(x)) * (val - float64(y.Int())))
 
         for _, c := range x {
@@ -528,7 +528,7 @@ func (t *Token) MultiplyNumber(x Number, y Number) interface{} {
     }
 
     if x.inf == INF || x.inf == -INF {
-        switch y.val.Cmp(NewNumber(0).val) {
+        switch y.Cmp(NewNumber(0)) {
         case -1:
             return Number{ inf: -x.inf }
         case 1:
@@ -539,7 +539,7 @@ func (t *Token) MultiplyNumber(x Number, y Number) interface{} {
     }
 
     if y.inf == INF || y.inf == -INF {
-        switch x.val.Cmp(NewNumber(0).val) {
+        switch x.Cmp(NewNumber(0)) {
         case -1:
             return Number{ inf: -y.inf }
         case 1:
@@ -549,7 +549,17 @@ func (t *Token) MultiplyNumber(x Number, y Number) interface{} {
         return Null { }
     }
 
-    return Number{ val: new(big.Rat).Mul(x.val, y.val) }
+    if x.Fits() && y.Fits() {
+        if x.num == 0 || y.num == 0 {
+            return Number{ num: 0 }
+        }
+
+        if prod := x.num * y.num; prod / y.num == x.num {
+            return Number{ num: prod }
+        }
+    }
+
+    return Number{ val: new(big.Rat).Mul(x.Rat(), y.Rat()) }
 }
 
 func (t *Token) CombArray(x Array, y Number) Array {
@@ -669,8 +679,8 @@ func (t *Token) PermsString(x String) Array {
 }
 
 func (t *Token) ChooseNumber(x Number, y Number) Number {
-    a := new(big.Int).Quo(x.val.Num(), x.val.Denom()).Int64()
-    b := new(big.Int).Quo(y.val.Num(), y.val.Denom()).Int64()
+    a := new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom()).Int64()
+    b := new(big.Int).Quo(y.Rat().Num(), y.Rat().Denom()).Int64()
 
     return Number{ val: new(big.Rat).SetInt(new(big.Int).Binomial(a, b)) }
 }
@@ -702,7 +712,7 @@ func (t *Token) MultiplyArray(x Array) interface{} {
 }
 
 func (t *Token) DivisorsNumber(x Number) Array {
-    i := new(big.Int).Quo(x.val.Num(), x.val.Denom())
+    i := new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom())
     j := big.NewInt(1)
 
     if i.Cmp(big.NewInt(0)) < 0 {

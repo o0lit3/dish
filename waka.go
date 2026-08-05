@@ -53,7 +53,7 @@ func (t *Token) Waka(a interface{}, b interface{}) interface{} {
                 return Boolean(true)
             }
 
-            return Boolean(x.val.Cmp(y.val) > 0)
+            return Boolean(x.Cmp(y) > 0)
         case Boolean:
             return t.Waka(x, y.Number())
         case Null:
@@ -120,7 +120,7 @@ func (t *Token) WakaBars(a interface{}, b interface{}) interface{} {
                 return Boolean(true)
             }
 
-            return Boolean(x.val.Cmp(y.val) >= 0)
+            return Boolean(x.Cmp(y) >= 0)
         case Boolean:
             return t.WakaBars(x, y.Number())
         case Null:
@@ -327,7 +327,7 @@ func (t *Token) RshiftNumber(x Number, y Number) Number {
         return x
     }
 
-    if y.val.Cmp(NewNumber(0).val) < 0 {
+    if y.Cmp(NewNumber(0)) < 0 {
         return t.LshiftNumber(x, t.NegateNumber(y))
     }
 
@@ -353,11 +353,11 @@ func (t *Token) UpperString(x String) String {
 }
 
 func (t *Token) CeilNumber(x Number) Number {
-    if x.inf == INF || x.inf == -INF || x.val.IsInt() {
+    if x.inf == INF || x.inf == -INF || x.Rat().IsInt() {
         return x
     }
 
-    if x.val.Cmp(NewNumber(0).val) < 0 {
+    if x.Cmp(NewNumber(0)) < 0 {
         return t.NegateNumber(t.FloorNumber(t.NegateNumber(x)))
     }
 

@@ -55,7 +55,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.val.Cmp(NewNumber(0).val) < 0 {
+            if y.Cmp(NewNumber(0)) < 0 {
                 return t.RpadArray(x, t.NegateNumber(y))
             }
 
@@ -92,7 +92,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if y.val.Cmp(NewNumber(0).val) < 0 {
+            if y.Cmp(NewNumber(0)) < 0 {
                 return t.IncreaseString(x, t.NegateNumber(y))
             }
 
@@ -117,7 +117,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if x.val.Cmp(NewNumber(0).val) < 0 {
+            if x.Cmp(NewNumber(0)) < 0 {
                 return t.LpadArray(y, t.NegateNumber(x))
             }
 
@@ -127,7 +127,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            if x.val.Cmp(NewNumber(0).val) < 0 {
+            if x.Cmp(NewNumber(0)) < 0 {
                 return t.IncreaseString(y, t.NegateNumber(x))
             }
 
@@ -382,7 +382,13 @@ func (t *Token) SubtractNumber(x Number, y Number) interface{} {
         return Number{ inf: -INF }
     }
 
-    return Number{ val: new(big.Rat).Sub(x.val, y.val) }
+    if x.Fits() && y.Fits() {
+        if dif := x.num - y.num; (dif < x.num) == (y.num > 0) {
+            return Number{ num: dif }
+        }
+    }
+
+    return Number{ val: new(big.Rat).Sub(x.Rat(), y.Rat()) }
 }
 
 func (t *Token) NegateNumber(x Number) Number {
@@ -394,5 +400,5 @@ func (t *Token) NegateNumber(x Number) Number {
         return Number{ inf: INF }
     }
 
-    return Number{ val: new(big.Rat).Neg(x.val) }
+    return Number{ val: new(big.Rat).Neg(x.Rat()) }
 }

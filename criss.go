@@ -49,7 +49,7 @@ func Equals(a interface{}, b interface{}) Boolean {
                 return Boolean(false)
             }
 
-            return Boolean(x.val.Cmp(y.val) == 0)
+            return Boolean(x.Cmp(y) == 0)
         }
     case Boolean:
         switch y := b.(type) {
@@ -130,7 +130,7 @@ func Boolify(a interface{}) Boolean {
                 return Boolean(true)
             }
 
-            return Boolean(x.val.Cmp(NewNumber(0).val) != 0)
+            return Boolean(x.Cmp(NewNumber(0)) != 0)
         case Boolean:
             return x
     }

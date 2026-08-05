@@ -93,7 +93,7 @@ func (t *Token) Wham(a interface{}, b interface{}) interface{} {
         case Null:
             return t.Wham(x, NewNumber(0))
         default:
-            if x.val.Cmp(NewNumber(0).val) == 0 {
+            if x.Cmp(NewNumber(0)) == 0 {
                 return y
             }
 
@@ -230,7 +230,7 @@ func (t *Token) AbsNumber(x Number) Number {
         return Number{ inf: INF }
     }
 
-    return Number{ val: new(big.Rat).Abs(x.val) }
+    return Number{ val: new(big.Rat).Abs(x.Rat()) }
 }
 
 func (t *Token) AnyHashItem(x Hash, y *Block) Boolean {
