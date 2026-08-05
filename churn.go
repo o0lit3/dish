@@ -16,7 +16,9 @@ type Parser struct {
 
 type Run struct {
     idx int
+    used int
     stck Array
+    vrbs []*Variable
     hash Hash
     vars Hash
 }

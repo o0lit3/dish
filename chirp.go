@@ -415,6 +415,7 @@ func (b *Block) Run(args ...interface{}) interface{} {
         b.cur = b.free
         b.free = nil
         b.cur.idx = 0
+        b.cur.used = 0
         b.cur.stck = b.cur.stck[:0]
 
         for key := range b.cur.vars {
@@ -842,7 +843,22 @@ func (blk *Block) Chirp() interface{} {
         }
     case VAR:
         blk.cur.vars[t.lit] = blk.FindVar(t.lit)
-        blk.Register(&Variable { blk: blk, nom: t.lit })
+
+        // Variables live only for the duration of this invocation -- Eval resolves
+        // them to values before the block returns -- so they can be handed out from
+        // a per-frame slab that survives frame reuse.
+        var vrb *Variable
+
+        if blk.cur.used < len(blk.cur.vrbs) {
+            vrb = blk.cur.vrbs[blk.cur.used]
+            *vrb = Variable{ blk: blk, nom: t.lit }
+        } else {
+            vrb = &Variable{ blk: blk, nom: t.lit }
+            blk.cur.vrbs = append(blk.cur.vrbs, vrb)
+        }
+
+        blk.cur.used++
+        blk.Register(vrb)
     case NUM:
         if val, ok := new(big.Rat).SetString(t.lit); ok {
             blk.Register(Number{ val: val })
