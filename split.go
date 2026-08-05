@@ -371,7 +371,7 @@ func (t *Token) DivideNumber(x Number, y Number) interface{} {
     }
 
     if y.val.Cmp(NewNumber(0).val) != 0 {
-        return Number{ val: NewNumber(0).val.Quo(x.val, y.val) }
+        return Number{ val: new(big.Rat).Quo(x.val, y.val) }
     } else {
         switch x.val.Cmp(NewNumber(0).val) {
         case -1:

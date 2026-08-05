@@ -29,6 +29,7 @@ type Block struct {
     def []interface{}
     obj interface{}
     top interface{}
+    free *Run
     toks []*Token
     runs []*Run
     cur *Run

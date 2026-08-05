@@ -1,5 +1,5 @@
 package main
-import("strings"; "unicode")
+import("strings"; "unicode"; "math/big")
 
 func (t *Token) Dash(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -382,7 +382,7 @@ func (t *Token) SubtractNumber(x Number, y Number) interface{} {
         return Number{ inf: -INF }
     }
 
-    return Number{ val: NewNumber(0).val.Sub(x.val, y.val) }
+    return Number{ val: new(big.Rat).Sub(x.val, y.val) }
 }
 
 func (t *Token) NegateNumber(x Number) Number {
@@ -394,5 +394,5 @@ func (t *Token) NegateNumber(x Number) Number {
         return Number{ inf: INF }
     }
 
-    return Number{ val: NewNumber(0).val.Neg(x.val) }
+    return Number{ val: new(big.Rat).Neg(x.val) }
 }

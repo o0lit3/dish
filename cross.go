@@ -1,5 +1,5 @@
 package main
-import("unicode")
+import("unicode"; "math/big")
 
 func (t *Token) Cross(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -584,7 +584,7 @@ func (t *Token) AddNumber(x Number, b interface{}) interface{} {
             return Number{ inf: -INF }
         }
 
-        return Number{ val: NewNumber(0).val.Add(x.val, y.val) }
+        return Number{ val: new(big.Rat).Add(x.val, y.val) }
     case Boolean:
         return t.AddNumber(x, y.Number())
     case Null:

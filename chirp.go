@@ -368,7 +368,27 @@ func dollar(i int) string {
 }
 
 func (b *Block) Run(args ...interface{}) interface{} {
-    b.cur = &Run{ idx: 0, stck: Array{ }, hash: Hash{ }, vars: Hash{ } }
+    // Frames pop in strict LIFO order, so the last one can be recycled rather
+    // than reallocating a struct plus two maps on every invocation. Safe because
+    // Eval copies Hash returns, so a MAP block's returned hash never aliases the
+    // frame it was built in.
+    if b.free != nil {
+        b.cur = b.free
+        b.free = nil
+        b.cur.idx = 0
+        b.cur.stck = b.cur.stck[:0]
+
+        for key := range b.cur.vars {
+            delete(b.cur.vars, key)
+        }
+
+        for key := range b.cur.hash {
+            delete(b.cur.hash, key)
+        }
+    } else {
+        b.cur = &Run{ idx: 0, stck: Array{ }, hash: Hash{ }, vars: Hash{ } }
+    }
+
     b.runs = append(b.runs, b.cur)
 
     if len(args) > 0 {
@@ -764,6 +784,7 @@ func (blk *Block) Chirp() interface{} {
                 out = Null{ }
             }
 
+            blk.free = blk.cur
             blk.runs = blk.runs[:len(blk.runs) - 1]
 
             if len(blk.runs) > 0 {

@@ -549,7 +549,7 @@ func (t *Token) MultiplyNumber(x Number, y Number) interface{} {
         return Null { }
     }
 
-    return Number{ val: NewNumber(0).val.Mul(x.val, y.val) }
+    return Number{ val: new(big.Rat).Mul(x.val, y.val) }
 }
 
 func (t *Token) CombArray(x Array, y Number) Array {
