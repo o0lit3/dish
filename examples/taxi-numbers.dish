@@ -4,7 +4,7 @@ taxis = (1..75).map:a(
   (a..75).map:b(
     [a, b]
   )
-).reduce:x:y(x + y).group:x(x.0^3 + x.1^3).grep:v:k(
+).concat.group:x(x.0^3 + x.1^3).grep:v:k(
   #v > 1
 )
 

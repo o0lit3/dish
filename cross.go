@@ -296,11 +296,15 @@ func (t *Token) AccumulateHash(x Hash, y *Block) Array {
 }
 
 func (t *Token) AccumulateArray(x Array, y *Block) Array {
-    var red interface{} = Null{ }
-    var out Array = Array{ }
+    if len(x) == 0 {
+        return Array{ }
+    }
 
-    for i, val := range x {
-        red = y.Context(x).Topic(val).Run(red, val, NewNumber(i))
+    var red interface{} = x[0]
+    var out Array = Array{ red }
+
+    for i, val := range x[1:] {
+        red = y.Context(x).Topic(val).Run(red, val, NewNumber(i + 1))
         out = append(out, red)
     }
 
@@ -308,11 +312,15 @@ func (t *Token) AccumulateArray(x Array, y *Block) Array {
 }
 
 func (t *Token) AccumulateString(x String, y *Block) Array {
-    var red interface{} = Null{ }
-    var out Array = Array{ }
+    if len(x) == 0 {
+        return Array{ }
+    }
 
-    for i, c := range x {
-        red = y.Context(x).Topic(String(string(c))).Run(red, String(string(c)), NewNumber(i))
+    var red interface{} = String(string(x[0]))
+    var out Array = Array{ red }
+
+    for i, c := range x[1:] {
+        red = y.Context(x).Topic(String(string(c))).Run(red, String(string(c)), NewNumber(i + 1))
         out = append(out, red)
     }
 

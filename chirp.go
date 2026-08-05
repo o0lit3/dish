@@ -607,7 +607,7 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.Grep(a, b))
         case "%%", "imod", "xevery", "without":
             blk.Register(t.DoubleGrep(a, b))
-        case "+", "add", "concat", "increase", "lpad", "rpad", "ltrunc", "rtrunc", "accumulate":
+        case "+", "add", "concat", "increase", "lpad", "rpad", "ltrunc", "rtrunc", "accum", "accumulate":
             blk.Register(t.Cross(a, b))
         case "-", "subtract", "sub", "remove", "delete", "del", "decrease", "reduce":
             blk.Register(t.Dash(a, b))

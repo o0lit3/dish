@@ -226,15 +226,6 @@ func (t *Token) WakaWaka(a interface{}, b interface{}) interface{} {
     case Boolean:
         return t.WakaWaka(x.Number(), b)
     case Null:
-        switch y := b.(type) {
-        case *Block:
-            return t.WakaWaka(x, y.Run())
-        case *Variable:
-            return t.WakaWaka(x, y.Value())
-        case Hash:
-            return t.WakaWaka(Hash{ }, y)
-        }
-
         return t.WakaWaka(Array{ }, b)
     }
 

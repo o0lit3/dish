@@ -232,20 +232,28 @@ func (t *Token) ReduceHash(x Hash, y *Block) interface{} {
 }
 
 func (t *Token) ReduceArray(x Array, y *Block) interface{} {
-    var out interface{} = Null{ }
+    if len(x) == 0 {
+        return Null{ }
+    }
 
-    for i, val := range x {
-        out = y.Context(x).Topic(val).Run(out, val, NewNumber(i))
+    var out interface{} = x[0]
+
+    for i, val := range x[1:] {
+        out = y.Context(x).Topic(val).Run(out, val, NewNumber(i + 1))
     }
 
     return out
 }
 
 func (t *Token) ReduceString(x String, y *Block) interface{} {
-    var out interface{} = Null{ }
+    if len(x) == 0 {
+        return Null{ }
+    }
 
-    for i, c := range x {
-        out = y.Context(x).Topic(String(string(c))).Run(out, String(string(c)), NewNumber(i))
+    var out interface{} = String(string(x[0]))
+
+    for i, c := range x[1:] {
+        out = y.Context(x).Topic(String(string(c))).Run(out, String(string(c)), NewNumber(i + 1))
     }
 
     return out

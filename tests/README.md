@@ -188,20 +188,20 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | `-`Number `+` Array  | `b.ltrunc(a)`       | `-2 + [1, 2, 3]`               | `[3]`                      |
 |          | String `+` Number    | `a.increase(b)`     | `'binary' + 2`                 | `"binasa"`                 |
 |          | String `+` String    | `a.concat(b)`       | `'bin' + 'ary'`                | `"binary"`                 |
-|          | String `+` :(Block)  | `a.accumulate:(..)` | `'bin' + :x:y(x + y.ord)`      | `[98, 203, 313]`           |
+|          | String `+` :(Block)  | `a.accum:(...)`     | `'bin' + :x:y(x + '-' + y)`    | `["b", "b-i", "b-i-n"]`    |
 |          | Array `+` Number     | `a.rpad(b)`         | `[1, 2, 3] + 2`                | `[1, 2, 3, null, null]`    |
 |          | Array `+` `-`Number  | `a.rtrunc(b)`       | `[1, 2, 3] + -2`               | `[1]`                      |
 |          | Array `+` Array      | `a.concat(b)`       | `[1, 2] + [2]`                 | `[1, 2, 2]`                |
-|          | Array `+` :(Block)   | `a.accumulate:(..)` | `[2, 3] + :x:y((x ?? 1) * y)`  | `[2, 6]`                   |
+|          | Array `+` :(Block)   | `a.accum:(...)`     | `[2, 3] + :x:y(x * y)`         | `[2, 6]`                   |
 |          | Hash `+` Hash        | `a.concat(b)`       | `{x: 1} + {y: 2}`              | `{"x": 1, "y": 2}`         |
-|          | Hash `+` :(Block)    | `a.accumulate:(..)` | `{x: 2, y: 3} + :x:y(x + y)`   | `[2, 5]`                   |
+|          | Hash `+` :(Block)    | `a.accum:(...)`     | `{x: 2, y: 3} + :x:y(x + y)`   | `[2, 5]`                   |
 |          |                      |                     |                                |                            |
 | `-`      | Number `-` Number    | `a.subtract(b)`     | `10 - 20`                      | `-10`                      |
 |          | String `-` Number    | `a.decrease(b)`     | `'binary' - 2`                 | `"binarw"`                 |
 |          | String `-` String    | `a.remove(b)`       | `'binary' - 'ary'`             | `"bin"`                    |
-|          | String `-` :(Block)  | `a.reduce:(...)`    | `'bin' - :x:y(x + y.ord)`      | `313`                      |
+|          | String `-` :(Block)  | `a.reduce:(...)`    | `'bin' - :x:y(x + '-' + y)`    | `"b-i-n"`                  |
 |          | Array `-` Array      | `a.remove(b)`       | `[1, 2, 2, 3, 4] - [2, 3]`     | `[1, 2, 4]`                |
-|          | Array `-` :(Block)   | `a.reduce:v(b)`     | `[2, 3] - :x:y((x ?? 1) * y)`  | `6`                        |
+|          | Array `-` :(Block)   | `a.reduce:v(b)`     | `[2, 3] - :x:y(x * y)`         | `6`                        |
 |          | Hash `-` Hash        | `a.remove(b)`       | `{x: 1, y: 2} - {x}`           | `{"y": 2}`                 |
 |          | Hash `-` :(Block)    | `a.reduce:(b)`      | `{x: 2, y: 3} - :x:y(x + y)`   | `5`                        |
 |          |                      |                     |                                |                            |
@@ -263,7 +263,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          |                      |                     |                                |                            |
 | `^`      | Number `^` Number    | `a.pow(b)`          | `2 ^ 3`                        | `8`                        |
 |          | String `^` Number    | `a.rotate(b)`       | `'binary' ^ 2`                 | `"rybina"`                 |
-|          | String `^` String    | `a.zip(b)`          | `'ds' ^ 'ih'`                   | `"dish"`                  |
+|          | String `^` String    | `a.zip(b)`          | `'ds' ^ 'ih'`                  | `"dish"`                   |
 |          | String `^` :(Block)  | `a.sort:(...)`      | `'binary' ^ :x:y(y < x)`       | `"yrniba"`                 |
 |          | Array `^` Number     | `a.rotate(b)`       | `[7, 9, 4] ^ 1`                | `[4, 7, 9]`                |
 |          | Array `^` Array      | `a.zip(b)`          | `[1, 2, 3] ^ [4, 5]`           | `[[1, 4], [2, 5], [3]]`    |
@@ -288,11 +288,11 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | String `@` Array     | `a.search(b)`       | `'binary' @ ['b', 'a']`        | `[0, 3]`                   |
 |          | String `@` :(Block)  | `a.search:(...)`    | `'binary' @ :c(c.vowel)`       | `[1, 3]`                   |
 |          | Array `@` Any        | `a.find(b)`         | `[1, 3, 2, 3] @ 3`             | `[1, 3]`                   |
-|          |                      | `a.contains(b)`     | `[1, 3, 2, 3] @ 3`             | `true`                     |
+|          |                      | `a.contains(b)`     | `?([1, 3, 2, 3] @ 3`)          | `true`                     |
 |          | Array `@` Array      | `a.search(b)`       | `[1, 3, 2, 3] @ [1, 3]`        | `[0, 1, 3]`                |
 |          | Array `@` :(Block)   | `a.search:(...)`    | `[1, 2, 3] @ :n(n % 2)`        | `[0, 2]`                   |
 |          | Hash `@` Any         | `a.find(b)`         | `{a: 1, b: 2, c: 2} @ 2`       | `["b", "c"]`               |
-|          |                      | `a.contains(b)`     | `{a: 1, b: 2, c: 2} @ 2`       | `true`                     |
+|          |                      | `a.contains(b)`     | `?({a: 1, b: 2, c: 2} @ 2`)    | `true`                     |
 |          | Hash `@` :(Block)    | `a.search:(...)`    | `{f: 1, b: 2} @ :n(n % 2)`     | `["f"]`                    |
 |          |                      |                     |                                |                            |
 | `#`      | Null `#` String      | `a.fmt(b)`          | `a # 'a: %s'`                  | `"a: null"`                |
@@ -334,6 +334,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `+`String               | `a.num`       | `+"5"`                   | `5`                            |
 |          | `+`Array                | `a.sum`       | `+[1, 2, 3]`             | `6`                            |
 |          |                         | `a.concat`    | `+[[1, 2], [3]]`         | `[1, 2, 3]`                    |
+|          |                         | `a.concat`    | `+[{x: 1}, {y: 2}]`      | `{"x": 1, "y": 2}`             |
 |          | `+`Hash                 | `a.sum`       | `+{x: 2, y: 3}`          | `5`                            |
 |          |                         |               |                          |                                |
 | `++`     | [See Assignment Ops](#assignment-operators)                    | | |                                |
