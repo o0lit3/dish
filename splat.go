@@ -345,7 +345,7 @@ func (t *Token) MapHash(x Hash, y *Block) Hash {
     out := Hash { }
 
     for key, val := range x {
-        out[key] = y.Context(x).Run(val, String(key))
+        out[key] = y.Context(x).Topic(val).Run(val, String(key))
     }
 
     return out
@@ -355,7 +355,7 @@ func (t *Token) MapArray(x Array, y *Block) Array {
     out := Array { }
 
     for i, val := range x {
-        out = append(out, y.Context(x).Run(val, NewNumber(i)))
+        out = append(out, y.Context(x).Topic(val).Run(val, NewNumber(i)))
     }
 
     return out

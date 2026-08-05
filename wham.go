@@ -57,7 +57,7 @@ func (t *Token) Wham(a interface{}, b interface{}) interface{} {
                 }
 
                 for i, val := range(x) {
-                    if Boolify(y.Run(String(string(val)), NewNumber(i))) {
+                    if Boolify(y.Topic(String(string(val))).Run(String(string(val)), NewNumber(i))) {
                         return Boolean(true)
                     }
                 }
@@ -234,7 +234,7 @@ func (t *Token) AbsNumber(x Number) Number {
 
 func (t *Token) AnyHashItem(x Hash, y *Block) Boolean {
     for key, val := range(x) {
-        if Boolify(y.Run(val, String(key))) {
+        if Boolify(y.Topic(val).Run(val, String(key))) {
             return Boolean(true)
         }
     }
@@ -244,7 +244,7 @@ func (t *Token) AnyHashItem(x Hash, y *Block) Boolean {
 
 func (t *Token) AnyArrayItem(x Array, y *Block) Boolean {
     for i, val := range(x) {
-        if Boolify(y.Run(val, NewNumber(i))) {
+        if Boolify(y.Topic(val).Run(val, NewNumber(i))) {
             return Boolean(true)
         }
     }

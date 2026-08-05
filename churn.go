@@ -28,6 +28,7 @@ type Block struct {
     args []string
     def []interface{}
     obj interface{}
+    top interface{}
     toks []*Token
     runs []*Run
     cur *Run
@@ -35,8 +36,8 @@ type Block struct {
 
 func NewBlock() *Block {
     stdin := stdin()
-    args := []string{ "true", "false", "null", "inf", "stdin", "$_", "argv", "$0" }
-    def := []interface{}{ Boolean(true), Boolean(false), Null{ }, Number{ inf: INF }, stdin, stdin, argv, argv }
+    args := []string{ "true", "false", "null", "inf", "stdin", "$$", "$_", "argv", "$0" }
+    def := []interface{}{ Boolean(true), Boolean(false), Null{ }, Number{ inf: INF }, stdin, stdin, stdin, argv, argv }
 
     for i, arg := range argv {
         args = append(args, "$" + strconv.Itoa(i + 1))
@@ -355,8 +356,10 @@ func (b *Block) Interpolate(s string) String {
     }
 
     toks := []string{ }
+    cods := []bool{ }
     ipol := false
     ivar := false
+    cod := false
     out := ""
     tok := ""
     dep := 0
@@ -368,8 +371,17 @@ func (b *Block) Interpolate(s string) String {
         switch {
         case r == 0:
             toks = append(toks, tok)
+            cods = append(cods, cod)
             break Interpolate
         case r == '\\':
+            if ivar {
+                toks = append(toks, tok)
+                cods = append(cods, cod)
+                ivar = false
+                cod = false
+                tok = ""
+            }
+
             if n := lexer.Chomp(); n != 0 {
                 tok += string(n)
             }
@@ -380,26 +392,64 @@ func (b *Block) Interpolate(s string) String {
             case ipol:
                 tok += string(r) + string(n)
             case n == 0:
+                if ivar {
+                    toks = append(toks, tok)
+                    cods = append(cods, cod)
+                    ivar = false
+                    cod = false
+                    tok = ""
+                }
+
                 tok += string(r)
+                toks = append(toks, tok)
+                cods = append(cods, cod)
                 break Interpolate
             case n == '(', n == '[', n == '{':
                 toks = append(toks, tok)
+                cods = append(cods, cod)
                 ipol = true
+                cod = true
                 tok = string(r) + string(n)
-            case unicode.IsLetter(n), unicode.IsDigit(n), r == '_':
+            case unicode.IsLetter(n), unicode.IsDigit(n), n == '_':
                 toks = append(toks, tok)
+                cods = append(cods, cod)
                 ivar = true
+                cod = true
                 tok = string(r) + string(n)
             default:
+                if ivar {
+                    toks = append(toks, tok)
+                    cods = append(cods, cod)
+                    ivar = false
+                    cod = false
+                    tok = ""
+                }
+
                 tok += string(r) + string(n)
             }
         case r == '(', r == '[', r == '{':
+            if ivar {
+                toks = append(toks, tok)
+                cods = append(cods, cod)
+                ivar = false
+                cod = false
+                tok = ""
+            }
+
             if ipol {
                 dep = dep + 1
             }
 
             tok += string(r)
         case r == ')', r == ']', r == '}':
+            if ivar {
+                toks = append(toks, tok)
+                cods = append(cods, cod)
+                ivar = false
+                cod = false
+                tok = ""
+            }
+
             tok += string(r)
 
             switch {
@@ -407,13 +457,17 @@ func (b *Block) Interpolate(s string) String {
                 dep = dep - 1
             case ipol:
                 toks = append(toks, tok)
+                cods = append(cods, cod)
                 ipol = false
+                cod = false
                 tok = ""
             }
         case !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_':
             if ivar {
                 toks = append(toks, tok)
+                cods = append(cods, cod)
                 ivar = false
+                cod = false
                 tok = string(r)
             } else {
                 tok += string(r)
@@ -423,8 +477,8 @@ func (b *Block) Interpolate(s string) String {
         }
     }
 
-    for _, val := range toks {
-        if len(val) > 1 && val[0] == '$' {
+    for i, val := range toks {
+        if cods[i] {
             if unicode.IsLetter(rune(val[1])) {
                 val = val[1:]
             }
@@ -475,6 +529,11 @@ func (b *Block) Branch(d Dimension) *Block {
 
 func (b *Block) Context(x interface{}) *Block {
     b.obj = x
+    return b;
+}
+
+func (b *Block) Topic(x interface{}) *Block {
+    b.top = x
     return b;
 }
 

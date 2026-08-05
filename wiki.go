@@ -226,6 +226,15 @@ func (t *Token) WikiWiki(a interface{}, b interface{}) interface{} {
     case Boolean:
         return t.WikiWiki(x.Number(), b)
     case Null:
+        switch y := b.(type) {
+        case *Block:
+            return t.WikiWiki(x, y.Run())
+        case *Variable:
+            return t.WikiWiki(x, y.Value())
+        case Hash:
+            return t.WikiWiki(Hash{ }, y)
+        }
+
         return t.WikiWiki(Array{ }, b)
     }
 

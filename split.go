@@ -332,7 +332,7 @@ func (t *Token) DivideArray(x Array, y *Block) Array {
     out := Array{ Array{ } }
 
     for i, val := range x {
-        if bool(Boolify(y.Context(x).Run(val, NewNumber(i))) && i < len(x) - 1) {
+        if bool(Boolify(y.Context(x).Topic(val).Run(val, NewNumber(i))) && i < len(x) - 1) {
             out = append(out, Array{ })
         } else {
             out[len(out) - 1] = append(out[len(out) - 1].(Array), val)
@@ -388,7 +388,7 @@ func (t *Token) GroupArray(x Array, y *Block) Hash {
     out := Hash{ }
 
     for i, val := range x {
-        key := string(Stringify(y.Run(val, NewNumber(i))))
+        key := string(Stringify(y.Topic(val).Run(val, NewNumber(i))))
 
         if _, ok := out[key]; !ok {
             out[key] = Array{ }
@@ -404,7 +404,7 @@ func (t *Token) GroupString(x String, y *Block) Hash {
     out := Hash{ }
 
     for i, c := range x {
-        key := string(Stringify(y.Run(String(string(c)), NewNumber(i))))
+        key := string(Stringify(y.Topic(String(string(c))).Run(String(string(c)), NewNumber(i))))
 
         if _, ok := out[key]; !ok {
             out[key] = String("")

@@ -225,7 +225,7 @@ func (t *Token) ReduceHash(x Hash, y *Block) interface{} {
     var out interface{} = Null{ }
 
     for key, val := range x {
-        out = y.Context(x).Run(out, val, String(key))
+        out = y.Context(x).Topic(val).Run(out, val, String(key))
     }
 
     return out
@@ -235,7 +235,7 @@ func (t *Token) ReduceArray(x Array, y *Block) interface{} {
     var out interface{} = Null{ }
 
     for i, val := range x {
-        out = y.Context(x).Run(out, val, NewNumber(i))
+        out = y.Context(x).Topic(val).Run(out, val, NewNumber(i))
     }
 
     return out
@@ -245,7 +245,7 @@ func (t *Token) ReduceString(x String, y *Block) interface{} {
     var out interface{} = Null{ }
 
     for i, c := range x {
-        out = y.Context(x).Run(out, String(string(c)), NewNumber(i))
+        out = y.Context(x).Topic(String(string(c))).Run(out, String(string(c)), NewNumber(i))
     }
 
     return out

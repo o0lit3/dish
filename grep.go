@@ -128,7 +128,7 @@ func (t *Token) FilterHash(x Hash, y *Block) Hash {
     out := Hash{ }
 
     for key, val := range x {
-        if !Boolify(y.Context(x).Run(val, String(key))) {
+        if !Boolify(y.Context(x).Topic(val).Run(val, String(key))) {
             continue
         }
 
@@ -142,7 +142,7 @@ func (t *Token) FilterArray(x Array, y *Block) Array {
     out := Array{ }
 
     for i, val := range x {
-        if !Boolify(y.Context(x).Run(val, NewNumber(i))) {
+        if !Boolify(y.Context(x).Topic(val).Run(val, NewNumber(i))) {
             continue
         }
 
@@ -384,7 +384,7 @@ func (t *Token) WithoutHash(x Hash, y *Block) Hash {
     out := Hash{ }
 
     for key, val := range x {
-        if Boolify(y.Context(x).Run(val, String(key))) {
+        if Boolify(y.Context(x).Topic(val).Run(val, String(key))) {
             continue
         }
 
@@ -398,7 +398,7 @@ func (t *Token) WithoutArray(x Array, y *Block) Array {
     out := Array{ }
 
     for i, val := range x {
-        if Boolify(y.Context(x).Run(val, NewNumber(i))) {
+        if Boolify(y.Context(x).Topic(val).Run(val, NewNumber(i))) {
             continue
         }
 

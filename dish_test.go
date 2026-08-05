@@ -76,3 +76,7 @@ func TestBars(t *testing.T) {
 func TestThump(t *testing.T) {
     test(t, "tests/thump.dish")
 }
+
+func TestChurn(t *testing.T) {
+    test(t, "tests/churn.dish")
+}

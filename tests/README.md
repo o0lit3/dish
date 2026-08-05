@@ -123,7 +123,7 @@ The member assignment operator `@=` is a special assignment operator that allows
 |          |                               |                  |                           |                       |
 | `>>`     | Null `>>` Any                 | `a.unshift(b)`   | `a >> 'dish'`             | `["dish"]`            |
 |          | String `>>` Any               | `a.prepend(b)`   | `'ary' >> 'bin'`          | `"binary"`            |
-|          | Array `>>` Any                | `a.unshift(b)`   | `[1, 2] >> 3`             | `[3, 2, 1]`           |
+|          | Array `>>` Any                | `a.unshift(b)`   | `[1, 2] >> 3`             | `[3, 1, 2]`           |
 |          | Hash `>>` Any                 | `a.extend(b)`    | `{x: 1} >> {y: 2}`        | `{"x": 1, "y": 2}`    |
 |          | [Also See Bitwise Ops](#bitwise-operators)       |                           |                       |
 |          |                               |                  |                           |                       |

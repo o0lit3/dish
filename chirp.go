@@ -357,21 +357,36 @@ func (b *Block) Deregister(op *Token) interface{} {
     return val
 }
 
+var dollars = []string{ "$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9" }
+
+func dollar(i int) string {
+    if i < len(dollars) {
+        return dollars[i]
+    }
+
+    return "$" + strconv.Itoa(i)
+}
+
 func (b *Block) Run(args ...interface{}) interface{} {
     b.cur = &Run{ idx: 0, stck: Array{ }, hash: Hash{ }, vars: Hash{ } }
     b.runs = append(b.runs, b.cur)
 
     if len(args) > 0 {
         if b.obj != nil {
-            b.cur.vars["$_"] = b.obj
-            b.cur.hash["$_"] = b.obj
+            b.cur.vars["$$"] = b.obj
+            b.cur.hash["$$"] = b.obj
+        }
+
+        if b.top != nil {
+            b.cur.vars["$_"] = b.top
+            b.cur.hash["$_"] = b.top
         }
 
         a := Array{ }
 
         for i, val := range args {
-            b.cur.vars["$" + strconv.Itoa(i + 1)] = val
-            b.cur.hash["$" + strconv.Itoa(i + 1)] = val
+            b.cur.vars[dollar(i + 1)] = val
+            b.cur.hash[dollar(i + 1)] = val
 
             if i < len(b.args) {
                 b.cur.vars[b.args[i]] = val

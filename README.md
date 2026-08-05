@@ -52,11 +52,11 @@ Scalar blocks `(...)` return the last expression or statement in the block. A fu
 
 Logic blocks are represented by a colonized list of arguments followed by any other Block type, as in `:x[...]` or `:x:y(...)`, returning a data type corresponding to the encapsulatng Block type. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
 
-In cases where naming arguments is overkill, **dish** also supports default variables in regards to Logic Blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block, `$0` is the entire argument Array, and `$_` is the object on which the Logic block is invoked.
+In cases where naming arguments is overkill, **dish** also supports default variables in regards to Logic Blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block, `$0` is the entire argument Array, and `$$` is the object on which the Logic block is invoked.
 
-For example, `dish -e 'a=[1, 2, 3]; a.map:n:i(n+a.(i+1))'` can be rewritten as `dish -e '[1, 2, 3].map:($1+$_.++$2)'`, outputting `[3, 5, 3]`, which is the sum of each item (`n` or `$1`) plus the next item (`a.(i+1)` or `$_.++$2`), where the last array item gets summed with the nonexistent 4th item (null).
+For example, `dish -e 'a=[1, 2, 3]; a.map:n:i(n+a.(i+1))'` can be rewritten as `dish -e '[1, 2, 3].map:($1+$$.++$2)'`, outputting `[3, 5, 3]`, which is the sum of each item (`n` or `$1`) plus the next item (`a.(i+1)` or `$$.++$2`), where the last array item gets summed with the nonexistent 4th item (null).
 
-Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$_` is an alias for STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments of `argv`.
+Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$$` (and its alias `$_`) refers to STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments of `argv`.
 
 Comments in **dish** start with a double pound `##` and end with a newline. There are no multi- or in-line comments in **dish**.
 

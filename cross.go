@@ -11,7 +11,7 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "+" && t.lit != "+=" && t.lit != "accumulate" {
+                if t.lit != "+" && t.lit != "+=" && t.lit != "accum" && t.lit != "accumulate" {
                     t.TypeMismatch(x, y)
                 }
 
@@ -34,7 +34,7 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "+" && t.lit != "+=" && t.lit != "accumulate" {
+                if t.lit != "+" && t.lit != "+=" && t.lit != "accum" && t.lit != "accumulate" {
                     t.TypeMismatch(x, y)
                 }
 
@@ -77,7 +77,7 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
         switch y := b.(type) {
         case *Block:
             if len(y.args) > 0 {
-                if t.lit != "+" && t.lit != "+=" && t.lit != "accumulate" {
+                if t.lit != "+" && t.lit != "+=" && t.lit != "accum" && t.lit != "accumulate" {
                     t.TypeMismatch(x, y)
                 }
 
@@ -271,7 +271,7 @@ func (t *Token) AccumulateHash(x Hash, y *Block) Array {
     var out Array = Array{ }
 
     for key, val := range x {
-        red = y.Context(x).Run(red, val, String(key))
+        red = y.Context(x).Topic(val).Run(red, val, String(key))
         out = append(out, red)
     }
 
@@ -283,7 +283,7 @@ func (t *Token) AccumulateArray(x Array, y *Block) Array {
     var out Array = Array{ }
 
     for i, val := range x {
-        red = y.Context(x).Run(red, val, NewNumber(i))
+        red = y.Context(x).Topic(val).Run(red, val, NewNumber(i))
         out = append(out, red)
     }
 
@@ -295,7 +295,7 @@ func (t *Token) AccumulateString(x String, y *Block) Array {
     var out Array = Array{ }
 
     for i, c := range x {
-        red = y.Context(x).Run(red, String(string(c)), NewNumber(i))
+        red = y.Context(x).Topic(String(string(c))).Run(red, String(string(c)), NewNumber(i))
         out = append(out, red)
     }
 

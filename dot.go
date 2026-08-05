@@ -68,13 +68,17 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                return y.Run(x)
+                if y.args[0] == "" {
+                    return y.Context(x).Run(x.Array()...)
+                }
+
+                return y.Context(x).Run(x)
             default:
                 if t.lit == "at" || t.lit == "item" || t.lit == "items" || t.lit == "subset" {
                     t.TypeMismatch(x, y)
                 }
 
-                return y.Run(x.Array()...)
+                return y.Context(x).Run(x.Array()...)
             }
         case *Variable:
             return t.Dot(x, y.Value())
@@ -118,13 +122,17 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                return y.Run(x)
+                if y.args[0] == "" {
+                    return y.Context(x).Run(x...)
+                }
+
+                return y.Context(x).Run(x)
             default:
                 if t.lit == "at" || t.lit == "item" || t.lit == "items" || t.lit == "subset" {
                     t.TypeMismatch(x, y)
                 }
 
-                return y.Run(x...)
+                return y.Context(x).Run(x...)
             }
         case *Variable:
             return t.Dot(x, y.Value())

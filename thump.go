@@ -209,7 +209,7 @@ func (t *Token) FindInHash(x Hash, y *Block) Array {
     out := Array { }
 
     for key := range x {
-        if Boolify(y.Run(x[key], String(key))) {
+        if Boolify(y.Topic(x[key]).Run(x[key], String(key))) {
             out = append(out, String(key))
         }
     }
@@ -221,7 +221,7 @@ func (t *Token) FindInArray(x Array, y *Block) Array {
     out := Array { }
 
     for i := range x {
-        if Boolify(y.Run(x[i], NewNumber(i))) {
+        if Boolify(y.Topic(x[i]).Run(x[i], NewNumber(i))) {
             out = append(out, NewNumber(i))
         }
     }
@@ -233,7 +233,7 @@ func (t *Token) FindInString(x String, y *Block) Array {
     out := Array { }
 
     for i := range x {
-        if Boolify(y.Run(String(string(x[i])), NewNumber(i))) {
+        if Boolify(y.Topic(String(string(x[i]))).Run(String(string(x[i])), NewNumber(i))) {
             out = append(out, NewNumber(i))
         }
     }

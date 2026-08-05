@@ -591,7 +591,7 @@ func (l *Lexer) LexVar() string {
         switch {
         case r == 0:
             return lit
-        case r == '$' && len(lit) == 0:
+        case r == '$' && len(lit) == 0, r == '$' && lit == "$":
             lit = lit + string(r)
         case r == '_', unicode.IsLetter(r), unicode.IsDigit(r):
             lit = lit + string(r)

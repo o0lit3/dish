@@ -57,7 +57,7 @@ func (t *Token) Twiddle(a interface{}, b interface{}) interface{} {
                 }
 
                 for i, val := range(x) {
-                    if Boolify(y.Run(String(string(val)), NewNumber(i))) {
+                    if Boolify(y.Topic(String(string(val))).Run(String(string(val)), NewNumber(i))) {
                         return Boolean(false)
                     }
                 }
@@ -227,7 +227,7 @@ func (t *Token) BnotNumber(x Number) Number {
 
 func (t *Token) NoHashItems(x Hash, y *Block) Boolean {
     for key, val := range(x) {
-        if Boolify(y.Run(val, String(key))) {
+        if Boolify(y.Topic(val).Run(val, String(key))) {
             return Boolean(false)
         }
     }
@@ -237,7 +237,7 @@ func (t *Token) NoHashItems(x Hash, y *Block) Boolean {
 
 func (t *Token) NoArrayItems(x Array, y *Block) Boolean {
     for i, val := range(x) {
-        if Boolify(y.Run(val, NewNumber(i))) {
+        if Boolify(y.Topic(val).Run(val, NewNumber(i))) {
             return Boolean(false)
         }
     }
