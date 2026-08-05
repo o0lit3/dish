@@ -333,6 +333,7 @@ All characters that are outside the above mentioned character ranges are ignored
 | `+`      | `+`Number               | `a.num`       | `+5`                     | `5`                            |
 |          | `+`String               | `a.num`       | `+"5"`                   | `5`                            |
 |          | `+`Array                | `a.sum`       | `+[1, 2, 3]`             | `6`                            |
+|          |                         | `a.concat`    | `+[[1, 2], [3]]`         | `[1, 2, 3]`                    |
 |          | `+`Hash                 | `a.sum`       | `+{x: 2, y: 3}`          | `5`                            |
 |          |                         |               |                          |                                |
 | `++`     | [See Assignment Ops](#assignment-operators)                    | | |                                |

@@ -5,9 +5,9 @@ cholesky = :a(
 
   (0..#a - 1).each:row(
     (0..row).each:col(
-      x: (0..col).reduce:x:k(
-        (x ?= a.row.col) - out.row.k * out.col.k
-      )
+      x: a.row.col - (0..col).map:k(
+        out.row.k * out.col.k
+      ).sum
 
       out.row.col = (row == col).switch[
         x.sqrt

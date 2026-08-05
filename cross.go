@@ -199,6 +199,16 @@ func (t *Token) Cross(a interface{}, b interface{}) interface{} {
     return t.TypeMismatch(a, b)
 }
 
+func (t *Token) ConcatItems(x Array) interface{} {
+    var out interface{} = Null{ }
+
+    for _, val := range x {
+        out = t.Cross(out, val)
+    }
+
+    return out
+}
+
 func (t *Token) TopCross(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
@@ -214,6 +224,13 @@ func (t *Token) TopCross(a interface{}) interface{} {
     case Array:
         if t.lit != "+" && t.lit != "sum" && t.lit != "concat" {
             t.TypeMismatch(x, nil)
+        }
+
+        if len(x) > 0 && t.lit != "sum" {
+            switch x[0].(type) {
+            case Hash, Array:
+                return t.ConcatItems(x)
+            }
         }
 
         switch t.lit {
