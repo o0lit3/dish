@@ -441,7 +441,11 @@ func (b *Block) Run(args ...interface{}) interface{} {
             b.cur.hash["$_"] = b.top
         }
 
-        a := Array{ }
+        var a Array
+
+        if b.UsesArgv() {
+            a = Array{ }
+        }
 
         for i, val := range args {
             b.cur.vars[dollar(i + 1)] = val
@@ -452,12 +456,16 @@ func (b *Block) Run(args ...interface{}) interface{} {
                 b.cur.hash[b.args[i]] = val
             }
 
-            a = append(a, val)
+            if a != nil {
+                a = append(a, val)
+            }
         }
 
-        if _, ok := b.cur.vars["null"]; !ok {
-            b.cur.vars["$0"] = a
-            b.cur.hash["$0"] = a
+        if a != nil {
+            if _, ok := b.cur.vars["null"]; !ok {
+                b.cur.vars["$0"] = a
+                b.cur.hash["$0"] = a
+            }
         }
     }
 

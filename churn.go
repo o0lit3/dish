@@ -30,6 +30,7 @@ type Block struct {
     obj interface{}
     top interface{}
     free *Run
+    zero int
     toks []*Token
     runs []*Run
     cur *Run
@@ -531,6 +532,41 @@ func (b *Block) Branch(d Dimension) *Block {
 func (b *Block) Context(x interface{}) *Block {
     b.obj = x
     return b;
+}
+
+// $0 (the argument Array) is only materialized when the block, or a block nested
+// inside it, actually names it -- building it unconditionally costs an allocation
+// on every invocation. Resolved once and cached in zero: 1 yes, 2 no.
+func (b *Block) UsesArgv() bool {
+    if b.zero == 0 {
+        b.zero = 2
+
+        if b.Names("$0") {
+            b.zero = 1
+        }
+    }
+
+    return b.zero == 1
+}
+
+func (b *Block) Names(nom string) bool {
+    for _, tok := range b.toks {
+        if tok.lit == nom {
+            return true
+        }
+
+        // interpolation resolves names at runtime, so any string mentioning the
+        // name may reference it
+        if tok.tok == STR && strings.Contains(tok.lit, nom) {
+            return true
+        }
+
+        if tok.blk != nil && tok.blk.Names(nom) {
+            return true
+        }
+    }
+
+    return false
 }
 
 func (b *Block) Topic(x interface{}) *Block {
