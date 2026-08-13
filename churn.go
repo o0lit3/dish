@@ -20,7 +20,76 @@ type Run struct {
     stck Array
     vrbs []*Variable
     hash Hash
-    vars Hash
+    vars Vars
+}
+
+type Vars struct {
+    nom []string
+    val []interface{}
+    idx map[string]int
+}
+
+func (v *Vars) Get(name string) (interface{}, bool) {
+    if v.idx != nil {
+        if i, ok := v.idx[name]; ok {
+            return v.val[i], true
+        }
+
+        return nil, false
+    }
+
+    for i, n := range v.nom {
+        if n == name {
+            return v.val[i], true
+        }
+    }
+
+    return nil, false
+}
+
+func (v *Vars) Val(name string) interface{} {
+    val, _ := v.Get(name)
+    return val
+}
+
+func (v *Vars) Set(name string, val interface{}) {
+    if v.idx != nil {
+        if i, ok := v.idx[name]; ok {
+            v.val[i] = val
+            return
+        }
+    } else {
+        for i, n := range v.nom {
+            if n == name {
+                v.val[i] = val
+                return
+            }
+        }
+    }
+
+    v.nom = append(v.nom, name)
+    v.val = append(v.val, val)
+
+    if v.idx != nil {
+        v.idx[name] = len(v.nom) - 1
+    } else if len(v.nom) > 16 {
+        v.idx = make(map[string]int, 2 * len(v.nom))
+
+        for i, n := range v.nom {
+            v.idx[n] = i
+        }
+    }
+}
+
+func (v *Vars) Has(name string) bool {
+    _, ok := v.Get(name)
+    return ok
+}
+
+func (v *Vars) Clear() {
+    v.nom = v.nom[:0]
+    v.val = v.val[:0]
+    v.idx = nil
 }
 
 type Block struct {
@@ -39,9 +108,8 @@ type Block struct {
 }
 
 func NewBlock() *Block {
-    stdin := stdin()
     args := []string{ "true", "false", "null", "inf", "stdin", "$$", "$_", "argv", "$0" }
-    def := []interface{}{ Boolean(true), Boolean(false), Null{ }, Number{ inf: INF }, stdin, stdin, stdin, argv, argv }
+    def := []interface{}{ Boolean(true), Boolean(false), Null{ }, Number{ inf: INF }, Null{ }, Null{ }, Null{ }, argv, argv }
 
     for i, arg := range argv {
         args = append(args, "$" + strconv.Itoa(i + 1))
@@ -53,6 +121,19 @@ func NewBlock() *Block {
         dim: VAL,
         args: args,
         def: def,
+    }
+}
+
+func (b *Block) ReadStdin() bool {
+    return b.Names("stdin") || b.Names("$$") || b.Names("$_")
+}
+
+func (b *Block) BindStdin(val interface{}) {
+    for i, arg := range b.args {
+        switch arg {
+        case "stdin", "$$", "$_":
+            b.def[i] = val
+        }
     }
 }
 
@@ -71,7 +152,7 @@ func (blk *Block) Assign(a interface{}, b interface{}, local bool) interface{} {
 
         for i, v := range x.Variate() {
             if v.par != nil && v.par.obj == nil {
-                v.obj = blk.cur.vars[v.par.nom]
+                v.obj = blk.cur.vars.Val(v.par.nom)
             }
 
             switch y := b.(type) {
@@ -96,7 +177,7 @@ func (blk *Block) Assign(a interface{}, b interface{}, local bool) interface{} {
             if v.par == nil {
                 blk.cur.stck = append(blk.cur.stck, obj)
             } else if v.par.obj == nil {
-                blk.cur.vars[v.par.nom] = obj
+                blk.cur.vars.Set(v.par.nom, obj)
             } else {
                 v.par.Assign(blk, obj, local)
             }
@@ -114,15 +195,15 @@ func (blk *Block) Assign(a interface{}, b interface{}, local bool) interface{} {
 
         switch y := b.(type) {
         case *Block:
-            blk.cur.vars[key] = y.Run()
+            blk.cur.vars.Set(key, y.Run())
         case *Variable:
-            blk.cur.vars[key] = y.Value()
+            blk.cur.vars.Set(key, y.Value())
         default:
-            blk.cur.vars[key] = y
+            blk.cur.vars.Set(key, y)
         }
 
         if local {
-            blk.cur.hash[key] = blk.cur.vars[key]
+            blk.cur.hash[key] = blk.cur.vars.Val(key)
         }
     }
 
@@ -292,19 +373,19 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
     default:
         switch y := b.(type) {
         case *Variable:
-            blk.cur.vars[v.nom] = y.Value()
+            blk.cur.vars.Set(v.nom, y.Value())
         default:
-            blk.cur.vars[v.nom] = b
+            blk.cur.vars.Set(v.nom, b)
         }
 
         if local {
-            blk.cur.hash[v.nom] = blk.cur.vars[v.nom]
+            blk.cur.hash[v.nom] = blk.cur.vars.Val(v.nom)
         }
     }
 
     if !v.sub && v.par != nil {
         if v.par.obj == nil {
-            blk.cur.vars[v.par.nom] = v.obj
+            blk.cur.vars.Set(v.par.nom, v.obj)
 
             if local {
                 blk.cur.hash[v.nom] = v.obj
@@ -510,13 +591,13 @@ func (b *Block) String() string {
 }
 
 func (b *Block) FindVar(name string) interface{} {
-    val, ok := b.cur.vars[name]
+    val, ok := b.cur.vars.Get(name)
 
     for !ok && b.src != nil {
         b = b.src
 
         if b.cur != nil {
-            val, ok = b.cur.vars[name]
+            val, ok = b.cur.vars.Get(name)
         }
     }
 
@@ -536,9 +617,6 @@ func (b *Block) Context(x interface{}) *Block {
     return b;
 }
 
-// $0 (the argument Array) is only materialized when the block, or a block nested
-// inside it, actually names it -- building it unconditionally costs an allocation
-// on every invocation. Resolved once and cached in zero: 1 yes, 2 no.
 func (b *Block) UsesArgv() bool {
     if b.zero == 0 {
         b.zero = 2
@@ -557,8 +635,6 @@ func (b *Block) Names(nom string) bool {
             return true
         }
 
-        // interpolation resolves names at runtime, so any string mentioning the
-        // name may reference it
         if tok.tok == STR && strings.Contains(tok.lit, nom) {
             return true
         }
@@ -620,7 +696,7 @@ func (b *Block) Variate() []*Variable {
                 }
             }
         case VAR:
-            b.cur.vars[t.lit] = b.FindVar(t.lit)
+            b.cur.vars.Set(t.lit, b.FindVar(t.lit))
             reg = &Variable{ blk: b, nom: t.lit }
         case FIN:
             if reg != nil {

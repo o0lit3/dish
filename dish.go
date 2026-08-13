@@ -88,6 +88,10 @@ func main() {
         return
     }
 
+    if parser.blk.ReadStdin() {
+        parser.blk.BindStdin(stdin())
+    }
+
     if format || pretty {
         print(parser.blk.Run(parser.blk.def...), pretty, 0, true, true)
     } else {
@@ -324,6 +328,10 @@ func test(test *testing.T, source string) {
     p := process(r, program)
     c := 0
     f := 0
+
+    if p.blk.ReadStdin() {
+        p.blk.BindStdin(stdin())
+    }
 
     if val, ok := p.blk.Run(p.blk.def...).(Array); ok {
         for i, _ := range val {

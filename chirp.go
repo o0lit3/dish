@@ -53,9 +53,6 @@ func NewNumber(num int) Number {
     return Number{ num: int64(num) }
 }
 
-// A Number holds its value in num when val is nil and inf is 0; Rat materializes
-// the big.Rat on demand. Hot paths compare and combine the int64 form directly so
-// exact-rational storage is only paid for when a value needs it.
 func (n Number) Fits() bool {
     return n.val == nil && n.inf == 0
 }
@@ -407,10 +404,6 @@ func dollar(i int) string {
 }
 
 func (b *Block) Run(args ...interface{}) interface{} {
-    // Frames pop in strict LIFO order, so the last one can be recycled rather
-    // than reallocating a struct plus two maps on every invocation. Safe because
-    // Eval copies Hash returns, so a MAP block's returned hash never aliases the
-    // frame it was built in.
     if b.free != nil {
         b.cur = b.free
         b.free = nil
@@ -418,27 +411,25 @@ func (b *Block) Run(args ...interface{}) interface{} {
         b.cur.used = 0
         b.cur.stck = b.cur.stck[:0]
 
-        for key := range b.cur.vars {
-            delete(b.cur.vars, key)
-        }
+        b.cur.vars.Clear()
 
         for key := range b.cur.hash {
             delete(b.cur.hash, key)
         }
     } else {
-        b.cur = &Run{ idx: 0, stck: Array{ }, hash: Hash{ }, vars: Hash{ } }
+        b.cur = &Run{ idx: 0, stck: Array{ }, hash: Hash{ }, vars: Vars{ } }
     }
 
     b.runs = append(b.runs, b.cur)
 
     if len(args) > 0 {
         if b.obj != nil {
-            b.cur.vars["$$"] = b.obj
+            b.cur.vars.Set("$$", b.obj)
             b.cur.hash["$$"] = b.obj
         }
 
         if b.top != nil {
-            b.cur.vars["$_"] = b.top
+            b.cur.vars.Set("$_", b.top)
             b.cur.hash["$_"] = b.top
         }
 
@@ -449,11 +440,11 @@ func (b *Block) Run(args ...interface{}) interface{} {
         }
 
         for i, val := range args {
-            b.cur.vars[dollar(i + 1)] = val
+            b.cur.vars.Set(dollar(i + 1), val)
             b.cur.hash[dollar(i + 1)] = val
 
             if i < len(b.args) {
-                b.cur.vars[b.args[i]] = val
+                b.cur.vars.Set(b.args[i], val)
                 b.cur.hash[b.args[i]] = val
             }
 
@@ -463,8 +454,8 @@ func (b *Block) Run(args ...interface{}) interface{} {
         }
 
         if a != nil {
-            if _, ok := b.cur.vars["null"]; !ok {
-                b.cur.vars["$0"] = a
+            if !b.cur.vars.Has("null") {
+                b.cur.vars.Set("$0", a)
                 b.cur.hash["$0"] = a
             }
         }
@@ -473,7 +464,7 @@ func (b *Block) Run(args ...interface{}) interface{} {
     i := len(args)
 
     for i < len(b.args) {
-        b.cur.vars[b.args[i]] = Null{ }
+        b.cur.vars.Set(b.args[i], Null{ })
         b.cur.hash[b.args[i]] = Null{ }
         i = i + 1
     }
@@ -808,9 +799,9 @@ func (blk *Block) Chirp() interface{} {
 
         if blk.cur.idx == len(blk.toks) {
             if blk.src != nil && blk.src.cur != nil {
-                for key, val := range blk.cur.vars {
+                for i, key := range blk.cur.vars.nom {
                     if _, ok := blk.cur.hash[key]; !ok {
-                        blk.src.cur.vars[key] = val
+                        blk.src.cur.vars.Set(key, blk.cur.vars.val[i])
                     }
                 }
             }
@@ -842,11 +833,8 @@ func (blk *Block) Chirp() interface{} {
             return out
         }
     case VAR:
-        blk.cur.vars[t.lit] = blk.FindVar(t.lit)
+        blk.cur.vars.Set(t.lit, blk.FindVar(t.lit))
 
-        // Variables live only for the duration of this invocation -- Eval resolves
-        // them to values before the block returns -- so they can be handed out from
-        // a per-frame slab that survives frame reuse.
         var vrb *Variable
 
         if blk.cur.used < len(blk.cur.vrbs) {
