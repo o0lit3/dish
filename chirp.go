@@ -848,8 +848,16 @@ func (blk *Block) Chirp() interface{} {
         blk.cur.used++
         blk.Register(vrb)
     case NUM:
-        if val, ok := new(big.Rat).SetString(t.lit); ok {
-            blk.Register(Number{ val: val })
+        if t.num != nil {
+            blk.Register(*t.num)
+        } else if val, ok := new(big.Rat).SetString(t.lit); ok {
+            if val.IsInt() && val.Num().IsInt64() {
+                num := Number{ num: val.Num().Int64() }
+                t.num = &num
+                blk.Register(num)
+            } else {
+                blk.Register(Number{ val: val })
+            }
         } else {
             blk.Register(NewNumber(0))
         }

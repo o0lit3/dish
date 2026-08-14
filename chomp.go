@@ -39,6 +39,7 @@ type Position struct {
 
 type Token struct {
     pos Position
+    num *Number
     tok Lexeme
     opx bool
     mem bool
