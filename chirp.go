@@ -538,7 +538,7 @@ func (blk *Block) Chirp() interface{} {
         case "<", "minimum", "min", "lowercase", "downcase", "lc", "floor", "int":
             blk.Register(t.TopWiki(a))
         case "=", "average", "avg", "eval":
-            blk.Register(t.TopBars(a))
+            blk.Register(t.TopBars(blk, a))
         case ">", "maxium", "max", "uppercase", "upcase", "uc", "ceiling", "ceil":
             blk.Register(t.TopWaka(a))
         case "&", "compact", "popcount":
