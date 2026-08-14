@@ -208,6 +208,12 @@ func (t *Token) ZipArray(x Array, y Array) Array {
 }
 
 func (t *Token) SortArray(x Array, y *Block) Array {
+    named := 0
+
+    if y != nil {
+        named = y.Named()
+    }
+
     sort.Slice(x, func(i, j int) bool {
         if y == nil {
             if b, ok := t.Wiki(x[i], x[j]).(Boolean); ok {
@@ -217,8 +223,24 @@ func (t *Token) SortArray(x Array, y *Block) Array {
             return false
         }
 
-        if b, ok := y.Context(x).Run(x[i], x[j]).(Boolean); ok {
+        if named == 1 {
+            if b, ok := t.Wiki(y.Context(x).Run(x[i]), y.Context(x).Run(x[j])).(Boolean); ok {
+                return bool(b)
+            }
+
+            return false
+        }
+
+        val := y.Context(x).Run(x[i], x[j])
+
+        if b, ok := val.(Boolean); ok {
             return bool(b)
+        }
+
+        if named == 0 {
+            if b, ok := t.Wiki(val, y.Context(x).Run(x[j], x[i])).(Boolean); ok {
+                return bool(b)
+            }
         }
 
         if b, ok := t.Wiki(x[i], x[j]).(Boolean); ok {

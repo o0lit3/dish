@@ -129,6 +129,10 @@ func (t *Token) UnexpectedToken() {
     panic(fmt.Sprintf("unexpected token \"%s\" at %s", t.lit, t.pos))
 }
 
+func (t *Token) UnknownOperator() {
+    panic(fmt.Sprintf("no binary operator or member named \"%s\" at %s", t.lit, t.pos))
+}
+
 func (t *Token) UnexpectedOperand() {
     panic(fmt.Sprintf("unexpected operand for \"%s\" at %s", t.lit, t.pos))
 }

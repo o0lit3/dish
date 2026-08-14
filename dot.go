@@ -54,26 +54,19 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
     case Hash:
         switch y := b.(type) {
         case *Block:
-            switch len(y.args) {
-            case 0:
+            if len(y.args) == 0 {
                 return t.Dot(x, y.Run())
-            case 1:
-                if t.lit == "at" || t.lit == "item" || t.lit == "items" || t.lit == "subset" {
-                    t.TypeMismatch(x, y)
-                }
-
-                if y.args[0] == "" {
-                    return y.Context(x).Run(x.Array()...)
-                }
-
-                return y.Context(x).Run(x)
-            default:
-                if t.lit == "at" || t.lit == "item" || t.lit == "items" || t.lit == "subset" {
-                    t.TypeMismatch(x, y)
-                }
-
-                return y.Context(x).Run(x.Array()...)
             }
+
+            if t.lit == "at" || t.lit == "item" || t.lit == "items" || t.lit == "subset" {
+                t.TypeMismatch(x, y)
+            }
+
+            if y.Named() == 1 {
+                return y.Context(x).Run(x)
+            }
+
+            return y.Context(x).Run(x.Array()...)
         case *Variable:
             return t.Dot(x, y.Value())
         case Hash:
@@ -108,26 +101,19 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
     case Array:
         switch y := b.(type) {
         case *Block:
-            switch len(y.args) {
-            case 0:
+            if len(y.args) == 0 {
                 return t.Dot(x, y.Run())
-            case 1:
-                if t.lit == "at" || t.lit == "item" || t.lit == "items" || t.lit == "subset" {
-                    t.TypeMismatch(x, y)
-                }
-
-                if y.args[0] == "" {
-                    return y.Context(x).Run(x...)
-                }
-
-                return y.Context(x).Run(x)
-            default:
-                if t.lit == "at" || t.lit == "item" || t.lit == "items" || t.lit == "subset" {
-                    t.TypeMismatch(x, y)
-                }
-
-                return y.Context(x).Run(x...)
             }
+
+            if t.lit == "at" || t.lit == "item" || t.lit == "items" || t.lit == "subset" {
+                t.TypeMismatch(x, y)
+            }
+
+            if y.Named() == 1 {
+                return y.Context(x).Run(x)
+            }
+
+            return y.Context(x).Run(x...)
         case *Variable:
             return t.Dot(x, y.Value())
         case Array:

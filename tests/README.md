@@ -265,9 +265,11 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | String `^` Number    | `a.rotate(b)`       | `'binary' ^ 2`                 | `"rybina"`                 |
 |          | String `^` String    | `a.zip(b)`          | `'ds' ^ 'ih'`                  | `"dish"`                   |
 |          | String `^` :(Block)  | `a.sort:(...)`      | `'binary' ^ :x:y(y < x)`       | `"yrniba"`                 |
+|          | String `^` :(Block)  | `a.sort:(...)`      | `'dish' ^ :c(-c.ord)`          | `"sihd"`                   |
 |          | Array `^` Number     | `a.rotate(b)`       | `[7, 9, 4] ^ 1`                | `[4, 7, 9]`                |
 |          | Array `^` Array      | `a.zip(b)`          | `[1, 2, 3] ^ [4, 5]`           | `[[1, 4], [2, 5], [3]]`    |
 |          | Array `^` :(Block)   | `a.sort:(...)`      | `[7, 9, 4] ^ :x:y(y < x)`      | `[9, 7, 4]`                |
+|          | Array `^` :(Block)   | `a.sort:(...)`      | `[7, 9, 4] ^ :x(-x)`           | `[9, 7, 4]`                |
 |          | Hash `^` Hash        | `a.zip(b)`          | `{x: 1} ^ {x: 3}`              | `{"x": [1, 3]}`            |
 |          |                      |                     |                                |                            |
 | `.`      | Number`.`(Number)    | `a.at(b)`           | `12.(2)`                       | `1`                        |

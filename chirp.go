@@ -782,7 +782,7 @@ func (blk *Block) Chirp() interface{} {
                     }
             }
 
-            t.UnexpectedToken()
+            t.UnknownOperator()
         }
     case BLK:
         if len(blk.toks[blk.cur.idx].args) > 0 || blk.toks[blk.cur.idx].ShortCircuit() || blk.toks[blk.cur.idx].Loop() || blk.toks[blk.cur.idx].opx {

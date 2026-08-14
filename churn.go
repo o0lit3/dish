@@ -629,6 +629,18 @@ func (b *Block) UsesArgv() bool {
     return b.zero == 1
 }
 
+func (b *Block) Named() int {
+    named := 0
+
+    for _, arg := range b.args {
+        if arg != "" {
+            named++
+        }
+    }
+
+    return named
+}
+
 func (b *Block) Names(nom string) bool {
     for _, tok := range b.toks {
         if tok.lit == nom {
