@@ -402,6 +402,8 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `^`Array                | `a.sort`      | `^[10, 1, 4, 2]`         | `[1, 2, 4, 10]`                |
 |          |                         |               |                          |                                |
 | `<`      | `<`Number               | `a.floor`     | `<3.14`                  | `3`                            |
+|          | `<`Number               | `a.floor`     | `<-3.14`                 | `-4`                           |
+|          | `<`Number               | `a.int`       | `-3.14.int`              | `-3`                           |
 |          | `<`String               | `a.lc`        | `<'BINARY'`              | `"binary"`                     |
 |          | `<`Array                | `a.min`       | `<[1, 2, 3]`             | `1`                            |
 |          | `<`Hash                 | `a.min`       | `<{x: 1, y: 2}`          | `1      `                      |

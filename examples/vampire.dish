@@ -1,5 +1,4 @@
 ## https://rosettacode.org/wiki/Vampire_number
-## ~15s run time on 2.8 GHz
 
 pairs = :n:out(
   factors: **n

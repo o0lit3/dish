@@ -305,7 +305,7 @@ func parse(j interface{}) interface{} {
     case string:
         return String(x)
     case float64:
-        return Number{ val: new(big.Rat).SetFloat64(x) }
+        return NewRat(new(big.Rat).SetFloat64(x))
     case bool:
         return Boolean(x)
     case nil:

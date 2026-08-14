@@ -559,7 +559,7 @@ func (t *Token) MultiplyNumber(x Number, y Number) interface{} {
         }
     }
 
-    return Number{ val: new(big.Rat).Mul(x.Rat(), y.Rat()) }
+    return NewRat(new(big.Rat).Mul(x.Rat(), y.Rat()))
 }
 
 func (t *Token) CombArray(x Array, y Number) Array {
@@ -682,7 +682,7 @@ func (t *Token) ChooseNumber(x Number, y Number) Number {
     a := new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom()).Int64()
     b := new(big.Int).Quo(y.Rat().Num(), y.Rat().Denom()).Int64()
 
-    return Number{ val: new(big.Rat).SetInt(new(big.Int).Binomial(a, b)) }
+    return NewRat(new(big.Rat).SetInt(new(big.Int).Binomial(a, b)))
 }
 
 func (t *Token) MultiplyArray(x Array) interface{} {
@@ -728,11 +728,11 @@ func (t *Token) DivisorsNumber(x Number) Array {
 
     for j.Cmp(sqrt) <= 0 {
         if j.Cmp(big.NewInt(1)) > 0 && new(big.Int).Rem(i, j).Cmp(big.NewInt(0)) == 0 {
-            out = append(out, Number{ val: new(big.Rat).SetInt(j) })
+            out = append(out, NewRat(new(big.Rat).SetInt(j)))
             div := new(big.Int).Div(i, j)
 
             if j.Cmp(div) != 0 {
-                out = append(out, Number{ val: new(big.Rat).SetInt(div) })
+                out = append(out, NewRat(new(big.Rat).SetInt(div)))
             }
         }
 

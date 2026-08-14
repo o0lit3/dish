@@ -346,7 +346,7 @@ func (t *Token) UpperString(x String) String {
 }
 
 func (t *Token) CeilNumber(x Number) Number {
-    if x.inf == INF || x.inf == -INF || x.Rat().IsInt() {
+    if x.inf == INF || x.inf == -INF || x.Fits() || x.Rat().IsInt() {
         return x
     }
 

@@ -227,9 +227,17 @@ func (t *Token) ModNumber(x Number, y Number) interface{} {
         return x
     }
 
-    div := new(big.Rat).Quo(x.Rat(), y.Rat())
-    flr := new(big.Rat).SetInt(new(big.Int).Quo(div.Num(), div.Denom()))
-    out := Number{ val: new(big.Rat).Sub(x.Rat(), new(big.Rat).Mul(y.Rat(), flr)) }
+    var out Number
+
+    if x.Fits() && y.Fits() && y.num != 0 {
+        out = Number{ num: x.num % y.num }
+    } else if x.Rat().IsInt() && y.Rat().IsInt() && y.Rat().Num().Sign() != 0 {
+        out = NewRat(new(big.Rat).SetInt(new(big.Int).Rem(x.Rat().Num(), y.Rat().Num())))
+    } else {
+        div := new(big.Rat).Quo(x.Rat(), y.Rat())
+        flr := new(big.Rat).SetInt(new(big.Int).Quo(div.Num(), div.Denom()))
+        out = NewRat(new(big.Rat).Sub(x.Rat(), new(big.Rat).Mul(y.Rat(), flr)))
+    }
 
     if out.Cmp(NewNumber(0)) < 0 && x.Cmp(NewNumber(0)) + y.Cmp(NewNumber(0)) >= 0 {
         out = t.ModNumber(t.AddNumber(out, y).(Number), y).(Number)
@@ -503,7 +511,7 @@ func (t *Token) RatioNumber(x Number) Hash {
     }
 
     return Hash{
-        "num": Number{ val: new(big.Rat).SetInt(x.Rat().Num()) },
-        "denom": Number{ val: new(big.Rat).SetInt(x.Rat().Denom()) },
+        "num": NewRat(new(big.Rat).SetInt(x.Rat().Num())),
+        "denom": NewRat(new(big.Rat).SetInt(x.Rat().Denom())),
     }
 }

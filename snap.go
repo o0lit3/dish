@@ -19,7 +19,7 @@ func (t *Token) Numbers(a interface{}) interface{} {
         switch t.lit {
         case "rand":
             rand.Seed(time.Now().UnixNano())
-            return Number{ val: new(big.Rat).SetFloat64(rand.Float64() * val) }
+            return NewRat(new(big.Rat).SetFloat64(rand.Float64() * val))
         case "prime":
             if x.inf == INF || x.inf == -INF {
                 return Boolean(false)
@@ -27,21 +27,21 @@ func (t *Token) Numbers(a interface{}) interface{} {
 
             return Boolean(new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom()).ProbablyPrime(0))
         case "sqrt":
-            return Number{ val: new(big.Rat).SetFloat64(math.Sqrt(val)) }
+            return NewRat(new(big.Rat).SetFloat64(math.Sqrt(val)))
         case "log":
-            return Number{ val: new(big.Rat).SetFloat64(math.Log(val)) }
+            return NewRat(new(big.Rat).SetFloat64(math.Log(val)))
         case "sin":
-            return Number{ val: new(big.Rat).SetFloat64(math.Sin(val)) }
+            return NewRat(new(big.Rat).SetFloat64(math.Sin(val)))
         case "cos":
-            return Number{ val: new(big.Rat).SetFloat64(math.Cos(val)) }
+            return NewRat(new(big.Rat).SetFloat64(math.Cos(val)))
         case "tan":
-            return Number{ val: new(big.Rat).SetFloat64(math.Tan(val)) }
+            return NewRat(new(big.Rat).SetFloat64(math.Tan(val)))
         case "asin":
-            return Number{ val: new(big.Rat).SetFloat64(math.Asin(val)) }
+            return NewRat(new(big.Rat).SetFloat64(math.Asin(val)))
         case "acos":
-            return Number{ val: new(big.Rat).SetFloat64(math.Acos(val)) }
+            return NewRat(new(big.Rat).SetFloat64(math.Acos(val)))
         case "atan":
-            return Number{ val: new(big.Rat).SetFloat64(math.Atan(val)) }
+            return NewRat(new(big.Rat).SetFloat64(math.Atan(val)))
         }
     case Boolean:
         return t.Numbers(x.Number())

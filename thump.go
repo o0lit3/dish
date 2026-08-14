@@ -306,6 +306,10 @@ func (t *Token) RoundNumber(x Number, y Number) Number {
         return x
     }
 
+    if x.Fits() && y.Fits() && y.num >= 0 {
+        return x
+    }
+
     if pow, ok := t.PowerNumber(NewNumber(10), y).(Number); ok {
         o := new(big.Rat).Mul(x.Rat(), pow.Rat())
         i := new(big.Int).Quo(o.Num(), o.Denom())
@@ -320,7 +324,7 @@ func (t *Token) RoundNumber(x Number, y Number) Number {
             j = j.Sub(j, big.NewRat(1, 1))
         }
 
-        return Number{ val: j.Quo(j, pow.Rat()) }
+        return NewRat(j.Quo(j, pow.Rat()))
     }
 
     return NewNumber(0)

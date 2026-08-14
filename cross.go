@@ -590,7 +590,7 @@ func (t *Token) AddNumber(x Number, b interface{}) interface{} {
             }
         }
 
-        return Number{ val: new(big.Rat).Add(x.Rat(), y.Rat()) }
+        return NewRat(new(big.Rat).Add(x.Rat(), y.Rat()))
     case Boolean:
         return t.AddNumber(x, y.Number())
     case Null:

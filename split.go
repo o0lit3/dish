@@ -371,7 +371,7 @@ func (t *Token) DivideNumber(x Number, y Number) interface{} {
     }
 
     if y.Cmp(NewNumber(0)) != 0 {
-        return Number{ val: new(big.Rat).Quo(x.Rat(), y.Rat()) }
+        return NewRat(new(big.Rat).Quo(x.Rat(), y.Rat()))
     } else {
         switch x.Cmp(NewNumber(0)) {
         case -1:
@@ -522,7 +522,7 @@ func (t *Token) FactorsForNumber(x Number) interface{} {
         div.DivMod(n, i, mod)
 
         for mod.Cmp(big.NewInt(0)) == 0 {
-            out = append(out, Number{ val: new(big.Rat).SetInt(i) })
+            out = append(out, NewRat(new(big.Rat).SetInt(i)))
             n.Set(div)
             div.DivMod(n, i, mod)
         }
@@ -550,11 +550,11 @@ func (t *Token) DivisorsForNumber(x Number) interface{} {
 
     for j.Cmp(sqrt) <= 0 {
         if j.Cmp(big.NewInt(1)) > 0 && new(big.Int).Rem(i, j).Cmp(big.NewInt(0)) == 0 {
-            out = append(out, Number{ val: new(big.Rat).SetInt(j) })
+            out = append(out, NewRat(new(big.Rat).SetInt(j)))
             div := new(big.Int).Div(i, j)
 
             if j.Cmp(div) != 0 {
-                out = append(out, Number{ val: new(big.Rat).SetInt(div) })
+                out = append(out, NewRat(new(big.Rat).SetInt(div)))
             }
         }
 

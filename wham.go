@@ -1,5 +1,5 @@
 package main
-import("math/big")
+import("math"; "math/big")
 
 func (t *Token) Wham(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -230,7 +230,15 @@ func (t *Token) AbsNumber(x Number) Number {
         return Number{ inf: INF }
     }
 
-    return Number{ val: new(big.Rat).Abs(x.Rat()) }
+    if x.Fits() && x.num != math.MinInt64 {
+        if x.num < 0 {
+            return Number{ num: -x.num }
+        }
+
+        return x
+    }
+
+    return NewRat(new(big.Rat).Abs(x.Rat()))
 }
 
 func (t *Token) AnyHashItem(x Hash, y *Block) Boolean {

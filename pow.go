@@ -308,15 +308,15 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
         x, _ := x.Rat().Float64()
         y, _ := y.Rat().Float64()
 
-        return Number{ val: new(big.Rat).SetFloat64(math.Pow(x, y)) }
+        return NewRat(new(big.Rat).SetFloat64(math.Pow(x, y)))
     }
 
     out := NewNumber(1)
     idx := NewNumber(0)
 
     for idx.Cmp(y) == -1 {
-        out = Number{ val: out.Rat().Mul(out.Rat(), x.Rat()) }
-        idx = Number{ val: idx.Rat().Add(idx.Rat(), NewNumber(1).Rat()) }
+        out = NewRat(out.Rat().Mul(out.Rat(), x.Rat()))
+        idx = NewRat(idx.Rat().Add(idx.Rat(), NewNumber(1).Rat()))
     }
 
     return out

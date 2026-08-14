@@ -53,6 +53,16 @@ func NewNumber(num int) Number {
     return Number{ num: int64(num) }
 }
 
+func NewRat(val *big.Rat) Number {
+    if val.IsInt() {
+        if num := val.Num(); num.IsInt64() {
+            return Number{ num: num.Int64() }
+        }
+    }
+
+    return Number{ val: val }
+}
+
 func (n Number) Fits() bool {
     return n.val == nil && n.inf == 0
 }
@@ -157,7 +167,7 @@ func (s String) Number() Number {
     out := NewNumber(0)
 
     if val, ok := out.Rat().SetString(string(s)); ok {
-        return Number{ val: val }
+        return NewRat(val)
     }
 
     return out
@@ -257,6 +267,25 @@ func (v *Variable) Value() interface{} {
     return v.blk.Value(v)
 }
 
+func Capped(a interface{}) interface{} {
+    switch x := a.(type) {
+    case Array:
+        return x[:len(x):len(x)]
+    case String:
+        return x[:len(x):len(x)]
+    }
+
+    return a
+}
+
+func (v *Variable) Raw() interface{} {
+    if v.obj == nil && v.blk != nil {
+        return v.blk.FindVar(v.nom)
+    }
+
+    return v.Value()
+}
+
 func (b *Block) Value(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
@@ -347,9 +376,9 @@ func (b *Block) Value(a interface{}) interface{} {
             return Null{ }
         }
 
-        return b.FindVar(x.nom)
+        return Capped(b.FindVar(x.nom))
     default:
-        return x
+        return Capped(x)
     }
 }
 
@@ -691,7 +720,13 @@ func (blk *Block) Chirp() interface{} {
         case "#", "base", "unbase", "format", "fmt":
             blk.Register(t.Sharp(a, b))
         case "<<", "push", "append", "lshift", "extend":
-            val := t.WikiWiki(a, b)
+            src := a
+
+            if v, ok := a.(*Variable); ok && t.lit != "lshift" {
+                src = v.Raw()
+            }
+
+            val := t.WikiWiki(src, b)
 
             if _, ok := a.(*Variable); ok && t.lit != "lshift" {
                 switch val.(type) {
@@ -868,7 +903,7 @@ func (blk *Block) Chirp() interface{} {
                 t.num = &num
                 blk.Register(num)
             } else {
-                blk.Register(Number{ val: val })
+                blk.Register(NewRat(val))
             }
         } else {
             blk.Register(NewNumber(0))

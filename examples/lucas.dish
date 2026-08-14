@@ -1,5 +1,4 @@
 ## https://rosettacode.org/wiki/Lucas-Lehmer_test
-## ~30s run time on 2.8 GHz
 
 (2..2000).filter:n(
   n == 2 || n.prime.then(

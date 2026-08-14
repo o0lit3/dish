@@ -257,6 +257,10 @@ func (t *Token) TopWiki(a interface{}) interface{} {
             t.TypeMismatch(x, nil)
         }
 
+        if t.lit == "int" {
+            return t.TruncNumber(x)
+        }
+
         return t.FloorNumber(x)
     case Boolean:
         return t.TopWiki(x.Number())
@@ -315,10 +319,7 @@ func (t *Token) ExtendHash(x Hash, y Hash) Hash {
 }
 
 func (t *Token) PushArray(x Array, y Array) Array {
-    out := make(Array, len(x) + len(y))
-    copy(out, x)
-    copy(out[len(x):], y)
-    return out
+    return append(x, y...)
 }
 
 func (t *Token) AppendString(x String, y String) String {
@@ -390,14 +391,22 @@ func (t *Token) LowerString(x String) String {
     return String(strings.ToLower(string(x)))
 }
 
-func (t *Token) FloorNumber(x Number) Number {
-    if x.inf == INF || x.inf == -INF || x.Rat().IsInt() {
+func (t *Token) TruncNumber(x Number) Number {
+    if x.inf == INF || x.inf == -INF || x.Fits() || x.Rat().IsInt() {
         return x
     }
 
-    if x.Cmp(NewNumber(0)) < -1 {
+    return NewRat(new(big.Rat).SetInt(new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom())))
+}
+
+func (t *Token) FloorNumber(x Number) Number {
+    if x.inf == INF || x.inf == -INF || x.Fits() || x.Rat().IsInt() {
+        return x
+    }
+
+    if x.Cmp(NewNumber(0)) < 0 {
         return t.NegateNumber(t.CeilNumber(t.NegateNumber(x)))
     }
 
-    return Number{ val: new(big.Rat).SetInt(new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom())) }
+    return NewRat(new(big.Rat).SetInt(new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom())))
 }
