@@ -315,16 +315,9 @@ func (t *Token) ExtendHash(x Hash, y Hash) Hash {
 }
 
 func (t *Token) PushArray(x Array, y Array) Array {
-    out := Array { }
-
-    for _, val := range x {
-        out = append(out, val)
-    }
-
-    for _, val := range y {
-        out = append(out, val)
-    }
-
+    out := make(Array, len(x) + len(y))
+    copy(out, x)
+    copy(out[len(x):], y)
     return out
 }
 

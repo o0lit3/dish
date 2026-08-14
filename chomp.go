@@ -157,17 +157,21 @@ func (t *Token) Continuator() bool {
     return false
 }
 
-func (t *Token) Assignment() bool {
+func (t *Token) Rightward() bool {
     if t.tok == OP1 && (t.lit == "=" || t.lit == ":") {
         return false
     }
 
     switch t.lit {
-    case "=", ":", "+=", "-=", "*=", "/=", "%=", "^=", "&=", "|=", "~=", "?=", "<<", ">>":
+    case "=", ":", "+=", "-=", "*=", "/=", "%=", "^=", "&=", "|=", "~=", "?=":
         return true
     }
 
     return false
+}
+
+func (t *Token) Assignment() bool {
+    return t.Rightward() || t.lit == "<<" || t.lit == ">>"
 }
 
 func (t *Token) Term() bool {
@@ -250,7 +254,7 @@ func (a *Token) Higher(b *Token) bool {
         return true
     }
 
-    return a.Precedence() == b.Precedence() && !b.Assignment() && b.tok != OP1 && b.tok != MEM
+    return a.Precedence() == b.Precedence() && !b.Rightward() && b.tok != OP1 && b.tok != MEM
 }
 
 func (t *Token) ShortCircuit() bool {

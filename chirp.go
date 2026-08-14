@@ -695,12 +695,10 @@ func (blk *Block) Chirp() interface{} {
 
             if _, ok := a.(*Variable); ok && t.lit != "lshift" {
                 switch val.(type) {
-                case Hash:
+                case Hash, Array, String:
                     blk.Assign(a, val, false)
-                case Array:
-                    blk.Assign(a, val, false)
-                case String:
-                    blk.Assign(a, val, false)
+                    blk.Register(a)
+                    return blk.Chirp()
                 }
             }
 
@@ -710,12 +708,10 @@ func (blk *Block) Chirp() interface{} {
 
             if _, ok := a.(*Variable); ok && t.lit != "rshift" {
                 switch val.(type) {
-                case Hash:
+                case Hash, Array, String:
                     blk.Assign(a, val, false)
-                case Array:
-                    blk.Assign(a, val, false)
-                case String:
-                    blk.Assign(a, val, false)
+                    blk.Register(a)
+                    return blk.Chirp()
                 }
             }
 

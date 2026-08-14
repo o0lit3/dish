@@ -301,16 +301,9 @@ func (t *Token) TopWakaWaka(a interface{}) (interface{}, interface{}) {
 }
 
 func (t *Token) UnshiftArray(x Array, y Array) Array {
-    out := Array { }
-
-    for _, val := range y {
-        out = append(out, val)
-    }
-
-    for _, val := range x {
-        out = append(out, val)
-    }
-
+    out := make(Array, len(x) + len(y))
+    copy(out, y)
+    copy(out[len(y):], x)
     return out
 }
 
