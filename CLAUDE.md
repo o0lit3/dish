@@ -21,7 +21,7 @@ dish -d -e '1 + 2'                    # -d re-raises errors as Go panics with a 
 echo '[1,2,3]' | dish -e 'stdin.sum'  # STDIN is JSON-parsed into `stdin`/`$_`, else split into an Array of Strings
 ```
 
-Flags may be bundled (`-pe`, `-fe`); the `e` must be last when bundled. Non-flag trailing arguments land in `argv` / `$0` / `$1`…
+Flags may be bundled (`-pe`, `-fe`); the `e` must be last when bundled. Non-flag trailing arguments land in `argv` / `$0` / `$1`… Flag scanning stops at `-e`'s expression or at the first non-flag argument, so expressions and arguments may themselves begin with `-`.
 
 ```sh
 go test ./...                # full suite — must be run from the repo root (test paths are relative)

@@ -31,6 +31,14 @@ func main() {
     debug := false
 
     for i, flag := range os.Args {
+        if i == 0 || reader != nil {
+            continue
+        }
+
+        if len(flag) == 0 || flag[0:1] != "-" {
+            break
+        }
+
         switch flag {
         case "-d", "-debug":
             debug = true
