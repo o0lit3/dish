@@ -314,7 +314,7 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
                     tok = blk.toks[blk.cur.idx - 1]
                 }
 
-                panic(fmt.Sprintf("String member assignment near \"%s\" requires String for right-hand operand at %s", tok.lit, tok.pos))
+                panic(fmt.Sprintf("string member assignment requires a String right-hand operand for \"%s\" at %s", tok.lit, tok.pos))
             }
 
             if len(y) > 0 {
@@ -704,7 +704,7 @@ func (b *Block) Variate() []*Variable {
                 reg = nil
             }
         default:
-            panic(fmt.Sprintf("Assignment block may only contain variables near %s at %s", t.lit, t.pos))
+            panic(fmt.Sprintf("assignment block may only contain variables, found \"%s\" at %s", t.lit, t.pos))
         }
     }
 

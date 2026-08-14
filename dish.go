@@ -7,6 +7,7 @@ import (
     "strings"
     "testing"
     "math/big"
+    "runtime"
     "io/ioutil"
     "encoding/json"
 )
@@ -17,37 +18,51 @@ var argv Array
 func main() {
     var reader *bufio.Reader
 
+    if len(os.Args) < 2 {
+        fmt.Fprintln(os.Stderr, "usage: dish [-dfpt] [-e expression | file] [arguments...]")
+        os.Exit(1)
+    }
+
     index := 0
     source := os.Args[1]
     pretty := false
     format := false
+    tokens := false
     debug := false
 
     for i, flag := range os.Args {
         switch flag {
         case "-d", "-debug":
             debug = true
-            source = os.Args[i + 1]
+            source = arg(i + 1)
+            index = i + 1
+        case "-t", "-tokens":
+            tokens = true
+            source = arg(i + 1)
             index = i + 1
         case "-p", "-pretty":
             pretty = true
-            source = os.Args[i + 1]
+            source = arg(i + 1)
             index = i + 1
         case "-f", "-format":
             format = true
-            source = os.Args[i + 1]
+            source = arg(i + 1)
             index = i + 1
         case "-e", "-exec":
             source = ""
-            reader = bufio.NewReader(strings.NewReader(os.Args[i + 1]))
+            reader = bufio.NewReader(strings.NewReader(arg(i + 1)))
             index = i + 1
         default:
             if flag[0:1] == "-" {
-                source = os.Args[i + 1]
+                source = arg(i + 1)
                 index = i + 1
 
                 if strings.Contains(flag, "d") {
                     debug = true
+                }
+
+                if strings.Contains(flag, "t") {
+                    tokens = true
                 }
 
                 if strings.Contains(flag, "p") {
@@ -60,11 +75,19 @@ func main() {
 
                 if flag[len(flag) - 1:] == "e" {
                     source = ""
-                    reader = bufio.NewReader(strings.NewReader(os.Args[i + 1]))
+                    reader = bufio.NewReader(strings.NewReader(arg(i + 1)))
                     index = i + 1
                 }
             }
         }
+    }
+
+    if !debug {
+        defer func() {
+            if err := recover(); err != nil {
+                fail(describe(err))
+            }
+        }()
     }
 
     if source != "" {
@@ -80,7 +103,7 @@ func main() {
 
     parser := process(reader, program)
 
-    if debug {
+    if tokens {
         for _, term := range parser.blk.toks {
             fmt.Fprintf(os.Stderr, "%v\n", term)
         }
@@ -288,10 +311,40 @@ func open(source string) *bufio.Reader {
     file, err := os.Open(source)
 
     if err != nil {
-        panic(err)
+        if path, ok := err.(*os.PathError); ok {
+            panic(fmt.Sprintf("cannot open \"%s\": %v", source, path.Err))
+        }
+
+        panic(fmt.Sprintf("cannot open \"%s\": %v", source, err))
     }
 
     return bufio.NewReader(file)
+}
+
+func fail(msg string) {
+    fmt.Fprintf(os.Stderr, "dish: %s\n", msg)
+    os.Exit(1)
+}
+
+func arg(i int) string {
+    if i >= len(os.Args) {
+        fail(fmt.Sprintf("missing argument after \"%s\"", os.Args[i - 1]))
+    }
+
+    return os.Args[i]
+}
+
+func describe(err interface{}) string {
+    switch x := err.(type) {
+    case string:
+        return x
+    case runtime.Error:
+        return fmt.Sprintf("internal error: %v (rerun with -d for a trace)", x)
+    case error:
+        return x.Error()
+    }
+
+    return fmt.Sprintf("%v", err)
 }
 
 func process(rdr *bufio.Reader, blk *Block) *Parser {
@@ -322,6 +375,12 @@ func process(rdr *bufio.Reader, blk *Block) *Parser {
 }
 
 func test(test *testing.T, source string) {
+    defer func() {
+        if err := recover(); err != nil {
+            test.Errorf("%s panicked: %s", source, describe(err))
+        }
+    }()
+
     program = NewBlock()
 
     r := open(source)

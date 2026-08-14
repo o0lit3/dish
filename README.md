@@ -85,6 +85,8 @@ Because **dish** variables can not begin with numbers, numeric index members suc
 
 **dish** also supports "traditional syntax" array and hash member access with bracket `[]` syntax. `[1, 2, 3].1` and `[1, 2, 3][1]` are equivalent in **dish**.
 
+Assigning to a member of an undefined variable creates the containing Hash or Array, choosing which from the accessor, and does so at any depth: `dish -e 'a.b.c = 1; a'` outputs `{"b": {"c": 1}}` while `dish -e 'a.0 = 9; a'` outputs `[9]`. Reading a member never creates anything, so `dish -e 'a.b; a'` leaves `a` undefined, and reading a member of a missing member evaluates to `null` rather than failing: `dish -e '[{a: 1}.b.c]'` outputs `[null]`.
+
 The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ^ b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in:
 
 `dish -e 'squared = :n(n ^ 2); 3.squared'`

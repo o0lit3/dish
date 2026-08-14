@@ -16,7 +16,8 @@ go build -o /usr/local/bin/dish       # or: go build -o dish .
 dish path/to/file.dish                # run a file
 dish -e '"Hello World!"'              # run an expression
 dish -p -e 'stdin.map:d(d.name)'      # -p pretty (colorized), -f format (indented JSON)
-dish -d -e '1 + 2'                    # -d dumps the parsed token stream to STDERR and exits
+dish -t -e '1 + 2'                    # -t dumps the parsed token stream to STDERR and exits
+dish -d -e '1 + 2'                    # -d re-raises errors as Go panics with a stack trace
 echo '[1,2,3]' | dish -e 'stdin.sum'  # STDIN is JSON-parsed into `stdin`/`$_`, else split into an Array of Strings
 ```
 
@@ -57,6 +58,8 @@ The pipeline is four stages, one file each, followed by per-operator implementat
 2. **`churn.go` — Parser.** `Parser.Churn()` is a shunting-yard loop converting the token stream into RPN stored on `Block.toks`. Blocks (`(...)`, `[...]`, `{...}`) and short-circuit right-hand operands become nested `*Block`s so they can be evaluated lazily. Also holds `Block`, `Run`, assignment/scoping (`Assign`, `Variable.Assign`), and string interpolation.
 3. **`chirp.go` — Types + evaluator.** Defines the six value types (`Hash`, `Array`, `String` = `[]rune`, `Number` = `*big.Rat` plus an `inf` flag, `Boolean`, `Null`) plus `Variable`. `Block.Chirp()` walks the RPN with a value stack (`Register`/`Deregister`) and dispatches every operator.
 4. **`dish.go` — Entry point.** Flag parsing, STDIN binding (`bind`/`parse`), output printing (raw scalar vs. JSON for Array/Hash, optional ANSI colorization), and the `test()` helper used by `dish_test.go` (which is why non-test `dish.go` imports `testing`).
+
+Every dish error is a `panic` carrying a formatted string, so `main` recovers and prints `dish: <message>` to STDERR with exit 1; `-d` skips the recover so the panic reaches Go and prints a stack trace. A panic carrying a `runtime.Error` rather than a string is an interpreter bug, not a user error, and is reported as `internal error`. `test()` recovers per file so one panicking test file fails on its own instead of aborting the run. Message wording is `<lowercase description> ["<token>"] at <row>:<col>`, position last.
 
 ### Operator files and their naming convention
 

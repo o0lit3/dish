@@ -191,13 +191,13 @@ func (t *Token) FormatNumber(x Number, y String) String {
 
 func (t *Token) BaseString(x String, y Number) Number {
     if y.Cmp(NewNumber(2)) == -1 || y.Cmp(NewNumber(36)) == 1 {
-        panic(fmt.Sprintf("Invalid base \"%s\" used near \"%s\" at %s", y, t.lit, t.pos))
+        panic(fmt.Sprintf("invalid base \"%s\" for operator \"%s\" at %s", y, t.lit, t.pos))
     }
 
     out, err := strconv.ParseInt(string(x), y.Int(), 64)
 
     if err != nil {
-        panic(fmt.Sprintf("Invalid string %s used near \"%s\" at %s", x, t.lit, t.pos))
+        panic(fmt.Sprintf("invalid string \"%s\" for operator \"%s\" at %s", x, t.lit, t.pos))
     }
 
     return NewNumber(int(out))
@@ -205,7 +205,7 @@ func (t *Token) BaseString(x String, y Number) Number {
 
 func (t *Token) BaseNumber(x Number, y Number) String {
     if y.inf == INF || y.inf == -INF {
-        panic(fmt.Sprintf("Invalid base \"%s\" used near \"%s\" at %s", y, t.lit, t.pos))
+        panic(fmt.Sprintf("invalid base \"%s\" for operator \"%s\" at %s", y, t.lit, t.pos))
     }
 
     if x.inf == INF || x.inf == -INF {
@@ -213,7 +213,7 @@ func (t *Token) BaseNumber(x Number, y Number) String {
     }
 
     if y.Cmp(NewNumber(2)) == -1 || y.Cmp(NewNumber(36)) == 1 {
-        panic(fmt.Sprintf("Invalid base \"%s\" used near \"%s\" at %s", y, t.lit, t.pos))
+        panic(fmt.Sprintf("invalid base \"%s\" for operator \"%s\" at %s", y, t.lit, t.pos))
     }
 
     return String(strconv.FormatInt(int64(x.Int()), y.Int()))

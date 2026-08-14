@@ -69,19 +69,42 @@ func (p Position) String() string {
 }
 
 func (p Position) UnexpectedToken(r rune) {
-    panic(fmt.Sprintf("Unexpected token \"%v\" at %s", string(r), p))
+    panic(fmt.Sprintf("unexpected token \"%v\" at %s", string(r), p))
 }
 
 func (t *Token) DivideByZero() {
-    panic(fmt.Sprintf("Divide by 0 error near \"%s\" at %s", t.lit, t.pos))
+    panic(fmt.Sprintf("divide by zero on operator \"%s\" at %s", t.lit, t.pos))
 }
 
 func (t *Token) TypeMismatch(a interface{}, b interface{}) Boolean {
     if b == nil {
-        panic(fmt.Sprintf("Type mismatch on unary operator \"%s\" near %s on type %T", t.lit, t.pos, a))
+        panic(fmt.Sprintf("type mismatch on unary operator \"%s\" with type %s at %s", t.lit, TypeName(a), t.pos))
     } else {
-        panic(fmt.Sprintf("Type mismatch on binary operator \"%s\" near %s on types %T and %T", t.lit, t.pos, a, b))
+        panic(fmt.Sprintf("type mismatch on binary operator \"%s\" with types %s and %s at %s", t.lit, TypeName(a), TypeName(b), t.pos))
     }
+}
+
+func TypeName(a interface{}) string {
+    switch a.(type) {
+    case *Block:
+        return "Block"
+    case *Variable:
+        return "Variable"
+    case Hash:
+        return "Hash"
+    case Array:
+        return "Array"
+    case String:
+        return "String"
+    case Number:
+        return "Number"
+    case Boolean:
+        return "Boolean"
+    case Null:
+        return "Null"
+    }
+
+    return fmt.Sprintf("%T", a)
 }
 
 func (t *Token) String() string {
@@ -103,15 +126,15 @@ func (t *Token) String() string {
 }
 
 func (t *Token) UnexpectedToken() {
-    panic(fmt.Sprintf("Unexpected token \"%s\" at %s", t.lit, t.pos))
+    panic(fmt.Sprintf("unexpected token \"%s\" at %s", t.lit, t.pos))
 }
 
 func (t *Token) UnexpectedOperand() {
-    panic(fmt.Sprintf("Unexpected operand for \"%s\" at %s", t.lit, t.pos))
+    panic(fmt.Sprintf("unexpected operand for \"%s\" at %s", t.lit, t.pos))
 }
 
 func (t *Token) UnmatchedBlock() {
-    panic(fmt.Sprintf("Unmatched \"%s\" at %s", t.lit, t.pos))
+    panic(fmt.Sprintf("unmatched \"%s\" at %s", t.lit, t.pos))
 }
 
 func (t *Token) Continuator() bool {
@@ -618,7 +641,7 @@ func (t *Token) LexArgs(l *Lexer) *Token {
             t.args = append(t.args, l.LexVar())
             t = t.LexArgs(l)
         default:
-            panic(fmt.Sprintf("Logic block arguments must start with a letter or a dollar sign near \"%v\" at %s", string(n), l.pos))
+            panic(fmt.Sprintf("logic block arguments must start with a letter or a dollar sign, found \"%v\" at %s", string(n), l.pos))
         }
     default:
         l.Backup()

@@ -384,7 +384,7 @@ func (b *Block) Register(val interface{}) {
 
 func (b *Block) Deregister(op *Token) interface{} {
     if len(b.cur.stck) < 1 {
-        panic(fmt.Sprintf("Missing operand for \"%s\" at %s", op.lit, op.pos))
+        panic(fmt.Sprintf("missing operand for \"%s\" at %s", op.lit, op.pos))
     }
 
     val := b.cur.stck[len(b.cur.stck) - 1]
@@ -736,7 +736,7 @@ func (blk *Block) Chirp() interface{} {
             if x, ok := a.(*Variable); ok && x.obj != nil {
                 blk.Register(x.Assign(blk, b, false))
             } else {
-                panic(fmt.Sprintf("Unexpected operand for member assignment \"%s\" at %s", t.lit, t.pos))
+                panic(fmt.Sprintf("unexpected operand for member assignment \"%s\" at %s", t.lit, t.pos))
             }
         case "+=":
             blk.Register(blk.Assign(a, t.Cross(a, b), false))

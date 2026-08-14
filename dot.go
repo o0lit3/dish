@@ -24,29 +24,23 @@ func (t *Token) Dot(a interface{}, b interface{}) interface{} {
                     t.TypeMismatch(x, y)
                 }
 
-                x.blk.cur.vars.Set(x.nom, Array { })
-
                 if len(y) == 1 {
                     return t.Dot(x, y[0])
                 }
 
-                return &Variable{ par: x, obj: x.blk.cur.vars.Val(x.nom), arr: t.ArrayMembers(Array{ }, y).arr }
+                return &Variable{ par: x, obj: Array { }, arr: t.ArrayMembers(Array{ }, y).arr }
             case String:
                 if t.lit == "items" || t.lit == "subset" || t.lit == "call" {
                     t.TypeMismatch(x, y)
                 }
 
-                x.blk.cur.vars.Set(x.nom, Hash { })
-
-                return &Variable{ par: x, obj: x.blk.cur.vars.Val(x.nom), nom: string(y) }
+                return &Variable{ par: x, obj: Hash { }, nom: string(y) }
             case Number:
                 if t.lit == "items" || t.lit == "subset" || t.lit == "call" {
                     t.TypeMismatch(x, y)
                 }
 
-                x.blk.cur.vars.Set(x.nom, Array { })
-
-                return &Variable{ par: x, obj: x.blk.cur.vars.Val(x.nom), idx: y.Int() }
+                return &Variable{ par: x, obj: Array { }, idx: y.Int() }
             }
         default:
             switch out := t.Dot(val, b).(type) {
