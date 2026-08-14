@@ -100,7 +100,9 @@ type Block struct {
     def []interface{}
     obj interface{}
     top interface{}
-    free *Run
+    free []*Run
+    blks Array
+    bsrc *Block
     zero int
     toks []*Token
     runs []*Run
@@ -433,7 +435,19 @@ func (a Array) Assign(blk *Block, mem *Variable, idx int, b interface{}, local b
     return mem.obj
 }
 
-func (b *Block) Interpolate(s string) String {
+type Interp struct {
+    blks []*Block
+    src *Block
+}
+
+type Eval struct {
+    src string
+    blk *Block
+    scope *Block
+}
+
+func (b *Block) Interpolate(t *Token) String {
+    s := t.lit
     lexer := &Lexer {
         pos: Position { row: 1, col: 0 },
         rdr: bufio.NewReader(strings.NewReader(s)),
@@ -562,16 +576,25 @@ func (b *Block) Interpolate(s string) String {
         }
     }
 
+    if t.ipol == nil || t.ipol.src != b {
+        blks := make([]*Block, len(toks))
+
+        for i, val := range toks {
+            if cods[i] {
+                if unicode.IsLetter(rune(val[1])) {
+                    val = val[1:]
+                }
+
+                blks[i] = process(bufio.NewReader(strings.NewReader(val)), b.Branch(VAL)).blk
+            }
+        }
+
+        t.ipol = &Interp{ blks: blks, src: b }
+    }
+
     for i, val := range toks {
         if cods[i] {
-            if unicode.IsLetter(rune(val[1])) {
-                val = val[1:]
-            }
-
-            reader := bufio.NewReader(strings.NewReader(val))
-            parser := process(reader, b.Branch(VAL))
-
-            switch x := parser.blk.Run().(type) {
+            switch x := t.ipol.blks[i].Run().(type) {
             case Null:
             case String:
                 out += string(x)
@@ -730,6 +753,10 @@ func (b *Block) Blockify(a interface{}) Array {
             return Array{ x }
         }
 
+        if x.blks != nil && x.bsrc == b {
+            return x.blks
+        }
+
         switch x.dim {
         case VAL, LST:
             blk := b.Branch(VAL)
@@ -757,6 +784,9 @@ func (b *Block) Blockify(a interface{}) Array {
                 }
             }
 
+            x.blks = out
+            x.bsrc = b
+
             return out
         case MAP:
             out := Array { }
@@ -770,6 +800,9 @@ func (b *Block) Blockify(a interface{}) Array {
                     blk = b.Branch(VAL)
                 }
             }
+
+            x.blks = out
+            x.bsrc = b
 
             return out
         }

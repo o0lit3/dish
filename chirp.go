@@ -404,9 +404,9 @@ func dollar(i int) string {
 }
 
 func (b *Block) Run(args ...interface{}) interface{} {
-    if b.free != nil {
-        b.cur = b.free
-        b.free = nil
+    if len(b.free) > 0 {
+        b.cur = b.free[len(b.free) - 1]
+        b.free = b.free[:len(b.free) - 1]
         b.cur.idx = 0
         b.cur.used = 0
         b.cur.stck = b.cur.stck[:0]
@@ -823,7 +823,7 @@ func (blk *Block) Chirp() interface{} {
                 out = Null{ }
             }
 
-            blk.free = blk.cur
+            blk.free = append(blk.free, blk.cur)
             blk.runs = blk.runs[:len(blk.runs) - 1]
 
             if len(blk.runs) > 0 {
@@ -833,8 +833,6 @@ func (blk *Block) Chirp() interface{} {
             return out
         }
     case VAR:
-        blk.cur.vars.Set(t.lit, blk.FindVar(t.lit))
-
         var vrb *Variable
 
         if blk.cur.used < len(blk.cur.vrbs) {
@@ -863,7 +861,7 @@ func (blk *Block) Chirp() interface{} {
         }
     case STR:
         if len(t.args) > 0 {
-            blk.Register(blk.Interpolate(t.lit))
+            blk.Register(blk.Interpolate(t))
         } else {
             blk.Register(String(t.lit))
         }

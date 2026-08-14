@@ -40,6 +40,8 @@ type Position struct {
 type Token struct {
     pos Position
     num *Number
+    ipol *Interp
+    eval *Eval
     tok Lexeme
     opx bool
     mem bool

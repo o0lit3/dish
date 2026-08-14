@@ -33,9 +33,14 @@ func (t *Token) TopBars(blk *Block, a interface{}) interface{} {
 }
 
 func (t *Token) EvalString(blk *Block, x String) interface{} {
-    reader := bufio.NewReader(strings.NewReader(string(x)))
-    parser := process(reader, blk.Branch(VAL))
-    return parser.blk.Run()
+    src := string(x)
+
+    if t.eval == nil || t.eval.scope != blk || t.eval.src != src {
+        parser := process(bufio.NewReader(strings.NewReader(src)), blk.Branch(VAL))
+        t.eval = &Eval{ src: src, blk: parser.blk, scope: blk }
+    }
+
+    return t.eval.blk.Run()
 }
 
 func (t *Token) AverageArray(x Array) interface{} {
