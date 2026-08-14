@@ -239,7 +239,7 @@ func (t *Token) Precedence() int {
 }
 
 func (a *Token) Higher(b *Token) bool {
-    if a.opx && (b.opx || b.tok == MEM) {
+    if (a.opx || len(a.args) > 0) && (b.opx || b.tok == MEM) {
         return true
     }
 
