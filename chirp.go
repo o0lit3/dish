@@ -364,6 +364,24 @@ func (b *Block) Eval(a interface{}) interface{} {
 
         return out
     case Array:
+        unresolved := false
+
+        for _, val := range x {
+            switch val.(type) {
+            case String, Number, Boolean, Null:
+            default:
+                unresolved = true
+            }
+
+            if unresolved {
+                break
+            }
+        }
+
+        if !unresolved {
+            return x
+        }
+
         out := Array{ }
 
         for _, val := range x {
@@ -816,7 +834,7 @@ func (blk *Block) Chirp() interface{} {
                     out = Null{ }
                 }
             case LST:
-                out = blk.Value(blk.cur.stck)
+                out = blk.Value(append(Array{ }, blk.cur.stck...))
             case MAP:
                 out = blk.Value(blk.cur.hash)
             default:

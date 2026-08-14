@@ -1,11 +1,10 @@
 ## https://rosettacode.org/wiki/De_Bruijn_sequences
-## ~15s run time on 2.8 GHz
 
 ('00'..'99').each:a(
   (a[1] >= a[0]).then(
     seq << [a[1] > a[0], a[1] == a[0]].switch[//a, a.first]
     ((a + 1)..'99').each:b(
-      (b[1] > a[0]).then(seq << [//a, //b])
+      (b[1] > a[0]).then(seq << //a << //b)
     )
   )
 )
@@ -22,5 +21,5 @@ check = :q(
   "Last 130 characters:\n$(seq.(-130..-1)*'')"
   "Missing 4 digit PINs: $(seq.check)"
   "Missing 4 digit PINs in reversed string: $(seq.reverse.check)"
-  "Missing 4 digit PINs in revised string: $((seq.4444 = '.', seq).check)"
+  "Missing 4 digit PINs in revised string: $((seq.4443 = '.', seq).check)"
 ].join("\n\n")
