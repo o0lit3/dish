@@ -842,7 +842,7 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.blk.Run())
         }
     case FIN:
-        if len(blk.cur.stck) > 0 {
+        if len(blk.cur.stck) > 0 && (blk.dim != VAL || blk.cur.idx == len(blk.toks)) {
             blk.cur.stck[len(blk.cur.stck) - 1] = blk.Eval(blk.cur.stck[len(blk.cur.stck) - 1])
         }
 
