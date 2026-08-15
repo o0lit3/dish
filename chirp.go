@@ -508,9 +508,9 @@ func (b *Block) Run(args ...interface{}) interface{} {
         nums := b.UsesIndex()
 
         for i, val := range args {
-            if nums {
-                b.cur.vars.Set(dollar(i + 1), val)
-                b.cur.hash[dollar(i + 1)] = val
+            if nums && i >= b.base {
+                b.cur.vars.Set(dollar(i + 1 - b.base), val)
+                b.cur.hash[dollar(i + 1 - b.base)] = val
             }
 
             if i < len(b.args) {

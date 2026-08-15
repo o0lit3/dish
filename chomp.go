@@ -624,16 +624,30 @@ func (l *Lexer) LexVar() string {
 
         switch {
         case r == 0:
-            return lit
+            return l.LexIndex(lit)
         case r == '$' && len(lit) == 0, r == '$' && lit == "$":
             lit = lit + string(r)
         case r == '_', unicode.IsLetter(r), unicode.IsDigit(r):
             lit = lit + string(r)
         default:
             l.Backup()
+            return l.LexIndex(lit)
+        }
+    }
+}
+
+func (l *Lexer) LexIndex(lit string) string {
+    if len(lit) < 3 || lit[0] != '$' {
+        return lit
+    }
+
+    for i := 1; i < len(lit); i++ {
+        if lit[i] < '0' || lit[i] > '9' {
             return lit
         }
     }
+
+    panic(fmt.Sprintf("unsupported positional variable \"%s\" at %s", lit, l.pos))
 }
 
 func (t *Token) LexArgs(l *Lexer) *Token {

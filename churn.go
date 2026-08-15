@@ -110,6 +110,7 @@ type Block struct {
     blks Array
     bsrc *Block
     nums int
+    base int
     toks []*Token
     runs []*Run
     cur *Run
@@ -118,6 +119,7 @@ type Block struct {
 func NewBlock() *Block {
     args := []string{ "true", "false", "null", "inf", "stdin", "$$", "$_", "argv", "$0" }
     def := []interface{}{ Boolean(true), Boolean(false), Null{ }, Number{ inf: INF }, Null{ }, Null{ }, Null{ }, argv, argv }
+    base := len(args)
 
     for i, arg := range argv {
         args = append(args, "$" + strconv.Itoa(i + 1))
@@ -129,6 +131,7 @@ func NewBlock() *Block {
         dim: VAL,
         args: args,
         def: def,
+        base: base,
     }
 }
 
