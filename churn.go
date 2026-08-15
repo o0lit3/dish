@@ -8,6 +8,12 @@ import (
     "unicode"
 )
 
+const (
+    scanned = 1 << iota
+    abit
+    ibit
+)
+
 type Parser struct {
     ops []*Token
     lexr *Lexer
@@ -103,7 +109,7 @@ type Block struct {
     free []*Run
     blks Array
     bsrc *Block
-    zero int
+    nums int
     toks []*Token
     runs []*Run
     cur *Run
@@ -124,10 +130,6 @@ func NewBlock() *Block {
         args: args,
         def: def,
     }
-}
-
-func (b *Block) ReadStdin() bool {
-    return b.Names("stdin") || b.Names("$$") || b.Names("$_")
 }
 
 func (b *Block) BindStdin(val interface{}) {
@@ -168,7 +170,7 @@ func (blk *Block) Assign(a interface{}, b interface{}, local bool) interface{} {
                 }
             case Array:
                 if i < len(y) {
-                   obj = v.Assign(blk, y[i], local)
+                    obj = v.Assign(blk, y[i], local)
                 } else {
                     obj = v.Assign(blk, Null { }, local)
                 }
@@ -640,16 +642,35 @@ func (b *Block) Context(x interface{}) *Block {
     return b;
 }
 
-func (b *Block) UsesArgv() bool {
-    if b.zero == 0 {
-        b.zero = 2
+func (b *Block) Indexed() int {
+    if b.nums == 0 {
+        b.nums = scanned
 
-        if b.Names("$0") {
-            b.zero = 1
+        if b.Names(dollars[0]) {
+            b.nums |= abit
+        }
+
+        for i := 1; i < len(dollars); i++ {
+            if b.Names(dollars[i]) {
+                b.nums |= ibit
+                break
+            }
         }
     }
 
-    return b.zero == 1
+    return b.nums
+}
+
+func (b *Block) UsesIndex() bool {
+    return b.Indexed() & ibit != 0
+}
+
+func (b *Block) UsesArgv() bool {
+    return b.Indexed() & abit != 0
+}
+
+func (b *Block) UsesStdin() bool {
+    return b.Names("stdin") || b.Names("$$") || b.Names("$_")
 }
 
 func (b *Block) Named() int {
@@ -913,7 +934,7 @@ func (p *Parser) Churn() {
         p.blk = p.blk.src
 
         if len(p.ops) > 0 && p.ops[len(p.ops) - 1].tok == OP1 {
-			p.Shift()
+            p.Shift()
         }
     case t.tok == STR || t.tok == NUM || t.tok == VAR:
         p.blk.toks = append(p.blk.toks, t)

@@ -119,7 +119,7 @@ func main() {
         return
     }
 
-    if parser.blk.ReadStdin() {
+    if parser.blk.UsesStdin() {
         parser.blk.BindStdin(stdin())
     }
 
@@ -203,7 +203,7 @@ func print(v interface{}, pretty bool, depth int, line bool, indent bool) {
             } else {
                 print(val, pretty, depth + 1, true, true)
             }
-       }
+        }
 
         if pretty {
             fmt.Print("\033[0m\033[37;1m" + strings.Repeat("  ", depth) + "]")
@@ -396,7 +396,7 @@ func test(test *testing.T, source string) {
     c := 0
     f := 0
 
-    if p.blk.ReadStdin() {
+    if p.blk.UsesStdin() {
         p.blk.BindStdin(stdin())
     }
 
@@ -409,9 +409,9 @@ func test(test *testing.T, source string) {
                 c++
             }
         }
-	  } else {
-		    test.Errorf("%s is a malformed test file", source)
-	  }
+    } else {
+        test.Errorf("%s is a malformed test file", source)
+    }
 
     fmt.Printf("%s passed %d of %d tests\n", source, c, c + f)
 }

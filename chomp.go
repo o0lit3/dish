@@ -39,7 +39,7 @@ type Position struct {
 
 type Token struct {
     pos Position
-    num *Number
+    num interface{}
     ipol *Interp
     eval *Eval
     tok Lexeme

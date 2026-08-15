@@ -19,9 +19,9 @@ As an example, the following curl/**dish** command will output a list of the las
 
 ```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=5" | dish -p -e 'stdin.map:data(data.commit.url)'```
 
-...and the following curl/**dish** command will output a list of unique github contributors in the last 100 commits to the **react** codebase:
+...and the following curl/**dish** command will output a list of unique letters used in the last 3 commit messages:
 
-```curl -s "https://api.github.com/repos/facebook/react/commits?per_page=100" | dish -p -e 'stdin.map:data(data.commit.author.name).uniq'```
+```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=3" | dish -e 'stdin.map:data(//data.commit.message).flat.uniq.sort.join("")'```
 
 ## Output
 By default, **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.

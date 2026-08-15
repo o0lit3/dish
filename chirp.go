@@ -49,6 +49,25 @@ func (b Boolean) Number() Number {
     return NewNumber(0)
 }
 
+const lo = -256
+const hi = 1024
+
+var boxes [hi - lo + 1]interface{}
+
+func init() {
+    for i := range boxes {
+        boxes[i] = Number{ num: int64(i + lo) }
+    }
+}
+
+func Box(n Number) interface{} {
+    if n.val == nil && n.inf == 0 && n.num >= lo && n.num <= hi {
+        return boxes[n.num - lo]
+    }
+
+    return n
+}
+
 func NewNumber(num int) Number {
     return Number{ num: int64(num) }
 }
@@ -486,9 +505,13 @@ func (b *Block) Run(args ...interface{}) interface{} {
             a = Array{ }
         }
 
+        nums := b.UsesIndex()
+
         for i, val := range args {
-            b.cur.vars.Set(dollar(i + 1), val)
-            b.cur.hash[dollar(i + 1)] = val
+            if nums {
+                b.cur.vars.Set(dollar(i + 1), val)
+                b.cur.hash[dollar(i + 1)] = val
+            }
 
             if i < len(b.args) {
                 b.cur.vars.Set(b.args[i], val)
@@ -895,19 +918,19 @@ func (blk *Block) Chirp() interface{} {
         blk.cur.used++
         blk.Register(vrb)
     case NUM:
-        if t.num != nil {
-            blk.Register(*t.num)
-        } else if val, ok := new(big.Rat).SetString(t.lit); ok {
-            if val.IsInt() && val.Num().IsInt64() {
-                num := Number{ num: val.Num().Int64() }
-                t.num = &num
-                blk.Register(num)
+        if t.num == nil {
+            if val, ok := new(big.Rat).SetString(t.lit); ok {
+                if val.IsInt() && val.Num().IsInt64() {
+                    t.num = Box(Number{ num: val.Num().Int64() })
+                } else {
+                    t.num = NewRat(val)
+                }
             } else {
-                blk.Register(NewRat(val))
+                t.num = NewNumber(0)
             }
-        } else {
-            blk.Register(NewNumber(0))
         }
+
+        blk.Register(t.num)
     case STR:
         if len(t.args) > 0 {
             blk.Register(blk.Interpolate(t))

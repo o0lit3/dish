@@ -586,7 +586,7 @@ func (t *Token) AddNumber(x Number, b interface{}) interface{} {
 
         if x.Fits() && y.Fits() {
             if sum := x.num + y.num; (sum > x.num) == (y.num > 0) {
-                return Number{ num: sum }
+                return Box(Number{ num: sum })
             }
         }
 

@@ -28,7 +28,7 @@ func (t *Token) Sharp(a interface{}, b interface{}) interface{} {
     case String:
         switch y := b.(type) {
         case *Block:
-           return t.Sharp(x, y.Run())
+            return t.Sharp(x, y.Run())
         case *Variable:
             return t.Sharp(x, y.Value())
         case String:

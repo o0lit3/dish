@@ -384,7 +384,7 @@ func (t *Token) SubtractNumber(x Number, y Number) interface{} {
 
     if x.Fits() && y.Fits() {
         if dif := x.num - y.num; (dif < x.num) == (y.num > 0) {
-            return Number{ num: dif }
+            return Box(Number{ num: dif })
         }
     }
 

@@ -153,7 +153,7 @@ func (t *Token) Thump(a interface{}, b interface{}) interface{} {
             return t.Thump(x, NewNumber(0))
         }
     case Boolean:
-       return t.Thump(x.Number(), b)
+        return t.Thump(x.Number(), b)
     case Null:
         switch b.(type) {
         case Number:

@@ -439,21 +439,21 @@ func (t *Token) ExcludingEveryNthItem(x Array, y Number) Array {
 }
 
 func (t *Token) ExcludingEveryNthChar(x String, y Number) String {
-   if y.Cmp(NewNumber(0)) == 0 {
-       return x
-   }
+    if y.Cmp(NewNumber(0)) == 0 {
+        return x
+    }
 
-   out := ""
+    out := ""
 
-   for i, c := range x {
+    for i, c := range x {
         if i % y.Int() == 0 {
             continue;
         }
 
         out += string(c)
-   }
+    }
 
-   return String(out)
+    return String(out)
 }
 
 func (t *Token) ExcludeArray(x Array, y Array) Array {

@@ -69,8 +69,12 @@ func (t *Token) Splat(a interface{}, b interface{}) interface{} {
         case Boolean:
             return t.Splat(x, y.Number())
         case Null:
-            if t.lit != "*" && t.lit != "*=" && t.lit != "repeat" {
+            if t.lit != "*" && t.lit != "*=" && t.lit != "repeat" && t.lit != "join" {
                 t.TypeMismatch(x, y)
+            }
+
+            if t.lit == "join" {
+                return t.JoinArray(x, String(""))
             }
 
             return Array{ }
@@ -551,11 +555,11 @@ func (t *Token) MultiplyNumber(x Number, y Number) interface{} {
 
     if x.Fits() && y.Fits() {
         if x.num == 0 || y.num == 0 {
-            return Number{ num: 0 }
+            return Box(Number{ num: 0 })
         }
 
         if prod := x.num * y.num; prod / y.num == x.num {
-            return Number{ num: prod }
+            return Box(Number{ num: prod })
         }
     }
 
