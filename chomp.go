@@ -378,7 +378,9 @@ func (l *Lexer) Lexify() *Token {
         var r rune;
         var err error;
 
-        if l.buf != 0 {
+        buffered := l.buf != 0
+
+        if buffered {
             r = l.buf
             l.buf = 0
         } else {
@@ -394,7 +396,9 @@ func (l *Lexer) Lexify() *Token {
             panic(err)
         }
 
-        l.pos.col++
+        if !buffered {
+            l.pos.col++
+        }
 
         switch r {
         case '"', '\'':
