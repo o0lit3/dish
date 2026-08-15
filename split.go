@@ -178,7 +178,11 @@ func (t *Token) DoubleSplit(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            return NewNumber(t.DivideNumber(x, y).(Number).Int())
+            if div, ok := t.DivideNumber(x, y).(Number); ok {
+                return NewNumber(div.Int())
+            }
+
+            return Null{ }
         case Boolean:
             return t.DoubleSplit(x, y.Number())
         case Null:
@@ -297,6 +301,14 @@ func (t *Token) PartitionArray(x Array, y Number) Array {
     step := y.Int()
     i := 0
 
+    if step == 0 {
+        t.DivideByZero()
+    }
+
+    if step < 0 {
+        t.UnexpectedOperand()
+    }
+
     for i < len(x) {
         if i + step < len(x) {
             out = append(out, x[i:i + step])
@@ -314,6 +326,14 @@ func (t *Token) PartitionString(x String, y Number) Array {
     step := y.Int()
     out := Array{ }
     i := 0
+
+    if step == 0 {
+        t.DivideByZero()
+    }
+
+    if step < 0 {
+        t.UnexpectedOperand()
+    }
 
     for i < len(x) {
         if i + step < len(x) {
@@ -438,6 +458,15 @@ func (t *Token) BreakString(x String, y String) Array {
 func (t *Token) SplitArray(x Array, y Number) Array {
     out := Array{ }
     parts := y.Int()
+
+    if parts == 0 {
+        t.DivideByZero()
+    }
+
+    if parts < 0 {
+        t.UnexpectedOperand()
+    }
+
     size := len(x) / parts + 1
     full := len(x) % parts
     i := 0

@@ -271,19 +271,15 @@ func (t *Token) HashMembers(x Hash, y Array) *Variable {
 func (t *Token) ArrayMember(x Array, y Number) *Variable {
     b := y.Int()
 
-    if b < 0 && len(x) > 0 && len(x) + b < len(x) {
+    if b < 0 && len(x) + b >= 0 {
         return &Variable{ obj: x, idx: len(x) + b }
     }
 
-    if len(x) > 0 && b < len(x) {
+    if b >= 0 {
         return &Variable{ obj: x, idx: b }
     }
 
-    if b < 0 {
-        return &Variable{ obj: x, idx: -b }
-    }
-
-    return &Variable{ obj: x, idx: b }
+    return &Variable{ obj: x, idx: len(x) }
 }
 
 func (t *Token) ArrayMembers(x Array, y Array) *Variable {
@@ -306,19 +302,15 @@ func (t *Token) ArrayMembers(x Array, y Array) *Variable {
 func (t *Token) StringMember(x String, y Number) *Variable {
     b := y.Int()
 
-    if b < 0 && len(x) > 0 && len(x) + b < len(x) {
+    if b < 0 && len(x) + b >= 0 {
         return &Variable{ obj: x, idx: len(x) + b }
     }
 
-    if len(x) > 0 && b < len(x) {
+    if b >= 0 {
         return &Variable{ obj: x, idx: b }
     }
 
-    if b < 0 {
-        return &Variable{ obj: x, idx: -b }
-    }
-
-    return &Variable{ obj: x, idx: b }
+    return &Variable{ obj: x, idx: len(x) }
 }
 
 func (t *Token) StringMembers(x String, y Array) *Variable {
@@ -342,19 +334,15 @@ func (t *Token) NumberMember(x Number, y Number) *Variable {
     b := y.Int()
     bin := x.Array()
 
-    if b < 0 && len(bin) > 0 && len(bin) + b < len(bin) {
+    if b < 0 && len(bin) + b >= 0 {
         return &Variable{ obj: x, idx: len(bin) + b }
     }
 
-    if len(bin) > 0 && b < len(bin) {
+    if b >= 0 {
         return &Variable{ obj: x, idx: b }
     }
 
-    if b < 0 {
-        return &Variable{ obj: x, idx: -b }
-    }
-
-    return &Variable{ obj: x, idx: b }
+    return &Variable{ obj: x, idx: len(bin) }
 }
 
 func (t *Token) NumberMembers(x Number, y Array) *Variable {

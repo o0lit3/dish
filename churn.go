@@ -911,6 +911,11 @@ func (p *Parser) Churn() {
 
         if t.tok == OPX || t.tok == MEM {
             t.tok = p.Operator()
+
+            if t.tok == OP1 && !t.ShortCircuit() {
+                p.blk.toks = append(p.blk.toks, t)
+                return
+            }
         }
 
         p.ops = append(p.ops, t)

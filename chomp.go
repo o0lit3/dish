@@ -136,6 +136,10 @@ func (t *Token) UnknownOperator() {
     panic(fmt.Sprintf("no binary operator or member named \"%s\" at %s", t.lit, t.pos))
 }
 
+func (t *Token) MissingSeparator() {
+    panic(fmt.Sprintf("missing separator before \"%s\" at %s", t.lit, t.pos))
+}
+
 func (t *Token) UnexpectedOperand() {
     panic(fmt.Sprintf("unexpected operand for \"%s\" at %s", t.lit, t.pos))
 }
@@ -358,6 +362,13 @@ func (l *Lexer) Reset() Position {
 
 func (l *Lexer) Tokenize(pos Position, tok Lexeme, lit string) *Token {
     token := &Token { pos: pos, tok: tok, opx: tok == OPX || tok == MEM, mem: tok == MEM, lit: lit }
+
+    if tok == NUM || tok == STR || tok == VAR {
+        if len(l.toks) > 0 && l.toks[len(l.toks) - 1].Term() && !(tok == STR && l.toks[len(l.toks) - 1].tok == STR) {
+            token.MissingSeparator()
+        }
+    }
+
     l.toks = append(l.toks, token)
     return token
 }
@@ -409,6 +420,10 @@ func (l *Lexer) Lexify() *Token {
             s := l.pos
             n := l.Chomp()
 
+            for n == ' ' || n == '\t' || n == '\r' {
+                n = l.Chomp()
+            }
+
             switch {
             case n == 0:
                 s.UnexpectedToken(r)
@@ -416,7 +431,7 @@ func (l *Lexer) Lexify() *Token {
                 return l.Tokenize(s, OP2, string(r) + string(n))
             case unicode.IsDigit(n):
                 if len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term() {
-                    return l.Tokenize(l.Backup(), NUM, l.LexNum(false))
+                    return l.Tokenize(l.Backup(), NUM, "0." + l.LexNum(true))
                 }
 
                 return l.Tokenize(l.Backup(), OPX, l.LexNum(true))
@@ -424,6 +439,8 @@ func (l *Lexer) Lexify() *Token {
                 return l.Tokenize(l.Backup(), OPX, l.LexVar()).LexArgs(l)
             case n == '"', n == '\'':
                 return l.Tokenize(l.pos, MEM, l.LexStr(n))
+            case n == '\n', n == ')', n == ']', n == '}', n == ',', n == ';':
+                s.UnexpectedToken(r)
             default:
                 return l.Tokenize(l.Backup(), OPX, "").LexArgs(l)
             }

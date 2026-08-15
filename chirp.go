@@ -348,7 +348,7 @@ func (b *Block) Value(a interface{}) interface{} {
                 return out
             }
 
-            if x.idx < len(obj) {
+            if x.idx >= 0 && x.idx < len(obj) {
                 return b.Value(obj[x.idx])
             }
 
@@ -366,7 +366,7 @@ func (b *Block) Value(a interface{}) interface{} {
                 return String(out)
             }
 
-            if x.idx < len(obj) {
+            if x.idx >= 0 && x.idx < len(obj) {
                 return String(string(obj[x.idx]))
             }
 
@@ -388,7 +388,7 @@ func (b *Block) Value(a interface{}) interface{} {
                 return NewNumber(int(val))
             }
 
-            if x.idx < len(bin) {
+            if x.idx >= 0 && x.idx < len(bin) {
                 return Boolean(bin[len(bin) - x.idx - 1] == '1').Number()
             }
 

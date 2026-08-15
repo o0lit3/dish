@@ -219,6 +219,9 @@ func (t *Token) EveryNthChar(x String, y Number) String {
 }
 
 func (t *Token) ModNumber(x Number, y Number) interface{} {
+    if y.inf == 0 && y.Cmp(NewNumber(0)) == 0 {
+        t.DivideByZero()
+    }
     if x.inf == INF || x.inf == -INF {
         return Null{ }
     }

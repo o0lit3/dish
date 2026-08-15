@@ -477,7 +477,7 @@ func (t *Token) RtruncArray(x Array, y Number) Array {
     out := x
     i := y.Int()
 
-    for i > 0 {
+    for i > 0 && len(out) > 0 {
         out = out[:len(out) - 1]
         i--
     }
@@ -493,7 +493,7 @@ func (t *Token) LtruncArray(x Array, y Number) Array {
     out := x
     i := y.Int()
 
-    for i > 0 {
+    for i > 0 && len(out) > 0 {
         out = out[1:]
         i--
     }
@@ -541,7 +541,7 @@ func (t *Token) RtruncString(x String, y Number) String {
     out := x
     i := y.Int()
 
-    for i > 0 {
+    for i > 0 && len(out) > 0 {
         out = out[:len(out) - 1]
         i--
     }
@@ -557,7 +557,7 @@ func (t *Token) LtruncString(x String, y Number) String {
     out := x
     i := y.Int()
 
-    for i > 0 {
+    for i > 0 && len(out) > 0 {
         out = out[1:]
         i--
     }

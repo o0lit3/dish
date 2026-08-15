@@ -201,7 +201,11 @@ func (t *Token) ZipArray(x Array, y Array) Array {
     }
 
     for i, val := range y {
-        out[i] = append(out[i].(Array), val)
+        if i < len(out) {
+            out[i] = append(out[i].(Array), val)
+        } else {
+            out = append(out, Array{ val })
+        }
     }
 
     return out
@@ -260,8 +264,12 @@ func (t *Token) SortString(x String, y *Block) String {
 func (t *Token) RotateArray(x Array, y Number) Array {
     out := Array { }
 
-    e := -y.Int()
-    i := -y.Int()
+    if len(x) == 0 {
+        return out
+    }
+
+    e := -(y.Int() % len(x))
+    i := -(y.Int() % len(x))
 
     if i < 0 {
         e = len(x) + i
@@ -307,8 +315,21 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
     if y.Cmp(NewNumber(0)) == -1 || !y.Rat().IsInt() {
         x, _ := x.Rat().Float64()
         y, _ := y.Rat().Float64()
+        val := math.Pow(x, y)
 
-        return NewRat(new(big.Rat).SetFloat64(math.Pow(x, y)))
+        if math.IsInf(val, 1) {
+            return Number{ inf: INF }
+        }
+
+        if math.IsInf(val, -1) {
+            return Number{ inf: -INF }
+        }
+
+        if math.IsNaN(val) {
+            return Null{ }
+        }
+
+        return NewRat(new(big.Rat).SetFloat64(val))
     }
 
     exp := int64(0)

@@ -77,6 +77,8 @@ Member access in **dish** is indicated by the special `.` operator which precede
 
 `dish -e 'a = 12; a.1'` outputs the 0th-indexed 2nd least-significant bit (disambiguated by the variable name `a`): `0`
 
+`dish -e '12 . 1'` outputs that same bit, since whitespace between the `.` operator and its member expression is insignificant (and a floating point number can not contain a space): `0`
+
 Because **dish** variables can not begin with numbers, numeric index members such as `[1, 2, 3].1` or `'foobar'.3` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted to avoid already-defined variable names. Compare the following:
 
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a."foo"'` outputs `1`
