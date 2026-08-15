@@ -379,6 +379,12 @@ func (v *Variable) Assign(blk *Block, b interface{}, local bool) interface{} {
         }
     default:
         switch y := b.(type) {
+        case *Block:
+            if len(y.args) == 0 {
+                b = y.Run()
+            }
+
+            blk.cur.vars.Set(v.nom, b)
         case *Variable:
             blk.cur.vars.Set(v.nom, y.Value())
         default:
