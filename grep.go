@@ -510,6 +510,13 @@ func (t *Token) RatioNumber(x Number) Hash {
         }
     }
 
+    if x.Fits() {
+        return Hash{
+            "num": x,
+            "denom": NewNumber(1),
+        }
+    }
+
     return Hash{
         "num": NewRat(new(big.Rat).SetInt(x.Rat().Num())),
         "denom": NewRat(new(big.Rat).SetInt(x.Rat().Denom())),

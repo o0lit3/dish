@@ -1,5 +1,5 @@
 package main
-import("strings"; "math/big")
+import("math"; "strings"; "math/big")
 
 func (t *Token) Split(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -371,6 +371,10 @@ func (t *Token) DivideNumber(x Number, y Number) interface{} {
     }
 
     if y.Cmp(NewNumber(0)) != 0 {
+        if x.Fits() && y.Fits() && !(x.num == math.MinInt64 && y.num == -1) && x.num % y.num == 0 {
+            return Number{ num: x.num / y.num }
+        }
+
         return NewRat(new(big.Rat).Quo(x.Rat(), y.Rat()))
     } else {
         switch x.Cmp(NewNumber(0)) {

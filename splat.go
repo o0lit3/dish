@@ -1,5 +1,5 @@
 package main
-import("math/big")
+import("math"; "math/big")
 
 func (t *Token) Splat(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
@@ -451,7 +451,7 @@ func (t *Token) RepeatArray(x Array, y Number) Array {
         }
     }
 
-    if !y.Rat().IsInt() {
+    if !y.Fits() && !y.Rat().IsInt() {
         val, _ := y.Rat().Float64()
         rem := int(float64(len(x)) * (val - float64(y.Int())))
 
@@ -474,7 +474,7 @@ func (t *Token) RepeatString(x String, y Number) String {
         out += string(x)
     }
 
-    if !y.Rat().IsInt() {
+    if !y.Fits() && !y.Rat().IsInt() {
         val, _ := y.Rat().Float64()
         rem := int(float64(len(x)) * (val - float64(y.Int())))
 
@@ -679,8 +679,8 @@ func (t *Token) PermsString(x String) Array {
 }
 
 func (t *Token) ChooseNumber(x Number, y Number) Number {
-    a := new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom()).Int64()
-    b := new(big.Int).Quo(y.Rat().Num(), y.Rat().Denom()).Int64()
+    a := int64(x.Int())
+    b := int64(y.Int())
 
     return NewRat(new(big.Rat).SetInt(new(big.Int).Binomial(a, b)))
 }
@@ -712,6 +712,32 @@ func (t *Token) MultiplyArray(x Array) interface{} {
 }
 
 func (t *Token) DivisorsNumber(x Number) Array {
+    if x.Fits() && x.num != math.MinInt64 {
+        n := x.num
+
+        if n < 0 {
+            n = -n
+        }
+
+        if n < 2 {
+            return Array { }
+        }
+
+        out := Array { NewNumber(1) }
+
+        for j := int64(2); j * j <= n; j++ {
+            if n % j == 0 {
+                out = append(out, Number{ num: j })
+
+                if div := n / j; div != j {
+                    out = append(out, Number{ num: div })
+                }
+            }
+        }
+
+        return t.SortArray(out, nil)
+    }
+
     i := new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom())
     j := big.NewInt(1)
 

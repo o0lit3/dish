@@ -311,12 +311,53 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
         return NewRat(new(big.Rat).SetFloat64(math.Pow(x, y)))
     }
 
-    out := NewNumber(1)
-    idx := NewNumber(0)
+    exp := int64(0)
 
-    for idx.Cmp(y) == -1 {
-        out = NewRat(out.Rat().Mul(out.Rat(), x.Rat()))
-        idx = NewRat(idx.Rat().Add(idx.Rat(), NewNumber(1).Rat()))
+    if y.Fits() {
+        exp = y.num
+    } else if num := y.Rat().Num(); num.IsInt64() {
+        exp = num.Int64()
+    } else {
+        out := NewNumber(1)
+        idx := NewNumber(0)
+
+        for idx.Cmp(y) == -1 {
+            out = NewRat(out.Rat().Mul(out.Rat(), x.Rat()))
+            idx = NewRat(idx.Rat().Add(idx.Rat(), NewNumber(1).Rat()))
+        }
+
+        return out
+    }
+
+    if x.Fits() {
+        val := int64(1)
+        fits := true
+
+        for i := int64(0); i < exp; i++ {
+            if x.num == 0 {
+                val = 0
+                break
+            }
+
+            prod := val * x.num
+
+            if prod / x.num != val {
+                fits = false
+                break
+            }
+
+            val = prod
+        }
+
+        if fits {
+            return Number{ num: val }
+        }
+    }
+
+    out := NewNumber(1)
+
+    for i := int64(0); i < exp; i++ {
+        out = NewRat(new(big.Rat).Mul(out.Rat(), x.Rat()))
     }
 
     return out
