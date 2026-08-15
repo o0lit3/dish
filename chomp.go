@@ -136,6 +136,10 @@ func (t *Token) UnknownOperator() {
     panic(fmt.Sprintf("no binary operator or member named \"%s\" at %s", t.lit, t.pos))
 }
 
+func (t *Token) UnexpectedItem(a interface{}) {
+    panic(fmt.Sprintf("unexpected %s item for \"%s\" at %s", TypeName(a), t.lit, t.pos))
+}
+
 func (t *Token) MissingSeparator() {
     panic(fmt.Sprintf("missing separator before \"%s\" at %s", t.lit, t.pos))
 }

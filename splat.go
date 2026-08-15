@@ -708,7 +708,7 @@ func (t *Token) MultiplyArray(x Array) interface{} {
         case Null:
             out = NewNumber(0)
         default:
-            t.TypeMismatch(out, val)
+            t.UnexpectedItem(val)
         }
     }
 

@@ -611,7 +611,7 @@ func (t *Token) SumArray(x Array) interface{} {
             out = t.AddNumber(out, val.Number()).(Number)
         case Null:
         default:
-            t.TypeMismatch(out, val)
+            t.UnexpectedItem(val)
         }
     }
 

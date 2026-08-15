@@ -29,6 +29,14 @@ type Run struct {
     vars Vars
 }
 
+func (r *Run) Bind(nom string, val interface{}, keep bool) {
+    r.vars.Set(nom, val)
+
+    if keep {
+        r.hash[nom] = val
+    }
+}
+
 type Vars struct {
     nom []string
     val []interface{}
@@ -692,6 +700,30 @@ func (b *Block) Named() int {
     }
 
     return named
+}
+
+func (b *Block) Bound(nom string) bool {
+    for _, arg := range b.args {
+        if arg == nom {
+            return true
+        }
+    }
+
+    if nom == "$$" || nom == "$_" {
+        return true
+    }
+
+    if len(nom) > 1 && nom[0] == '$' {
+        for i := 1; i < len(nom); i++ {
+            if nom[i] < '0' || nom[i] > '9' {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    return false
 }
 
 func (b *Block) Names(nom string) bool {

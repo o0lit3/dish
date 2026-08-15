@@ -404,6 +404,24 @@ func (b *Block) Value(a interface{}) interface{} {
 func (b *Block) Eval(a interface{}) interface{} {
     switch x := a.(type) {
     case Hash:
+        unresolved := false
+
+        for _, val := range x {
+            switch val.(type) {
+            case String, Number, Boolean, Null:
+            default:
+                unresolved = true
+            }
+
+            if unresolved {
+                break
+            }
+        }
+
+        if !unresolved {
+            return x
+        }
+
         out := Hash{ }
 
         for key, val := range x {
@@ -488,15 +506,15 @@ func (b *Block) Run(args ...interface{}) interface{} {
 
     b.runs = append(b.runs, b.cur)
 
+    keep := b.dim != MAP
+
     if len(args) > 0 {
         if b.obj != nil {
-            b.cur.vars.Set("$$", b.obj)
-            b.cur.hash["$$"] = b.obj
+            b.cur.Bind("$$", b.obj, keep)
         }
 
         if b.top != nil {
-            b.cur.vars.Set("$_", b.top)
-            b.cur.hash["$_"] = b.top
+            b.cur.Bind("$_", b.top, keep)
         }
 
         var a Array
@@ -509,13 +527,11 @@ func (b *Block) Run(args ...interface{}) interface{} {
 
         for i, val := range args {
             if nums && i >= b.base {
-                b.cur.vars.Set(dollar(i + 1 - b.base), val)
-                b.cur.hash[dollar(i + 1 - b.base)] = val
+                b.cur.Bind(dollar(i + 1 - b.base), val, keep)
             }
 
             if i < len(b.args) {
-                b.cur.vars.Set(b.args[i], val)
-                b.cur.hash[b.args[i]] = val
+                b.cur.Bind(b.args[i], val, keep)
             }
 
             if a != nil {
@@ -525,8 +541,7 @@ func (b *Block) Run(args ...interface{}) interface{} {
 
         if a != nil {
             if !b.cur.vars.Has("null") {
-                b.cur.vars.Set("$0", a)
-                b.cur.hash["$0"] = a
+                b.cur.Bind("$0", a, keep)
             }
         }
     }
@@ -534,8 +549,7 @@ func (b *Block) Run(args ...interface{}) interface{} {
     i := len(args)
 
     for i < len(b.args) {
-        b.cur.vars.Set(b.args[i], Null{ })
-        b.cur.hash[b.args[i]] = Null{ }
+        b.cur.Bind(b.args[i], Null{ }, keep)
         i = i + 1
     }
 
@@ -872,7 +886,7 @@ func (blk *Block) Chirp() interface{} {
         if blk.cur.idx == len(blk.toks) {
             if blk.src != nil && blk.src.cur != nil {
                 for i, key := range blk.cur.vars.nom {
-                    if _, ok := blk.cur.hash[key]; !ok {
+                    if _, ok := blk.cur.hash[key]; !ok && !blk.Bound(key) {
                         blk.src.cur.vars.Set(key, blk.cur.vars.val[i])
                     }
                 }
@@ -890,7 +904,13 @@ func (blk *Block) Chirp() interface{} {
             case LST:
                 out = blk.Value(append(Array{ }, blk.cur.stck...))
             case MAP:
-                out = blk.Value(blk.cur.hash)
+                hsh := Hash{ }
+
+                for key, val := range blk.cur.hash {
+                    hsh[key] = val
+                }
+
+                out = blk.Value(hsh)
             default:
                 out = Null{ }
             }

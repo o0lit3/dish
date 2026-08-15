@@ -54,7 +54,9 @@ Logic blocks are represented by a colonized list of arguments followed by any ot
 
 In cases where naming arguments is overkill, **dish** also supports default variables in regards to Logic Blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block, `$0` is the entire argument Array, and `$$` is the object on which the Logic block is invoked.
 
-For example, `dish -e 'a=[1, 2, 3]; a.map:n:i(n+a.(i+1))'` can be rewritten as `dish -e '[1, 2, 3].map:($1+$$.++$2)'`, outputting `[3, 5, 3]`, which is the sum of each item (`n` or `$1`) plus the next item (`a.(i+1)` or `$$.++$2`), where the last array item gets summed with the nonexistent 4th item (null).
+For example, `dish -e 'a = [1, 2, 1] >> 0; a.map:n:i(n + a.(i + 1))'` can be rewritten as `dish -e '([1, 2, 1] >> 0).map:($1 + $$.($2 + 1))'`, outputting `[1, 3, 3, 1]`, the row of Pascal's triangle that follows `[1, 2, 1]`. Each item (`n` or `$1`) is summed with the item after it (`a.(i + 1)` or `$$.($2 + 1)`), where `$$` refers to the same Array as the named variable `a`, and the item past the end of the Array is null.
+
+Because `$$` is the object itself, it also gives a Logic block access to aggregates of that object while iterating over it. For example, `dish -e 'a = [1, 2, 5]; a.map:n(n * 100 / a.sum)'` can be rewritten as `dish -e '[1, 2, 5].map:($1 * 100 / $$.sum)'`, outputting `[12.5, 25, 62.5]`, each item as a percentage of the Array's total.
 
 Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$$` (and its alias `$_`) refers to STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments of `argv`.
 
