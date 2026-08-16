@@ -248,25 +248,7 @@ func (a Array) Hash() Hash {
     return out
 }
 
-func (h Hash) String() string {
-    var out []string
-    var keys []string
-
-    for key := range h {
-        keys = append(keys, key)
-    }
-
-    sort.Strings(keys)
-
-    for _, key := range keys {
-        out = append(out, fmt.Sprintf("%s: %v", String(key), h[key]))
-    }
-
-    return "{" + strings.Join(out, ", ") + "}"
-}
-
-func (h Hash) Array() Array {
-    out := Array{ }
+func (h Hash) Keys() []string {
     keys := []string{ }
 
     for key := range h {
@@ -275,7 +257,23 @@ func (h Hash) Array() Array {
 
     sort.Strings(keys)
 
-    for _, key := range keys {
+    return keys
+}
+
+func (h Hash) String() string {
+    var out []string
+
+    for _, key := range h.Keys() {
+        out = append(out, fmt.Sprintf("%s: %v", String(key), h[key]))
+    }
+
+    return "{" + strings.Join(out, ", ") + "}"
+}
+
+func (h Hash) Array() Array {
+    out := Array{ }
+
+    for _, key := range h.Keys() {
         out = append(out, h[key])
     }
 
@@ -649,6 +647,8 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(val)
         case "digit", "letter", "consonant", "vowel", "upper", "lower", "space", "ord", "chr":
             blk.Register(t.Strings(a))
+        case "\\", "escape":
+            blk.Register(t.Escape(a))
         case "rand", "sqrt", "log", "sin", "cos", "tan", "asin", "acos", "atan", "prime":
             blk.Register(t.Numbers(a))
         default:

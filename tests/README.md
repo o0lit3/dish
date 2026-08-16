@@ -165,8 +165,8 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | String `~` :(Block)      | `a.none(...)`       | `'rsvp' ~ :c(c.vowel)`      | `true`                 |
 |          | Array `~` Array          | `a.exclusion(b)`    | `[1, 2, 3] ~ [4, 3, 2]`     | `[1, 4]`               |
 |          | Array `~` :(Block)       | `a.none(...)`       | `[2, 4, 6] ~ :x(x % 2)`     | `true`                 |
-|          | Hash `~` Hash            | `a.exclusion(b)`    | `{x: 1} ~ {y: 2}`           | `{}`                   |
-|          | Hash `~` :(Block)        | `a.none(...)`       | `{x: 1, y: 2} ~ :(x % 2)`   | `false`                |
+|          | Hash `~` Hash            | `a.exclusion(b)`    | `{x: 1, y: 2} ~ {y: 2}`     | `{"x": 1}`             |
+|          | Hash `~` :(Block)        | `a.none(...)`       | `{x: 1, y: 2} ~ :($1 % 2)`  | `false`                |
 |          |                          |                     |                             |                        |
 | `~`      | `~`Number                | `a.bnot`            | `~5`                        | `-6`                   |
 | (Unary)  | `~`String                | `a.caseflip`        | `~'bInArY'`                 | `"BiNaRy"`             |
@@ -176,7 +176,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 | `<<`     | Number `<<` Number       | `a.lshift(b)`       | `5 << 3`                    | `40`                   |
 |          | [Also See Assignment Ops](#assignment-operators)                         | | |                        |
 |          |                          |                     |                             |                        |
-| `>>`     | Number `>>` Number       | `a.rshift(b) `      | `40 >> 3`                   | `5`                    |
+| `>>`     | Number `>>` Number       | `a.rshift(b)`       | `40 >> 3`                   | `5`                    |
 |          | [Also See Assignment Ops](#assignment-operators)                         | | |                        |
 
 ## Binary Operators
@@ -202,7 +202,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | String `-` :(Block)  | `a.reduce:(...)`    | `'bin' - :x:y(x + '-' + y)`    | `"b-i-n"`                  |
 |          | Array `-` Array      | `a.remove(b)`       | `[1, 2, 2, 3, 4] - [2, 3]`     | `[1, 2, 4]`                |
 |          | Array `-` :(Block)   | `a.reduce:v(b)`     | `[2, 3] - :x:y(x * y)`         | `6`                        |
-|          | Hash `-` Hash        | `a.remove(b)`       | `{x: 1, y: 2} - {x}`           | `{"y": 2}`                 |
+|          | Hash `-` Hash        | `a.remove(b)`       | `{x: 1, y: 2} - {x: 1}`        | `{"y": 2}`                 |
 |          | Hash `-` :(Block)    | `a.reduce:(b)`      | `{x: 2, y: 3} - :x:y(x + y)`   | `5`                        |
 |          |                      |                     |                                |                            |
 | `*`      | Number `*` Number    | `a.multiply(b)`     | `10 * 20`                      | `200`                      |
@@ -217,7 +217,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | Array `*` Number     | `a.repeat(b)`       | `[1, 2, 3] * 2`                | `[1, 2, 3, 1, 2, 3]`       |
 |          | Array `*` String     | `a.join(b)`         | `[1, 2, 3] * ' '`              | `"1 2 3"`                  |
 |          | Array `*` Array      | `a.dot(b)`          | `[1, 2, 3] * [1, 2, 3]`        | `[1, 4, 9]`                |
-|          | Array `*` :(Block)   | `a.map:(...)`       | `[1, 2, 3] * :x(x * 2)`        | `[1, 4, 6]`                |
+|          | Array `*` :(Block)   | `a.map:(...)`       | `[1, 2, 3] * :x(x * 2)`        | `[2, 4, 6]`                |
 |          | Hash `*` String      | `a.join(b)`         | `{x: 1, y: 2} * ' '`           | `"1 2"`                    |
 |          | Hash `*` Hash        | `a.dot(b)`          | `{x: 1, y: 2} * {y: 4}`        | `{"y": 8}`                 |
 |          | Hash `*` :(Block)    | `a.map:(...)`       | `{x: 1, y: 2} * :x(x * 2)`     | `{"x": 2, "y": 4}`         |
@@ -237,7 +237,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 | `//`     | Number `//` Number   | `a.idiv(b)`         | `250 // 24`                    | `10`                       |
 |          | String `//` Number   | `a.partition(b)`    | `'binary' // 2`                | `["bi", "na", "ry"]`       |
 |          | String `//` String   | `a.partition(b)`    | `'binary' // 'n'`              | `["bin", "ary"]`           |
-|          | String `//` :(Block) | `a.group:(...)`     | `'Egg' // :c(c.ord)`           | `{"103": "gg", "69": "e"}` |
+|          | String `//` :(Block) | `a.group:(...)`     | `'Egg' // :c(c.ord)`           | `{"103": "gg", "69": "E"}` |
 |          | Arary `//` Number    | `a.partition(b)`    | `[1, 2, 3, 4, 5] // 2`         | `[[1, 2], [3, 4], [5]]`    |
 |          | Array `//` :(Block)  | `a.group:(...)`     | `[2, 3, 4] // :x(x % 2)`       | `{"0": [2, 4], "1": [3]}`  |
 |          |                      |                     |                                |                            |
@@ -249,7 +249,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | Array `%` Number     | `a.every(b)`        | `[1, 2, 3, 4, 5, 6, 7] % 3`    | `[1, 4, 7]`                |
 |          | Array `%` Array      | `a.filter(b)`       | `[1, 1, 2, 3] % [1, 2]`        | `[1, 1, 2]`                |
 |          | Array `%` :(Block)   | `a.filter:(...)`    | `[1, 1, 2, 3] % :x(x % 2)`     | `[1, 1, 3]`                |
-|          | Hash `%` :(Block)    | `a.filter:(...)`    | `{x: 1, y: 2} % :x(x % 2)`     | `{x: 1}`                   |
+|          | Hash `%` :(Block)    | `a.filter:(...)`    | `{x: 1, y: 2} % :x(x % 2)`     | `{"x": 1}`                 |
 |          |                      |                     |                                |                            |
 | `%%`     | Number `%%` Number   | `a.imod(b)`         | `3.5 %% 2`                     | `1`                        |
 |          | String `%%` Number   | `a.xevery(b)`       | `'binary' %% 2`                | `"iay"`                    |
@@ -259,7 +259,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | Array `%%` Number    | `a.xevery(b)`       | `[1, 2, 3, 4, 5, 6, 7] %% 3`   | `[2, 3, 5, 6]`             |
 |          | Array `%%` Array     | `a.without(b)`      | `[1, 2, 2, 3, 4] %% [2, 3]`    | `[1, 4]`                   |
 |          | Array `%%` :(Block)  | `a.without:(...)`   | `[1, 1, 2, 3] %% :x(x % 2)`    | `[2]`                      |
-|          | Hash `%%` :(Block)   | `a.without:(...)`   | `{x: 1, y: 2} %% :x(x % 2)`    | `{x: 2}`                   |
+|          | Hash `%%` :(Block)   | `a.without:(...)`   | `{x: 1, y: 2} %% :x(x % 2)`    | `{"y": 2}`                 |
 |          |                      |                     |                                |                            |
 | `^`      | Number `^` Number    | `a.pow(b)`          | `2 ^ 3`                        | `8`                        |
 |          | String `^` Number    | `a.rotate(b)`       | `'binary' ^ 2`                 | `"rybina"`                 |
@@ -277,7 +277,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | Number`.`:(Block)    | `a.call:(...)`      | `12.:n(n^2)`                   | `144`                      |
 |          | String`.`Number      | `a.at(b)`           | `'binary'.1`                   | `"i"`                      |
 |          | String`.`Array       | `a.subset(b)`       | `'binary'.[0, 3, 4]`           | `"bar"`                    |
-|          | String`.`:(Block)    | `a.call:(...)`      | `'binary'.:s(s.uc)`            | `"BINARY`                  |
+|          | String`.`:(Block)    | `a.call:(...)`      | `'binary'.:s(s.uc)`            | `"BINARY"`                 |
 |          | Array`.`Number       | `a.at(b)`           | `[1, 2, 3].2`                  | `3`                        |
 |          | Array`.`Array        | `a.items(b)`        | `[1, 2, 3].[0, 2]`             | `[1, 3]`                   |
 |          | Array`.`:(Block)     | `a.call:(...)`      | `[1, 2, 3].:a(*a)`             | `6`                        |
@@ -370,7 +370,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `//`Array               | `a.flat`      | `//[1, [2, 3], 4]`       | `[1, 2, 3, 4]`                 |
 |          | `//`Hash                | `a.flat`      | `//{x: 1, y: 2}`         | `["x", 1, "y", 2]`             |
 |          |                         |               |                          |                                |
-| `%`      | `%`Number               | `a.ratio`     | `%3.14`                  | `{"num": 157, "denom": 50}`    |
+| `%`      | `%`Number               | `a.ratio`     | `%3.14`                  | `{"denom": 50, "num": 157}`    |
 |          | `%`String               | `a.hash`      | `%'x'`                   | `{"x": true}`                  |
 |          | `%`Array                | `a.hash`      | `%[2]`                   | `{"2": true}`                  |
 |          | `%`Hash                 | `a.hash`      | `%{x: 1, y: 2}`          | `{"x": 1, "y": 2}`             |
@@ -406,7 +406,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `<`Number               | `a.int`       | `-3.14.int`              | `-3`                           |
 |          | `<`String               | `a.lc`        | `<'BINARY'`              | `"binary"`                     |
 |          | `<`Array                | `a.min`       | `<[1, 2, 3]`             | `1`                            |
-|          | `<`Hash                 | `a.min`       | `<{x: 1, y: 2}`          | `1      `                      |
+|          | `<`Hash                 | `a.min`       | `<{x: 1, y: 2}`          | `1`                            |
 |          |                         |               |                          |                                |
 | `>`      | `>`Number               | `a.ceil`      | `>3.14`                  | `4`                            |
 |          | `>`String               | `a.uc`        | `>'binary'`              | `"BINARY"`                     |
@@ -421,14 +421,17 @@ All characters that are outside the above mentioned character ranges are ignored
 | `~`      | [See Bitwise Ops](#bitwise-operators) | |                          |                                |
 |          |                         |               |                          |                                |
 | `&`      | `&`Number               | `a.popcount`  | `&12`                    | `2`                            |
-|          | `&`String               | `a.compact`   | `&'Hello World'`         | `"HelloWorld`                  |
-|          | `&`Array                | `a.compact`   | `&[null, 1, 2]`          | `[1, 2]`                       |
-|          | `&`Hash                 | `a.compact`   | `&{a: 0, b: 1, c: null}` | `{"b": 1}`                     |
+|          | `&`String               | `a.compact`   | `&'Hello World'`         | `"HelloWorld"`                 |
+|          | `&`Array                | `a.compact`   | `&[null, 0, 2]`          | `[0, 2]`                       |
+|          | `&`Hash                 | `a.compact`   | `&{a: 0, b: 1, c: null}` | `{"a": 0, "b": 1}`             |
 |          |                         |               |                          |                                |
 | `\|`     | `\|`Number              | `a.abs`       | `\|-3`                   | `3`                            |
 |          | `\|`String              | `a.uniq`      | `\|'bookkeeper'`         | `"bokepr"`                     |
 |          | `\|`Array               | `a.uniq`      | `\|[1, 1, 2, 3, 3]`      | `[1, 2, 3]`                    |
 |          | `\|`Hash                | `a.uniq`      | `\|{x: 1, y: 1, z: 2}`   | `{"x": 1, "z": 2}`             |
+|          |                         |               |                          |                                |
+| `\`      | `\`String               | `a.escape`    | `\'a(b'`                 | `"a\(b"`                       |
+|          | `\`Number               | `a.escape`    | `\3.14`                  | `"3\.14"`                      |
 
 **Nota bene**: the cast operators `+` (Number), `*` (String), `/` (Array), and `%` (Hash) always return a *new* object of the target type, so casting a value to the type it already has is how a value is copied: `b = "banana"; c = *b; c.0 = "x"` leaves `b` as `"banana"`, where `c = b` would have changed both. That copy is one level deep--the members of `/[[1], [2]]` are the same two Arrays held by the original.
 

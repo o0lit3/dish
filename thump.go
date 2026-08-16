@@ -208,7 +208,7 @@ func (t *Token) TopThump(a interface{}) interface{} {
 func (t *Token) FindInHash(x Hash, y *Block) Array {
     out := Array { }
 
-    for key := range x {
+    for _, key := range x.Keys() {
         if Boolify(y.Topic(x[key]).Run(x[key], String(key))) {
             out = append(out, String(key))
         }
@@ -244,7 +244,7 @@ func (t *Token) FindInString(x String, y *Block) Array {
 func (t *Token) SearchHash(x Hash, y interface{}) Array {
     out := Array { }
 
-    for key := range x {
+    for _, key := range x.Keys() {
         if Equals(x[key], y) {
             out = append(out, String(key))
         }
@@ -333,7 +333,7 @@ func (t *Token) RoundNumber(x Number, y Number) Number {
 func (t *Token) HashKeys(x Hash) Array {
     out := Array { }
 
-    for key := range x {
+    for _, key := range x.Keys() {
         out = append(out, String(key))
     }
 

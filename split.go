@@ -517,9 +517,9 @@ func (t *Token) SectionString(x String, y Number) Array {
 func (t *Token) FlattenHash(x Hash) Array {
     out := Array{ }
 
-    for key, val := range x {
+    for _, key := range x.Keys() {
         out = append(out, String(key))
-        out = append(out, val)
+        out = append(out, x[key])
     }
 
     return out

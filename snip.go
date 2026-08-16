@@ -1,4 +1,24 @@
 package main
+import("regexp")
+
+func (t *Token) Escape(a interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Escape(x.Run())
+    case *Variable:
+        return t.Escape(x.Value())
+    case String:
+        return String(regexp.QuoteMeta(string(x)))
+    case Number:
+        return String(regexp.QuoteMeta(x.String()))
+    case Boolean:
+        return t.Escape(x.Number())
+    case Null:
+        return String("")
+    }
+
+    return t.TypeMismatch(a, nil)
+}
 
 func (t *Token) Strings(a interface{}) interface{} {
     switch x := a.(type) {

@@ -9,4 +9,6 @@
     'Apple'.upper       ## true
     'apple'.lower       ## true
     ' '.space           ## true
+    \'3.14'             ## "3\\.14"
+    'a(b'.escape        ## "a\\(b"
 ]

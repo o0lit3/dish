@@ -452,7 +452,7 @@ func (l *Lexer) Lexify() *Token {
             default:
                 return l.Tokenize(l.Backup(), OPX, "").LexArgs(l)
             }
-        case '+', '-', '*', '/', '%', '!', '~', '#', '@', '?', '&', '|', '^', ':', '=', '<', '>':
+        case '+', '-', '*', '/', '%', '!', '~', '#', '@', '?', '&', '|', '^', ':', '=', '<', '>', '\\':
             if r == ':' && (len(l.toks) == 0 || !l.toks[len(l.toks) - 1].Term()) {
                 l.Backup()
                 l.Tokenize(l.pos, VAR, "$" + fmt.Sprintf("%v", l.pos))
