@@ -102,10 +102,10 @@ The member assignment operator `@=` is a special assignment operator that allows
 | `\|=`    | [See Bitwise Ops](#bitwise-operators)            | | `a = 5, a \|= 3`        | `7`                   |
 | `?=`     | [See Logical ?? Op](#logical-operators)          | | `a ?= 3`                | `3`                   |
 |          |                               |                  |                           |                       |
-| `@=`     | Number.x `@=` Implied Boolean | `a.x.replace(b)` | `a = 12, a[2] @= 0`       | `8`                   |
-|          | String.x `@=` String          | `a.x.replace(b)` | `a = 'bing', a[1] @= 'a'` | `"bang"`              |
-|          | Array.x `@=` Any              | `a.x.replace(b)` | `a = [1, 2, 3], a.0 @= 4` | `[4, 2, 3]`           |
-|          | Hash.x `@=` Any               | `a.x.replace(b)` | `a = {x: 1}, a['x'] @= 4` | `{"x": 4}`            |
+| `@=`     | Number.x `@=` Implied Boolean | `a.x.set(b)`     | `a = 12, a[2] @= 0`       | `8`                   |
+|          | String.x `@=` String          | `a.x.set(b)`     | `a = 'bing', a[1] @= 'a'` | `"bang"`              |
+|          | Array.x `@=` Any              | `a.x.set(b)`     | `a = [1, 2, 3], a.0 @= 4` | `[4, 2, 3]`           |
+|          | Hash.x `@=` Any               | `a.x.set(b)`     | `a = {x: 1}, a['x'] @= 4` | `{"x": 4}`            |
 |          |                               |                  |                           |                       |
 | `++`     | `++`Number                    | `a.increment`    | `a = 8, ++a`              | `9`                   |
 | (Unary)  | `++`String                    | `a.increment`    | `a = 'binary', ++a`       | `"binarz"`            |

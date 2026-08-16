@@ -818,7 +818,7 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(blk.Assign(a, b, false))
         case ":", "define":
             blk.Register(blk.Assign(a, b, true))
-        case "@=", "replace":
+        case "@=", "set":
             if x, ok := a.(*Variable); ok && x.obj != nil {
                 blk.Register(x.Assign(blk, b, false))
             } else {
