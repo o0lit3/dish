@@ -262,6 +262,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | Hash `%%` :(Block)   | `a.without:(...)`   | `{x: 1, y: 2} %% :x(x % 2)`    | `{"y": 2}`                 |
 |          |                      |                     |                                |                            |
 | `^`      | Number `^` Number    | `a.pow(b)`          | `2 ^ 3`                        | `8`                        |
+|          | Number `^` Number    | `a.pow(b)`          | `8 ^ (1/3)`                    | `2`                        |
 |          | String `^` Number    | `a.rotate(b)`       | `'binary' ^ 2`                 | `"rybina"`                 |
 |          | String `^` String    | `a.zip(b)`          | `'ds' ^ 'ih'`                  | `"dish"`                   |
 |          | String `^` :(Block)  | `a.sort:(...)`      | `'binary' ^ :x:y(y < x)`       | `"yrniba"`                 |

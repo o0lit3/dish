@@ -8,18 +8,15 @@ import(
 )
 
 func RootRat(val *big.Rat) (Number, bool) {
-    if val.Sign() < 0 {
+    num, ok := Root(val.Num(), 2)
+
+    if !ok {
         return Number{ }, false
     }
 
-    num := new(big.Int).Sqrt(val.Num())
-    den := new(big.Int).Sqrt(val.Denom())
+    den, ok := Root(val.Denom(), 2)
 
-    if new(big.Int).Mul(num, num).Cmp(val.Num()) != 0 {
-        return Number{ }, false
-    }
-
-    if new(big.Int).Mul(den, den).Cmp(val.Denom()) != 0 {
+    if !ok {
         return Number{ }, false
     }
 

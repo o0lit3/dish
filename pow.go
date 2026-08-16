@@ -291,6 +291,83 @@ func (t *Token) RotateArray(x Array, y Number) Array {
     return out
 }
 
+func Root(val *big.Int, n int64) (*big.Int, bool) {
+    if n < 1 {
+        return nil, false
+    }
+
+    if n == 1 || val.Sign() == 0 || val.CmpAbs(big.NewInt(1)) == 0 {
+        if val.Sign() < 0 && n % 2 == 0 {
+            return nil, false
+        }
+
+        return new(big.Int).Set(val), true
+    }
+
+    if val.Sign() < 0 {
+        if n % 2 == 0 {
+            return nil, false
+        }
+
+        out, ok := Root(new(big.Int).Neg(val), n)
+
+        if !ok {
+            return nil, false
+        }
+
+        return out.Neg(out), true
+    }
+
+    if n > int64(val.BitLen()) {
+        return nil, false
+    }
+
+    exp := big.NewInt(n)
+    out := new(big.Int).Lsh(big.NewInt(1), uint(int64(val.BitLen()) / n + 1))
+
+    for {
+        next := new(big.Int).Quo(val, new(big.Int).Exp(out, big.NewInt(n - 1), nil))
+        next.Add(next, new(big.Int).Mul(big.NewInt(n - 1), out))
+        next.Quo(next, exp)
+
+        if next.Cmp(out) >= 0 {
+            break
+        }
+
+        out = next
+    }
+
+    if new(big.Int).Exp(out, exp, nil).Cmp(val) != 0 {
+        return nil, false
+    }
+
+    return out, true
+}
+
+func (t *Token) RootNumber(x Number, y Number) (interface{}, bool) {
+    if x.inf != 0 || !y.Rat().Denom().IsInt64() {
+        return nil, false
+    }
+
+    n := y.Rat().Denom().Int64()
+    mag := new(big.Int).Abs(y.Rat().Num())
+    num, ok := Root(x.Rat().Num(), n)
+
+    if !ok {
+        return nil, false
+    }
+
+    den, ok := Root(x.Rat().Denom(), n)
+
+    if !ok {
+        return nil, false
+    }
+
+    out := NewRat(new(big.Rat).SetFrac(new(big.Int).Exp(num, mag, nil), new(big.Int).Exp(den, mag, nil)))
+
+    return Inverted(out, y.Cmp(NewNumber(0)) == -1), true
+}
+
 func (t *Token) PowerNumber(x Number, y Number) interface{} {
     switch y.inf {
     case INF:
@@ -313,6 +390,10 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
     }
 
     if !y.Rat().IsInt() {
+        if out, ok := t.RootNumber(x, y); ok {
+            return out
+        }
+
         x, _ := x.Rat().Float64()
         y, _ := y.Rat().Float64()
         val := math.Pow(x, y)

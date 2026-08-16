@@ -31,7 +31,7 @@ go test -v ./...             # shows the "tests/x.dish passed N of M tests" line
 SWEEP=1 go test -run TestSweep -v ./...   # combination sweep, ~2 minutes, skipped otherwise
 ```
 
-`sweep_test.go` runs one dish process per expression across operand types, prefix operators, `.` spacing variants, operator precedence, and word aliases. It fails only on a Go-level crash, a hang, a spacing variant that changes behavior, or an expression matching neither of its parenthesizations; the alias rejections it prints are a sorted baseline meant to be diffed between runs. Process isolation is deliberate — a hang or a Go stack overflow cannot be recovered in-process.
+`sweep_test.go` runs one dish process per expression across operand types, prefix operators, `.` spacing variants, operator precedence, word aliases, and the exactness of rational arithmetic. It fails only on a Go-level crash, a hang, a spacing variant that changes behavior, or an expression matching neither of its parenthesizations; the alias rejections it prints are a sorted baseline meant to be diffed between runs. Process isolation is deliberate — a hang or a Go stack overflow cannot be recovered in-process.
 
 `go vet ./...` is clean and worth keeping that way, since it is only useful as a gate while it exits 0. Run it separately from `go test`, which applies just a subset of vet's checks.
 

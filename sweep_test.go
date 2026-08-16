@@ -3,6 +3,7 @@ package main
 import (
     "os"
     "sort"
+    "strconv"
     "fmt"
     "bytes"
     "sync"
@@ -336,6 +337,59 @@ func TestSweep(test *testing.T) {
         for _, key := range keys {
             fmt.Printf("    %-24s %3d cases   e.g. %s\n", key, count[key], first[key])
         }
+    })
+
+    // Every rational dish can represent, it should compute exactly. A value that
+    // passed through a 64-bit float betrays itself with a large power-of-two
+    // denominator, so each operation that must be exact is asked for its ratio.
+    test.Run("Exact", func(test *testing.T) {
+        vals := []string{ "3", "-5", "(1/3)", "(2/7)", "0.1", "(3/4)", "7", "(2/3)" }
+        ops := []string{ "+", "-", "*", "/", "//", "%", "%%" }
+        var exprs []string
+
+        for _, a := range vals {
+            for _, b := range vals {
+                for _, op := range ops {
+                    exprs = append(exprs, fmt.Sprintf("%%(%s %s %s)", a, op, b))
+                }
+            }
+
+            for _, pow := range []string{ "2", "3", "-2" } {
+                exprs = append(exprs, fmt.Sprintf("%%(%s ^ %s)", a, pow))
+            }
+
+            exprs = append(exprs, fmt.Sprintf("%%(-%s)", a), fmt.Sprintf("%%(%s @ 3)", a),
+                fmt.Sprintf("%%([%s, 2].sum)", a), fmt.Sprintf("%%([%s, 2].avg)", a),
+                fmt.Sprintf("%%([%s, 2].product)", a))
+        }
+
+        got := resolve(bin, exprs)
+        denom := regexp.MustCompile(`"denom": (\d+)`)
+        loose := 0
+
+        for expr, val := range got {
+            if val.kind != "ok" {
+                continue
+            }
+
+            found := denom.FindStringSubmatch(val.text)
+
+            if found == nil {
+                continue
+            }
+
+            den, err := strconv.ParseInt(found[1], 10, 64)
+
+            if err != nil || den <= 1 << 20 || den & (den - 1) != 0 {
+                continue
+            }
+
+            test.Errorf("%s lost exactness: denominator %d is a power of two", expr, den)
+            loose++
+        }
+
+        fmt.Printf("sweep exact: %d expressions, %d inexact, %d problems\n",
+            len(got), loose, broken(test, got))
     })
 }
 
