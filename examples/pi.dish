@@ -1,0 +1,26 @@
+## https://rosettacode.org/wiki/Pi
+
+digits = 1000
+guard = 10
+unity = 10 ^ (digits + guard)
+
+arctan = :x(
+  total: unity // x
+  term: total
+  sign: 1
+  n: 1
+
+  (term != 0).redo:(
+    term = term // (x * x)
+    sign = 0 - sign
+    total = total + sign * (term // (2 * n + 1))
+    n = n + 1
+  )
+
+  total
+)
+
+pi = (16 * 5.arctan - 4 * 239.arctan) // 10 ^ guard
+out = pi.str
+
+out.0 + "." + out.(1..#out - 1)
