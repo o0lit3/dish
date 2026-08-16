@@ -179,7 +179,13 @@ func (t *Token) DoubleSplit(a interface{}, b interface{}) interface{} {
             }
 
             if div, ok := t.DivideNumber(x, y).(Number); ok {
-                return NewNumber(div.Int())
+                if div.Fits() || div.inf != 0 {
+                    return div
+                }
+
+                rat := div.Rat()
+
+                return NewRat(new(big.Rat).SetInt(new(big.Int).Quo(rat.Num(), rat.Denom())))
             }
 
             return Null{ }
@@ -214,7 +220,7 @@ func (t *Token) TopSplit(a interface{}) interface{} {
             t.TypeMismatch(a, nil)
         }
 
-        return x
+        return append(Array{ }, x...)
     case String:
         if t.lit != "/" && t.lit != "split" && t.lit != "words" {
             t.TypeMismatch(a, nil)

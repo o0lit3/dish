@@ -356,7 +356,11 @@ func (t *Token) ConcatArray(x Array, y Array) Array {
 }
 
 func (t *Token) ConcatString(x String, y String) String {
-    return append(x, y...)
+    out := make(String, 0, len(x) + len(y))
+    out = append(out, x...)
+    out = append(out, y...)
+
+    return out
 }
 
 func (t *Token) IncreaseString(x String, y Number) String {

@@ -38,7 +38,7 @@ var binaries = []string{ "+", "-", "*", "/", "%", "^", "#", "@", "&", "|", "~", 
 var unaries = []string{ "+", "-", "*", "/", "%", "^", "#", "@", "&", "|", "~", "?", "!",
     "++", "--", "**", "//", "%%", "<<", ">>" }
 
-var sample = []string{ "3", "\"ab\"", "[1,2]", "{a:1}", "null", "true", "[[1,2],[3]]", "[{a:1},{b:2}]" }
+var sample = []string{ "3", "(-2)", "0", "\"ab\"", "[1,2]", "{a:1}", "null", "true", "[[1,2],[3]]", "[{a:1},{b:2}]" }
 
 var objects = []string{ "[1,2,3]", "\"abc\"", "12", "{a:1}", "null", "true", "[]" }
 
@@ -283,6 +283,11 @@ func TestSweep(test *testing.T) {
         for _, grp := range groups {
             for _, word := range grp.words {
                 for _, a := range sample {
+                    if grp.sym == "" {
+                        exprs = append(exprs, fmt.Sprintf("%s.%s", a, word))
+                        continue
+                    }
+
                     if grp.unary {
                         base := grp.sym + a
                         alias := fmt.Sprintf("%s.%s", a, word)
@@ -374,7 +379,7 @@ func aliases(test *testing.T) []group {
                 }
             }
 
-            if sym != "" && len(words) > 0 {
+            if len(words) > 0 {
                 out = append(out, group{ unary: part.unary, sym: sym, words: words })
             }
         }

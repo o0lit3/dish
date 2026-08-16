@@ -40,7 +40,7 @@ solve = :data(
       []
       (data.i.j @= vals.0).solve
       (o: 0, out: [], (o < #opts && !out).redo:(
-        out = ((/data).i.j @= vals.o).solve
+        out = (data.i.j @= vals.o).solve
         ++o
       ), out)
     ]

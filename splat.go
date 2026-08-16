@@ -296,7 +296,7 @@ func (t *Token) TopSplat(a interface{}) interface{} {
             t.TypeMismatch(x, nil)
         }
 
-        return x
+        return append(String{ }, x...)
     default:
         if t.lit != "*" && t.lit != "*=" && t.lit != "string" && t.lit != "str" {
             t.TypeMismatch(x, nil)

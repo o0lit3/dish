@@ -429,3 +429,36 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `\|`String              | `a.uniq`      | `\|'bookkeeper'`         | `"bokepr"`                     |
 |          | `\|`Array               | `a.uniq`      | `\|[1, 1, 2, 3, 3]`      | `[1, 2, 3]`                    |
 |          | `\|`Hash                | `a.uniq`      | `\|{x: 1, y: 1, z: 2}`   | `{"x": 1, "z": 2}`             |
+
+**Nota bene**: the cast operators `+` (Number), `*` (String), `/` (Array), and `%` (Hash) always return a *new* object of the target type, so casting a value to the type it already has is how a value is copied: `b = "banana"; c = *b; c.0 = "x"` leaves `b` as `"banana"`, where `c = b` would have changed both. That copy is one level deep--the members of `/[[1], [2]]` are the same two Arrays held by the original.
+
+## String Methods
+A few object methods have no symbolic operator form.
+
+| Method      | Operand | Example         | Result |
+| ----------- | ------- | --------------- | ------ |
+| `digit`     | String  | `'7'.digit`     | `true` |
+| `letter`    | String  | `'a'.letter`    | `true` |
+| `consonant` | String  | `'b'.consonant` | `true` |
+| `vowel`     | String  | `'a'.vowel`     | `true` |
+| `upper`     | String  | `'A'.upper`     | `true` |
+| `lower`     | String  | `'a'.lower`     | `true` |
+| `space`     | String  | `' '.space`     | `true` |
+| `ord`       | String  | `'a'.ord`       | `97`   |
+
+## Number Methods
+| Method  | Operand | Example       | Result               |
+| ------- | ------- | ------------- | -------------------- |
+| `chr`   | Number  | `65.chr`      | `"A"`                |
+| `prime` | Number  | `7.prime`     | `true`               |
+| `rand`  | Number  | `10.rand @ 2` | `8.57` (for example) |
+| `sqrt`  | Number  | `9.sqrt`      | `3`                  |
+| `log`   | Number  | `1.log`       | `0`                  |
+| `sin`   | Number  | `0.sin`       | `0`                  |
+| `cos`   | Number  | `0.cos`       | `1`                  |
+| `tan`   | Number  | `0.tan`       | `0`                  |
+| `asin`  | Number  | `0.asin`      | `0`                  |
+| `acos`  | Number  | `1.acos`      | `0`                  |
+| `atan`  | Number  | `0.atan`      | `0`                  |
+
+**Nota bene**: `sqrt` is exact when its operand is a perfect square, including well beyond the range of a 64-bit float, so `(3^80).sqrt` returns `12157665459056928801`. Otherwise `sqrt`, `log`, and the trigonometric methods are computed in 64-bit floating point before being returned as exact rational Numbers, so an irrational result carries floating point precision rather than exact precision.

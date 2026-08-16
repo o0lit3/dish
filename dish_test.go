@@ -1,5 +1,5 @@
 package main
-import "testing"
+import("fmt"; "testing")
 
 func TestWham(t *testing.T) {
     test(t, "tests/wham.dish")
@@ -79,4 +79,18 @@ func TestThump(t *testing.T) {
 
 func TestChirp(t *testing.T) {
     test(t, "tests/chirp.dish")
+}
+
+func TestBind(t *testing.T) {
+    for _, c := range []struct{ in string; out string }{
+        { in: "[0.1, 0.2]", out: "[0.1, 0.2]" },
+        { in: "12345678901234567890", out: "12345678901234567890" },
+        { in: "1.5e-3", out: "0.0015" },
+        { in: "123 apples", out: "\"123 apples\"" },
+        { in: "hello\nworld", out: "[\"hello\", \"world\"]" },
+    } {
+        if out := fmt.Sprintf("%v", bind([]byte(c.in))); out != c.out {
+            t.Errorf("bind(%q) is %v; expected %v", c.in, out, c.out)
+        }
+    }
 }

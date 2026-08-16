@@ -7,6 +7,38 @@ import(
     "math/rand"
 )
 
+func RootRat(val *big.Rat) (Number, bool) {
+    if val.Sign() < 0 {
+        return Number{ }, false
+    }
+
+    num := new(big.Int).Sqrt(val.Num())
+    den := new(big.Int).Sqrt(val.Denom())
+
+    if new(big.Int).Mul(num, num).Cmp(val.Num()) != 0 {
+        return Number{ }, false
+    }
+
+    if new(big.Int).Mul(den, den).Cmp(val.Denom()) != 0 {
+        return Number{ }, false
+    }
+
+    return NewRat(new(big.Rat).SetFrac(num, den)), true
+}
+
+func (t *Token) Approximate(val float64) interface{} {
+    switch {
+    case math.IsNaN(val):
+        t.UnexpectedOperand()
+    case math.IsInf(val, 1):
+        return Number{ inf: INF }
+    case math.IsInf(val, -1):
+        return Number{ inf: -INF }
+    }
+
+    return NewRat(new(big.Rat).SetFloat64(val))
+}
+
 func (t *Token) Numbers(a interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
@@ -14,34 +46,47 @@ func (t *Token) Numbers(a interface{}) interface{} {
     case *Variable:
         return t.Numbers(x.Value())
     case Number:
+        if x.inf == INF || x.inf == -INF {
+            switch t.lit {
+            case "prime":
+                return Boolean(false)
+            case "sqrt", "log":
+                if x.inf == INF {
+                    return Number{ inf: INF }
+                }
+            }
+
+            t.UnexpectedOperand()
+        }
+
         val, _ := x.Rat().Float64()
 
         switch t.lit {
         case "rand":
             rand.Seed(time.Now().UnixNano())
-            return NewRat(new(big.Rat).SetFloat64(rand.Float64() * val))
+            return t.Approximate(rand.Float64() * val)
         case "prime":
-            if x.inf == INF || x.inf == -INF {
-                return Boolean(false)
-            }
-
             return Boolean(new(big.Int).Quo(x.Rat().Num(), x.Rat().Denom()).ProbablyPrime(0))
         case "sqrt":
-            return NewRat(new(big.Rat).SetFloat64(math.Sqrt(val)))
+            if root, ok := RootRat(x.Rat()); ok {
+                return root
+            }
+
+            return t.Approximate(math.Sqrt(val))
         case "log":
-            return NewRat(new(big.Rat).SetFloat64(math.Log(val)))
+            return t.Approximate(math.Log(val))
         case "sin":
-            return NewRat(new(big.Rat).SetFloat64(math.Sin(val)))
+            return t.Approximate(math.Sin(val))
         case "cos":
-            return NewRat(new(big.Rat).SetFloat64(math.Cos(val)))
+            return t.Approximate(math.Cos(val))
         case "tan":
-            return NewRat(new(big.Rat).SetFloat64(math.Tan(val)))
+            return t.Approximate(math.Tan(val))
         case "asin":
-            return NewRat(new(big.Rat).SetFloat64(math.Asin(val)))
+            return t.Approximate(math.Asin(val))
         case "acos":
-            return NewRat(new(big.Rat).SetFloat64(math.Acos(val)))
+            return t.Approximate(math.Acos(val))
         case "atan":
-            return NewRat(new(big.Rat).SetFloat64(math.Atan(val)))
+            return t.Approximate(math.Atan(val))
         }
     case Boolean:
         return t.Numbers(x.Number())

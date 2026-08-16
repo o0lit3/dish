@@ -1,9 +1,12 @@
 package main
 
 import (
+    "io"
     "os"
     "fmt"
+    "bytes"
     "bufio"
+    "strconv"
     "strings"
     "testing"
     "math/big"
@@ -266,8 +269,13 @@ func stdin() interface{} {
 func bind(input []byte) interface{} {
     var data interface{}
 
-    if err := json.Unmarshal(input, &data); err == nil {
-        return parse(data)
+    dec := json.NewDecoder(bytes.NewReader(input))
+    dec.UseNumber()
+
+    if err := dec.Decode(&data); err == nil {
+        if _, err := dec.Token(); err == io.EOF {
+            return parse(data)
+        }
     }
 
     out := Array{ }
@@ -304,8 +312,30 @@ func parse(j interface{}) interface{} {
         return out
     case string:
         return String(x)
-    case float64:
-        return NewRat(new(big.Rat).SetFloat64(x))
+    case json.Number:
+        val := x.String()
+
+        if num, err := strconv.ParseInt(val, 10, 64); err == nil {
+            return Number{ num: num }
+        }
+
+        if i := strings.IndexByte(val, '.'); i > 0 && len(val) < 19 && strings.IndexAny(val, "eE") < 0 {
+            if num, err := strconv.ParseInt(val[:i] + val[i + 1:], 10, 64); err == nil {
+                den := int64(1)
+
+                for j := i + 1; j < len(val); j++ {
+                    den *= 10
+                }
+
+                return NewRat(new(big.Rat).SetFrac64(num, den))
+            }
+        }
+
+        if rat, ok := new(big.Rat).SetString(val); ok {
+            return NewRat(rat)
+        }
+
+        return Null{ }
     case bool:
         return Boolean(x)
     case nil:

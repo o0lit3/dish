@@ -375,7 +375,13 @@ func (t *Token) TopGrep(a interface{}) interface{} {
     case *Variable:
         return t.TopGrep(x.Value())
     case Hash:
-        return x
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = val
+        }
+
+        return out
     case Array:
         return Hashify(x)
     case String:
