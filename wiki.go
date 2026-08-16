@@ -41,18 +41,6 @@ func (t *Token) Wiki(a interface{}, b interface{}) interface{} {
         case *Variable:
             return t.Wiki(x, y.Value())
         case Number:
-            if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
-                return Boolean(false)
-            }
-
-            if x.inf == -INF || y.inf == INF {
-                return Boolean(false)
-            }
-
-            if x.inf == INF || y.inf == -INF {
-                return Boolean(true)
-            }
-
             return Boolean(x.Cmp(y) < 0)
         case Boolean:
             return t.Wiki(x, y.Number())
@@ -108,18 +96,6 @@ func (t *Token) WikiBars(a interface{}, b interface{}) interface{} {
         case *Variable:
             return t.WikiBars(x, y.Value())
         case Number:
-            if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
-                return Boolean(false)
-            }
-
-            if x.inf == -INF || y.inf == INF {
-                return Boolean(false)
-            }
-
-            if x.inf == INF || y.inf == -INF {
-                return Boolean(true)
-            }
-
             return Boolean(x.Cmp(y) <= 0)
         case Boolean:
             return t.WikiBars(x, y.Number())

@@ -183,7 +183,7 @@ func (t *Token) SelectString(x String, y String) String {
 }
 
 func (t *Token) EveryNthItem(x Array, y Number) Array {
-    if y.Cmp(NewNumber(0)) == 0 {
+    if y.Int() == 0 {
         return Array{ }
     }
 
@@ -201,7 +201,7 @@ func (t *Token) EveryNthItem(x Array, y Number) Array {
 }
 
 func (t *Token) EveryNthChar(x String, y Number) String {
-    if y.Cmp(NewNumber(0)) == 0 {
+    if y.Int() == 0 {
         return String("")
     }
 
@@ -353,7 +353,11 @@ func (t *Token) DoubleGrep(a interface{}, b interface{}) interface{} {
                 t.TypeMismatch(x, y)
             }
 
-            return NewNumber(t.ModNumber(x, y).(Number).Int())
+            if mod, ok := t.ModNumber(x, y).(Number); ok {
+                return NewNumber(mod.Int())
+            }
+
+            return Null{ }
         case Boolean:
             return t.DoubleGrep(x, y.Number())
         case Null:
@@ -430,7 +434,7 @@ func (t *Token) WithoutString(x String, y *Block) String {
 }
 
 func (t *Token) ExcludingEveryNthItem(x Array, y Number) Array {
-    if y.Cmp(NewNumber(0)) == 0 {
+    if y.Int() == 0 {
         return x
     }
 
@@ -448,7 +452,7 @@ func (t *Token) ExcludingEveryNthItem(x Array, y Number) Array {
 }
 
 func (t *Token) ExcludingEveryNthChar(x String, y Number) String {
-    if y.Cmp(NewNumber(0)) == 0 {
+    if y.Int() == 0 {
         return x
     }
 

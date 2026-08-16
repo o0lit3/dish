@@ -183,11 +183,11 @@ func (t *Token) UniqueHash(x Hash) Hash {
     out := Hash { }
     hash := make(map[string]bool)
 
-    for k, val := range x {
-        key := string(Stringify(val))
+    for _, k := range x.Keys() {
+        key := string(Stringify(x[k]))
 
         if _, ok := hash[key]; !ok {
-            out[k] = val
+            out[k] = x[k]
             hash[key] = true
         }
     }

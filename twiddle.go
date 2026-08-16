@@ -175,8 +175,8 @@ func (t *Token) TopTwiddle(a interface{}) interface{} {
 func (t *Token) InvertHash(x Hash) Hash {
     out := Hash { }
 
-    for key, val := range x {
-        out[string(Stringify(val))] = String(key)
+    for _, key := range x.Keys() {
+        out[string(Stringify(x[key]))] = String(key)
     }
 
     return out

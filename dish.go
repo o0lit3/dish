@@ -158,7 +158,9 @@ func print(v interface{}, pretty bool, depth int, line bool, indent bool) {
             fmt.Print("{\n")
         }
 
-        for key, val := range x {
+        for _, key := range x.Keys() {
+            val := x[key]
+
             if pretty {
                 fmt.Print("\033[0m\033[34;1m" + strings.Repeat("  ", depth + 1) + "\"" + key + "\"")
                 fmt.Print("\033[0m\033[37;1m" + ": ")
@@ -228,10 +230,16 @@ func print(v interface{}, pretty bool, depth int, line bool, indent bool) {
             }
         }
     case Number:
+        val := fmt.Sprintf("%v", x)
+
+        if x.inf != 0 {
+            val = "\"" + val + "\""
+        }
+
         if pretty {
-            fmt.Printf("\033[0m\033[30m%v", x)
+            fmt.Printf("\033[0m\033[30m%v", val)
         } else {
-            fmt.Printf("%v", x)
+            fmt.Printf("%v", val)
         }
     case Boolean:
         if pretty {

@@ -95,6 +95,17 @@ func (n Number) Rat() *big.Rat {
 }
 
 func (n Number) Cmp(m Number) int {
+    if n.inf != 0 || m.inf != 0 {
+        switch {
+        case n.inf == m.inf:
+            return 0
+        case n.inf == INF, m.inf == -INF:
+            return 1
+        }
+
+        return -1
+    }
+
     if n.Fits() && m.Fits() {
         switch {
         case n.num < m.num:
@@ -114,7 +125,17 @@ func (n Number) Int() int {
         return int(n.num)
     }
 
-    return int(new(big.Int).Quo(n.Rat().Num(), n.Rat().Denom()).Int64())
+    val := new(big.Int).Quo(n.Rat().Num(), n.Rat().Denom())
+
+    if !val.IsInt64() {
+        if val.Sign() < 0 {
+            return -int(^uint(0) >> 1) - 1
+        }
+
+        return int(^uint(0) >> 1)
+    }
+
+    return int(val.Int64())
 }
 
 func (n Number) String() string {
@@ -134,12 +155,34 @@ func (n Number) String() string {
         return n.Rat().RatString()
     }
 
-    prec := 100
-    val := n.Rat().FloatString(prec)
+    rat := n.Rat()
+    den := new(big.Int).Set(rat.Denom())
+    places := 0
 
-    for !strings.HasSuffix(val, "0000000000") && prec < 1000 {
-        prec += 100
-        val = n.Rat().FloatString(prec)
+    for _, prime := range []int64{ 2, 5 } {
+        fac := big.NewInt(prime)
+        pow := 0
+
+        for new(big.Int).Mod(den, fac).Sign() == 0 {
+            den.Quo(den, fac)
+            pow++
+        }
+
+        if pow > places {
+            places = pow
+        }
+    }
+
+    if den.Cmp(big.NewInt(1)) == 0 {
+        return rat.FloatString(places)
+    }
+
+    prec := 17
+    val := rat.FloatString(prec)
+
+    for strings.Trim(val, "-0.") == "" && prec < 1000 {
+        prec += 17
+        val = rat.FloatString(prec)
     }
 
     return strings.TrimRight(val, "0")
@@ -223,11 +266,19 @@ func (a Array) Numeric() bool {
     return true
 }
 
+func Nested(a interface{}) string {
+    if num, ok := a.(Number); ok && num.inf != 0 {
+        return "\"" + num.String() + "\""
+    }
+
+    return fmt.Sprintf("%v", a)
+}
+
 func (a Array) String() string {
     var out []string
 
     for _, val := range a {
-        out = append(out, fmt.Sprintf("%v", val))
+        out = append(out, Nested(val))
     }
 
     return "[" + strings.Join(out, ", ") + "]"
@@ -264,7 +315,7 @@ func (h Hash) String() string {
     var out []string
 
     for _, key := range h.Keys() {
-        out = append(out, fmt.Sprintf("%s: %v", String(key), h[key]))
+        out = append(out, fmt.Sprintf("%s: %s", String(key), Nested(h[key])))
     }
 
     return "{" + strings.Join(out, ", ") + "}"

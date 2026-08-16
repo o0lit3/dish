@@ -30,7 +30,7 @@ import (
 // parenthesizations. A dish error carrying a position is a correct outcome. The
 // remaining axes log what they find, because judging them needs a human.
 
-var values = []string{ "0", "-2", "3", "null", "true", "\"\"", "\"ab\"", "[]", "[1,2]", "[9]", "{}", "{a:1}" }
+var values = []string{ "0", "-2", "3", "inf", "(0-inf)", "null", "true", "\"\"", "\"ab\"", "[]", "[1,2]", "[9]", "{}", "{a:1}" }
 
 var binaries = []string{ "+", "-", "*", "/", "%", "^", "#", "@", "&", "|", "~", "?", "!", "<", ">",
     "==", "!=", "<=", ">=", "<<", ">>", "**", "//", "%%", "&&", "||", "~~", "..", "??" }

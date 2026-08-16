@@ -312,7 +312,7 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
         return Null { }
     }
 
-    if y.Cmp(NewNumber(0)) == -1 || !y.Rat().IsInt() {
+    if !y.Rat().IsInt() {
         x, _ := x.Rat().Float64()
         y, _ := y.Rat().Float64()
         val := math.Pow(x, y)
@@ -332,22 +332,22 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
         return NewRat(new(big.Rat).SetFloat64(val))
     }
 
+    neg := y.Cmp(NewNumber(0)) == -1
+    mag := NewRat(new(big.Rat).Abs(y.Rat()))
     exp := int64(0)
 
-    if y.Fits() {
-        exp = y.num
-    } else if num := y.Rat().Num(); num.IsInt64() {
+    if num := mag.Rat().Num(); num.IsInt64() {
         exp = num.Int64()
     } else {
         out := NewNumber(1)
         idx := NewNumber(0)
 
-        for idx.Cmp(y) == -1 {
+        for idx.Cmp(mag) == -1 {
             out = NewRat(out.Rat().Mul(out.Rat(), x.Rat()))
             idx = NewRat(idx.Rat().Add(idx.Rat(), NewNumber(1).Rat()))
         }
 
-        return out
+        return Inverted(out, neg)
     }
 
     if x.Fits() {
@@ -371,7 +371,7 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
         }
 
         if fits {
-            return Number{ num: val }
+            return Inverted(Number{ num: val }, neg)
         }
     }
 
@@ -381,6 +381,18 @@ func (t *Token) PowerNumber(x Number, y Number) interface{} {
         out = NewRat(new(big.Rat).Mul(out.Rat(), x.Rat()))
     }
 
-    return out
+    return Inverted(out, neg)
+}
+
+func Inverted(n Number, neg bool) interface{} {
+    if !neg {
+        return n
+    }
+
+    if n.Cmp(NewNumber(0)) == 0 {
+        return Number{ inf: INF }
+    }
+
+    return NewRat(new(big.Rat).Inv(n.Rat()))
 }
 

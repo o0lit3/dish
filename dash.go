@@ -370,15 +370,15 @@ func (t *Token) DecreaseString(x String, y Number) String {
 }
 
 func (t *Token) SubtractNumber(x Number, y Number) interface{} {
-    if (x.inf == INF && y.inf == INF) || (x.inf == -INF && y.inf == -INF) {
+    if x.inf != 0 && x.inf == y.inf {
         return Null { }
     }
 
-    if x.inf == INF && y.inf == -INF {
+    if x.inf == INF || y.inf == -INF {
         return Number{ inf: INF }
     }
 
-    if x.inf == -INF && y.inf == INF {
+    if x.inf == -INF || y.inf == INF {
         return Number{ inf: -INF }
     }
 
