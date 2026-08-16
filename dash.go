@@ -133,7 +133,7 @@ func (t *Token) Dash(a interface{}, b interface{}) interface{} {
 
             return t.DecreaseString(y, x)
         case Number:
-            if t.lit != "-" && t.lit != "-=" && t.lit != "subtract" && t.lit != "sub" {
+            if t.lit != "-" && t.lit != "-=" && t.lit != "subtract" {
                 t.TypeMismatch(x, y)
             }
 
