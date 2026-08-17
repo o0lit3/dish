@@ -144,6 +144,10 @@ func (t *Token) MissingSeparator() {
     panic(fmt.Sprintf("missing separator before \"%s\" at %s", t.lit, t.pos))
 }
 
+func (t *Token) InvalidPattern(pat string) {
+    panic(fmt.Sprintf("invalid pattern \"%s\" for \"%s\" at %s", pat, t.lit, t.pos))
+}
+
 func (t *Token) UnexpectedOperand() {
     panic(fmt.Sprintf("unexpected operand for \"%s\" at %s", t.lit, t.pos))
 }

@@ -1,5 +1,105 @@
 package main
-import("regexp")
+import("fmt"; "regexp")
+
+var patterns = map[string]*regexp.Regexp{ }
+
+func (t *Token) Pattern(a interface{}) *regexp.Regexp {
+    pat := ""
+
+    switch x := a.(type) {
+    case *Block:
+        return t.Pattern(x.Run())
+    case *Variable:
+        return t.Pattern(x.Value())
+    case String:
+        pat = string(x)
+    case Number, Boolean:
+        pat = fmt.Sprintf("%v", x)
+    default:
+        t.TypeMismatch(a, nil)
+    }
+
+    if out, ok := patterns[pat]; ok {
+        return out
+    }
+
+    out, err := regexp.Compile(pat)
+
+    if err != nil {
+        t.InvalidPattern(pat)
+    }
+
+    patterns[pat] = out
+
+    return out
+}
+
+func (t *Token) Match(a interface{}, b interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Match(x.Run(), b)
+    case *Variable:
+        return t.Match(x.Value(), b)
+    case String:
+        if loc := t.Pattern(b).FindStringIndex(string(x)); loc != nil {
+            return String(string(x)[loc[0]:loc[1]])
+        }
+
+        return Null{ }
+    case Number, Boolean:
+        return t.Match(String(fmt.Sprintf("%v", x)), b)
+    }
+
+    return t.TypeMismatch(a, b)
+}
+
+func (t *Token) Scan(a interface{}, b interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Scan(x.Run(), b)
+    case *Variable:
+        return t.Scan(x.Value(), b)
+    case String:
+        out := Array{ }
+
+        for _, found := range t.Pattern(b).FindAllString(string(x), -1) {
+            out = append(out, String(found))
+        }
+
+        return out
+    case Number, Boolean:
+        return t.Scan(String(fmt.Sprintf("%v", x)), b)
+    }
+
+    return t.TypeMismatch(a, b)
+}
+
+func (t *Token) Groups(a interface{}, b interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Groups(x.Run(), b)
+    case *Variable:
+        return t.Groups(x.Value(), b)
+    case String:
+        out := Array{ }
+
+        for _, found := range t.Pattern(b).FindAllStringSubmatch(string(x), -1) {
+            row := Array{ }
+
+            for _, val := range found {
+                row = append(row, String(val))
+            }
+
+            out = append(out, row)
+        }
+
+        return out
+    case Number, Boolean:
+        return t.Groups(String(fmt.Sprintf("%v", x)), b)
+    }
+
+    return t.TypeMismatch(a, b)
+}
 
 func (t *Token) Escape(a interface{}) interface{} {
     switch x := a.(type) {
