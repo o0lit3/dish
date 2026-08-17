@@ -11,10 +11,11 @@
     ' '.space                ## true
     \'3.14'                  ## "3\\.14"
     'a(b'.escape             ## "a\\(b"
-    'a1'.groups('\d')        ## [["1"]]
+    'a1'.capture('\d')       ## [["1"]]
     'bin'.scan('[in]')       ## ["i", "n"]
     'bin'.match('i.')        ## "in"
     'aaa'.sub('a', 'b')      ## "baa"
     'bin'.replace('n', 'g')  ## "big"
     ['a'].replace('a','o')   ## ["o"]
+    'a b'.cut('\s')          ## ["a", "b"]
 ]

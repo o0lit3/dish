@@ -49,7 +49,7 @@ func (t *Token) Patterns(blk *Block, a interface{}, b interface{}) interface{} {
     }
 
     switch t.lit {
-    case "match", "scan", "groups":
+    case "match", "scan", "capture", "cut":
         if len(args) != 1 {
             t.UnexpectedOperand()
         }
@@ -64,8 +64,10 @@ func (t *Token) Patterns(blk *Block, a interface{}, b interface{}) interface{} {
         return t.Match(a, args[0])
     case "scan":
         return t.Scan(a, args[0])
-    case "groups":
-        return t.Groups(a, args[0])
+    case "capture":
+        return t.Capture(a, args[0])
+    case "cut":
+        return t.Cut(a, args[0])
     }
 
     return t.Replace(a, args, t.lit == "sub")
@@ -131,17 +133,17 @@ func (t *Token) Scan(a interface{}, b interface{}) interface{} {
     return t.TypeMismatch(a, b)
 }
 
-func (t *Token) Groups(a interface{}, b interface{}) interface{} {
+func (t *Token) Capture(a interface{}, b interface{}) interface{} {
     switch x := a.(type) {
     case *Block:
-        return t.Groups(x.Run(), b)
+        return t.Capture(x.Run(), b)
     case *Variable:
-        return t.Groups(x.Value(), b)
+        return t.Capture(x.Value(), b)
     case Array:
         out := Array{ }
 
         for _, val := range x {
-            out = append(out, t.Groups(val, b))
+            out = append(out, t.Capture(val, b))
         }
 
         return out
@@ -160,9 +162,40 @@ func (t *Token) Groups(a interface{}, b interface{}) interface{} {
 
         return out
     case Null:
-        return t.Groups(String(""), b)
+        return t.Capture(String(""), b)
     case Number, Boolean:
-        return t.Groups(String(fmt.Sprintf("%v", x)), b)
+        return t.Capture(String(fmt.Sprintf("%v", x)), b)
+    }
+
+    return t.TypeMismatch(a, b)
+}
+
+func (t *Token) Cut(a interface{}, b interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Cut(x.Run(), b)
+    case *Variable:
+        return t.Cut(x.Value(), b)
+    case Array:
+        out := Array{ }
+
+        for _, val := range x {
+            out = append(out, t.Cut(val, b))
+        }
+
+        return out
+    case Null:
+        return t.Cut(String(""), b)
+    case String:
+        out := Array{ }
+
+        for _, found := range t.Pattern(b).Split(string(x), -1) {
+            out = append(out, String(found))
+        }
+
+        return out
+    case Number, Boolean:
+        return t.Cut(String(fmt.Sprintf("%v", x)), b)
     }
 
     return t.TypeMismatch(a, b)

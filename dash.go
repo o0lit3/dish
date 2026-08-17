@@ -222,9 +222,16 @@ func (t *Token) TopDoubleDash(a interface{}) interface{} {
 }
 
 func (t *Token) ReduceHash(x Hash, y *Block) interface{} {
-    var out interface{} = Null{ }
+    keys := x.Keys()
 
-    for key, val := range x {
+    if len(keys) == 0 {
+        return Null{ }
+    }
+
+    var out interface{} = x[keys[0]]
+
+    for _, key := range keys[1:] {
+        val := x[key]
         out = y.Context(x).Topic(val).Run(out, val, String(key))
     }
 

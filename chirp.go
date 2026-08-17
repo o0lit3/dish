@@ -696,7 +696,7 @@ func (blk *Block) Chirp() interface{} {
             }
 
             blk.Register(val)
-        case "match", "scan", "groups", "replace", "sub":
+        case "match", "scan", "capture", "cut", "replace", "sub":
             blk.Register(t.Patterns(blk, a, nil))
         case "digit", "letter", "consonant", "vowel", "upper", "lower", "space", "ord", "chr":
             blk.Register(t.Strings(a))
@@ -787,7 +787,7 @@ func (blk *Block) Chirp() interface{} {
             } else {
                 blk.Register(t.Bang(blk.Blockify(a), blk.Blockify(b)))
             }
-        case "match", "scan", "groups", "replace", "sub":
+        case "match", "scan", "capture", "cut", "replace", "sub":
             blk.Register(t.Patterns(blk, a, b))
         case "@", "round", "find", "search", "indices", "has", "contains", "includes":
             blk.Register(t.Thump(a, b))

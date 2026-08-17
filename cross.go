@@ -284,10 +284,17 @@ func (t *Token) TopDoubleCross(a interface{}) interface{} {
 }
 
 func (t *Token) AccumulateHash(x Hash, y *Block) Array {
-    var red interface{} = Null{ }
-    var out Array = Array{ }
+    keys := x.Keys()
 
-    for key, val := range x {
+    if len(keys) == 0 {
+        return Array{ }
+    }
+
+    var red interface{} = x[keys[0]]
+    var out Array = Array{ red }
+
+    for _, key := range keys[1:] {
+        val := x[key]
         red = y.Context(x).Topic(val).Run(red, val, String(key))
         out = append(out, red)
     }
