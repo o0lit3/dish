@@ -1,17 +1,20 @@
 [
-    'apple'.digit       ## false
-    '0123'.digit        ## true
-    'apple'.letter      ## true
-    '0123'.letter       ## false
-    'apple'.consonant   ## false
-    'banana'.consonant  ## true
-    'apple'.upper       ## false
-    'Apple'.upper       ## true
-    'apple'.lower       ## true
-    ' '.space           ## true
-    \'3.14'             ## "3\\.14"
-    'a(b'.escape        ## "a\\(b"
-    'a1'.groups('\d')   ## [["1"]]
-    'bin'.scan('[in]')  ## ["i", "n"]
-    'bin'.match('i.')   ## "in"
+    'apple'.digit            ## false
+    '0123'.digit             ## true
+    'apple'.letter           ## true
+    '0123'.letter            ## false
+    'apple'.consonant        ## false
+    'banana'.consonant       ## true
+    'apple'.upper            ## false
+    'Apple'.upper            ## true
+    'apple'.lower            ## true
+    ' '.space                ## true
+    \'3.14'                  ## "3\\.14"
+    'a(b'.escape             ## "a\\(b"
+    'a1'.groups('\d')        ## [["1"]]
+    'bin'.scan('[in]')       ## ["i", "n"]
+    'bin'.match('i.')        ## "in"
+    'aaa'.sub('a', 'b')      ## "baa"
+    'bin'.replace('n', 'g')  ## "big"
+    ['a'].replace('a','o')   ## ["o"]
 ]
