@@ -1,0 +1,12 @@
+[
+    {a: 1, b: [2, 3]}.json               ## "{\"a\": 1, \"b\": [2, 3]}"
+    [1, 2].json                          ## "[1, 2]"
+    'ab'.json                            ## "\"ab\""
+    7.json                               ## "7"
+    inf.json                             ## "\"inf\""
+    '{"a": 1}'.parse.a                   ## 1
+    '[1, 2]'.parse                       ## [1, 2]
+    '"hi"'.parse                         ## "hi"
+    'not json'.parse                     ## null
+    {a: 1}.json.parse                    ## {"a": 1}
+]
