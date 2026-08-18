@@ -279,18 +279,11 @@ func (t *Token) TopSplat(a interface{}) interface{} {
             t.TypeMismatch(x, nil)
         }
 
-        switch t.lit {
-        case "join":
-            return t.JoinArray(x, String("\n"))
-        case "product", "prod":
+        if t.lit == "product" || t.lit == "prod" {
             return t.MultiplyArray(x)
-        default:
-            if x.Numeric() {
-                return t.MultiplyArray(x)
-            }
-
-            return t.JoinArray(x, String("\n"))
         }
+
+        return t.JoinArray(x, String("\n"))
     case String:
         if t.lit != "*" && t.lit != "*=" && t.lit != "string" && t.lit != "str" {
             t.TypeMismatch(x, nil)

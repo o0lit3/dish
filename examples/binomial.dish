@@ -1,7 +1,7 @@
 ## https://rosettacode.org/wiki/Evaluate_binomial_coefficients
 
 choose = :n:k(
-  *((k + 1)..n) / *(1..(n - k))
+  ((k + 1)..n).prod / (1..(n - k)).prod
 )
 
 [

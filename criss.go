@@ -1,5 +1,5 @@
 package main
-import("fmt")
+import("fmt"; "io"; "strings"; "encoding/json")
 
 func Equals(a interface{}, b interface{}) Boolean {
     switch x := a.(type) {
@@ -170,6 +170,41 @@ func Stringify(a interface{}) String {
     default:
         return String(fmt.Sprintf("%v", x))
     }
+}
+
+func (t *Token) Jsonify(a interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Jsonify(x.Run())
+    case *Variable:
+        return t.Jsonify(x.Value())
+    default:
+        return String(Nested(x))
+    }
+}
+
+func (t *Token) Parse(a interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Parse(x.Run())
+    case *Variable:
+        return t.Parse(x.Value())
+    case String:
+        var data interface{}
+
+        dec := json.NewDecoder(strings.NewReader(string(x)))
+        dec.UseNumber()
+
+        if err := dec.Decode(&data); err == nil {
+            if _, err := dec.Token(); err == io.EOF {
+                return parse(data)
+            }
+        }
+
+        return Null{ }
+    }
+
+    return t.TypeMismatch(a, nil)
 }
 
 func Itemize (a interface{}) Array {

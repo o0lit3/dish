@@ -281,7 +281,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | String`.`:(Block)    | `a.call:(...)`      | `'binary'.:s(s.uc)`            | `"BINARY"`                 |
 |          | Array`.`Number       | `a.at(b)`           | `[1, 2, 3].2`                  | `3`                        |
 |          | Array`.`Array        | `a.items(b)`        | `[1, 2, 3].[0, 2]`             | `[1, 3]`                   |
-|          | Array`.`:(Block)     | `a.call:(...)`      | `[1, 2, 3].:a(*a)`             | `6`                        |
+|          | Array`.`:(Block)     | `a.call:(...)`      | `[1, 2, 3].:a(+a)`             | `6`                        |
 |          | Hash`.`String        | `a.at(b)`           | `{x: 1, y: 2}.'y'`             | `2`                        |
 |          | Hash`.`Array         | `a.items(b)`        | `{x: 1, y: 2}.['x', 'y']`      | `[1, 2]`                   |
 |          | Hash`.`:(Block)      | `a.call:(...)`      | `{x: 1, y: 2}.:h(+h)`          | `3`                        |
@@ -353,8 +353,8 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `*`Boolean              | `a.str`       | `*true`                  | `"true"`                       |
 |          | `*`Number               | `a.str`       | `*7`                     | `"7"`                          |
 |          | `*`String               | `a.str`       | `*'binary'`              | `"binary"`                     |
-|          | `*`Array                | `a.prod`      | `*[1, 2, 3]`             | `6`                            |
-|          | `*`Hash                 | `a.prod`      | `*{x: 2, y: 3}`          | `6`                            |
+|          | `*`Array                | `a.join`      | `*[1, 2, 3]`             | `"1\n2\n3"`                    |
+|          | `*`Hash                 | `a.join`      | `*{x: 2, y: 3}`          | `"2\n3"`                       |
 |          |                         |               |                          |                                |
 | `**`     | `**`Number              | `a.divisors`  | `**12`                   | `[1, 2, 3, 4, 6]`              |
 |          | `**`String              | `a.perms`     | `**'ab'`                 | `["ab", "ba"]`                 |
@@ -460,7 +460,10 @@ To `match`, `replace` or `cut` on a literal that may contain a special character
 | `cut(p)`        | String  | `'a  b'.cut('\s+')`               | `["a", "b"]`         |
 | `sub(p, r)`     | String  | `'banana'.sub('an', '-')`         | `"b-ana"`            |
 | `replace(p, r)` | String  | `'banana'.replace('an', '-')`     | `"b--a"`             |
+| `parse`         | String  | `'{"a": 1}'.parse`                | `{"a": 1}`           |
+| `json`          | Any     | `[1, 2].json`                     | `"[1, 2]"`           |
 | `replace(p, r)` | Array   | `['a1', 'b2'].replace('\d', '#')` | `["a#", "b#"]`       |
+| `prod`          | Array   | `[1, 2, 3].prod`                  | `6`                  |
 | `chr`           | Number  | `65.chr`                          | `"A"`                |
 | `prime`         | Number  | `7.prime`                         | `true`               |
 | `rand`          | Number  | `10.rand @ 2`                     | `8.57` (for example) |

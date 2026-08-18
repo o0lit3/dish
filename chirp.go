@@ -702,6 +702,10 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.Strings(a))
         case "\\", "escape":
             blk.Register(t.Escape(a))
+        case "json":
+            blk.Register(t.Jsonify(a))
+        case "parse":
+            blk.Register(t.Parse(a))
         case "rand", "sqrt", "log", "sin", "cos", "tan", "asin", "acos", "atan", "prime":
             blk.Register(t.Numbers(a))
         default:

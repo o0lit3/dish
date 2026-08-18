@@ -77,6 +77,10 @@ func TestThump(t *testing.T) {
     test(t, "tests/thump.dish")
 }
 
+func TestCriss(t *testing.T) {
+    test(t, "tests/criss.dish")
+}
+
 func TestChirp(t *testing.T) {
     test(t, "tests/chirp.dish")
 }
