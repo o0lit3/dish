@@ -224,17 +224,35 @@ func (t *Token) Replace(a interface{}, args Array, first bool) interface{} {
         src := string(x)
 
         if rep, ok := args[1].(*Block); ok {
-            if !first {
-                return String(pat.ReplaceAllStringFunc(src, func(found string) string {
-                    return string(Stringify(rep.Run(String(found))))
-                }))
+            locs := pat.FindAllStringSubmatchIndex(src, -1)
+
+            if locs == nil {
+                return x
             }
 
-            if loc := pat.FindStringIndex(src); loc != nil {
-                return String(src[:loc[0]] + string(Stringify(rep.Run(String(src[loc[0]:loc[1]])))) + src[loc[1]:])
+            if first {
+                locs = locs[:1]
             }
 
-            return x
+            out := ""
+            end := 0
+
+            for _, loc := range locs {
+                params := Array{ }
+
+                for i := 0; i < len(loc); i += 2 {
+                    if loc[i] < 0 {
+                        params = append(params, Null{ })
+                    } else {
+                        params = append(params, String(src[loc[i]:loc[i + 1]]))
+                    }
+                }
+
+                out = out + src[end:loc[0]] + string(Stringify(rep.Run(params...)))
+                end = loc[1]
+            }
+
+            return String(out + src[end:])
         }
 
         rep := string(Stringify(args[1]))

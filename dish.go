@@ -22,7 +22,7 @@ func main() {
     var reader *bufio.Reader
 
     if len(os.Args) < 2 {
-        fmt.Fprintln(os.Stderr, "usage: dish [-dfpt] [-e expression | file] [arguments...]")
+        fmt.Fprintln(os.Stderr, "usage: dish [-dfpt] [-e expression | file | -] [arguments...]")
         os.Exit(1)
     }
 
@@ -59,6 +59,9 @@ func main() {
             format = true
             source = arg(i + 1)
             index = i + 1
+        case "-":
+            source = flag
+            index = i
         case "-e", "-exec":
             source = ""
             reader = bufio.NewReader(strings.NewReader(arg(i + 1)))
@@ -101,7 +104,9 @@ func main() {
         }()
     }
 
-    if source != "" {
+    if source == "-" {
+        reader = bufio.NewReader(os.Stdin)
+    } else if source != "" {
         reader = open(source)
     }
 

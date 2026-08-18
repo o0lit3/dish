@@ -1,21 +1,22 @@
 [
-    'apple'.digit            ## false
-    '0123'.digit             ## true
-    'apple'.letter           ## true
-    '0123'.letter            ## false
-    'apple'.consonant        ## false
-    'banana'.consonant       ## true
-    'apple'.upper            ## false
-    'Apple'.upper            ## true
-    'apple'.lower            ## true
-    ' '.space                ## true
-    \'3.14'                  ## "3\\.14"
-    'a(b'.escape             ## "a\\(b"
-    'a1'.capture('\d')       ## [["1"]]
-    'bin'.scan('[in]')       ## ["i", "n"]
-    'bin'.match('i.')        ## "in"
-    'aaa'.sub('a', 'b')      ## "baa"
-    'bin'.replace('n', 'g')  ## "big"
-    ['a'].replace('a','o')   ## ["o"]
-    'a b'.cut('\s')          ## ["a", "b"]
+    'apple'.digit                          ## false
+    '0123'.digit                           ## true
+    'apple'.letter                         ## true
+    '0123'.letter                          ## false
+    'apple'.consonant                      ## false
+    'banana'.consonant                     ## true
+    'apple'.upper                          ## false
+    'Apple'.upper                          ## true
+    'apple'.lower                          ## true
+    ' '.space                              ## true
+    \'3.14'                                ## "3\\.14"
+    'a(b'.escape                           ## "a\\(b"
+    'a1'.capture('\d')                     ## [["1"]]
+    'bin'.scan('[in]')                     ## ["i", "n"]
+    'bin'.match('i.')                      ## "in"
+    'aaa'.sub('a', 'b')                    ## "baa"
+    'bin'.replace('n', 'g')                ## "big"
+    ['a'].replace('a','o')                 ## ["o"]
+    'a b'.cut('\s')                        ## ["a", "b"]
+    'a1'.replace('(a)(1)', :m:x:y(y + x))  ## "1a"
 ]

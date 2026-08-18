@@ -15,6 +15,7 @@ go build -o /usr/local/bin/dish       # or: go build -o dish .
 
 dish path/to/file.dish                # run a file
 dish -e '"Hello World!"'              # run an expression
+dish -                                # read the program from STDIN, which avoids shell quoting entirely
 dish -p -e 'stdin.map:d(d.name)'      # -p pretty (colorized), -f format (indented JSON)
 dish -t -e '1 + 2'                    # -t dumps the parsed token stream to STDERR and exits
 dish -d -e '1 + 2'                    # -d re-raises errors as Go panics with a stack trace

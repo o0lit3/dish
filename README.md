@@ -12,6 +12,16 @@
 ## Installation
 **dish** is interpreted by [Go](https://github.com/golang/go#readme). With Go installed, build the **dish** interpreter via `go build -o /usr/local/bin/dish` from the project root, or install it directly with `go install github.com/o0lit3/dish@latest`. You can then run **dish** files via `dish /path/to/file.dish` or with the `-e` command flag, as in `dish -e '"Hello World!"'`
 
+A program may also be read from STDIN by passing `-` in place of a file. Because a quoted heredoc reaches **dish** untouched, this is the way to run a program that would otherwise fight the shell over quoting, `$` references or backslashes:
+
+```
+cat <<'EOF' | dish -
+'2026-08-15'.replace('(?<y>\d{4})-(?<m>\d+)-(?<d>\d+)', '$d/$m/$y')
+EOF
+```
+
+Note that a program read this way consumes STDIN, leaving `stdin` empty; keep using `-e` or a file when piping data.
+
 ## Input
 By default, **dish** places STDIN into a variable called `stdin`, and it places command line arguments into a variable called `argv`. If the data from STDIN is JSON, `stdin` gets mapped to the data type representing that JSON data ([see Data Types](#data-types-and-operators)), otherwise `stdin` is an Array of Strings. `argv` is always an Array of Strings.
 
