@@ -15,8 +15,8 @@
 A program may also be read from STDIN by passing `-` in place of a file. Because a quoted heredoc reaches **dish** untouched, this is the way to run a program that would otherwise fight the shell over quoting, `$` references or backslashes:
 
 ```
-cat <<'EOF' | dish -
-'2026-08-15'.replace('(?<y>\d{4})-(?<m>\d+)-(?<d>\d+)', '$d/$m/$y')
+cat << 'EOF' | dish -
+'2026-08-15'.replace('(?<y>\d{4})-(?<m>\d+)-(?<d>\d+)', '$m/$d/$y')
 EOF
 ```
 
