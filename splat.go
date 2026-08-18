@@ -273,10 +273,18 @@ func (t *Token) TopSplat(a interface{}) interface{} {
     case *Variable:
         return t.TopSplat(x.Value())
     case Hash:
+        if t.lit == "string" || t.lit == "str" {
+            return t.Jsonify(x)
+        }
+
         return t.TopSplat(x.Array())
     case Array:
-        if t.lit != "*" && t.lit != "*=" && t.lit != "product" && t.lit != "prod" && t.lit != "join" {
+        if t.lit != "*" && t.lit != "*=" && t.lit != "product" && t.lit != "prod" && t.lit != "join" && t.lit != "string" && t.lit != "str" {
             t.TypeMismatch(x, nil)
+        }
+
+        if t.lit == "string" || t.lit == "str" {
+            return t.Jsonify(x)
         }
 
         if t.lit == "product" || t.lit == "prod" {

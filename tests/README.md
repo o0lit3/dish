@@ -464,6 +464,8 @@ To `match`, `replace` or `cut` on a literal that may contain a special character
 | `json`          | Any     | `[1, 2].json`                     | `"[1, 2]"`           |
 | `replace(p, r)` | Array   | `['a1', 'b2'].replace('\d', '#')` | `["a#", "b#"]`       |
 | `prod`          | Array   | `[1, 2, 3].prod`                  | `6`                  |
+| `str`           | Array   | `[1, 2].str`                      | `"[1, 2]"`           |
+| `str`           | Hash    | `{a: 1}.str`                      | `"{\"a\": 1}"`       |
 | `chr`           | Number  | `65.chr`                          | `"A"`                |
 | `prime`         | Number  | `7.prime`                         | `true`               |
 | `rand`          | Number  | `10.rand @ 2`                     | `8.57` (for example) |
