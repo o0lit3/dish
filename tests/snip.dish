@@ -19,4 +19,5 @@
     ['a'].replace('a','o')                 ## ["o"]
     'a b'.cut('\s')                        ## ["a", "b"]
     'a1'.replace('(a)(1)', :m:x:y(y + x))  ## "1a"
+    'a1'.extract('(?<n>\d)')               ## [{"n": "1"}]
 ]

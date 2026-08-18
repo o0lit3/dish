@@ -49,7 +49,7 @@ func (t *Token) Patterns(blk *Block, a interface{}, b interface{}) interface{} {
     }
 
     switch t.lit {
-    case "match", "scan", "capture", "cut":
+    case "match", "scan", "capture", "extract", "cut":
         if len(args) != 1 {
             t.UnexpectedOperand()
         }
@@ -66,6 +66,8 @@ func (t *Token) Patterns(blk *Block, a interface{}, b interface{}) interface{} {
         return t.Scan(a, args[0])
     case "capture":
         return t.Capture(a, args[0])
+    case "extract":
+        return t.Extract(a, args[0])
     case "cut":
         return t.Cut(a, args[0])
     }
@@ -165,6 +167,53 @@ func (t *Token) Capture(a interface{}, b interface{}) interface{} {
         return t.Capture(String(""), b)
     case Number, Boolean:
         return t.Capture(String(fmt.Sprintf("%v", x)), b)
+    }
+
+    return t.TypeMismatch(a, b)
+}
+
+func (t *Token) Extract(a interface{}, b interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Extract(x.Run(), b)
+    case *Variable:
+        return t.Extract(x.Value(), b)
+    case Array:
+        out := Array{ }
+
+        for _, val := range x {
+            out = append(out, t.Extract(val, b))
+        }
+
+        return out
+    case Null:
+        return t.Extract(String(""), b)
+    case String:
+        pat := t.Pattern(b)
+        names := pat.SubexpNames()
+        out := Array{ }
+
+        for _, loc := range pat.FindAllStringSubmatchIndex(string(x), -1) {
+            row := Hash{ }
+
+            for i := 0; i * 2 < len(loc); i++ {
+                if i >= len(names) || names[i] == "" {
+                    continue
+                }
+
+                if loc[i * 2] < 0 {
+                    row[names[i]] = Null{ }
+                } else {
+                    row[names[i]] = String(string(x)[loc[i * 2]:loc[i * 2 + 1]])
+                }
+            }
+
+            out = append(out, row)
+        }
+
+        return out
+    case Number, Boolean:
+        return t.Extract(String(fmt.Sprintf("%v", x)), b)
     }
 
     return t.TypeMismatch(a, b)
