@@ -460,6 +460,8 @@ To `match`, `replace` or `cut` on a literal that may contain a special character
 | `json`           | `'ab'.json`                             | `"\"ab\""`           |
 | `parse`          | `'{"a": 1}'.parse`                      | `{"a": 1}`           |
 | `parse`          | `'not json'.parse`                      | `null`               |
+| `stamp`          | `'2026-08-19'.stamp`                    | `1787097600`         |
+| `stamp(f)`       | `'19/08/2026'.stamp('%d/%m/%Y')`        | `1787097600`         |
 | `match(p)`       | `'banana'.match('a.a')`                 | `"ana"`              |
 | `scan(p)`        | `'banana'.scan('an')`                   | `["an", "an"]`       |
 | `capture(p)`     | `'a1'.capture('([a-z])(\d)')`           | `[["a1", "a", "1"]]` |
@@ -470,20 +472,33 @@ To `match`, `replace` or `cut` on a literal that may contain a special character
 | `replace(p, :b)` | `'a1'.replace('(a)(1)', :m:x:y(y + x))` | `"1a"`               |
 
 ### Number Methods
-| Method  | Example       | Result               |
-| ------- | ------------- | -------------------- |
-| `chr`   | `65.chr`      | `"A"`                |
-| `prime` | `7.prime`     | `true`               |
-| `rand`  | `10.rand @ 2` | `8.57` (for example) |
-| `sqrt`  | `9.sqrt`      | `3`                  |
-| `log`   | `1.log`       | `0`                  |
-| `sin`   | `0.sin`       | `0`                  |
-| `cos`   | `0.cos`       | `1`                  |
-| `tan`   | `0.tan`       | `0`                  |
-| `asin`  | `0.asin`      | `0`                  |
-| `acos`  | `1.acos`      | `0`                  |
-| `atan`  | `0.atan`      | `0`                  |
-| `json`  | `7.json`      | `"7"`                |
+| Method    | Example                       | Result                   |
+| --------- | ----------------------------- | ------------------------ |
+| `chr`     | `65.chr`                      | `"A"`                    |
+| `prime`   | `7.prime`                     | `true`                   |
+| `rand`    | `10.rand @ 2`                 | `8.57` (for example)     |
+| `sqrt`    | `9.sqrt`                      | `3`                      |
+| `log`     | `1.log`                       | `0`                      |
+| `sin`     | `0.sin`                       | `0`                      |
+| `cos`     | `0.cos`                       | `1`                      |
+| `tan`     | `0.tan`                       | `0`                      |
+| `asin`    | `0.asin`                      | `0`                      |
+| `acos`    | `1.acos`                      | `0`                      |
+| `atan`    | `0.atan`                      | `0`                      |
+| `json`    | `7.json`                      | `"7"`                    |
+| `date`    | `1787149800.date`             | `"2026-08-19T14:30:00Z"` |
+| `date(f)` | `1787149800.date('%Y-%m-%d')` | `"2026-08-19"`           |
+| `year`    | `1787149800.year`             | `2026`                   |
+| `month`   | `1787149800.month`            | `8`                      |
+| `day`     | `1787149800.day`              | `19`                     |
+| `hour`    | `1787149800.hour`             | `14`                     |
+| `minute`  | `1787149800.minute`           | `30`                     |
+| `second`  | `1787149800.second`           | `0`                      |
+| `seconds` | `30.seconds`                  | `30`                     |
+| `minutes` | `90.minutes`                  | `5400`                   |
+| `hours`   | `2.hours`                     | `7200`                   |
+| `days`    | `7.days`                      | `604800`                 |
+| `weeks`   | `1.weeks`                     | `604800`                 |
 
 ### Array Methods
 | Method          | Example                           | Result                 |

@@ -110,7 +110,7 @@ Two more invariants every handler observes:
 
 ### Scoping and re-entrancy
 
-`Block` carries `src` (lexical parent), `args`/`def` (parameter names and defaults), and a stack of `*Run` frames with `cur` pointing at the active one — that stack is what makes recursion and repeated block invocation work. `NewBlock()` seeds the global frame with `true`, `false`, `null`, `inf`, `stdin`/`$_`, `argv`/`$0`, and `$1`…`$n`. `:` defines a variable in local scope, `=` assigns in the enclosing/global scope.
+`Block` carries `src` (lexical parent), `args`/`def` (parameter names and defaults), and a stack of `*Run` frames with `cur` pointing at the active one — that stack is what makes recursion and repeated block invocation work. `NewBlock()` seeds the global frame with `true`, `false`, `null`, `inf`, `stdin`/`$_`, `argv`/`$0`, and `$1`…`$n`. `now` is deliberately *not* seeded there: it resolves in `Block.FindVar()`, on the path taken when a name is bound nowhere in the scope chain, so it reads the clock fresh on every evaluation while staying assignable and shadowable like any other predefined name. `:` defines a variable in local scope, `=` assigns in the enclosing/global scope.
 
 ## Documentation is part of the contract
 

@@ -29,5 +29,9 @@
     {a: 'a(b'}.escape                      ## {"a": "a\\(b"}
     ['a', '7'].vowel                       ## [true, false]
     {x: 'a', y: '7'}.digit                 ## {"x": false, "y": true}
+    '2026-08-19'.stamp                     ## 1787097600
+    '2026-08-19T16:30:00+02:00'.stamp      ## 1787149800
+    '19/08/2026'.stamp('%d/%m/%Y')         ## 1787097600
+    'nope'.stamp                           ## null
     ['a(b'].escape                         ## ["a\\(b"]
 ]

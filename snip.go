@@ -1,5 +1,5 @@
 package main
-import("fmt"; "regexp")
+import("fmt"; "time"; "regexp")
 
 var patterns = map[string]*regexp.Regexp{ }
 
@@ -493,4 +493,54 @@ func (t *Token) Strings(a interface{}) interface{} {
     }
 
     return t.TypeMismatch(a, nil)
+}
+
+func (t *Token) Stamp(a interface{}, b interface{}) interface{} {
+    switch x := a.(type) {
+    case *Block:
+        return t.Stamp(x.Run(), b)
+    case *Variable:
+        return t.Stamp(x.Value(), b)
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Stamp(val, b)
+        }
+
+        return out
+    case Array:
+        out := Array{ }
+
+        for _, val := range x {
+            out = append(out, t.Stamp(val, b))
+        }
+
+        return out
+    case String:
+        if b != nil {
+            if tm, err := time.Parse(Layout(Stringify(b)), string(x)); err == nil {
+                return Stamped(tm)
+            }
+
+            return Null{ }
+        }
+
+        for _, layout := range []string{
+            time.RFC3339Nano,
+            time.RFC3339,
+            "2006-01-02T15:04:05",
+            "2006-01-02 15:04:05",
+            "2006-01-02T15:04",
+            "2006-01-02",
+        } {
+            if tm, err := time.Parse(layout, string(x)); err == nil {
+                return Stamped(tm)
+            }
+        }
+
+        return Null{ }
+    }
+
+    return t.TypeMismatch(a, b)
 }

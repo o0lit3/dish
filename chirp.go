@@ -708,6 +708,10 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.Parse(a))
         case "rand", "sqrt", "log", "sin", "cos", "tan", "asin", "acos", "atan", "prime":
             blk.Register(t.Numbers(a))
+        case "date", "year", "month", "day", "hour", "minute", "second", "seconds", "minutes", "hours", "days", "weeks":
+            blk.Register(t.Ticks(a, nil))
+        case "stamp":
+            blk.Register(t.Stamp(a, nil))
         default:
             switch {
             case len(t.lit) > 0 && unicode.IsDigit(rune(t.lit[0])):
@@ -793,6 +797,10 @@ func (blk *Block) Chirp() interface{} {
             }
         case "match", "scan", "capture", "extract", "cut", "replace", "sub":
             blk.Register(t.Patterns(blk, a, b))
+        case "date":
+            blk.Register(t.Ticks(a, b))
+        case "stamp":
+            blk.Register(t.Stamp(a, b))
         case "@", "round", "find", "search", "indices", "has", "contains", "includes":
             blk.Register(t.Thump(a, b))
         case "^", "power", "pow", "rotate", "rot", "sort", "zip":

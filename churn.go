@@ -644,6 +644,10 @@ func (b *Block) FindVar(name string) interface{} {
     }
 
     if b.src == nil && !ok {
+        if name == "now" {
+            return Tick()
+        }
+
         return Null { }
     }
 
