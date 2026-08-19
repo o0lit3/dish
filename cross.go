@@ -206,6 +206,10 @@ func (t *Token) ConcatItems(x Array) interface{} {
         out = t.Cross(out, val)
     }
 
+    if _, ok := out.(Null); ok {
+        return NewNumber(0)
+    }
+
     return out
 }
 

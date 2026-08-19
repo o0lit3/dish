@@ -336,6 +336,7 @@ All characters that are outside the above mentioned character ranges are ignored
 | `+`      | `+`Number               | `a.num`       | `+5`                     | `5`                            |
 |          | `+`String               | `a.num`       | `+"5"`                   | `5`                            |
 |          | `+`Array                | `a.sum`       | `+[1, 2, 3]`             | `6`                            |
+|          |                         | `a.concat`    | `+['a', 'b']`            | `"ab"`                         |
 |          |                         | `a.concat`    | `+[[1, 2], [3]]`         | `[1, 2, 3]`                    |
 |          |                         | `a.concat`    | `+[{x: 1}, {y: 2}]`      | `{"x": 1, "y": 2}`             |
 |          | `+`Hash                 | `a.sum`       | `+{x: 2, y: 3}`          | `5`                            |
@@ -433,49 +434,84 @@ All characters that are outside the above mentioned character ranges are ignored
 |          |                         |               |                          |                                |
 | `\`      | `\`String               | `a.escape`    | `\'a(b'`                 | `"a\(b"`                       |
 |          | `\`Number               | `a.escape`    | `\3.14`                  | `"3\.14"`                      |
+|          | `\`Array                | `a.escape`    | `\['a(b']`               | `["a\\(b"]`                    |
+|          | `\`Hash                 | `a.escape`    | `\{x: 'a(b'}`            | `{"x": "a\\(b"}`               |
 
 **Nota bene**: the cast operators `+` (Number), `*` (String), `/` (Array), and `%` (Hash) always return a *new* object of the target type, so casting a value to the type it already has is how a value is copied: `b = "banana"; c = *b; c.0 = "x"` leaves `b` as `"banana"`, where `c = b` would have changed both. That copy is one level deep--the members of `/[[1], [2]]` are the same two Arrays held by the original.
 
 ## Method-Only Operators
-Not every object method has a symbolic shorthand. The methods below are written as member access only, either as `a.method` or, where the method needs a parameter, as `a.method(b)`. The Operand column gives the type of the object the method is invoked on, and the coercions described above still apply, so a Boolean or Null operand is read as the Number it stands for (`null.sqrt` is `0`).
+Not every object method has a symbolic shorthand. The methods below are written as member access only, either as `a.method` or, where the method needs a parameter, as `a.method(b)`. The tables below are grouped by the type of the object the method is invoked on, and the coercions described above still apply, so a Boolean or Null operand is read as the Number it stands for (`null.sqrt` is `0`).
 
 Pattern methods (`match`, `scan`, `capture`, `extract`, `cut`, `replace`, `sub`) take a regular expression as an ordinary String, and flags are written inline in the pattern rather than passed separately, so `'(?i)an'` matches case-insensitively. Write patterns in single quotes: a single-quoted String keeps every backslash (`'\d+'` is three characters), while a double-quoted String consumes the backslash of any escape it does not recognize, making `"\d+"` the two-character pattern `d+`.
 
-To `match`, `replace` or `cut` on a literal that may contain a special character, escape it first: `'1.2.3'.replace(\'.', '-')` is `"1-2-3"`, where `'1.2.3'.replace('.', '-')` is `"-----"`. The same applies to text that arrives as data rather than as a literal. `capture` numbers its groups while `extract` keys them by name, omitting unnamed groups and giving `null` to a named group that did not participate in the match. A replacement may be a Logic block instead of a template, in which case it is called for each match and receives the whole match followed by each of its captures, so `'a1'.replace('(a)(1)', :m:x:y(y + x))` is `"1a"`. A match that is not found returns `null`, while `scan` and `capture` return an empty Array, and an Array operand applies the method to each of its items.
+To `match`, `replace` or `cut` on a literal that may contain a special character, escape it first: `'1.2.3'.replace(\'.', '-')` is `"1-2-3"`, where `'1.2.3'.replace('.', '-')` is `"-----"`. The same applies to text that arrives as data rather than as a literal. `capture` numbers its groups while `extract` keys them by name, omitting unnamed groups and giving `null` to a named group that did not participate in the match. A replacement may be a Logic block instead of a template, in which case it is called for each match and receives the whole match followed by each of its captures, so `'a1'.replace('(a)(1)', :m:x:y(y + x))` is `"1a"`. A match that is not found returns `null`, while `scan` and `capture` return an empty Array, and an Array or Hash operand applies the method to each of its items.
 
-| Method          | Operand | Example                           | Result               |
-| --------------- | ------- | --------------------------------- | -------------------- |
-| `digit`         | String  | `'7'.digit`                       | `true`               |
-| `letter`        | String  | `'a'.letter`                      | `true`               |
-| `consonant`     | String  | `'b'.consonant`                   | `true`               |
-| `vowel`         | String  | `'a'.vowel`                       | `true`               |
-| `upper`         | String  | `'A'.upper`                       | `true`               |
-| `lower`         | String  | `'a'.lower`                       | `true`               |
-| `space`         | String  | `' '.space`                       | `true`               |
-| `ord`           | String  | `'a'.ord`                         | `97`                 |
-| `match(p)`      | String  | `'banana'.match('a.a')`           | `"ana"`              |
-| `scan(p)`       | String  | `'banana'.scan('an')`             | `["an", "an"]`       |
-| `capture(p)`    | String  | `'a1'.capture('([a-z])(\d)')`     | `[["a1", "a", "1"]]` |
-| `extract(p)`    | String  | `'a1'.extract('(?<n>\d)')`        | `[{"n": "1"}]`       |
-| `cut(p)`        | String  | `'a  b'.cut('\s+')`               | `["a", "b"]`         |
-| `sub(p, r)`     | String  | `'banana'.sub('an', '-')`         | `"b-ana"`            |
-| `replace(p, r)` | String  | `'banana'.replace('an', '-')`     | `"b--a"`             |
-| `parse`         | String  | `'{"a": 1}'.parse`                | `{"a": 1}`           |
-| `json`          | Any     | `[1, 2].json`                     | `"[1, 2]"`           |
-| `replace(p, r)` | Array   | `['a1', 'b2'].replace('\d', '#')` | `["a#", "b#"]`       |
-| `prod`          | Array   | `[1, 2, 3].prod`                  | `6`                  |
-| `str`           | Array   | `[1, 2].str`                      | `"[1, 2]"`           |
-| `str`           | Hash    | `{a: 1}.str`                      | `"{\"a\": 1}"`       |
-| `chr`           | Number  | `65.chr`                          | `"A"`                |
-| `prime`         | Number  | `7.prime`                         | `true`               |
-| `rand`          | Number  | `10.rand @ 2`                     | `8.57` (for example) |
-| `sqrt`          | Number  | `9.sqrt`                          | `3`                  |
-| `log`           | Number  | `1.log`                           | `0`                  |
-| `sin`           | Number  | `0.sin`                           | `0`                  |
-| `cos`           | Number  | `0.cos`                           | `1`                  |
-| `tan`           | Number  | `0.tan`                           | `0`                  |
-| `asin`          | Number  | `0.asin`                          | `0`                  |
-| `acos`          | Number  | `1.acos`                          | `0`                  |
-| `atan`          | Number  | `0.atan`                          | `0`                  |
+### String Methods
+| Method           | Example                                 | Result               |
+| ---------------- | --------------------------------------- | -------------------- |
+| `digit`          | `'7'.digit`                             | `true`               |
+| `letter`         | `'a'.letter`                            | `true`               |
+| `consonant`      | `'b'.consonant`                         | `true`               |
+| `vowel`          | `'a'.vowel`                             | `true`               |
+| `upper`          | `'A'.upper`                             | `true`               |
+| `lower`          | `'a'.lower`                             | `true`               |
+| `space`          | `' '.space`                             | `true`               |
+| `ord`            | `'a'.ord`                               | `97`                 |
+| `json`           | `'ab'.json`                             | `"\"ab\""`           |
+| `parse`          | `'{"a": 1}'.parse`                      | `{"a": 1}`           |
+| `parse`          | `'not json'.parse`                      | `null`               |
+| `match(p)`       | `'banana'.match('a.a')`                 | `"ana"`              |
+| `scan(p)`        | `'banana'.scan('an')`                   | `["an", "an"]`       |
+| `capture(p)`     | `'a1'.capture('([a-z])(\d)')`           | `[["a1", "a", "1"]]` |
+| `extract(p)`     | `'a1'.extract('(?<n>\d)')`              | `[{"n": "1"}]`       |
+| `cut(p)`         | `'a  b'.cut('\s+')`                     | `["a", "b"]`         |
+| `sub(p, r)`      | `'banana'.sub('an', '-')`               | `"b-ana"`            |
+| `replace(p, r)`  | `'banana'.replace('an', '-')`           | `"b--a"`             |
+| `replace(p, :b)` | `'a1'.replace('(a)(1)', :m:x:y(y + x))` | `"1a"`               |
+
+### Number Methods
+| Method  | Example       | Result               |
+| ------- | ------------- | -------------------- |
+| `chr`   | `65.chr`      | `"A"`                |
+| `prime` | `7.prime`     | `true`               |
+| `rand`  | `10.rand @ 2` | `8.57` (for example) |
+| `sqrt`  | `9.sqrt`      | `3`                  |
+| `log`   | `1.log`       | `0`                  |
+| `sin`   | `0.sin`       | `0`                  |
+| `cos`   | `0.cos`       | `1`                  |
+| `tan`   | `0.tan`       | `0`                  |
+| `asin`  | `0.asin`      | `0`                  |
+| `acos`  | `1.acos`      | `0`                  |
+| `atan`  | `0.atan`      | `0`                  |
+| `json`  | `7.json`      | `"7"`                |
+
+### Array Methods
+| Method          | Example                           | Result                 |
+| --------------- | --------------------------------- | ---------------------- |
+| `prod`          | `[1, 2, 3].prod`                  | `6`                    |
+| `str`           | `[1, 2].str`                      | `"[1, 2]"`             |
+| `json`          | `[1, 2].json`                     | `"[1, 2]"`             |
+| `match(p)`      | `['banana', 'anna'].match('an')`  | `["an", "an"]`         |
+| `scan(p)`       | `['ab', 'b'].scan('b')`           | `[["b"], ["b"]]`       |
+| `capture(p)`    | `['a1'].capture('(a)(\d)')`       | `[[["a1", "a", "1"]]]` |
+| `extract(p)`    | `['a1'].extract('(?<n>\d)')`      | `[[{"n": "1"}]]`       |
+| `cut(p)`        | `['a b'].cut('\s')`               | `[["a", "b"]]`         |
+| `sub(p, r)`     | `['banana'].sub('an', '-')`       | `["b-ana"]`            |
+| `replace(p, r)` | `['a1', 'b2'].replace('\d', '#')` | `["a#", "b#"]`         |
+| `replace`       | `['banana', 'an', '-'].replace`   | `"b--a"`               |
+
+### Hash Methods
+| Method          | Example                                     | Result                       |
+| --------------- | ------------------------------------------- | ---------------------------- |
+| `prod`          | `{x: 2, y: 3}.prod`                         | `6`                          |
+| `str`           | `{a: 1}.str`                                | `"{\"a\": 1}"`               |
+| `json`          | `{a: 1}.json`                               | `"{\"a\": 1}"`               |
+| `match(p)`      | `{a: 'apple', b: 'banana'}.match('an')`     | `{"a": null, "b": "an"}`     |
+| `scan(p)`       | `{a: 'ab'}.scan('b')`                       | `{"a": ["b"]}`               |
+| `capture(p)`    | `{a: 'a1'}.capture('(a)(\d)')`              | `{"a": [["a1", "a", "1"]]}`  |
+| `extract(p)`    | `{a: 'a1'}.extract('(?<n>\d)')`             | `{"a": [{"n": "1"}]}`        |
+| `cut(p)`        | `{a: 'a b'}.cut('\s')`                      | `{"a": ["a", "b"]}`          |
+| `sub(p, r)`     | `{a: 'banana'}.sub('an', '-')`              | `{"a": "b-ana"}`             |
+| `replace(p, r)` | `{a: 'apple', b: 'grape'}.replace('a', '')` | `{"a": "pple", "b": "grpe"}` |
 
 **Nota bene**: `sqrt` is exact when its operand is a perfect square, including well beyond the range of a 64-bit float, so `(3^80).sqrt` returns `12157665459056928801`. Otherwise `sqrt`, `log`, and the trigonometric methods are computed in 64-bit floating point before being returned as exact rational Numbers, so an irrational result carries floating point precision rather than exact precision.

@@ -20,4 +20,12 @@
     'a b'.cut('\s')                        ## ["a", "b"]
     'a1'.replace('(a)(1)', :m:x:y(y + x))  ## "1a"
     'a1'.extract('(?<n>\d)')               ## [{"n": "1"}]
+    {a: 'apple'}.match('pp')               ## {"a": "pp"}
+    {a: 'apple'}.scan('p')                 ## {"a": ["p", "p"]}
+    {a: 'a1'}.capture('(a)(\d)')           ## {"a": [["a1", "a", "1"]]}
+    {a: 'a1'}.extract('(?<n>\d)')          ## {"a": [{"n": "1"}]}
+    {a: 'a b'}.cut('\s')                   ## {"a": ["a", "b"]}
+    {a: 'apple'}.replace('p', '')          ## {"a": "ale"}
+    {a: 'a(b'}.escape                      ## {"a": "a\\(b"}
+    ['a(b'].escape                         ## ["a\\(b"]
 ]

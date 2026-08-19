@@ -81,6 +81,14 @@ func (t *Token) Match(a interface{}, b interface{}) interface{} {
         return t.Match(x.Run(), b)
     case *Variable:
         return t.Match(x.Value(), b)
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Match(val, b)
+        }
+
+        return out
     case Array:
         out := Array{ }
 
@@ -110,6 +118,14 @@ func (t *Token) Scan(a interface{}, b interface{}) interface{} {
         return t.Scan(x.Run(), b)
     case *Variable:
         return t.Scan(x.Value(), b)
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Scan(val, b)
+        }
+
+        return out
     case Array:
         out := Array{ }
 
@@ -141,6 +157,14 @@ func (t *Token) Capture(a interface{}, b interface{}) interface{} {
         return t.Capture(x.Run(), b)
     case *Variable:
         return t.Capture(x.Value(), b)
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Capture(val, b)
+        }
+
+        return out
     case Array:
         out := Array{ }
 
@@ -178,6 +202,14 @@ func (t *Token) Extract(a interface{}, b interface{}) interface{} {
         return t.Extract(x.Run(), b)
     case *Variable:
         return t.Extract(x.Value(), b)
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Extract(val, b)
+        }
+
+        return out
     case Array:
         out := Array{ }
 
@@ -225,6 +257,14 @@ func (t *Token) Cut(a interface{}, b interface{}) interface{} {
         return t.Cut(x.Run(), b)
     case *Variable:
         return t.Cut(x.Value(), b)
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Cut(val, b)
+        }
+
+        return out
     case Array:
         out := Array{ }
 
@@ -256,6 +296,14 @@ func (t *Token) Replace(a interface{}, args Array, first bool) interface{} {
         return t.Replace(x.Run(), args, first)
     case *Variable:
         return t.Replace(x.Value(), args, first)
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Replace(val, args, first)
+        }
+
+        return out
     case Array:
         out := Array{ }
 
@@ -334,6 +382,22 @@ func (t *Token) Escape(a interface{}) interface{} {
         return t.Escape(x.Run())
     case *Variable:
         return t.Escape(x.Value())
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Escape(val)
+        }
+
+        return out
+    case Array:
+        out := Array{ }
+
+        for _, val := range x {
+            out = append(out, t.Escape(val))
+        }
+
+        return out
     case String:
         return String(regexp.QuoteMeta(string(x)))
     case Number:
