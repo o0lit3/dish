@@ -27,5 +27,7 @@
     {a: 'a b'}.cut('\s')                   ## {"a": ["a", "b"]}
     {a: 'apple'}.replace('p', '')          ## {"a": "ale"}
     {a: 'a(b'}.escape                      ## {"a": "a\\(b"}
+    ['a', '7'].vowel                       ## [true, false]
+    {x: 'a', y: '7'}.digit                 ## {"x": false, "y": true}
     ['a(b'].escape                         ## ["a\\(b"]
 ]

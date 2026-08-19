@@ -9,4 +9,6 @@
     '"hi"'.parse                         ## "hi"
     'not json'.parse                     ## null
     {a: 1}.json.parse                    ## {"a": 1}
+    ['1', '[2]'].parse                   ## [1, [2]]
+    {a: '1'}.parse                       ## {"a": 1}
 ]

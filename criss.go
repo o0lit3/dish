@@ -189,6 +189,22 @@ func (t *Token) Parse(a interface{}) interface{} {
         return t.Parse(x.Run())
     case *Variable:
         return t.Parse(x.Value())
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Parse(val)
+        }
+
+        return out
+    case Array:
+        out := Array{ }
+
+        for _, val := range x {
+            out = append(out, t.Parse(val))
+        }
+
+        return out
     case String:
         var data interface{}
 

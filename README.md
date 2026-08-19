@@ -40,6 +40,8 @@ This behavior allows you to pipe the output of one dish executable into another 
 
 `dish -e '[1, 2, 3]' | dish -e 'stdin.sum'`
 
+JSON is also available as a value rather than only as input and output: `json` renders any operand as a JSON String and `parse` reads one back, so `dish -e '{a: 1}.json'` outputs `{"a": 1}` as a String, and `dish -e '"[1, 2]".parse.sum'` outputs `3`. Text that is not valid JSON parses to `null` rather than failing, which makes `parse` safe to apply to untrusted fields.
+
 **dish** supports the following command line options for output styling: 1) `-f` (or `-format`) to auto-indent JSON output and 2) `-p` (or `-pretty`) to auto-indent and colorize JSON output. Note, however, that because "pretty" output uses [ANSI escape sequences](https://en.wikipedia.org/wiki/ANSI_escape_code) to colorize output, the output is no longer valid JSON.
 
 ## [Data Types and Operators](tests/README.md)

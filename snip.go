@@ -417,6 +417,22 @@ func (t *Token) Strings(a interface{}) interface{} {
         return t.Strings(x.Run())
     case *Variable:
         return t.Strings(x.Value())
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Strings(val)
+        }
+
+        return out
+    case Array:
+        out := Array{ }
+
+        for _, val := range x {
+            out = append(out, t.Strings(val))
+        }
+
+        return out
     case String:
         if len(x) == 0 {
             return t.TypeMismatch(x, nil)

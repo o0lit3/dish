@@ -42,6 +42,22 @@ func (t *Token) Numbers(a interface{}) interface{} {
         return t.Numbers(x.Run())
     case *Variable:
         return t.Numbers(x.Value())
+    case Hash:
+        out := Hash{ }
+
+        for key, val := range x {
+            out[key] = t.Numbers(val)
+        }
+
+        return out
+    case Array:
+        out := Array{ }
+
+        for _, val := range x {
+            out = append(out, t.Numbers(val))
+        }
+
+        return out
     case Number:
         if x.inf == INF || x.inf == -INF {
             switch t.lit {
