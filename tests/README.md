@@ -1,11 +1,13 @@
 # Operators
-Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods. The tables in this document outline which shorthand, symbolic operands correspond to which method names based on the data types of each operand.
+Symbolic operators in **dish** (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods. The tables in this document outline which shorthand, symbolic operators correspond to which method names based on the data types of each operand.
 
-**dish** is a (mostly) strongly-typed language. However, all data types in **dish** have inherit truthiness in Boolean contexts where the default values for each data type (`null`, Boolean `false`, Numeric `0`, String `""`, Array `()`, and Hash `{}`) evaluate to `false`, and all other values evaluate to `true`.
+**dish** is a (mostly) strongly-typed language. However, all data types in **dish** have inherent truthiness in Boolean contexts, where the default value for each data type (`null`, Boolean `false`, Numeric `0`, String `""`, Array `[]`, and Hash `{}`) evaluates to `false`, and all other values evaluate to `true`.
 
-In addition, the Booleans `true` and `false` are treated as `1` and `0` in Numeric context, and `null` is treated as `0` in Numeric context. In the documentation below, the word "Number" can be replaced by a Boolean or Null coerced to a Number in this fashion. Any other type pairings that do not exist explicitly in this documentation will result in a runtime error (e.g. comparing a string to a number, `'3' > 2`).
+In addition, the Booleans `true` and `false` are treated as `1` and `0` in Numeric context, and `null` is treated as `0` in Numeric context. In the documentation below, the word "Number" can be replaced by a Boolean or Null coerced to a Number in this fashion. Any type pairing that does not appear explicitly in this documentation will result in a runtime error (e.g. comparing a String to a Number, `'3' > 2`).
 
-With the exception of special [assignment operators](#assignment-operators) and [comparison operators](#comparison-operators) that use the `=` symbol as its second character, all symbolic operators in **dish** consist of either a single symbolic character or a doubled, symbolic character; `|`, `||`, and `|=` are all valid symbolic operators; `?:`, `=~`, and `>>=` are not.
+With the exception of the [assignment operators](#assignment-operators) and [comparison operators](#comparison-operators) that use the `=` symbol as their second character, all symbolic operators in **dish** consist of either a single symbolic character or a doubled, symbolic character; `|`, `||`, and `|=` are all valid symbolic operators; `?:`, `=~`, and `>>=` are not.
+
+**Contents**: [Logical](#logical-operators) · [Comparison](#comparison-operators) · [Assignment](#assignment-operators) · [Bitwise](#bitwise-operators) · [Binary](#binary-operators) · [Unary](#unary-operators) · [Method-Only](#method-only-operators)
 
 ## Logical Operators
 Logical operators in **dish**, like many languages, short circuit the right-hand operand if the left-hand operand does not suffice to determine the value of the expression. As such, the right-hand operands of logical operators are implicit Blocks that are only evaluated if needed (or in the case of the `switch` and `swap` operators, an implicit Array of Blocks for both operands). Left-hand operands for logical operators are treated as implicit Booleans to determine truthiness, but are evaluated as the object itself when returned.
@@ -29,7 +31,7 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary
 |          |                       |                     | `3 ~~ 2`                    | `null`                |
 |          |                       |                     |                             |                       |
 | `??`     | Any `??` Any          | `a.coalesce(b)`     | `a ?? 2`                    | `2`                   |
-|          |                       |                     | `a = 1; a ?? 2`             | `1`                   | 
+|          |                       |                     | `a = 1; a ?? 2`             | `1`                   |
 |          |                       |                     |                             |                       |
 | `?`      | Any `?` Number        | `a.then(b)`         | `(1 > 0) ? 2`               | `2`                   |
 |          | Any `?` String        | `a.then(b)`         | `(0 > 1) ? 'binary'`        | `null`                |
@@ -42,7 +44,7 @@ Similarly, to create traditional if/elseif/else logic in **dish**, use the n-ary
 |          | Any `!` :(Block)      | `a.until:(...)`     | `(a > 9) ! :(++a)`          | `10`                  |
 
 ## Comparison Operators
-The `==` and `!=` equality operators in **dish** evaluate to `false` and `true` respectively when there is a type mismatch (including Booleans and Nulls that are otherwise coerced to `1` and `0` in Numeric contexts); all other comparison operators throw an error when there is a type mismatch. When operand types match, Numbers are compared numerically, Strings lexically, and Arrays and Hashes based on their string-evaluated value for equality (where hash keys are sorted alphabetically when string-evaluated), and by their length for inequalities.
+The `==` and `!=` equality operators in **dish** evaluate to `false` and `true` respectively when there is a type mismatch (including Booleans and Nulls that are otherwise coerced to `1` and `0` in Numeric contexts); all other comparison operators throw an error when there is a type mismatch. When operand types match, Numbers are compared numerically, Strings lexically, and Arrays and Hashes by their string-evaluated value for equality (where Hash keys are sorted alphabetically when string-evaluated) and by their length for inequalities.
 
 | Operator | Operands                    | Method Name       | Example                        | Result            |
 | -------- | --------------------------- | ----------------- | ------------------------------ | ----------------- |
@@ -119,25 +121,25 @@ The member assignment operator `@=` is a special assignment operator that allows
 |          | String `<<` Any               | `a.append(b)`    | `'dish.' << 1.5`          | `"dish.1.5"`          |
 |          | Array `<<` Any                | `a.push(b)`      | `[1, 2] << 3`             | `[1, 2, 3]`           |
 |          | Hash `<<` Any                 | `a.extend(b)`    | `{x: 1} << {y: 2}`        | `{"x": 1, "y": 2}`    |
-|          | [Also See Bitwise Ops](#bitwise-operators)       |                           |                       |
+|          | [Also See Bitwise Ops](#bitwise-operators)       |                  |                           |                       |
 |          |                               |                  |                           |                       |
 | `>>`     | Null `>>` Any                 | `a.unshift(b)`   | `a >> 'dish'`             | `["dish"]`            |
 |          | String `>>` Any               | `a.prepend(b)`   | `'ary' >> 'bin'`          | `"binary"`            |
 |          | Array `>>` Any                | `a.unshift(b)`   | `[1, 2] >> 3`             | `[3, 1, 2]`           |
 |          | Hash `>>` Any                 | `a.extend(b)`    | `{x: 1} >> {y: 2}`        | `{"x": 1, "y": 2}`    |
-|          | [Also See Bitwise Ops](#bitwise-operators)       |                           |                       |
+|          | [Also See Bitwise Ops](#bitwise-operators)       |                  |                           |                       |
 |          |                               |                  |                           |                       |
 | `<<`     | `<<`Number                    | `a.shift`        | `a = 12, [<<a, a]`        | `[1, 4]`              |
 | (Unary)  | `<<`String                    | `a.shift`        | `a = 'binary', [<<a, a]`  | `["b", "inary"]`      |
 |          | `<<`Array                     | `a.shift`        | `a = [1, 2, 3], [<<a, a]` | `[1, [2, 3]]`         |
-|          | [Also See Unary Ops](#unary-operators)           |                           |                       |
+|          | [Also See Unary Ops](#unary-operators)           |                  |                           |                       |
 |          |                               |                  |                           |                       |
 | `>>`     | `>>`Number                    | `a.pop`          | `a = 12, [>>a, a]`        | `[0, 6]`              |
 | (Unary)  | `>>`String                    | `a.pop`          | `a = 'binary', [>>a, a]`  | `["y", "binar"]`      |
 |          | `>>`Array                     | `a.pop`          | `a = [1, 2, 3], [>>a, a]` | `[3, [1, 2]]`         |
-|          | [Also See Unary Ops](#unary-operators)           |                           |                       |
+|          | [Also See Unary Ops](#unary-operators)           |                  |                           |                       |
 
-**Dish** also supports parallel assignment when the left-hand operand is an Array of variables, as in `[a, b, c] = [1, 2, 3]`. Parallel assigment is useful for swapping the values held in two variables without the need of a temporary holding variable: `[a, b] = [b, a]` is equivalent to `t = a, a = b, b = t`.
+**Dish** also supports parallel assignment when the left-hand operand is an Array of variables, as in `[a, b, c] = [1, 2, 3]`. Parallel assignment is useful for swapping the values held in two variables without the need for a temporary holding variable: `[a, b] = [b, a]` is equivalent to `t = a, a = b, b = t`.
 
 This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[2, 1]; a` or `a = [1, 2, 3]; a[1, 2] @= a[2, 1]`.
 
@@ -162,11 +164,11 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          |                          |                     |                             |                        |
 | `~`      | Number `~` Number        | `a.bxor(b)`         | `5 ~ 3`                     | `6`                    |
 |          | String `~` String        | `a.exclusion(b)`    | `'dentist' ~ 'tenth'`       | `"dish"`               |
-|          | String `~` :(Block)      | `a.none(...)`       | `'rsvp' ~ :c(c.vowel)`      | `true`                 |
+|          | String `~` :(Block)      | `a.none:(...)`      | `'rsvp' ~ :c(c.vowel)`      | `true`                 |
 |          | Array `~` Array          | `a.exclusion(b)`    | `[1, 2, 3] ~ [4, 3, 2]`     | `[1, 4]`               |
-|          | Array `~` :(Block)       | `a.none(...)`       | `[2, 4, 6] ~ :x(x % 2)`     | `true`                 |
+|          | Array `~` :(Block)       | `a.none:(...)`      | `[2, 4, 6] ~ :x(x % 2)`     | `true`                 |
 |          | Hash `~` Hash            | `a.exclusion(b)`    | `{x: 1, y: 2} ~ {y: 2}`     | `{"x": 1}`             |
-|          | Hash `~` :(Block)        | `a.none(...)`       | `{x: 1, y: 2} ~ :($1 % 2)`  | `false`                |
+|          | Hash `~` :(Block)        | `a.none:(...)`      | `{x: 1, y: 2} ~ :($1 % 2)`  | `false`                |
 |          |                          |                     |                             |                        |
 | `~`      | `~`Number                | `a.bnot`            | `~5`                        | `-6`                   |
 | (Unary)  | `~`String                | `a.caseflip`        | `~'bInArY'`                 | `"BiNaRy"`             |
@@ -201,9 +203,9 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | String `-` String    | `a.remove(b)`       | `'binary' - 'ary'`             | `"bin"`                    |
 |          | String `-` :(Block)  | `a.reduce:(...)`    | `'bin' - :x:y(x + '-' + y)`    | `"b-i-n"`                  |
 |          | Array `-` Array      | `a.remove(b)`       | `[1, 2, 2, 3, 4] - [2, 3]`     | `[1, 2, 4]`                |
-|          | Array `-` :(Block)   | `a.reduce:v(b)`     | `[2, 3] - :x:y(x * y)`         | `6`                        |
+|          | Array `-` :(Block)   | `a.reduce:(...)`    | `[2, 3] - :x:y(x * y)`         | `6`                        |
 |          | Hash `-` Hash        | `a.remove(b)`       | `{x: 1, y: 2} - {x: 1}`        | `{"y": 2}`                 |
-|          | Hash `-` :(Block)    | `a.reduce:(b)`      | `{x: 2, y: 3} - :x:y(x + y)`   | `5`                        |
+|          | Hash `-` :(Block)    | `a.reduce:(...)`    | `{x: 2, y: 3} - :x:y(x + y)`   | `5`                        |
 |          |                      |                     |                                |                            |
 | `*`      | Number `*` Number    | `a.multiply(b)`     | `10 * 20`                      | `200`                      |
 |          | Number `*` String    | `b.repeat(a)`       | `5 * 'a'`                      | `"aaaaa"`                  |
@@ -238,7 +240,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | String `//` Number   | `a.partition(b)`    | `'binary' // 2`                | `["bi", "na", "ry"]`       |
 |          | String `//` String   | `a.partition(b)`    | `'binary' // 'n'`              | `["bin", "ary"]`           |
 |          | String `//` :(Block) | `a.group:(...)`     | `'Egg' // :c(c.ord)`           | `{"103": "gg", "69": "E"}` |
-|          | Arary `//` Number    | `a.partition(b)`    | `[1, 2, 3, 4, 5] // 2`         | `[[1, 2], [3, 4], [5]]`    |
+|          | Array `//` Number    | `a.partition(b)`    | `[1, 2, 3, 4, 5] // 2`         | `[[1, 2], [3, 4], [5]]`    |
 |          | Array `//` :(Block)  | `a.group:(...)`     | `[2, 3, 4] // :x(x % 2)`       | `{"0": [2, 4], "1": [3]}`  |
 |          |                      |                     |                                |                            |
 | `%`      | Number `%` Number    | `a.mod(b)`          | `3.5 % 2`                      | `1.5`                      |
@@ -299,7 +301,7 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 |          | Hash `@` :(Block)    | `a.search:(...)`    | `{f: 1, b: 2} @ :n(n % 2)`     | `["f"]`                    |
 |          |                      |                     |                                |                            |
 | `#`      | Null `#` String      | `a.fmt(b)`          | `a # 'a: %s'`                  | `"a: null"`                |
-|          | Boolean `#` Number   | `a.fmt(b)`          | `a = true, a # 'a: %s'`        | `"a: true"`                |
+|          | Boolean `#` String   | `a.fmt(b)`          | `a = true, a # 'a: %s'`        | `"a: true"`                |
 |          | Number `#` Number    | `a.base(b)`         | `9 # 2`                        | `"1001"`                   |
 |          | Number `#` String    | `a.fmt(b)`          | `9 # '%.2f'`                   | `"9.00"`                   |
 |          | String `#` Number    | `a.unbase(b)`       | `'1001' # 2`                   | `9`                        |
@@ -310,13 +312,13 @@ This technique also works for member subsets, as in `a = [1, 2, 3]; a[1, 2] = a[
 | `..`     | Number `..` Number   | `a.to(b)`           | `3 .. 1`                       | `[3, 2, 1]`                |
 |          | String `..` String   | `a.to(b)`           | `'a' .. 'c'`                   | `["a", "b", "c"]`          |
 
-**Nota bene**: the `..` range/to operator supports positve as well as negative ranges (as forced integers for numbers). In cases where a range is used to short-circuit a traditional for loop, you may need to first check that you haven't entered a negative range. Compare the following:
+**Nota bene**: the `..` range/to operator supports positive as well as negative ranges (as forced integers for numbers). In cases where a range is used to short-circuit a traditional for loop, you may need to first check that you haven't entered a negative range. Compare the following:
 
 `dish -e 'a = 1; (0..3).map:i((1..i).map:j(a *= j)); a'` outputs `0`
 
 `dish -e 'a = 1; (0..3).map:i((i > 1).then((1..i).map:j(a *= j))); a'` outputs `12`
 
-The `..` range/to operator can also operate on strings, applying the string increment or decrement operation on the left-hand operand until the right-hand operand has been reached, or until the length of the right-hand operand has been exhausted (be careful with memory consumption when writing such operations). The String increment and decrement operators work on three mutally exclusive ranges (`'0'..'9'`, `'A'..'Z'`, and `'a'..'z'`), using "carry over" addition/subtraction on the preceding character when the current character range has been eclipsed. For example:
+The `..` range/to operator can also operate on strings, applying the string increment or decrement operation on the left-hand operand until the right-hand operand has been reached, or until the length of the right-hand operand has been exhausted (be careful with memory consumption when writing such operations). The String increment and decrement operators work on three mutually exclusive ranges (`'0'..'9'`, `'A'..'Z'`, and `'a'..'z'`), using "carry over" addition/subtraction on the preceding character when the current character range has been eclipsed. For example:
 
 `dish -e '["z" + 1, "z" - 1, "z" + 27]'` outputs `["aa", "y", "ba"]`
 
@@ -324,7 +326,7 @@ The `..` range/to operator can also operate on strings, applying the string incr
 
 `dish -e '["9z" + 1, "9z" - 1, "9z" + 11, "9z" + 27]'` outputs `["10a", "9y", "10k", "11a"]`
 
-All characters that are outside the above mentioned character ranges are ignored on String increment and decrement operations. Note from the second example above that increasing or decreasing a numeric String has a similar effect of performing the same operation on an actual Number, but returns a String.
+All characters outside the above-mentioned ranges are ignored on String increment and decrement operations. Note from the second example above that increasing or decreasing a numeric String has an effect similar to performing the same operation on an actual Number, but returns a String.
 
 ## Unary Operators
 | Operator | Operands                | Method Name   | Example                  | Result                         |
@@ -404,8 +406,7 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `^`Array                | `a.sort`      | `^[10, 1, 4, 2]`         | `[1, 2, 4, 10]`                |
 |          |                         |               |                          |                                |
 | `<`      | `<`Number               | `a.floor`     | `<3.14`                  | `3`                            |
-|          | `<`Number               | `a.floor`     | `<-3.14`                 | `-4`                           |
-|          | `<`Number               | `a.int`       | `-3.14.int`              | `-3`                           |
+|          |                         |               | `<-3.14`                 | `-4`                           |
 |          | `<`String               | `a.lc`        | `<'BINARY'`              | `"binary"`                     |
 |          | `<`Array                | `a.min`       | `<[1, 2, 3]`             | `1`                            |
 |          | `<`Hash                 | `a.min`       | `<{x: 1, y: 2}`          | `1`                            |
@@ -432,21 +433,23 @@ All characters that are outside the above mentioned character ranges are ignored
 |          | `\|`Array               | `a.uniq`      | `\|[1, 1, 2, 3, 3]`      | `[1, 2, 3]`                    |
 |          | `\|`Hash                | `a.uniq`      | `\|{x: 1, y: 1, z: 2}`   | `{"x": 1, "z": 2}`             |
 |          |                         |               |                          |                                |
-| `\`      | `\`String               | `a.escape`    | `\'a(b'`                 | `"a\(b"`                       |
-|          | `\`Number               | `a.escape`    | `\3.14`                  | `"3\.14"`                      |
+| `\`      | `\`Number               | `a.escape`    | `\3.14`                  | `"3\.14"`                      |
+|          | `\`String               | `a.escape`    | `\'a(b'`                 | `"a\(b"`                       |
 |          | `\`Array                | `a.escape`    | `\['a(b']`               | `["a\\(b"]`                    |
 |          | `\`Hash                 | `a.escape`    | `\{x: 'a(b'}`            | `{"x": "a\\(b"}`               |
 
 **Nota bene**: the cast operators `+` (Number), `*` (String), `/` (Array), and `%` (Hash) always return a *new* object of the target type, so casting a value to the type it already has is how a value is copied: `b = "banana"; c = *b; c.0 = "x"` leaves `b` as `"banana"`, where `c = b` would have changed both. That copy is one level deep--the members of `/[[1], [2]]` are the same two Arrays held by the original.
 
 ## Method-Only Operators
-Not every object method has a symbolic shorthand. The methods below are written as member access only, either as `a.method` or, where the method needs a parameter, as `a.method(b)`. The tables below are grouped by the type of the object the method is invoked on, and the coercions described above still apply, so a Boolean or Null operand is read as the Number it stands for (`null.sqrt` is `0`). Every String and Number method also accepts an Array or Hash in place of its operand, applying itself to each item and returning the same shape, so `[9, 4].sqrt` is `[3, 2]` and `{x: 'a', y: '7'}.digit` is `{"x": false, "y": true}`; `prod`, `str` and `json` instead take the collection as a whole.
-
-Pattern methods (`match`, `scan`, `capture`, `extract`, `cut`, `replace`, `sub`) take a regular expression as an ordinary String, and flags are written inline in the pattern rather than passed separately, so `'(?i)an'` matches case-insensitively. Write patterns in single quotes: a single-quoted String keeps every backslash (`'\d+'` is three characters), while a double-quoted String consumes the backslash of any escape it does not recognize, making `"\d+"` the two-character pattern `d+`.
-
-To `match`, `replace` or `cut` on a literal that may contain a special character, escape it first: `'1.2.3'.replace(\'.', '-')` is `"1-2-3"`, where `'1.2.3'.replace('.', '-')` is `"-----"`. The same applies to text that arrives as data rather than as a literal. `capture` numbers its groups while `extract` keys them by name, omitting unnamed groups and giving `null` to a named group that did not participate in the match. A replacement may be a Logic block instead of a template, in which case it is called for each match and receives the whole match followed by each of its captures, so `'a1'.replace('(a)(1)', :m:x:y(y + x))` is `"1a"`. A match that is not found returns `null`, while `scan` and `capture` return an empty Array.
+Not every object method has a symbolic shorthand; those that do not are written as member access only, either as `a.method` or, where the method needs a parameter, as `a.method(b)`.
 
 ### String Methods
+The pattern methods (`match`, `scan`, `capture`, `extract`, `cut`, `replace`, `sub`) take a regular expression as an ordinary String, and flags are written inline in the pattern rather than passed separately, e.g. `'(?i)an'` matches case-insensitively. For safety, patterns should be written in single quotes: `'\d+'` instead of `"\d+"`, which returns the two-character pattern `d+`.
+
+To `match`, `replace`, or `cut` a literal that may contain a special character, escape it first: `'1.2.3'.replace(\'.', '-')` is `"1-2-3"`, whereas `'1.2.3'.replace('.', '-')` is `"-----"`.
+
+`capture` numbers its groups while `extract` keys them by name, omitting unnamed groups and giving `null` to a named group that did not participate in the match. A replacement may be a Logic block instead of a template, in which case it receives the whole match followed by each of its captures, e.g. `'a1'.replace('(a)(1)', :m:x:y(y + x))` returns `"1a"`. A match that is not found returns `null`, while `scan` and `capture` return an empty Array.
+
 | Method           | Example                                 | Result               |
 | ---------------- | --------------------------------------- | -------------------- |
 | `digit`          | `'7'.digit`                             | `true`               |
@@ -472,9 +475,14 @@ To `match`, `replace` or `cut` on a literal that may contain a special character
 | `replace(p, :b)` | `'a1'.replace('(a)(1)', :m:x:y(y + x))` | `"1a"`               |
 
 ### Number Methods
+Every Number method also accepts an Array or Hash in place of its operand, applying itself to each item and returning the same shape, so `[9, 4].sqrt` is `[3, 2]`.
+
+The date and duration methods read a Number as a Unix timestamp in seconds: `date` and its component methods (`year` through `second`) break a timestamp apart, while `seconds` through `weeks` convert a count of units into the seconds that make up the same span. `now` supplies the current timestamp, such that `now.year` is the current year and `now.day` is the current day.
+
 | Method    | Example                       | Result                   |
 | --------- | ----------------------------- | ------------------------ |
 | `chr`     | `65.chr`                      | `"A"`                    |
+| `int`     | `-3.14.int`                   | `-3`                     |
 | `prime`   | `7.prime`                     | `true`                   |
 | `rand`    | `10.rand @ 2`                 | `8.57` (for example)     |
 | `sqrt`    | `9.sqrt`                      | `3`                      |
@@ -500,7 +508,11 @@ To `match`, `replace` or `cut` on a literal that may contain a special character
 | `days`    | `7.days`                      | `604800`                 |
 | `weeks`   | `1.weeks`                     | `604800`                 |
 
+**Nota bene**: `sqrt` is exact when its operand is a perfect square, including well beyond the range of a 64-bit float, so `(3^80).sqrt` returns `12157665459056928801`. Otherwise `sqrt`, `log`, and the trigonometric methods are computed in 64-bit floating point before being returned as exact rational Numbers, so an irrational result carries floating point precision rather than exact precision.
+
 ### Array Methods
+`prod`, `str`, and `json` take the Array as a whole; the pattern methods, like every other [String](#string-methods) and [Number](#number-methods) method, apply themselves item by item and return an Array of the same length. A pattern method may also read its arguments from the Array itself instead of from a parameter list, so `['banana', 'an', '-'].replace` is `'banana'.replace('an', '-')`.
+
 | Method          | Example                           | Result                 |
 | --------------- | --------------------------------- | ---------------------- |
 | `prod`          | `[1, 2, 3].prod`                  | `6`                    |
@@ -516,6 +528,8 @@ To `match`, `replace` or `cut` on a literal that may contain a special character
 | `replace`       | `['banana', 'an', '-'].replace`   | `"b--a"`               |
 
 ### Hash Methods
+`prod`, `str`, and `json` take the Hash as a whole; the pattern methods, like every other [String](#string-methods) and [Number](#number-methods) method, apply themselves to each value and return a Hash under the same keys.
+
 | Method          | Example                                     | Result                       |
 | --------------- | ------------------------------------------- | ---------------------------- |
 | `prod`          | `{x: 2, y: 3}.prod`                         | `6`                          |
@@ -528,5 +542,3 @@ To `match`, `replace` or `cut` on a literal that may contain a special character
 | `cut(p)`        | `{a: 'a b'}.cut('\s')`                      | `{"a": ["a", "b"]}`          |
 | `sub(p, r)`     | `{a: 'banana'}.sub('an', '-')`              | `{"a": "b-ana"}`             |
 | `replace(p, r)` | `{a: 'apple', b: 'grape'}.replace('a', '')` | `{"a": "pple", "b": "grpe"}` |
-
-**Nota bene**: `sqrt` is exact when its operand is a perfect square, including well beyond the range of a 64-bit float, so `(3^80).sqrt` returns `12157665459056928801`. Otherwise `sqrt`, `log`, and the trigonometric methods are computed in 64-bit floating point before being returned as exact rational Numbers, so an irrational result carries floating point precision rather than exact precision.

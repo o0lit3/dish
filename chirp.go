@@ -672,7 +672,7 @@ func (blk *Block) Chirp() interface{} {
             blk.Register(t.TopWiki(a))
         case "=", "average", "avg", "eval":
             blk.Register(t.TopBars(blk, a))
-        case ">", "maxium", "max", "uppercase", "upcase", "uc", "ceiling", "ceil":
+        case ">", "maximum", "max", "uppercase", "upcase", "uc", "ceiling", "ceil":
             blk.Register(t.TopWaka(a))
         case "&", "compact", "popcount":
             blk.Register(t.TopBoom(a))
@@ -783,7 +783,7 @@ func (blk *Block) Chirp() interface{} {
             } else {
                 blk.Register(t.Whiz(blk.Blockify(a), blk.Blockify(b)))
             }
-        case "??", "coallesce":
+        case "??", "coalesce":
             blk.Register(t.DoubleWhiz(a, b))
         case "!", "swap", "until":
             if y, ok := b.(*Block); ok && len(y.args) > 0 {

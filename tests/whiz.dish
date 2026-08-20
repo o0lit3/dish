@@ -30,4 +30,5 @@
     ?5                                 ## true
     ?false                             ## false
     ?true                              ## true
+    q.coalesce(3)                      ## 3
 ]

@@ -3,9 +3,9 @@
 
 * Allow quick and easy processing of input data (particularly when the input is JSON data) with traditional programming operators (as opposed to the query-based operators of [jq](https://github.com/stedolan/jq#readme))
 
-* Provide flexibility in language syntax so that developers can tackle tasks based on individual conceptualization (while still allowing peers to easily follow logical flow--that is, while avoiding the "write-only" criticsms of [perl](https://github.com/Perl/perl5#readme))
+* Provide flexibility in language syntax so that developers can tackle tasks based on individual conceptualization (while still allowing peers to easily follow logical flow--that is, while avoiding the "write-only" criticisms of [perl](https://github.com/Perl/perl5#readme))
 
-* Isolate behavioral functionality by treating all data types as objects (and remove control flow keywords, like `if`, `for`, and `while` in favor of object methods, which goes a step further than [ruby](https://github.com/ruby/ruby#readme))
+* Isolate behavioral functionality by treating all data types as objects (and remove control flow keywords like `if`, `for`, and `while`, in favor of object methods, which goes a step further than [ruby](https://github.com/ruby/ruby#readme))
 
 * Allow for contextual parsing of variables and statements without requiring end-of-statement identifiers (while avoiding the "where does this block end?" criticisms of [python](https://github.com/python/cpython#readme))
 
@@ -23,7 +23,7 @@ As an example, the following curl/**dish** command will output a list of the las
 
 ```curl -s "https://api.github.com/repos/o0lit3/dish/commits?per_page=3" | dish -e 'stdin.map:data(//data.commit.message).flat.uniq.sort.join("")'```
 
-A program may also be read from STDIN by passing `-` in place of a file. Because a quoted heredoc reaches **dish** untouched, this is the way to run a program that would otherwise fight the shell over quoting, `$` references or backslashes:
+A program may also be read from STDIN by passing `-` in place of a file. Because a quoted heredoc reaches **dish** untouched, this is a convenient way to run a program that would otherwise fight shell quoting, `$` references, or backslashes:
 
 ```
 cat << 'EOF' | dish -
@@ -31,10 +31,8 @@ cat << 'EOF' | dish -
 EOF
 ```
 
-Note that a program read this way consumes STDIN, leaving `stdin` empty; keep using `-e` or a file when piping data.
-
 ## Output
-By default, **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the scalar's raw output is printed to STDOUT.
+By default, **dish** outputs the last evaluated statement to STDOUT. If the last evaluated statement is an Array or a Hash, the output is formatted as valid JSON. If the last evaluated statement is a Scalar, the Scalar's raw output is printed to STDOUT.
 
 This behavior allows you to pipe the output of one dish executable into another and use it as JSON input via `stdin` downstream:
 
@@ -45,7 +43,7 @@ JSON is also available as a value rather than only as input and output: `json` r
 **dish** supports the following command line options for output styling: 1) `-f` (or `-format`) to auto-indent JSON output and 2) `-p` (or `-pretty`) to auto-indent and colorize JSON output. Note, however, that because "pretty" output uses [ANSI escape sequences](https://en.wikipedia.org/wiki/ANSI_escape_code) to colorize output, the output is no longer valid JSON.
 
 ## [Data Types and Operators](tests/README.md)
-For a detailed decription of operators, precedence, and implicit operator context, [read the operator documentation at tests/README.md](tests/README.md).
+For a detailed description of operators, operand type pairings, and method-name aliases, [read the operator documentation at tests/README.md](tests/README.md).
 
 Like JSON itself, **dish** has 6 data types (Hash, Array, String, Number, Boolean, and Null), all of which are objects with their own object methods. Traditional, symbolic operators (like `+`, `-`, `*`, `/`, etc.) are shorthand representations of longer form object methods.
 
@@ -56,34 +54,34 @@ Similarly, traditional unary operators (which are always prefix operators when r
 <sub>\*Postfix `++` and `--` are not legal in **dish**</sub>
 
 ## Syntax
-**dish** has 4 types of syntax blocks, Scalar Blocks `(...)`, Array blocks `[...]`, Hash blocks `{...}`, and Logic blocks. Expressions and statements in each block are terminated either by a statement ending newline<sup>*</sup>, by a comma, or by a semicolon (unless the newline, comma, or semicolon is encapsulated in a string literal).
+**dish** has 4 types of syntax blocks: Scalar blocks `(...)`, Array blocks `[...]`, Hash blocks `{...}`, and Logic blocks. Expressions and statements in each block are terminated either by a statement-ending newline<sup>*</sup>, by a comma, or by a semicolon (unless the newline, comma, or semicolon is encapsulated in a string literal).
 
-Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit Scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire array or hash, where Hash blocks contain only locally-scoped variables when returned--allowing additional logic to exist in Hash block intitialization without changing its structure:
+Scalar blocks `(...)` return the last expression or statement in the block. A full **dish** program is inside an implicit Scalar block when the first and last characters of the program are not `(` and `)` respectively. Array blocks `[...]` and Hash blocks `{...}` return the entire Array or Hash, where Hash blocks contain only locally-scoped variables when returned--allowing additional logic to exist in Hash block initialization without changing its structure:
 
 `dish -e '{a: 2, a *= 2, b: a}'` outputs the Hash `{"a": 2, "b": 4}`
 
-Logic blocks are represented by a colonized list of arguments followed by any other Block type, as in `:x[...]` or `:x:y(...)`, returning a data type corresponding to the encapsulatng Block type. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
+Logic blocks are represented by a colonized list of arguments followed by any other Block type, as in `:x[...]` or `:x:y(...)`, returning a data type corresponding to the encapsulating Block type. A Logic block may have no arguments, but still must be preceded by a single colon character as in `:(...)`. All arguments passed to a Logic block are locally scoped.
 
-In cases where naming arguments is overkill, **dish** also supports default variables in regards to Logic Blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block, `$0` is the entire argument Array, and `$$` is the object on which the Logic block is invoked.
+In cases where naming arguments is overkill, **dish** also supports default variables with regard to Logic blocks, where `$1`, `$2`, ...`$n` are the first through nth arguments to the Logic block, `$0` is the entire argument Array, and `$$` is the object on which the Logic block is invoked.
 
 For example, `dish -e 'a = [1, 2, 1] >> 0; a.map:n:i(n + a.(i + 1))'` can be rewritten as `dish -e '([1, 2, 1] >> 0).map:($1 + $$.($2 + 1))'`, outputting `[1, 3, 3, 1]`, the row of Pascal's triangle that follows `[1, 2, 1]`. Each item (`n` or `$1`) is summed with the item after it (`a.(i + 1)` or `$$.($2 + 1)`), where `$$` refers to the same Array as the named variable `a`, and the item past the end of the Array is null.
 
 Because `$$` is the object itself, it also gives a Logic block access to aggregates of that object while iterating over it. For example, `dish -e 'a = [1, 2, 5]; a.map:n(n * 100 / a.sum)'` can be rewritten as `dish -e '[1, 2, 5].map:($1 * 100 / $$.sum)'`, outputting `[12.5, 25, 62.5]`, each item as a percentage of the Array's total.
 
-Lastly, because a **dish** program is itelf ultimately a Logic Block operated on STDIN with `argv` as arguments, `$$` (and its alias `$_`) refers to STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments of `argv`.
+Lastly, because a **dish** program is itself ultimately a Logic block operated on STDIN with `argv` as arguments, `$$` (and its alias `$_`) refers to STDIN, `$0` is an alias for the `argv` Array, and `$1`, `$2`, ...`$n` are aliases for the 1st through nth arguments of `argv`.
 
 Comments in **dish** start with a double pound `##` and end with a newline. There are no multi- or in-line comments in **dish**.
 
-<sub>\*Statement ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
+<sub>\*Statement-ending newlines are those not preceded by an opening block character or by a binary operator.</sub>
 
 ## Variables and Member Access
-Variables in **dish** must start with a dollar sign or a letter, followed by any number of numbers, letters, or underscores. Values can be assigned to dynamic variables by using interpolated string assignment or `$(...)` syntax outside of an interpolated string:
+Variables in **dish** must start with a dollar sign or a letter, followed by any number of digits, letters, or underscores. Values can be assigned to dynamic variables by using interpolated string assignment or `$(...)` syntax outside of an interpolated string:
 
 `dish -e '(1..9).each:i("sqr$i" = i^2); sqr9'` outputs `81`
 
-`dish -p -e '+({"apples": [1, 2, 3], "oranges": [4, 5, 6]}.reduce:out:set:fruit(out << {$(fruit): set.sum}))'` outputs `{"apples": 6, "oranges": 15}`
+`dish -p -e '+({"apples": [1, 2, 3], "oranges": [4, 5, 6]}.map:set:fruit({$(fruit): set.sum}))'` outputs `{"apples": 6, "oranges": 15}`
 
-Member access in **dish** is indicated by the special `.` operator which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; Each "member" of a Number is indexed numerically and represents each bit, with the least significant bit at index 0. To retrieve the member index of a static Number, parenthesis are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
+Member access in **dish** is indicated by the special `.` operator, which precedes a member expression. That expression is evaluated, and the member at that evaluated expression is returned. Each "member" of a String is indexed numerically and represents the character at that index; each "member" of a Number is indexed numerically and represents each bit, with the least significant bit at index 0. To retrieve the member index of a static Number, parentheses are often necessary to disambiguate Numeric member access from a floating point. Compare the following:
 
 `dish -e '12.1'` outputs the floating point number: `12.1`
 
@@ -91,28 +89,28 @@ Member access in **dish** is indicated by the special `.` operator which precede
 
 `dish -e 'a = 12; a.1'` outputs the 0th-indexed 2nd least-significant bit (disambiguated by the variable name `a`): `0`
 
-`dish -e '12 . 1'` outputs that same bit, since whitespace between the `.` operator and its member expression is insignificant (and a floating point number can not contain a space): `0`
+`dish -e '12 . 1'` outputs that same bit, since whitespace between the `.` operator and its member expression is insignificant (and a floating point number cannot contain a space): `0`
 
-Because **dish** variables can not begin with numbers, numeric index members such as `[1, 2, 3].1` or `'foobar'.3` are unambiguous; Hash key members, however, because they can be ambiguous, should be quoted to avoid already-defined variable names. Compare the following:
+Because **dish** variables cannot begin with numbers, numeric index members such as `[1, 2, 3].1` or `'foobar'.3` are unambiguous. A Hash key member, however, can be read as a variable name, so quoting is recommended to avoid existing variable names. Compare the following:
 
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a."foo"'` outputs `1`
 
 `dish -e 'a = {foo: 1, bar: 2}; foo = "bar"; a.foo'` outputs `2`
 
-**dish** also supports "traditional syntax" array and hash member access with bracket `[]` syntax. `[1, 2, 3].1` and `[1, 2, 3][1]` are equivalent in **dish**.
+**dish** also supports "traditional syntax" Array and Hash member access with bracket `[]` syntax. `[1, 2, 3].1` and `[1, 2, 3][1]` are equivalent in **dish**.
 
 Assigning to a member of an undefined variable creates the containing Hash or Array, choosing which from the accessor, and does so at any depth: `dish -e 'a.b.c = 1; a'` outputs `{"b": {"c": 1}}` while `dish -e 'a.0 = 9; a'` outputs `[9]`. Reading a member never creates anything, so `dish -e 'a.b; a'` leaves `a` undefined, and reading a member of a missing member evaluates to `null` rather than failing: `dish -e '[{a: 1}.b.c]'` outputs `[null]`.
 
-The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)` or a variable that points to a Logic block as in `power = :a:b(a ^ b); [2, 3].power`. As seen in these last two examples, the values of a List data type are passed as arguments to the Logic block. This is similar for Scalar data types as in:
+The member expression can also be a Logic block, as in `[1, 2, 3].:a:b:c(a + b + c)`, or a variable that points to a Logic block, as in `power = :a:b(a ^ b); [2, 3].power`. As seen in these last two examples, the values of an Array or Hash are passed as arguments to the Logic block. The same holds for Scalar data types:
 
 `dish -e 'squared = :n(n ^ 2); 3.squared'`
 
 `dish -e 'ucwords = :s(s.words.map:w(w[0] @= w[0].uc).join(" ")); "my title".ucwords'`
 
-In cases where a Logic block contains exactly two arguments, you can use the following, alternative binary syntax for passing arguments: `power = :a:b(a ^ b); 2.power(3)` where the first argument is the object on which the Logic block is invoked and where the second argument is passed via parentheses. Similarly, in cases where a Logic block contains more than two arguments, you can use the following, alternative n-ary syntax for passing arguments: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad(2, 3, 4)`. Note that the parenthesized parameters in this "traditional syntax alternative" do not represent a **dish** Scalar Block.
+When a Logic block takes exactly two arguments, an alternative binary syntax is available for passing them: `power = :a:b(a ^ b); 2.power(3)`, where the first argument is the object on which the Logic block is invoked and the second is passed in parentheses. When a Logic block takes more than two arguments, the same idea extends to an n-ary syntax: `quad = :x:a:b:c(a * x ^ 2 + b * x + c); 2.quad(2, 3, 4)`. Note that the parenthesized parameters in this "traditional syntax alternative" do not represent a **dish** Scalar block.
 
 ## String Interpolation
-**dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string `"$(...)"`, for example: `dish -e '(0..9).map:i("i^2: $(i^2)").join'`. Any **dish** expression can be included in a string interpolated Scalar block, but you will need to escape any double quote characters used in your expression.
+**dish** supports string interpolation by injecting a Scalar block prefixed with a `$` character inside a double-quoted string `"$(...)"`, for example: `dish -e '(0..9).map:i("i^2: $(i^2)").join'`. Any **dish** expression can be included in a string-interpolated Scalar block, though any double quote characters within that expression must be escaped.
 
 When the expression is a single variable, the encapsulating parentheses can be removed: `dish -e '(0..9).map:i("i: $i").join'`
 
